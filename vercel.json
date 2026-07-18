@@ -1,1 +1,14 @@
-{"cleanUrls":true,"trailingSlash":false,"rewrites":[{"source":"/","destination":"/v412.html"}]}
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "routes": [
+    {
+      "src": "^/$",
+      "dest": "/v412.html"
+    },
+    {
+      "handle": "filesystem"
+    }
+  ]
+}
