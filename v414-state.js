@@ -122,10 +122,18 @@
   startDaily=function(){
     const key=todayKey();
     const pool=[];
-    lessons().forEach((lesson,lessonIndex)=>{
-      const exercise=lesson.exercises.find(item=>item.type==='write')||lesson.exercises.find(item=>item.type!=='concept');
-      if(exercise)pool.push({lessonIndex,exercise});
-    });
+    const maxAccessible=Math.min(
+      lessons().length-1,
+      Math.max(0,Number(S.next)||0)
+    );
+
+    lessons()
+      .slice(0,maxAccessible+1)
+      .forEach((lesson,lessonIndex)=>{
+        const exercise=lesson.exercises.find(item=>item.type==='write')||lesson.exercises.find(item=>item.type!=='concept');
+        if(exercise)pool.push({lessonIndex,exercise});
+      });
+
     if(!pool.length)return;
     const picked=pool[dateHash(`${key}:${S.lang}`)%pool.length];
     startLesson(picked.lessonIndex,true,[picked.exercise],{mode:'daily',dailyKey:key});
