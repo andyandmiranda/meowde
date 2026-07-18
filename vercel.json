@@ -2,13 +2,11 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
-  "routes": [
+  "redirects": [
     {
-      "src": "^/$",
-      "dest": "/v412.html"
-    },
-    {
-      "handle": "filesystem"
+      "source": "/",
+      "destination": "/v412",
+      "permanent": false
     }
   ]
 }
