@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meowde v4.12 — Loading</title>
+<title>Meowde v4.13 — Loading</title>
 <style>
 html,body{height:100%;margin:0}body{display:grid;place-items:center;background:#fff9ef;color:#2d2a28;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.loading{font-weight:800;letter-spacing:-.02em}.error{max-width:320px;padding:24px;text-align:center;line-height:1.6}
 </style>
@@ -18,13 +18,14 @@ html,body{height:100%;margin:0}body{display:grid;place-items:center;background:#
     const response=await fetch('/index.html?v=411',{cache:'no-store'});
     if(!response.ok)throw new Error(`HTTP ${response.status}`);
     let html=await response.text();
-    html=html.replace('<title>Meowde v4.11 — Unlimited Practice</title>','<title>Meowde v4.12 — Progress Hotfix</title>');
-    html=html.replace('</body>','<script src="/v412-hotfix.js?v=412"><\/script></body>');
+    html=html.replace('<title>Meowde v4.11 — Unlimited Practice</title>','<title>Meowde v4.13 — Mobile UX Refresh</title>');
+    html=html.replace('</head>','<link rel="stylesheet" href="/v413-ux.css?v=413"></head>');
+    html=html.replace('</body>','<script src="/v412-hotfix.js?v=412"><\/script><script src="/v413-core.js?v=413"><\/script><script src="/v413-lesson.js?v=413"><\/script></body>');
     document.open();
     document.write(html);
     document.close();
   }catch(error){
-    console.error('Meowde v4.12 bootstrap failed',error);
+    console.error('Meowde v4.13 bootstrap failed',error);
     status.className='error';
     status.textContent='Meowde를 불러오지 못했습니다. 잠시 후 다시 접속해 주세요.';
   }
