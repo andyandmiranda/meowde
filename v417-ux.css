@@ -1,0 +1,7 @@
+.v417-smart-card{position:relative;overflow:hidden;background:linear-gradient(145deg,#fffdf8 0%,#f4fbf7 58%,#fff7dc 100%);border-color:#bdebd8}
+.v417-smart-card::before{content:"";position:absolute;right:-34px;top:-42px;width:116px;height:116px;border-radius:999px;background:radial-gradient(circle,rgba(83,199,160,.2),rgba(83,199,160,0) 70%);pointer-events:none}
+.v417-smart-card.done{background:linear-gradient(145deg,#f2fbf6,#fff)}
+.v417-smart-head{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.v417-smart-head h3{margin-top:2px;font-size:18px;letter-spacing:-.035em}
+.v417-smart-card>p{position:relative;margin:9px 0 0;color:var(--muted);font-size:12.5px;line-height:1.55}
+.v417-review-tags{position:relative;display:flex;flex-wrap:wrap;gap:7px;margin:13px 0 
