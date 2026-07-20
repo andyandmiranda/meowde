@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Meowde v4.18 — Loading</title>
+<title>Meowde v4.19 — Loading</title>
 <style>html,body{height:100%;margin:0}body{display:grid;place-items:center;background:#fff9ef;color:#2d2a28;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.loading{font-weight:800;letter-spacing:-.02em}.error{max-width:320px;padding:24px;text-align:center;line-height:1.6}</style>
 </head>
 <body>
@@ -14,14 +14,14 @@
   try{
     const saved=localStorage.getItem('meowde-v410-state');
     if(saved){try{JSON.parse(saved)}catch(error){localStorage.removeItem('meowde-v410-state')}}
-    const response=await fetch('/index.html?v=418',{cache:'no-store'});
+    const response=await fetch('/index.html?v=419',{cache:'no-store'});
     if(!response.ok)throw new Error(`HTTP ${response.status}`);
     let html=await response.text();
-    html=html.replace('<title>Meowde v4.11 — Unlimited Practice</title>','<title>Meowde v4.18 — Meow Mentor</title>');
-    html=html.replace('</head>',['<link rel="stylesheet" href="/v413-ux.css?v=413">','<link rel="stylesheet" href="/v414-ux.css?v=414">','<link rel="stylesheet" href="/v415-ux.css?v=415">','<link rel="stylesheet" href="/v416-ux.css?v=416">','<link rel="stylesheet" href="/v417-ux.css?v=417">','<link rel="stylesheet" href="/v418-coach.css?v=418">','</head>'].join(''));
-    html=html.replace('</body>',['<script src="/v412-hotfix.js?v=412"><\/script>','<script src="/v413-core.js?v=413"><\/script>','<script src="/v413-lesson.js?v=413"><\/script>','<script src="/v414-state.js?v=414"><\/script>','<script src="/v414-reward.js?v=414"><\/script>','<script src="/v414-screens.js?v=414"><\/script>','<script src="/v415-retention.js?v=415"><\/script>','<script src="/v416-journey.js?v=416"><\/script>','<script src="/v417-review.js?v=417"><\/script>','<script src="/v418-coach.js?v=418"><\/script>','</body>'].join(''));
+    html=html.replace('<title>Meowde v4.11 — Unlimited Practice</title>','<title>Meowde v4.19 — Achievements</title>');
+    html=html.replace('</head>',['<link rel="stylesheet" href="/v413-ux.css?v=413">','<link rel="stylesheet" href="/v414-ux.css?v=414">','<link rel="stylesheet" href="/v415-ux.css?v=415">','<link rel="stylesheet" href="/v416-ux.css?v=416">','<link rel="stylesheet" href="/v417-ux.css?v=417">','<link rel="stylesheet" href="/v418-coach.css?v=418">','<link rel="stylesheet" href="/v419-achievements.css?v=419">','</head>'].join(''));
+    html=html.replace('</body>',['<script src="/v412-hotfix.js?v=412"><\/script>','<script src="/v413-core.js?v=413"><\/script>','<script src="/v413-lesson.js?v=413"><\/script>','<script src="/v414-state.js?v=414"><\/script>','<script src="/v414-reward.js?v=414"><\/script>','<script src="/v414-screens.js?v=414"><\/script>','<script src="/v415-retention.js?v=415"><\/script>','<script src="/v416-journey.js?v=416"><\/script>','<script src="/v417-review.js?v=417"><\/script>','<script src="/v418-coach.js?v=418"><\/script>','<script src="/v419-achievements.js?v=419"><\/script>','</body>'].join(''));
     document.open();document.write(html);document.close();
-  }catch(error){console.error('Meowde v4.18 bootstrap failed',error);status.className='error';status.textContent='Meowde를 불러오지 못했습니다. 잠시 후 다시 접속해 주세요.'}
+  }catch(error){console.error('Meowde v4.19 bootstrap failed',error);status.className='error';status.textContent='Meowde를 불러오지 못했습니다. 잠시 후 다시 접속해 주세요.'}
 })();
 </script>
 </body>
