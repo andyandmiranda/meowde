@@ -7,7 +7,7 @@ const root = path.resolve(__dirname, "..");
 const indexPath = path.join(root, "index.html");
 const html = fs.readFileSync(indexPath, "utf8");
 
-const match = html.match(/const DATA\s*=\s*(\{[\s\S]*?\});\s*const STORAGE/);
+const match = html.match(/const DATA\s*=\s*(\{[\s\S]*?\});[\s\S]*?const STORAGE/);
 
 if (!match) {
   throw new Error("index.html에서 DATA 객체를 찾지 못했습니다.");
