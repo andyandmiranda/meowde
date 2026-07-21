@@ -1,0 +1,839 @@
+{
+  "generatedAt": "2026-07-21T05:10:41.491Z",
+  "runtime": {
+    "koLessons": 30,
+    "enLessons": 30,
+    "koExercises": 170,
+    "enExercises": 170
+  },
+  "assets": {
+    "koFiles": [
+      "data-ko-1.js",
+      "data-ko-2.js",
+      "data-ko-3.js"
+    ],
+    "enFiles": [
+      "data-en-1.js",
+      "data-en-2.js"
+    ],
+    "koLessons": 30,
+    "enLessons": 20,
+    "koExercises": 180,
+    "enExercises": 120
+  },
+  "summary": {
+    "ko": {
+      "identical": 20,
+      "different": 10,
+      "runtimeOnly": [],
+      "assetOnly": [],
+      "onlyRuntimeExercises": 10,
+      "onlyAssetExercises": 20,
+      "changedExercises": 40
+    },
+    "en": {
+      "identical": 20,
+      "different": 0,
+      "runtimeOnly": [
+        "index-tower",
+        "append-dock",
+        "loop-hill",
+        "range-rail",
+        "while-cave",
+        "function-house",
+        "parameter-mail",
+        "return-spring",
+        "mini-project",
+        "boss-bug"
+      ],
+      "assetOnly": [],
+      "onlyRuntimeExercises": 0,
+      "onlyAssetExercises": 0,
+      "changedExercises": 0
+    }
+  },
+  "details": {
+    "ko": [
+      {
+        "slug": "start-field",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "print-camp",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "string-bridge",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "quote-gate",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "number-pond",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "math-stone",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "variable-pond",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "value-swap",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "name-rules",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "concat-bridge",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "input-window",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "debug-missing-quote",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "debug-typo",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "compare-gate",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "if-gate",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "else-cabin",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "elif-mushroom",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "logic-lantern",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "indent-valley",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "list-garden",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "index-tower",
+        "status": "different",
+        "runtimeExercises": 5,
+        "assetExercises": 6,
+        "onlyRuntime": [
+          "index-tower-p"
+        ],
+        "onlyAsset": [
+          "index-tower-p1",
+          "index-tower-p2"
+        ],
+        "changedExercises": [
+          "index-tower-c",
+          "index-tower-f",
+          "index-tower-b",
+          "index-tower-w"
+        ],
+        "lessonFields": {
+          "description": {
+            "runtime": "리스트의 첫 번째 위치는 0이에요.",
+            "asset": "리스트 위치는 0부터 시작하고, 위치 번호로 값을 꺼낼 수 있어요."
+          }
+        }
+      },
+      {
+        "slug": "append-dock",
+        "status": "different",
+        "runtimeExercises": 5,
+        "assetExercises": 6,
+        "onlyRuntime": [
+          "append-dock-p"
+        ],
+        "onlyAsset": [
+          "append-dock-p1",
+          "append-dock-p2"
+        ],
+        "changedExercises": [
+          "append-dock-c",
+          "append-dock-f",
+          "append-dock-b",
+          "append-dock-w"
+        ],
+        "lessonFields": {
+          "description": {
+            "runtime": "append()로 리스트 끝에 값을 추가해요.",
+            "asset": "append()는 리스트 끝에 새 값을 하나 추가해요."
+          }
+        }
+      },
+      {
+        "slug": "loop-hill",
+        "status": "different",
+        "runtimeExercises": 5,
+        "assetExercises": 6,
+        "onlyRuntime": [
+          "loop-hill-p"
+        ],
+        "onlyAsset": [
+          "loop-hill-p1",
+          "loop-hill-p2"
+        ],
+        "changedExercises": [
+          "loop-hill-c",
+          "loop-hill-f",
+          "loop-hill-b",
+          "loop-hill-w"
+        ],
+        "lessonFields": {
+          "focus": {
+            "runtime": [
+              "for",
+              "for"
+            ],
+            "asset": [
+              "for",
+              "loop"
+            ]
+          },
+          "description": {
+            "runtime": "for는 같은 작업을 여러 번 반복해요.",
+            "asset": "for는 리스트의 값을 하나씩 꺼내 같은 코드를 반복해요."
+          }
+        }
+      },
+      {
+        "slug": "range-rail",
+        "status": "different",
+        "runtimeExercises": 5,
+        "assetExercises": 6,
+        "onlyRuntime": [
+          "range-rail-p"
+        ],
+        "onlyAsset": [
+          "range-rail-p1",
+          "range-rail-p2"
+        ],
+        "changedExercises": [
+          "range-rail-c",
+          "range-rail-f",
+          "range-rail-b",
+          "range-rail-w"
+        ],
+        "lessonFields": {
+          "focus": {
+            "runtime": [
+              "range",
+              "range"
+            ],
+            "asset": [
+              "range",
+              "loop"
+            ]
+          },
+          "description": {
+            "runtime": "range()는 반복할 숫자 흐름을 만들어요.",
+            "asset": "range()는 반복에 쓸 숫자 흐름을 만들어요."
+          }
+        }
+      },
+      {
+        "slug": "while-cave",
+        "status": "different",
+        "runtimeExercises": 5,
+        "assetExercises": 6,
+        "onlyRuntime": [
+          "while-cave-p"
+        ],
+        "onlyAsset": [
+          "while-cave-p1",
+          "while-cave-p2"
+        ],
+        "changedExercises": [
+          "while-cave-c",
+          "while-cave-f",
+          "while-cave-b",
+          "while-cave-w"
+        ],
+        "lessonFields": {
+          "focus": {
+            "runtime": [
+              "while",
+              "while"
+            ],
+            "asset": [
+              "while",
+              "loop"
+            ]
+          },
+          "description": {
+            "runtime": "while은 조건이 참인 동안 반복해요.",
+            "asset": "while은 조건이 참인 동안 반복하고, 조건을 바꾸지 않으면 멈추지 않아요."
+          }
+        }
+      },
+      {
+        "slug": "function-house",
+        "status": "different",
+        "runtimeExercises": 5,
+        "assetExercises": 6,
+        "onlyRuntime": [
+          "function-house-p"
+        ],
+        "onlyAsset": [
+          "function-house-p1",
+          "function-house-p2"
+        ],
+        "changedExercises": [
+          "function-house-c",
+          "function-house-f",
+          "function-house-b",
+          "function-house-w"
+        ],
+        "lessonFields": {
+          "description": {
+            "runtime": "함수는 코드를 이름 붙여 재사용하게 해줘요.",
+            "asset": "함수는 코드를 이름 붙여 보관하고, 호출할 때 실행해요."
+          }
+        }
+      },
+      {
+        "slug": "parameter-mail",
+        "status": "different",
+        "runtimeExercises": 5,
+        "assetExercises": 6,
+        "onlyRuntime": [
+          "parameter-mail-p"
+        ],
+        "onlyAsset": [
+          "parameter-mail-p1",
+          "parameter-mail-p2"
+        ],
+        "changedExercises": [
+          "parameter-mail-c",
+          "parameter-mail-f",
+          "parameter-mail-b",
+          "parameter-mail-w"
+        ],
+        "lessonFields": {
+          "description": {
+            "runtime": "파라미터는 함수에게 전달하는 값이에요.",
+            "asset": "파라미터는 함수 안으로 전달되는 값의 자리예요."
+          }
+        }
+      },
+      {
+        "slug": "return-spring",
+        "status": "different",
+        "runtimeExercises": 5,
+        "assetExercises": 6,
+        "onlyRuntime": [
+          "return-spring-p"
+        ],
+        "onlyAsset": [
+          "return-spring-p1",
+          "return-spring-p2"
+        ],
+        "changedExercises": [
+          "return-spring-c",
+          "return-spring-f",
+          "return-spring-b",
+          "return-spring-w"
+        ],
+        "lessonFields": {
+          "focus": {
+            "runtime": [
+              "return",
+              "return"
+            ],
+            "asset": [
+              "return",
+              "function"
+            ]
+          },
+          "description": {
+            "runtime": "return은 함수 밖으로 값을 돌려줘요.",
+            "asset": "return은 함수가 계산한 값을 밖으로 돌려보내요."
+          }
+        }
+      },
+      {
+        "slug": "mini-project",
+        "status": "different",
+        "runtimeExercises": 5,
+        "assetExercises": 6,
+        "onlyRuntime": [
+          "mini-project-p"
+        ],
+        "onlyAsset": [
+          "mini-project-p1",
+          "mini-project-p2"
+        ],
+        "changedExercises": [
+          "mini-project-c",
+          "mini-project-f",
+          "mini-project-b",
+          "mini-project-w"
+        ],
+        "lessonFields": {
+          "focus": {
+            "runtime": [
+              "프로젝트",
+              "project"
+            ],
+            "asset": [
+              "프로젝트",
+              "review"
+            ]
+          },
+          "description": {
+            "runtime": "배운 내용을 묶어서 작은 소개 카드를 만들어요.",
+            "asset": "변수, 문자열 연결, str(), print를 묶어 작은 소개 카드를 만들어요."
+          },
+          "output": {
+            "runtime": "코드냥 Lv.3",
+            "asset": "Meowde Lv.4"
+          }
+        }
+      },
+      {
+        "slug": "boss-bug",
+        "status": "different",
+        "runtimeExercises": 5,
+        "assetExercises": 6,
+        "onlyRuntime": [
+          "boss-bug-p"
+        ],
+        "onlyAsset": [
+          "boss-bug-p1",
+          "boss-bug-p2"
+        ],
+        "changedExercises": [
+          "boss-bug-c",
+          "boss-bug-f",
+          "boss-bug-b",
+          "boss-bug-w"
+        ],
+        "lessonFields": {
+          "focus": {
+            "runtime": [
+              "보스",
+              "boss"
+            ],
+            "asset": [
+              "보스",
+              "review"
+            ]
+          },
+          "description": {
+            "runtime": "버그링이 숨긴 오류를 찾아 마지막 관문을 통과해요.",
+            "asset": "지금까지 배운 조건, 반복, 리스트, 함수를 한 번에 점검해요."
+          },
+          "output": {
+            "runtime": "CLEAR",
+            "asset": "BOSS CLEAR"
+          }
+        }
+      }
+    ],
+    "en": [
+      {
+        "slug": "start-field",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "print-camp",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "string-bridge",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "quote-gate",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "number-pond",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "math-stone",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "variable-pond",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "value-swap",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "name-rules",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "concat-bridge",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "input-window",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "debug-missing-quote",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "debug-typo",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "compare-gate",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "if-gate",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "else-cabin",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "elif-mushroom",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "logic-lantern",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "indent-valley",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "list-garden",
+        "status": "identical",
+        "runtimeExercises": 6,
+        "assetExercises": 6,
+        "onlyRuntime": [],
+        "onlyAsset": [],
+        "changedExercises": [],
+        "lessonFields": {}
+      },
+      {
+        "slug": "index-tower",
+        "status": "runtime-only",
+        "runtimeExercises": 5,
+        "assetExercises": 0
+      },
+      {
+        "slug": "append-dock",
+        "status": "runtime-only",
+        "runtimeExercises": 5,
+        "assetExercises": 0
+      },
+      {
+        "slug": "loop-hill",
+        "status": "runtime-only",
+        "runtimeExercises": 5,
+        "assetExercises": 0
+      },
+      {
+        "slug": "range-rail",
+        "status": "runtime-only",
+        "runtimeExercises": 5,
+        "assetExercises": 0
+      },
+      {
+        "slug": "while-cave",
+        "status": "runtime-only",
+        "runtimeExercises": 5,
+        "assetExercises": 0
+      },
+      {
+        "slug": "function-house",
+        "status": "runtime-only",
+        "runtimeExercises": 5,
+        "assetExercises": 0
+      },
+      {
+        "slug": "parameter-mail",
+        "status": "runtime-only",
+        "runtimeExercises": 5,
+        "assetExercises": 0
+      },
+      {
+        "slug": "return-spring",
+        "status": "runtime-only",
+        "runtimeExercises": 5,
+        "assetExercises": 0
+      },
+      {
+        "slug": "mini-project",
+        "status": "runtime-only",
+        "runtimeExercises": 5,
+        "assetExercises": 0
+      },
+      {
+        "slug": "boss-bug",
+        "status": "runtime-only",
+        "runtimeExercises": 5,
+        "assetExercises": 0
+      }
+    ]
+  }
+}
