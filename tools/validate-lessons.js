@@ -82,11 +82,13 @@ try {
   for (const lang of ["ko", "en"]) validateLanguage(lang, inlineData[lang]);
 
   for (const lang of ["ko", "en"]) {
-    validateLanguage(`${lang}-assets`, assetData[lang]);
+    validateLanguage(`${lang}-legacy`, assetData[lang]);
     if (!equalData(inlineData[lang], assetData[lang])) {
-      warnings.push(`${lang}: index.html DATA and assets/data-${lang}-*.js differ; index.html remains runtime canonical until Phase 2`);
+      warnings.push(
+        `${lang}: archived legacy split data differs from the v4.23 canonical runtime data; this is expected and legacy files must not be loaded by the app`
+      );
     } else {
-      console.log(`PASS ${lang}: inline DATA matches split asset data`);
+      console.log(`PASS ${lang}: archived legacy data matches embedded fallback data`);
     }
   }
 

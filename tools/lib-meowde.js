@@ -43,11 +43,11 @@ function loadAssetData() {
   const context = { window: {} };
   vm.createContext(context);
   const files = [
-    "assets/data-ko-1.js",
-    "assets/data-ko-2.js",
-    "assets/data-ko-3.js",
-    "assets/data-en-1.js",
-    "assets/data-en-2.js",
+    "assets/legacy/data-ko-1.js",
+    "assets/legacy/data-ko-2.js",
+    "assets/legacy/data-ko-3.js",
+    "assets/legacy/data-en-1.js",
+    "assets/legacy/data-en-2.js",
   ];
   for (const file of files) {
     vm.runInContext(read(file), context, { filename: file });
