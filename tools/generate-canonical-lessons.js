@@ -56,7 +56,6 @@ output("ko", data.ko);
 output("en", data.en);
 
 const report = {
-  generatedAt: new Date().toISOString(),
   source: "index.html DATA",
   ko: {
     lessons: data.ko.length,
