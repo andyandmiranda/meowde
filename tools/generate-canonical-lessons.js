@@ -39,10 +39,12 @@ function hash(value) {
 }
 
 function output(lang, lessons) {
-  const variable = lang === "ko" ? "MEOWDE_LESSONS_KO" : "MEOWDE_LESSONS_EN";
+  const variable =
+    lang === "ko" ? "MEOWDE_LESSONS_KO" : "MEOWDE_LESSONS_EN";
   const filename = `lessons-${lang}.js`;
+
   const content = [
-    `/* Generated from index.html DATA. Do not edit manually. */`,
+    "/* Generated from index.html DATA. Do not edit manually. */",
     `window.${variable} = ${JSON.stringify(lessons, null, 2)};`,
     "",
   ].join("\n");
@@ -58,12 +60,18 @@ const report = {
   source: "index.html DATA",
   ko: {
     lessons: data.ko.length,
-    exercises: data.ko.reduce((sum, lesson) => sum + lesson.exercises.length, 0),
+    exercises: data.ko.reduce(
+      (sum, lesson) => sum + lesson.exercises.length,
+      0
+    ),
     sha256: hash(data.ko),
   },
   en: {
     lessons: data.en.length,
-    exercises: data.en.reduce((sum, lesson) => sum + lesson.exercises.length, 0),
+    exercises: data.en.reduce(
+      (sum, lesson) => sum + lesson.exercises.length,
+      0
+    ),
     sha256: hash(data.en),
   },
 };

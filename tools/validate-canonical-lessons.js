@@ -35,11 +35,14 @@ function readRuntime() {
   const context = {};
   vm.createContext(context);
   vm.runInContext(`DATA = ${match[1]}`, context);
+
   return JSON.parse(JSON.stringify(context.DATA));
 }
 
 function readCanonical(lang) {
-  const variable = lang === "ko" ? "MEOWDE_LESSONS_KO" : "MEOWDE_LESSONS_EN";
+  const variable =
+    lang === "ko" ? "MEOWDE_LESSONS_KO" : "MEOWDE_LESSONS_EN";
+
   const source = fs.readFileSync(
     path.join(root, "assets", `lessons-${lang}.js`),
     "utf8"
