@@ -1,0 +1,14 @@
+{
+  "generatedAt": "2026-07-21T05:38:16.566Z",
+  "source": "index.html DATA",
+  "ko": {
+    "lessons": 30,
+    "exercises": 170,
+    "sha256": "840408ea86889758e0c24fc9bc6332fa90d8f882f31d9adceca114b64ce20f15"
+  },
+  "en": {
+    "lessons": 30,
+    "exercises": 170,
+    "sha256": "72fe9e3b1269ea71140c3ffb030e7d97c9f3534aac555ccfd0a63815644eba44"
+  }
+}
