@@ -1,9 +1,11 @@
-const CACHE_NAME = "meowde-v422-shell-v3";
+const CACHE_NAME = "meowde-v423-shell-v1";
 
 const REQUIRED_ASSETS = [
   "/",
   "/v412.html",
   "/index.html",
+  "/assets/lessons-ko.js",
+  "/assets/lessons-en.js",
   "/manifest.webmanifest",
   "/meowde-icon-192.svg",
   "/meowde-icon-512.svg",

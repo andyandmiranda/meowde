@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Meowde v4.22 — Loading</title>
+  <title>Meowde v4.23 — Loading</title>
 
   <style>
     html,
@@ -59,7 +59,7 @@
           }
         }
 
-        const response = await fetch("/index.html?v=422", {
+        const response = await fetch("/index.html?v=423", {
           cache: "no-store",
         });
 
@@ -71,7 +71,7 @@
 
         html = html.replace(
           /<title>[\s\S]*?<\/title>/i,
-          "<title>Meowde v4.22 — PWA</title>"
+          "<title>Meowde v4.23 — Canonical Data</title>"
         );
 
         html = html.replace(
@@ -122,7 +122,7 @@
         document.write(html);
         document.close();
       } catch (error) {
-        console.error("Meowde v4.22 bootstrap failed", error);
+        console.error("Meowde v4.23 bootstrap failed", error);
 
         status.className = "error";
         status.textContent =
