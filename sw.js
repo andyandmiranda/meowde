@@ -1,4 +1,4 @@
-const CACHE_NAME = "meowde-v423-shell-v3";
+const CACHE_NAME = "meowde-v423-shell-v4";
 
 const REQUIRED_ASSETS = [
   "/",

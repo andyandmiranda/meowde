@@ -86,7 +86,6 @@
       return `
         <path d="M36 83c8 7 40 7 48 0l-4 14c-12 5-28 5-40 0z"
           fill="${palette.accent}"/>
-        <circle cx="60" cy="91" r="4.2" fill="#fff" opacity=".9"/>
       `;
     }
 
@@ -103,8 +102,6 @@
       return `
         <path d="M35 83c9 8 41 8 50 0l-4 15c-13 6-29 6-42 0z"
           fill="${palette.accent}"/>
-        <circle cx="60" cy="91" r="5" fill="#fff5c9"
-          stroke="${palette.ink}" stroke-width="1.6"/>
       `;
     }
 
@@ -112,8 +109,6 @@
       <path d="M33 83c8 5 46 5 54 0"
         fill="none" stroke="${palette.accent}" stroke-width="5"
         stroke-linecap="round"/>
-      <circle cx="60" cy="87" r="4.4" fill="${palette.accentSoft}"
-        stroke="${palette.ink}" stroke-width="1.5"/>
     `;
   }
 
