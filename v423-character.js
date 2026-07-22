@@ -43,10 +43,22 @@
 
     if (mood === "happy") {
       return `
-        <path d="M39 56.5c3.2-4.2 7.7-4.2 11 0" fill="none"
-          stroke="${ink}" stroke-width="3.4" stroke-linecap="round"/>
-        <path d="M70 56.5c3.2-4.2 7.7-4.2 11 0" fill="none"
-          stroke="${ink}" stroke-width="3.4" stroke-linecap="round"/>
+        <ellipse cx="44" cy="55" rx="5.3" ry="6.2"
+          fill="${ink}"/>
+        <ellipse cx="76" cy="55" rx="5.3" ry="6.2"
+          fill="${ink}"/>
+
+        <ellipse cx="45.7" cy="52.9" rx="1.9" ry="2.2"
+          fill="#fff"/>
+        <ellipse cx="77.7" cy="52.9" rx="1.9" ry="2.2"
+          fill="#fff"/>
+
+        <path d="M39.2 48.2c3.2-1.5 6.6-1.5 9.6 0"
+          fill="none" stroke="${ink}" stroke-width="1.8"
+          stroke-linecap="round" opacity=".42"/>
+        <path d="M71.2 48.2c3.2-1.5 6.6-1.5 9.6 0"
+          fill="none" stroke="${ink}" stroke-width="1.8"
+          stroke-linecap="round" opacity=".42"/>
       `;
     }
 
@@ -147,12 +159,24 @@
         class="meowde-cat meowde-cat-${kind} mood-${mood}"
         width="${size}"
         height="${size}"
-        viewBox="0 0 120 112"
+        viewBox="0 0 120 124"
         role="img"
         aria-label="Meowde cat coach"
       >
-        <ellipse cx="60" cy="96" rx="29" ry="5.5"
+        <ellipse cx="60" cy="116" rx="31" ry="6"
           fill="#403249" opacity=".08"/>
+
+        <path
+          d="M38 83
+             c-8 6-11 17-9 30
+             c8 8 54 8 62 0
+             c2-13-1-24-9-30
+             c-8 5-36 5-44 0z"
+          fill="${p.furShadow}"
+          stroke="${p.ink}"
+          stroke-width="4"
+          stroke-linejoin="round"
+        />
 
         <path
           d="M29 43 35 19c.7-2.7 3.9-3.8 6-2l16 14.2
@@ -208,6 +232,54 @@
           <path d="M99 62H83"/>
           <path d="M98 68l-15-3"/>
         </g>
+
+        <path
+          d="M35 91
+             c-5 5-7 12-5 19
+             c2.5 4 7.5 4.2 11 .8
+             l11-12"
+          fill="${p.fur}"
+          stroke="${p.ink}"
+          stroke-width="3.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+
+        <path
+          d="M85 91
+             c5 5 7 12 5 19
+             c-2.5 4-7.5 4.2-11 .8
+             l-11-12"
+          fill="${p.fur}"
+          stroke="${p.ink}"
+          stroke-width="3.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+
+        <ellipse cx="48" cy="106.5" rx="10" ry="7.5"
+          fill="${p.fur}"
+          stroke="${p.ink}"
+          stroke-width="3.4"/>
+
+        <ellipse cx="72" cy="106.5" rx="10" ry="7.5"
+          fill="${p.fur}"
+          stroke="${p.ink}"
+          stroke-width="3.4"/>
+
+        <path d="M44 106.5h3M49 105.8l1.5 2.4"
+          fill="none"
+          stroke="${p.ink}"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          opacity=".35"/>
+
+        <path d="M76 106.5h-3M71 105.8l-1.5 2.4"
+          fill="none"
+          stroke="${p.ink}"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          opacity=".35"/>
 
         ${accessories}
       </svg>
