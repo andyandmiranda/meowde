@@ -4,20 +4,6 @@ const vm = require("vm");
 const crypto = require("crypto");
 
 const root = path.resolve(__dirname, "..");
-const indexPath = path.join(root, "index.html");
-const html = fs.readFileSync(indexPath, "utf8");
-
-const match = html.match(/const DATA\s*=\s*(\{[\s\S]*?\});[\s\S]*?const STORAGE/);
-
-if (!match) {
-  throw new Error("index.html에서 DATA 객체를 찾지 못했습니다.");
-}
-
-const context = {};
-vm.createContext(context);
-vm.runInContext(`DATA = ${match[1]}`, context);
-
-const data = JSON.parse(JSON.stringify(context.DATA));
 
 function stable(value) {
   if (Array.isArray(value)) {
@@ -38,25 +24,45 @@ function hash(value) {
   return crypto.createHash("sha256").update(stable(value)).digest("hex");
 }
 
-function output(lang, lessons) {
+function readCanonical(lang) {
   const variable =
     lang === "ko" ? "MEOWDE_LESSONS_KO" : "MEOWDE_LESSONS_EN";
-  const filename = `lessons-${lang}.js`;
 
-  const content = [
-    "/* Generated from index.html DATA. Do not edit manually. */",
-    `window.${variable} = ${JSON.stringify(lessons, null, 2)};`,
-    "",
-  ].join("\n");
+  const filename = path.join(root, "assets", `lessons-${lang}.js`);
+  const source = fs.readFileSync(filename, "utf8");
 
-  fs.writeFileSync(path.join(root, "assets", filename), content, "utf8");
+  const context = { window: {} };
+  vm.createContext(context);
+  vm.runInContext(source, context, { filename });
+
+  const lessons = context.window[variable];
+
+  if (!Array.isArray(lessons)) {
+    throw new Error(`${filename}: ${variable} array not found`);
+  }
+
+  return JSON.parse(JSON.stringify(lessons));
 }
 
-output("ko", data.ko);
-output("en", data.en);
+const data = {
+  ko: readCanonical("ko"),
+  en: readCanonical("en"),
+};
+
+const fallbackContent = [
+  "/* Generated from v4.23 canonical lesson assets. Do not edit manually. */",
+  `window.MEOWDE_FALLBACK_DATA = ${JSON.stringify(data, null, 2)};`,
+  "",
+].join("\n");
+
+fs.writeFileSync(
+  path.join(root, "assets", "lessons-fallback.js"),
+  fallbackContent,
+  "utf8"
+);
 
 const report = {
-  source: "index.html DATA",
+  source: "assets/lessons-ko.js + assets/lessons-en.js",
   ko: {
     lessons: data.ko.length,
     exercises: data.ko.reduce(

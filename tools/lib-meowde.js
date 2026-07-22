@@ -11,32 +11,26 @@ function read(relativePath) {
 }
 
 function loadInlineData() {
-  const html = read("index.html");
-  const startToken = "const DATA = ";
-  const start = html.indexOf(startToken);
-  if (start < 0) throw new Error("index.html: const DATA declaration not found");
-  const valueStart = start + startToken.length;
-  let depth = 0;
-  let inString = false;
-  let escaped = false;
-  let end = -1;
-  for (let i = valueStart; i < html.length; i += 1) {
-    const char = html[i];
-    if (inString) {
-      if (escaped) escaped = false;
-      else if (char === "\\") escaped = true;
-      else if (char === '"') inString = false;
-      continue;
-    }
-    if (char === '"') { inString = true; continue; }
-    if (char === "{" || char === "[") depth += 1;
-    else if (char === "}" || char === "]") {
-      depth -= 1;
-      if (depth === 0) { end = i + 1; break; }
-    }
+  const context = { window: {} };
+  vm.createContext(context);
+
+  const files = [
+    "assets/lessons-ko.js",
+    "assets/lessons-en.js",
+  ];
+
+  for (const file of files) {
+    vm.runInContext(read(file), context, { filename: file });
   }
-  if (end < 0) throw new Error("index.html: DATA value boundary not found");
-  return JSON.parse(html.slice(valueStart, end));
+
+  const ko = context.window.MEOWDE_LESSONS_KO;
+  const en = context.window.MEOWDE_LESSONS_EN;
+
+  if (!Array.isArray(ko) || !Array.isArray(en)) {
+    throw new Error("canonical lesson arrays not found");
+  }
+
+  return { ko, en };
 }
 
 function loadAssetData() {

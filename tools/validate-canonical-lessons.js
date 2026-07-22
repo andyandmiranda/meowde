@@ -24,46 +24,55 @@ function hash(value) {
   return crypto.createHash("sha256").update(stable(value)).digest("hex");
 }
 
-function readRuntime() {
-  const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
-  const match = html.match(/const DATA\s*=\s*(\{[\s\S]*?\});[\s\S]*?const STORAGE/);
+function evaluateFile(relativePath) {
+  const filename = path.join(root, relativePath);
+  const source = fs.readFileSync(filename, "utf8");
+  const context = { window: {} };
 
-  if (!match) {
-    throw new Error("index.html DATA를 찾지 못했습니다.");
-  }
-
-  const context = {};
   vm.createContext(context);
-  vm.runInContext(`DATA = ${match[1]}`, context);
+  vm.runInContext(source, context, { filename });
 
-  return JSON.parse(JSON.stringify(context.DATA));
+  return JSON.parse(JSON.stringify(context.window));
 }
 
 function readCanonical(lang) {
   const variable =
     lang === "ko" ? "MEOWDE_LESSONS_KO" : "MEOWDE_LESSONS_EN";
 
-  const source = fs.readFileSync(
-    path.join(root, "assets", `lessons-${lang}.js`),
-    "utf8"
-  );
+  const windowObject = evaluateFile(`assets/lessons-${lang}.js`);
+  const lessons = windowObject[variable];
 
-  const context = { window: {} };
-  vm.createContext(context);
-  vm.runInContext(source, context);
+  if (!Array.isArray(lessons)) {
+    throw new Error(`${lang}: canonical lesson array not found`);
+  }
 
-  return JSON.parse(JSON.stringify(context.window[variable]));
+  return lessons;
 }
 
-function validateLanguage(lang, runtime, canonical) {
-  const runtimeHash = hash(runtime);
-  const canonicalHash = hash(canonical);
+function readFallback() {
+  const windowObject = evaluateFile("assets/lessons-fallback.js");
+  const fallback = windowObject.MEOWDE_FALLBACK_DATA;
 
-  if (runtimeHash !== canonicalHash) {
+  if (
+    !fallback ||
+    !Array.isArray(fallback.ko) ||
+    !Array.isArray(fallback.en)
+  ) {
+    throw new Error("fallback: MEOWDE_FALLBACK_DATA not found");
+  }
+
+  return fallback;
+}
+
+function validateLanguage(lang, canonical, fallback) {
+  const canonicalHash = hash(canonical);
+  const fallbackHash = hash(fallback);
+
+  if (canonicalHash !== fallbackHash) {
     throw new Error(
-      `${lang}: canonical 데이터가 index.html DATA와 일치하지 않습니다.\n` +
-        `runtime:   ${runtimeHash}\n` +
-        `canonical: ${canonicalHash}`
+      `${lang}: canonical and fallback data differ\n` +
+        `canonical: ${canonicalHash}\n` +
+        `fallback:  ${fallbackHash}`
     );
   }
 
@@ -73,14 +82,27 @@ function validateLanguage(lang, runtime, canonical) {
     0
   );
 
+  if (lessons !== 30) {
+    throw new Error(`${lang}: expected 30 lessons, received ${lessons}`);
+  }
+
+  if (exercises !== 170) {
+    throw new Error(`${lang}: expected 170 exercises, received ${exercises}`);
+  }
+
   console.log(
     `PASS ${lang}: ${lessons} lessons, ${exercises} exercises, sha256 ${canonicalHash}`
   );
 }
 
-const runtime = readRuntime();
+const canonical = {
+  ko: readCanonical("ko"),
+  en: readCanonical("en"),
+};
 
-validateLanguage("ko", runtime.ko, readCanonical("ko"));
-validateLanguage("en", runtime.en, readCanonical("en"));
+const fallback = readFallback();
 
-console.log("Canonical lesson validation passed.");
+validateLanguage("ko", canonical.ko, fallback.ko);
+validateLanguage("en", canonical.en, fallback.en);
+
+console.log("Canonical and external fallback validation passed.");

@@ -1,5 +1,5 @@
 {
-  "source": "index.html DATA",
+  "source": "assets/lessons-ko.js + assets/lessons-en.js",
   "ko": {
     "lessons": 30,
     "exercises": 170,

@@ -2,7 +2,7 @@
 
 ## 기준
 
-현재 실제 실행 데이터인 `index.html`의 `DATA`를 canonical source로 사용한다.
+`assets/lessons-ko.js`와 `assets/lessons-en.js`를 canonical source로 사용한다.
 
 ## 생성 파일
 
@@ -22,8 +22,8 @@
 
 ## 현재 상태
 
-이번 Phase 3에서는 canonical 파일만 생성한다.
+v4.23 런타임은 canonical 파일을 우선 사용한다.
 
-런타임은 아직 `index.html DATA`를 사용하며, `v412.html`과 Service Worker 로드 목록은 변경하지 않는다.
+`assets/lessons-fallback.js`는 canonical 파일에서 자동 생성되는 외부 fallback이다.
 
-다음 Phase에서 런타임 로더를 canonical 파일로 전환한다.
+`index.html`에는 더 이상 대용량 lesson DATA가 내장되지 않는다.
