@@ -9,11 +9,12 @@ const expectedScripts = [
   "v412-hotfix.js", "v413-core.js", "v413-lesson.js", "v414-state.js",
   "v414-reward.js", "v414-screens.js", "v415-retention.js", "v416-journey.js",
   "v417-review.js", "v418-coach.js", "v419-achievements.js", "v420-profile.js",
-  "v421-vault.js", "v422-pwa.js",
+  "v421-vault.js", "v422-pwa.js", "v423-character.js",
 ];
 const expectedStyles = [
   "v413-ux.css", "v414-ux.css", "v415-ux.css", "v416-ux.css", "v417-ux.css",
   "v418-coach.css", "v419-achievements.css", "v420-profile.css", "v421-vault.css", "v422-pwa.css",
+  "v423-brand.css",
 ];
 const html = read("v412.html");
 const scripts = [...html.matchAll(/src="\/(v4\d+[^"?]+\.js)/g)].map((m) => m[1]);
