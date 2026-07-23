@@ -16,6 +16,15 @@
     try{localStorage.setItem(KEY,JSON.stringify(R))}
     catch(error){console.warn('Meowde v4.17 could not save review state:',error)}
   }
+  function contextFor(exercise){
+    if(typeof meowdeExerciseContext==='function')return meowdeExerciseContext(exercise);
+    return {
+      lessonIndex:S.lessonIndex,
+      lesson:lessons()[S.lessonIndex]||null,
+      exercise:exercise||null,
+      mistakeKey:exercise&&exercise.__v417MistakeKey?exercise.__v417MistakeKey:''
+    };
+  }
   function mistakes(){
     return (Array.isArray(S.mistakes)?S.mistakes:[])
       .filter(item=>item&&item.lang===S.lang&&lessons()[item.lessonIndex])
@@ -73,18 +82,32 @@
   window.startSmartReview=function(){
     const items=recommendations();
     if(!items.length)return toast(S.lang==='ko'?'복습할 문제가 아직 없습니다.':'No review tasks are available yet.');
-    const queue=items.map(item=>Object.assign({},item.exercise,{__v417LessonIndex:item.lessonIndex,__v417MistakeKey:item.key}));
-    R.active={startedAt:new Date().toISOString(),total:queue.length,firstCorrect:0,firstTotal:0};
-    persist();
-    startLesson(items[0].lessonIndex,false,queue,{mode:'smart-review'});
+    const queue=items.map(item=>Object.assign({},item.exercise,{
+      __meowdeLessonIndex:item.lessonIndex,
+      __meowdeMistakeKey:item.key
+    }));
+    const activate=function(){
+      R.active={
+        startedAt:new Date().toISOString(),
+        total:queue.filter(item=>item.type!=='concept').length,
+        firstCorrect:0,
+        firstTotal:0
+      };
+      persist();
+    };
+    startLesson(items[0].lessonIndex,false,queue,{mode:'smart-review',onStarted:activate});
   };
   const baseCheckQ=checkQ;
   checkQ=async function(){
-    const exercise=cur(),firstAttempt=!S.checked;
+    const exercise=cur(),firstAttempt=!S.checked&&!exercise.retry;
+    const context=contextFor(exercise);
     await baseCheckQ();
     if(typeof meowdeMode!=='function'||meowdeMode()!=='smart-review'||!exercise||exercise.type==='concept'||!S.checked)return;
-    if(firstAttempt&&R.active){R.active.firstTotal=(Number(R.active.firstTotal)||0)+1;if(S.correct)R.active.firstCorrect=(Number(R.active.firstCorrect)||0)+1}
-    if(S.correct&&exercise.__v417MistakeKey&&typeof meowdeRemoveMistake==='function')meowdeRemoveMistake(exercise.__v417MistakeKey);
+    if(firstAttempt&&R.active){
+      R.active.firstTotal=(Number(R.active.firstTotal)||0)+1;
+      if(S.correct)R.active.firstCorrect=(Number(R.active.firstCorrect)||0)+1;
+    }
+    if(S.correct&&context.mistakeKey&&typeof meowdeRemoveMistake==='function')meowdeRemoveMistake(context.mistakeKey);
     persist();save();
   };
   const baseFinish=finish;
