@@ -1,0 +1,55 @@
+name: Validate Meowde
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Validate JavaScript syntax
+        run: |
+          node --check sw.js
+          node --check v413-lesson.js
+          node --check v414-state.js
+          node --check v417-review.js
+          node --check v418-coach.js
+
+      - name: Run validation suite
+        run: npm run validate
+
+      - name: Validate runtime fallback
+        id: fallback
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run validate:fallback 2>&1 | tee fallback-validation.log
+
+      - name: Upload fallback diagnostics
+        if: failure() && steps.fallback.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: fallback-validation-log
+          path: fallback-validation.log
+          if-no-files-found: error
+          retention-days: 7

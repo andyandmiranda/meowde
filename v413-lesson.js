@@ -1,13 +1,21 @@
 (function applyMeowdeV413LessonUX(){
+  function contextFor(exercise){
+    if(typeof meowdeExerciseContext==='function')return meowdeExerciseContext(exercise);
+    const lessonIndex=Math.max(0,Math.min(Number(S.lessonIndex)||0,lessons().length-1));
+    return {lessonIndex,lesson:lessons()[lessonIndex]||null,exercise:exercise||null};
+  }
+
   renderLesson=function(){
     if(!hasLessonProgress())return renderHome();
     S.screen='lesson';
     save();
     const ex=cur();
-    const L=lessons()[S.lessonIndex];
+    const context=contextFor(ex);
+    const lessonIndex=context.lessonIndex;
+    const L=context.lesson||lessons()[S.lessonIndex]||lessons()[0];
     const step=Math.min(S.idx+1,S.queue.length);
-    const pct=Math.round(step/S.queue.length*100);
-    const qcode=`${String(S.lessonIndex+1).padStart(2,'0')}-${String(step).padStart(2,'0')} · ${ex.id||'concept'}`;
+    const pct=Math.round(step/Math.max(1,S.queue.length)*100);
+    const qcode=`${String(lessonIndex+1).padStart(2,'0')}-${String(step).padStart(2,'0')} · ${ex.id||'concept'}`;
     let body='';
     let qhead='';
     if(ex.type!=='concept'){
@@ -32,7 +40,8 @@
       :S.checked
         ?`<div class="feedback ${S.correct?'ok':'no'}"><h3>${S.correct?t('correct'):t('wrong')}</h3><p>${esc(ex.explain)} ${!S.correct?t('tryAgain'):''}</p><button class="btn" onclick="nextQ()">${t('continue')}</button></div>`
         :`<div class="lesson-foot"><button class="btn" ${!can?'disabled':''} onclick="checkQ()">${ex.type==='write'?(S.loading?t('pyLoading'):(S.lang==='ko'?'코드 실행':'Run code')):t('check')}</button></div>`;
-    app.innerHTML=`<div class="screen"><div class="lesson-bg"></div><div class="lesson-top"><button class="close" aria-label="${S.lang==='ko'?'나가기':'Exit'}" onclick="renderHome()"></button><div class="lesson-title"><b>${esc(L.title)}</b><div class="progress"><span style="width:${pct}%"></span></div></div><div class="lesson-meta"><span class="autosave">${S.lang==='ko'?'자동 저장':'Saved'}</span><span class="pill">${step}/${S.queue.length}</span></div></div><div class="scroll"><main class="lesson-main">${qhead}${body}</main></div>${foot}</div>`;
+    const modeLabel=typeof meowdeMode==='function'&&meowdeMode()==='smart-review'?(S.lang==='ko'?'Smart Review':'Smart Review'):'';
+    app.innerHTML=`<div class="screen"><div class="lesson-bg"></div><div class="lesson-top"><button class="close" aria-label="${S.lang==='ko'?'나가기':'Exit'}" onclick="renderHome()"></button><div class="lesson-title"><b>${modeLabel?`${esc(modeLabel)} · `:''}${esc(L.title)}</b><div class="progress"><span style="width:${pct}%"></span></div></div><div class="lesson-meta"><span class="autosave">${S.lang==='ko'?'자동 저장':'Saved'}</span><span class="pill">${step}/${S.queue.length}</span></div></div><div class="scroll"><main class="lesson-main">${qhead}${body}</main></div>${foot}</div>`;
   };
 
   overlay=function(html){
