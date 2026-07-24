@@ -1,0 +1,42 @@
+name: Validate Meowde
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate JavaScript syntax
+        run: |
+          node --check sw.js
+          node --check v413-lesson.js
+          node --check v414-state.js
+          node --check v417-review.js
+          node --check v418-coach.js
+
+      - name: Run validation suite
+        run: npm run validate
+
+      - name: Validate runtime fallback
+        run: npm run validate:fallback
