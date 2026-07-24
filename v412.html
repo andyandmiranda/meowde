@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Meowde v4.23 — Loading</title>
+  <title>Meowde v4.25 — Loading</title>
 
   <style>
     html,
@@ -55,11 +55,12 @@
           try {
             JSON.parse(saved);
           } catch (error) {
+            localStorage.setItem("meowde-v425-state-backup", saved);
             localStorage.removeItem("meowde-v410-state");
           }
         }
 
-        const response = await fetch("/index.html?v=423", {
+        const response = await fetch("/index.html?v=425", {
           cache: "no-store",
         });
 
@@ -71,7 +72,7 @@
 
         html = html.replace(
           /<title>[\s\S]*?<\/title>/i,
-          "<title>Meowde v4.23 — Visual Refresh</title>"
+          "<title>Meowde v4.25 — Playful Persistence</title>"
         );
 
         html = html.replace(
@@ -94,6 +95,7 @@
             '<link rel="stylesheet" href="/v421-vault.css?v=421">',
             '<link rel="stylesheet" href="/v422-pwa.css?v=422">',
             '<link rel="stylesheet" href="/v423-brand.css?v=423">',
+            '<link rel="stylesheet" href="/v425-playful.css?v=425">',
             "</head>",
           ].join("")
         );
@@ -116,6 +118,8 @@
             '<script src="/v421-vault.js?v=421"><\/script>',
             '<script src="/v422-pwa.js?v=422"><\/script>',
             '<script src="/v423-character.js?v=423"><\/script>',
+            '<script src="/v425-state.js?v=425"><\/script>',
+            '<script src="/v425-playful.js?v=425"><\/script>',
             "</body>",
           ].join("")
         );
@@ -124,7 +128,7 @@
         document.write(html);
         document.close();
       } catch (error) {
-        console.error("Meowde v4.23 bootstrap failed", error);
+        console.error("Meowde v4.25 bootstrap failed", error);
 
         status.className = "error";
         status.textContent =
