@@ -1,0 +1,19 @@
+{
+  "name": "meowde",
+  "version": "4.24.0",
+  "private": true,
+  "description": "Static coding-learning app validation tooling",
+  "scripts": {
+    "validate": "node tools/run-v423-validation.js",
+    "validate:lessons": "node tools/validate-lessons.js",
+    "validate:canonical": "node tools/validate-canonical-lessons.js",
+    "validate:fallback": "node tools/validate-runtime-fallback.js",
+    "validate:storage": "node tools/validate-storage.js",
+    "validate:structure": "node tools/audit-structure.js",
+    "audit:data": "node tools/audit-data-diff.js",
+    "report:canonical": "node tools/generate-canonical-lessons.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

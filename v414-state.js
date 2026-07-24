@@ -16,6 +16,29 @@
     return 'lesson';
   }
 
+  function exerciseContext(exercise){
+    const current=exercise||(typeof cur==='function'?cur():null);
+    let taggedIndex;
+    if(current&&current.__meowdeLessonIndex!==undefined)taggedIndex=current.__meowdeLessonIndex;
+    else if(current&&current.__v417LessonIndex!==undefined)taggedIndex=current.__v417LessonIndex;
+    const parsedIndex=Number(taggedIndex);
+    const fallbackIndex=Math.max(0,Math.min(Number(S.lessonIndex)||0,lessons().length-1));
+    const lessonIndex=Number.isInteger(parsedIndex)&&parsedIndex>=0&&parsedIndex<lessons().length
+      ?parsedIndex
+      :fallbackIndex;
+    const mistakeKeyValue=current&&current.__meowdeMistakeKey!==undefined
+      ?current.__meowdeMistakeKey
+      :(current&&current.__v417MistakeKey!==undefined?current.__v417MistakeKey:'');
+    return {
+      lang:S.lang,
+      lessonIndex,
+      lesson:lessons()[lessonIndex]||null,
+      exercise:current||null,
+      exerciseId:current&&current.id?current.id:'',
+      mistakeKey:mistakeKeyValue||''
+    };
+  }
+
   S.mistakes=Array.isArray(S.mistakes)?S.mistakes:[];
   S.dailyHistory=S.dailyHistory&&typeof S.dailyHistory==='object'?S.dailyHistory:{};
   S.activityDates=Array.isArray(S.activityDates)?S.activityDates:[];
@@ -74,7 +97,12 @@
     S.v414Mode=mode;
     S.v414DailyKey=options&&options.dailyKey?options.dailyKey:'';
     S.v414MistakeId=options&&options.mistakeId?options.mistakeId:'';
+    const previousQueue=S.queue;
     baseStartLesson(index,daily,queueOverride);
+    if(
+      options&&typeof options.onStarted==='function'&&
+      hasLessonProgress()&&S.queue!==previousQueue
+    )options.onStarted();
   }
 
   window.__v414PendingStart=null;
@@ -151,18 +179,18 @@
   const baseCheckQ=checkQ;
   checkQ=async function(){
     const exercise=cur();
-    const lang=S.lang;
-    const lessonIndex=S.lessonIndex;
+    const context=exerciseContext(exercise);
     const mode=normalizeMode();
     await baseCheckQ();
     if(!exercise||exercise.type==='concept'||!S.checked)return;
-    if(!S.correct)addMistake(lang,lessonIndex,exercise);
+    if(!S.correct)addMistake(context.lang,context.lessonIndex,exercise);
     else if(mode==='mistake'&&S.v414MistakeId)removeMistake(S.v414MistakeId);
     save();
   };
 
   window.meowdeTodayKey=todayKey;
   window.meowdeMode=normalizeMode;
+  window.meowdeExerciseContext=exerciseContext;
   window.meowdeAddMistake=addMistake;
   window.meowdeRemoveMistake=removeMistake;
 })();

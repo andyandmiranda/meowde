@@ -177,7 +177,7 @@ function loadCanonical(context, lang) {
     "missing-en retry did not succeed"
   );
   assert(
-    context.window.__MEOWDE_DATA_SOURCE__ === "external-fallback-v423",
+    context.window.__MEOWDE_DATA_SOURCE__ === "canonical-v423",
     "missing-en scenario selected the wrong data source"
   );
   assert(
@@ -201,7 +201,7 @@ function loadCanonical(context, lang) {
     "missing-ko retry did not succeed"
   );
   assert(
-    context.window.__MEOWDE_DATA_SOURCE__ === "external-fallback-v423",
+    context.window.__MEOWDE_DATA_SOURCE__ === "canonical-v423",
     "missing-ko scenario selected the wrong data source"
   );
   assert(
@@ -224,7 +224,7 @@ function loadCanonical(context, lang) {
     "missing-both retry did not succeed"
   );
   assert(
-    context.window.__MEOWDE_DATA_SOURCE__ === "external-fallback-v423",
+    context.window.__MEOWDE_DATA_SOURCE__ === "canonical-v423",
     "missing-both scenario selected the wrong data source"
   );
   assert(

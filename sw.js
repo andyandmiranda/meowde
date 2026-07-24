@@ -1,4 +1,5 @@
-const CACHE_NAME = "meowde-v423-shell-v8";
+const CACHE_PREFIX = "meowde-";
+const CACHE_NAME = "meowde-v424-shell-v1";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -58,7 +59,10 @@ self.addEventListener("activate", (event) => {
       .then((cacheNames) =>
         Promise.all(
           cacheNames
-            .filter((cacheName) => cacheName !== CACHE_NAME)
+            .filter(
+              (cacheName) =>
+                cacheName.startsWith(CACHE_PREFIX) && cacheName !== CACHE_NAME
+            )
             .map((cacheName) => caches.delete(cacheName))
         )
       )
@@ -94,9 +98,11 @@ self.addEventListener("fetch", (event) => {
         .then((response) => {
           if (response && response.ok) {
             const responseCopy = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, responseCopy);
-            });
+            event.waitUntil(
+              caches.open(CACHE_NAME).then((cache) =>
+                cache.put(request, responseCopy)
+              )
+            );
           }
 
           return response;
@@ -126,9 +132,11 @@ self.addEventListener("fetch", (event) => {
         }
 
         const responseCopy = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(request, responseCopy);
-        });
+        event.waitUntil(
+          caches.open(CACHE_NAME).then((cache) =>
+            cache.put(request, responseCopy)
+          )
+        );
 
         return response;
       });
