@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v437-character-recovery-v1";
+const CACHE_NAME = "meowde-v438-approved-character-v1";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -7,6 +7,7 @@ const REQUIRED_ASSETS = [
   "/index.html",
   "/assets/lessons-ko.js",
   "/assets/lessons-en.js",
+  "/assets/meowde-approved-base.svg",
   "/manifest.webmanifest",
   "/meowde-icon-192.svg",
   "/meowde-icon-512.svg",
