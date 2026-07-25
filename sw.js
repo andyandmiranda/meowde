@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v436-shell-v1";
+const CACHE_NAME = "meowde-v437-character-recovery-v1";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -95,7 +95,6 @@ self.addEventListener("message", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const request = event.request;
-
   if (request.method !== "GET") return;
 
   const requestUrl = new URL(request.url);
