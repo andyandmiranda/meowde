@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Meowde v4.25 — Loading</title>
+  <title>Meowde v4.27 — Loading</title>
 
   <style>
     html,
@@ -60,7 +60,7 @@
           }
         }
 
-        const response = await fetch("/index.html?v=425", {
+        const response = await fetch("/index.html?v=427", {
           cache: "no-store",
         });
 
@@ -72,7 +72,7 @@
 
         html = html.replace(
           /<title>[\s\S]*?<\/title>/i,
-          "<title>Meowde v4.25 — Playful Persistence</title>"
+          "<title>Meowde v4.27 — Growth & Emotion Memory</title>"
         );
 
         html = html.replace(
@@ -96,6 +96,7 @@
             '<link rel="stylesheet" href="/v422-pwa.css?v=422">',
             '<link rel="stylesheet" href="/v423-brand.css?v=423">',
             '<link rel="stylesheet" href="/v425-playful.css?v=425">',
+            '<style>.v427-growth-card,.v427-emotion-card{display:grid;gap:12px}.v427-growth-head{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}.v427-stage-icon{font-size:30px}.v427-growth-track{height:9px;border-radius:999px;background:#f0e7da;overflow:hidden}.v427-growth-track i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--mint),var(--butter));transition:width .35s ease}.v427-growth-stages{display:flex;justify-content:space-between;gap:6px}.v427-growth-stages span{opacity:.35;filter:grayscale(1);font-size:18px}.v427-growth-stages span.reached{opacity:1;filter:none}.v427-emotion-card>div{display:flex;align-items:center;gap:8px}.v427-emotion-card p{margin:0;color:var(--muted);line-height:1.55}.v427-emotion-dot{width:10px;height:10px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 5px rgba(83,199,160,.12)}.v427-emotion-line{margin-top:6px;font-size:12px;font-weight:800;color:var(--muted)}@media(max-width:360px){.v427-growth-head{grid-template-columns:auto 1fr}.v427-growth-head>.pill{grid-column:2;justify-self:start}}</style>',
             "</head>",
           ].join("")
         );
@@ -113,13 +114,14 @@
             '<script src="/v416-journey.js?v=416"><\/script>',
             '<script src="/v417-review.js?v=417"><\/script>',
             '<script src="/v418-coach.js?v=418"><\/script>',
-            '<script src="/v419-achievements.js?v=419"><\/script>',
+            '<script src="/v419-achievements.js?v=426"><\/script>',
             '<script src="/v420-profile.js?v=420"><\/script>',
             '<script src="/v421-vault.js?v=421"><\/script>',
             '<script src="/v422-pwa.js?v=422"><\/script>',
             '<script src="/v423-character.js?v=423"><\/script>',
             '<script src="/v425-state.js?v=425"><\/script>',
-            '<script src="/v425-playful.js?v=425"><\/script>',
+            '<script src="/v425-playful.js?v=426"><\/script>',
+            '<script src="/v427-growth.js?v=427"><\/script>',
             "</body>",
           ].join("")
         );
@@ -128,7 +130,7 @@
         document.write(html);
         document.close();
       } catch (error) {
-        console.error("Meowde v4.25 bootstrap failed", error);
+        console.error("Meowde v4.27 bootstrap failed", error);
 
         status.className = "error";
         status.textContent =
