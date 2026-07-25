@@ -38,6 +38,7 @@ jobs:
           node --check v430-character.js
           node --check v433-learning.js
           node --check v434-release.js
+          node --check v437-character-recovery.js
 
       - name: Run validation suite
         run: npm run validate
