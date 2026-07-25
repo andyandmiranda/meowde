@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v433-shell-v1";
+const CACHE_NAME = "meowde-v434-shell-v1";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -55,7 +55,9 @@ const REQUIRED_ASSETS = [
   "/v432-humor.js",
   "/v432-humor.css",
   "/v433-learning.js",
-  "/v433-learning.css"
+  "/v433-learning.css",
+  "/v434-release.js",
+  "/v434-release.css"
 ];
 
 self.addEventListener("install", (event) => {
