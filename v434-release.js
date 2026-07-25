@@ -1,9 +1,9 @@
-(function applyMeowdeV435ReleaseGuard(){
+(function applyMeowdeV436ReleaseGuard(){
   "use strict";
 
-  const VERSION="4.35";
+  const VERSION="4.36";
   const REQUIRED_FUNCTIONS=["renderHome","renderLesson","renderMap","renderReview","renderMy","startLesson","checkQ","finish","save","catSVG"];
-  const REQUIRED_APIS=["MeowAchievements","MeowGrowth","MeowEvents","MeowQuests","MeowCharacterV430","MeowLearning"];
+  const REQUIRED_APIS=["MeowAchievements","MeowGrowth","MeowEvents","MeowQuests","MeowCharacterV430","MeowLearning","MeowPWA"];
   const ALLOWED_ACCESSORIES=new Set(["none","glasses","headphones","star","crown"]);
   const report={version:VERSION,checkedAt:new Date().toISOString(),errors:[],warnings:[],checks:{}};
 
@@ -42,26 +42,19 @@
     return false;
   }
 
-  function functionAvailable(name){
-    return typeof window[name]==="function";
-  }
-
   function run(){
     report.checks={};
     check("app-root",Boolean(appRoot()),"App root is unavailable.");
     check("state",stateAvailable(),"Application state is unavailable.");
     check("storage",storageAvailable(),"Local storage is unavailable. Progress may not persist.");
-
-    REQUIRED_FUNCTIONS.forEach(name=>check(`function:${name}`,functionAvailable(name),`Required function ${name} is missing.`));
+    REQUIRED_FUNCTIONS.forEach(name=>check(`function:${name}`,typeof window[name]==="function",`Required function ${name} is missing.`));
     REQUIRED_APIS.forEach(name=>check(`api:${name}`,Boolean(window[name]),`Extension API ${name} is missing.`,"warning"));
-
     const accessoryValid=normalizeAccessory();
     check("accessory-state",accessoryValid,"Invalid accessory state was reset.","warning");
     check("service-worker",("serviceWorker" in navigator),"Service worker is not supported in this browser.","warning");
     check("lessons",typeof window.lessons==="function"&&Array.isArray(window.lessons())&&window.lessons().length>0,"Lesson data is unavailable.");
-
     window.__MEOWDE_VERSION__=VERSION;
-    document.title="Meowde v4.35 — Production";
+    document.title="Meowde v4.36 — Production";
     document.documentElement.dataset.meowdeVersion=VERSION;
     document.documentElement.dataset.releaseHealth=report.errors.length?"error":report.warnings.length?"warning":"ready";
     return report;
