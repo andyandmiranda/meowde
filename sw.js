@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v424-shell-v1";
+const CACHE_NAME = "meowde-v431-shell-v1";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -38,9 +38,20 @@ const REQUIRED_ASSETS = [
   "/v421-vault.js",
   "/v421-vault.css",
   "/v422-pwa.css",
-  "/v423-brand.css",
   "/v422-pwa.js",
-  "/v423-character.js"
+  "/v423-brand.css",
+  "/v423-character.js",
+  "/v425-state.js",
+  "/v425-playful.js",
+  "/v425-playful.css",
+  "/v427-growth.js",
+  "/v428-events.js",
+  "/v429-quests.js",
+  "/v429-quests.css",
+  "/v430-character.js",
+  "/v430-character.css",
+  "/v431-stability.js",
+  "/v431-stability.css"
 ];
 
 self.addEventListener("install", (event) => {
