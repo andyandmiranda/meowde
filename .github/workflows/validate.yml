@@ -35,10 +35,10 @@ jobs:
           node --check v417-review.js
           node --check v418-coach.js
           node --check v422-pwa.js
+          node --check v425-playful.js
           node --check v430-character.js
           node --check v433-learning.js
           node --check v434-release.js
-          node --check v437-character-recovery.js
 
       - name: Run validation suite
         run: npm run validate
