@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Meowde v4.30 — Loading</title>
+  <title>Meowde v4.31 — Loading</title>
 
   <style>
     html,
@@ -60,7 +60,7 @@
           }
         }
 
-        const response = await fetch("/index.html?v=430", {
+        const response = await fetch("/index.html?v=431", {
           cache: "no-store",
         });
 
@@ -72,7 +72,7 @@
 
         html = html.replace(
           /<title>[\s\S]*?<\/title>/i,
-          "<title>Meowde v4.30 — Mascot Integration</title>"
+          "<title>Meowde v4.31 — Batch 1 QA Stabilization</title>"
         );
 
         html = html.replace(
@@ -98,6 +98,7 @@
             '<link rel="stylesheet" href="/v425-playful.css?v=426">',
             '<link rel="stylesheet" href="/v429-quests.css?v=429">',
             '<link rel="stylesheet" href="/v430-character.css?v=430">',
+            '<link rel="stylesheet" href="/v431-stability.css?v=431">',
             '<style>.v427-growth-card,.v427-emotion-card{display:grid;gap:12px}.v427-growth-head{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}.v427-stage-icon{font-size:30px}.v427-growth-track,.v419-mini-progress,.v428-event-track{height:9px;border-radius:999px;background:#f0e7da;overflow:hidden}.v427-growth-track i,.v419-mini-progress i,.v428-event-track i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--mint),var(--butter));transition:width .35s ease}.v419-mini-progress{height:6px;margin-top:4px}.v427-growth-stages{display:flex;justify-content:space-between;gap:6px}.v427-growth-stages span{opacity:.35;filter:grayscale(1);font-size:18px}.v427-growth-stages span.reached{opacity:1;filter:none}.v427-emotion-card>div{display:flex;align-items:center;gap:8px}.v427-emotion-card p{margin:0;color:var(--muted);line-height:1.55}.v427-emotion-dot{width:10px;height:10px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 5px rgba(83,199,160,.12)}.v427-emotion-line{margin-top:6px;font-size:12px;font-weight:800;color:var(--muted)}.v426-section-title{padding:18px 18px 8px}.v426-section-title h3{margin:0;font-size:17px}.v426-section-title p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.45}.v426-accessory-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:0 18px 8px}.v426-accessory{display:grid;justify-items:center;gap:5px;padding:14px 10px;border:1.5px solid var(--line);border-radius:18px;background:#fff;text-align:center}.v426-accessory>span{font-size:27px}.v426-accessory b{font-size:13px}.v426-accessory small{font-size:11px;line-height:1.35;color:var(--muted)}.v426-accessory em{font-size:10px;font-style:normal;font-weight:900;color:#8a6818}.v426-accessory.selected{border-color:#e4ba47;outline:3px solid rgba(255,215,106,.24)}.v426-accessory.locked{opacity:.52}.v426-cat-accessory{pointer-events:none}.v428-season-card,.v428-visitor-card,.v428-collection{display:grid;gap:12px}.v428-season-head{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center}.v428-season-head>span{font-size:34px}.v428-season-head h3,.v428-visitor-copy h3,.v428-collection h3{margin:2px 0 0}.v428-season-head p,.v428-visitor-copy p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.5}.v428-event-foot{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--muted)}.v428-event-foot b{color:var(--ink)}.v428-claimed{padding:9px 11px;border-radius:13px;background:rgba(83,199,160,.12);font-size:12px;font-weight:900;color:#287d63;text-align:center}.v428-visitor-card{grid-template-columns:auto 1fr;align-items:center}.v428-visitor-avatar{width:58px;height:58px;border-radius:20px;display:grid;place-items:center;background:linear-gradient(145deg,#f4edff,#fff);font-size:31px;border:1.5px solid var(--line)}.v428-visitor-card>.btn{grid-column:1/-1}.v428-visitor-copy small{display:block;margin-top:7px;font-size:11px;font-weight:900;color:#8a6818}.v428-collection{grid-template-columns:1fr auto;align-items:center}.v428-collection>div:last-child{display:flex;gap:8px}.v428-collection>div:last-child span{width:38px;height:38px;border-radius:14px;display:grid;place-items:center;background:var(--cream);border:1.5px solid var(--line);font-size:20px}@media(max-width:360px){.v427-growth-head{grid-template-columns:auto 1fr}.v427-growth-head>.pill{grid-column:2;justify-self:start}.v426-accessory-grid{grid-template-columns:1fr}.v428-event-foot{display:grid}}</style>',
             "</head>",
           ].join("")
@@ -127,6 +128,7 @@
             '<script src="/v428-events.js?v=428"><\/script>',
             '<script src="/v429-quests.js?v=429"><\/script>',
             '<script src="/v430-character.js?v=430"><\/script>',
+            '<script src="/v431-stability.js?v=431"><\/script>',
             "</body>",
           ].join("")
         );
@@ -135,7 +137,7 @@
         document.write(html);
         document.close();
       } catch (error) {
-        console.error("Meowde v4.30 bootstrap failed", error);
+        console.error("Meowde v4.31 bootstrap failed", error);
 
         status.className = "error";
         status.textContent =
