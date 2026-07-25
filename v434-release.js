@@ -61,6 +61,7 @@
     check("lessons",typeof window.lessons==="function"&&Array.isArray(window.lessons())&&window.lessons().length>0,"Lesson data is unavailable.");
 
     window.__MEOWDE_VERSION__=VERSION;
+    document.title="Meowde v4.35 — Production";
     document.documentElement.dataset.meowdeVersion=VERSION;
     document.documentElement.dataset.releaseHealth=report.errors.length?"error":report.warnings.length?"warning":"ready";
     return report;
