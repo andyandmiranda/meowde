@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v435-shell-v1";
+const CACHE_NAME = "meowde-v436-shell-v1";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -96,15 +96,10 @@ self.addEventListener("message", (event) => {
 self.addEventListener("fetch", (event) => {
   const request = event.request;
 
-  if (request.method !== "GET") {
-    return;
-  }
+  if (request.method !== "GET") return;
 
   const requestUrl = new URL(request.url);
-
-  if (requestUrl.origin !== self.location.origin) {
-    return;
-  }
+  if (requestUrl.origin !== self.location.origin) return;
 
   const isHtmlRequest =
     request.mode === "navigate" || requestUrl.pathname.endsWith(".html");
@@ -116,45 +111,30 @@ self.addEventListener("fetch", (event) => {
           if (response && response.ok) {
             const responseCopy = response.clone();
             event.waitUntil(
-              caches.open(CACHE_NAME).then((cache) =>
-                cache.put(request, responseCopy)
-              )
+              caches.open(CACHE_NAME).then((cache) => cache.put(request, responseCopy))
             );
           }
-
           return response;
         })
-        .catch(async () => {
-          return (
-            (await caches.match(request, { ignoreSearch: true })) ||
-            (await caches.match("/v412.html")) ||
-            (await caches.match("/index.html")) ||
-            Response.error()
-          );
-        })
+        .catch(async () =>
+          (await caches.match(request, { ignoreSearch: true })) ||
+          (await caches.match("/v412.html")) ||
+          (await caches.match("/index.html")) ||
+          Response.error()
+        )
     );
-
     return;
   }
 
   event.respondWith(
     caches.match(request, { ignoreSearch: true }).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-
+      if (cachedResponse) return cachedResponse;
       return fetch(request).then((response) => {
-        if (!response || !response.ok) {
-          return response;
-        }
-
+        if (!response || !response.ok) return response;
         const responseCopy = response.clone();
         event.waitUntil(
-          caches.open(CACHE_NAME).then((cache) =>
-            cache.put(request, responseCopy)
-          )
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, responseCopy))
         );
-
         return response;
       });
     })
