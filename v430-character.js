@@ -1,7 +1,7 @@
 (function installApprovedMeowde(){
   "use strict";
-  const VERSION="4.38-preview";
-  const ASSET="/assets/meowde-approved-base.svg?v=438";
+  const VERSION="4.38-preview.2";
+  const ASSET="/assets/meowde-approved-base.svg?v=4382";
   const ALLOWED=new Set(["none","glasses","headphones","star","crown"]);
   const achievementState=()=>window.MeowAchievements&&MeowAchievements.state?MeowAchievements.state:{equippedAccessory:"none"};
   const selected=forced=>{const value=forced||achievementState().equippedAccessory||"none";return ALLOWED.has(value)?value:"none"};
@@ -13,10 +13,10 @@
   }
 
   function accessory(id){
-    if(id==="glasses")return '<g aria-hidden="true"><path d="M22 47q15-9 34 1c-2 13-9 19-20 17-8-2-13-9-14-18zM106 47q-15-9-34 1c2 13 9 19 20 17 8-2 13-9 14-18z" fill="#2f3036" stroke="#eee9df" stroke-width="4"/><path d="M55 50q9-5 18 0M22 49l-10-3M106 49l10-3" fill="none" stroke="#eee9df" stroke-width="4" stroke-linecap="round"/></g>';
-    if(id==="headphones")return '<g aria-hidden="true"><path d="M22 82V58c0-27 18-45 42-45s42 18 42 45v24" fill="none" stroke="#d8d5d1" stroke-width="8" stroke-linecap="round"/><rect x="13" y="65" width="22" height="43" rx="10" fill="#d8d5d1" stroke="#898684" stroke-width="3"/><rect x="93" y="65" width="22" height="43" rx="10" fill="#d8d5d1" stroke="#898684" stroke-width="3"/></g>';
-    if(id==="star")return '<path d="M101 25l4 8 9 1-6.5 6.2 1.5 9-8-4.3-8 4.3 1.6-9-6.6-6.2 9-1z" fill="#c9a8e8" stroke="#785b99" stroke-width="2"/>';
-    if(id==="crown")return '<path d="M38 34l7-18 13 12 9-20 10 20 13-12 7 18-5 12H43z" fill="#e7c45a" stroke="#8a6818" stroke-width="2.5"/>';
+    if(id==="glasses")return '<g aria-hidden="true"><path d="M24 53q14-7 31 1c-1 13-8 19-19 17-8-2-12-8-12-18zM104 53q-14-7-31 1c1 13 8 19 19 17 8-2 12-8 12-18z" fill="#2f3036" stroke="#75664b" stroke-width="3.2"/><path d="M54 55q10-4 20 0M24 55l-9-2M104 55l9-2" fill="none" stroke="#75664b" stroke-width="3.2" stroke-linecap="round"/><path d="M31 56q7-4 15-1M80 56q7-4 15-1" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="2" stroke-linecap="round"/></g>';
+    if(id==="headphones")return '<g aria-hidden="true"><path d="M24 78V60c0-31 17-49 40-49s40 18 40 49v18" fill="none" stroke="#d5d2d0" stroke-width="5.5" stroke-linecap="round"/><ellipse cx="23" cy="78" rx="10" ry="17" fill="#d5d2d0" stroke="#898684" stroke-width="2.5"/><ellipse cx="105" cy="78" rx="10" ry="17" fill="#d5d2d0" stroke="#898684" stroke-width="2.5"/><path d="M19 71v14M101 71v14" stroke="#f4f2ef" stroke-width="2.3" stroke-linecap="round"/></g>';
+    if(id==="star")return '<path d="M103 27l3.5 7 7.8 1.1-5.7 5.5 1.4 7.8-7-3.7-7 3.7 1.4-7.8-5.7-5.5 7.8-1.1z" fill="#c9a8e8" stroke="#785b99" stroke-width="1.8"/>';
+    if(id==="crown")return '<path d="M43 31l6-14 11 10 7-17 8 17 11-10 6 14-4 10H47z" fill="#e7c45a" stroke="#8a6818" stroke-width="2.2"/>';
     return "";
   }
 
@@ -29,14 +29,14 @@
     if(document.getElementById("meowde-approved-style"))return;
     const style=document.createElement("style");
     style.id="meowde-approved-style";
-    style.textContent='.meowde-approved-character{overflow:visible;filter:drop-shadow(0 5px 9px rgba(73,54,43,.16))}.meowde-approved-character.mood-happy,.meowde-approved-character.mood-party{animation:approvedHappy .55s cubic-bezier(.2,.8,.2,1)}.meowde-approved-character.mood-focus{animation:approvedBreathe 2.8s ease-in-out infinite}.v435-coding-scene{position:relative;display:grid;place-items:center;width:126px;min-width:126px;height:122px;margin:-11px -8px -2px -10px}.v435-coding-scene .meowde-approved-character{position:absolute;z-index:1;top:-8px;left:50%;width:104px;height:125px;transform:translateX(-50%);animation:approvedHero 2.5s ease-in-out infinite}.v435-laptop{position:absolute;z-index:3;left:50%;bottom:0;width:86px;height:49px;transform:translateX(-50%)}.v435-laptop-screen{position:absolute;inset:0 7px 8px;border:2px solid #665b70;border-radius:8px;background:linear-gradient(145deg,#b8a7cf,#e5dcef)}.v435-laptop-screen:before{content:"";position:absolute;inset:7px 8px 11px;border-radius:4px;background:#302d35}.v435-laptop-screen:after{content:">_";position:absolute;left:15px;top:12px;color:#92ddbd;font:800 9px/1 monospace}.v435-laptop-base{position:absolute;left:0;right:0;bottom:3px;height:9px;border:2px solid #665b70;border-radius:3px 3px 9px 9px;background:#c8bdd7}.v435-scene-note{position:absolute;z-index:5;right:-1px;top:4px;padding:5px 7px;border:1px solid rgba(128,107,176,.18);border-radius:999px;background:#fff;color:#806bb0;font-size:8.5px;font-weight:950}@keyframes approvedHappy{50%{transform:translateY(-3px) scale(1.02)}}@keyframes approvedBreathe{50%{transform:scale(1.015)}}@keyframes approvedHero{50%{transform:translateX(-50%) translateY(-2px)}}@media(prefers-reduced-motion:reduce){.meowde-approved-character,.v435-coding-scene .meowde-approved-character{animation:none}}';
+    style.textContent='.meowde-approved-character{overflow:visible;filter:drop-shadow(0 5px 9px rgba(73,54,43,.14))}.meowde-approved-character.mood-happy,.meowde-approved-character.mood-party{animation:approvedHappy .55s cubic-bezier(.2,.8,.2,1)}.meowde-approved-character.mood-focus{animation:approvedBreathe 2.8s ease-in-out infinite}.v435-coding-scene{position:relative;display:grid;place-items:center;width:132px;min-width:132px;height:128px;margin:-12px -10px -3px -12px}.v435-coding-scene .meowde-approved-character{position:absolute;z-index:1;top:-13px;left:50%;width:112px;height:142px;transform:translateX(-50%);animation:approvedHero 2.5s ease-in-out infinite}.v435-laptop{position:absolute;z-index:3;left:50%;bottom:0;width:90px;height:50px;transform:translateX(-50%)}.v435-laptop-screen{position:absolute;inset:0 7px 8px;border:2px solid #665b70;border-radius:8px;background:linear-gradient(145deg,#b8a7cf,#e5dcef)}.v435-laptop-screen:before{content:"";position:absolute;inset:7px 8px 11px;border-radius:4px;background:#302d35}.v435-laptop-screen:after{content:">_";position:absolute;left:15px;top:12px;color:#92ddbd;font:800 9px/1 monospace}.v435-laptop-base{position:absolute;left:0;right:0;bottom:3px;height:9px;border:2px solid #665b70;border-radius:3px 3px 9px 9px;background:#c8bdd7}.v435-scene-note{position:absolute;z-index:5;right:0;top:5px;padding:5px 7px;border:1px solid rgba(128,107,176,.18);border-radius:999px;background:#fff;color:#806bb0;font-size:8.5px;font-weight:950}@keyframes approvedHappy{50%{transform:translateY(-3px) scale(1.02)}}@keyframes approvedBreathe{50%{transform:scale(1.015)}}@keyframes approvedHero{50%{transform:translateX(-50%) translateY(-2px)}}@media(max-width:360px){.v435-coding-scene{width:118px;min-width:118px;margin-left:-16px}.v435-coding-scene .meowde-approved-character{width:102px}.v435-scene-note{display:none}}@media(prefers-reduced-motion:reduce){.meowde-approved-character,.v435-coding-scene .meowde-approved-character{animation:none}}';
     document.head.appendChild(style);
   }
 
   function hero(){
     const current=selected();
-    const item=current==="glasses"||current==="headphones"?current:"headphones";
-    return `<div class="v435-coding-scene">${renderMascot("meowde","focus",118,{accessory:item})}<div class="v435-laptop"><div class="v435-laptop-screen"></div><div class="v435-laptop-base"></div></div><div class="v435-scene-note">ship it</div></div>`;
+    const item=current==="glasses"||current==="headphones"?current:"glasses";
+    return `<div class="v435-coding-scene">${renderMascot("meowde","focus",122,{accessory:item})}<div class="v435-laptop"><div class="v435-laptop-screen"></div><div class="v435-laptop-base"></div></div><div class="v435-scene-note">ship it</div></div>`;
   }
 
   function decorateHome(){
