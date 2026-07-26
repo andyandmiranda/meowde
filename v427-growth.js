@@ -41,6 +41,7 @@
   }
 
   function xp(){return Math.max(0,Number(window.S&&S.xp)||0)}
+  function isKorean(){return !window.S||S.lang==="ko"}
 
   const STAGES=[
     {id:"kitten",min:0,max:99,labelKo:"아기 냥",labelEn:"Kitten",icon:"🐱"},
@@ -82,7 +83,7 @@
   }
 
   function emotionCopy(){
-    const ko=!window.S||S.lang!=="en";
+    const ko=isKorean();
     const copy={
       curious:ko?"오늘은 어떤 코드를 같이 발견할까요?":"What code shall we discover today?",
       welcome:ko?"다시 왔네요! 기다리고 있었어요.":"You are back! I was waiting for you.",
@@ -101,7 +102,7 @@
   }
 
   function evolutionCard(){
-    const ko=!window.S||S.lang!=="en";
+    const ko=isKorean();
     const current=stage();
     const next=nextStage();
     const progress=evolutionProgress();
@@ -109,20 +110,27 @@
   }
 
   function emotionCard(){
-    const ko=!window.S||S.lang!=="en";
+    const ko=isKorean();
     return `<section class="card v427-emotion-card" data-emotion="${emotion()}"><div><span class="v427-emotion-dot"></span><b>${ko?"오늘의 마음":"Today's mood"}</b></div><p>${emotionCopy()}</p></section>`;
+  }
+
+  function replaceCard(scroll,selector,markup,position){
+    const existing=scroll.querySelector(selector);
+    if(existing){existing.outerHTML=markup;return}
+    scroll.insertAdjacentHTML(position,markup);
   }
 
   function decorateHome(){
     const scroll=document.querySelector(".screen>.scroll");
     if(!scroll)return;
-    if(!scroll.querySelector(".v427-emotion-card"))scroll.insertAdjacentHTML("afterbegin",emotionCard());
-    if(!scroll.querySelector(".v427-growth-card"))scroll.insertAdjacentHTML("beforeend",evolutionCard());
+    replaceCard(scroll,".v427-emotion-card",emotionCard(),"afterbegin");
+    replaceCard(scroll,".v427-growth-card",evolutionCard(),"beforeend");
   }
 
   function decorateRoom(){
     const scroll=document.querySelector(".screen>.scroll");
-    if(scroll&&!scroll.querySelector(".v427-growth-card"))scroll.insertAdjacentHTML("afterbegin",evolutionCard());
+    if(!scroll)return;
+    replaceCard(scroll,".v427-growth-card",evolutionCard(),"afterbegin");
   }
 
   function decorateLesson(){
@@ -160,7 +168,7 @@
   window.addEventListener("pagehide",()=>{G.lastSeenAt=Date.now();persist()});
 
   window.MeowGrowth={state:G,stages:STAGES,stage,nextStage,emotion,evolutionProgress,recordAnswer};
-  window.__MEOWDE_VERSION__="4.27";
+  window.__MEOWDE_GROWTH_VERSION__="4.38";
   persist();
 
   if(window.S){
