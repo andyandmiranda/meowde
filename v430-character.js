@@ -1,7 +1,7 @@
 (function installApprovedMeowde(){
   "use strict";
-  const VERSION="4.40-preview.1";
-  const ASSET="/assets/meowde-approved-base.svg?v=4401";
+  const VERSION="4.41";
+  const ASSET="/assets/meowde-approved-base.svg?v=4411";
   const LEGACY_VIEWBOX="0 0 120 112";
   const ALLOWED=new Set(["none","glasses","headphones","star","crown"]);
   const achievementState=()=>window.MeowAchievements&&MeowAchievements.state?MeowAchievements.state:{equippedAccessory:"none"};
@@ -52,6 +52,22 @@
   function syncLanguage(){
     const lang=typeof S!=="undefined"&&S&&S.lang==="en"?"en":"ko";
     document.documentElement.lang=lang;
+    return lang;
+  }
+
+  function setLanguage(language){
+    if(typeof S==="undefined"||!S)return;
+    S.lang=language==="en"?"en":"ko";
+    syncLanguage();
+    try{if(typeof save==="function")save()}catch(error){}
+    if(typeof closeOverlay==="function")closeOverlay();
+    if(typeof renderHome==="function")renderHome();
+  }
+
+  function languageSheet(){
+    const ko=syncLanguage()==="ko";
+    if(typeof overlay!=="function")return;
+    overlay(`<h3>${ko?"언어 선택":"Choose language"}</h3><p>${ko?"한국어와 영어로 학습 화면과 안내 문구를 볼 수 있어요.":"Use Meowde's lessons and interface in Korean or English."}</p><div class="grid2"><button class="btn" onclick="setMeowdeLanguage('ko')">한국어</button><button class="btn ghost" onclick="setMeowdeLanguage('en')">English</button></div>`);
   }
 
   function brandMarkup(){
@@ -118,12 +134,12 @@
   }
 
   try{if(typeof S!=="undefined"&&S){S.cat="meowde";if(typeof save==="function")save()}}catch(error){}
-  styles();syncLanguage();window.catSVG=renderMascot;window.brand=brandMarkup;installHeadphones();
+  styles();syncLanguage();window.catSVG=renderMascot;window.brand=brandMarkup;window.langSheet=languageSheet;window.setMeowdeLanguage=setLanguage;installHeadphones();
   const observer=new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(node=>{if(node.nodeType===1)purgeLegacyCats(node)})));
   observer.observe(document.documentElement,{childList:true,subtree:true});
   const oldHome=window.renderHome;if(typeof oldHome==="function")window.renderHome=function(){syncLanguage();oldHome.apply(this,arguments);decorateHome();purgeLegacyCats()};
   const oldRoom=window.renderRoom;if(typeof oldRoom==="function")window.renderRoom=function(){syncLanguage();oldRoom.apply(this,arguments);cleanRoom();purgeLegacyCats()};
-  window.MeowCharacterV430=window.MeowCharacterMaster=Object.freeze({version:VERSION,asset:ASSET,render:renderMascot,renderFace,accessory:selected,decorateHome,cleanRoom,purgeLegacyCats,installHeadphones});
+  window.MeowCharacterV430=window.MeowCharacterMaster=Object.freeze({version:VERSION,asset:ASSET,render:renderMascot,renderFace,accessory:selected,decorateHome,cleanRoom,purgeLegacyCats,installHeadphones,setLanguage,languageSheet});
   if(typeof S!=="undefined"){
     if(S.screen==="lesson"&&typeof renderLesson==="function")renderLesson();
     else if(S.screen==="room"&&typeof renderRoom==="function")renderRoom();
