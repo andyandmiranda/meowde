@@ -1,9 +1,9 @@
 (() => {
   "use strict";
 
-  const VERSION = "4.36";
+  const VERSION = "4.41";
   const DISMISS_KEY = "meowde-pwa-install-dismissed-at";
-  const RELOAD_KEY = "meowde-pwa-reload-v436";
+  const RELOAD_KEY = "meowde-pwa-reload-v441";
   const DISMISS_DAYS = 7;
   const UPDATE_TIMEOUT_MS = 8000;
 
@@ -11,6 +11,17 @@
   let activeBanner = null;
   let reloadForNewWorker = false;
   let updateTimer = null;
+
+  function currentLanguage() {
+    try {
+      if (typeof S !== "undefined" && S && S.lang === "en") return "en";
+    } catch (error) {}
+    return document.documentElement.lang === "en" ? "en" : "ko";
+  }
+
+  function tr(korean, english) {
+    return currentLanguage() === "en" ? english : korean;
+  }
 
   function removeBanner() {
     if (activeBanner) {
@@ -34,7 +45,7 @@
     }, 2400);
   }
 
-  function showBanner({ title, text, primaryLabel, onPrimary, secondaryLabel = "나중에", onSecondary }) {
+  function showBanner({ title, text, primaryLabel, onPrimary, secondaryLabel, onSecondary }) {
     removeBanner();
     const banner = document.createElement("aside");
     banner.className = "meowde-pwa-banner";
@@ -61,7 +72,7 @@
     const secondaryButton = document.createElement("button");
     secondaryButton.type = "button";
     secondaryButton.className = "meowde-pwa-btn ghost";
-    secondaryButton.textContent = secondaryLabel;
+    secondaryButton.textContent = secondaryLabel || tr("나중에", "Later");
     secondaryButton.addEventListener("click", () => {
       removeBanner();
       if (typeof onSecondary === "function") onSecondary();
@@ -105,16 +116,19 @@
     removeBanner();
     await promptEvent.prompt();
     const choice = await promptEvent.userChoice;
-    if (choice.outcome === "accepted") showToast("Meowde 설치를 시작했어요.");
+    if (choice.outcome === "accepted") showToast(tr("Meowde 설치를 시작했어요.", "Meowde installation started."));
     else rememberInstallDismissal();
   }
 
   function showInstallBanner() {
     if (isStandalone() || !deferredInstallPrompt || wasInstallPromptRecentlyDismissed()) return;
     showBanner({
-      title: "Meowde 앱 설치",
-      text: "홈 화면에서 더 빠르게 열고, 연결이 불안정해도 학습 화면을 사용할 수 있어요.",
-      primaryLabel: "설치",
+      title: tr("Meowde 앱 설치", "Install Meowde"),
+      text: tr(
+        "홈 화면에서 더 빠르게 열고, 연결이 불안정해도 학습 화면을 사용할 수 있어요.",
+        "Open Meowde faster from your home screen and keep learning when the connection is unstable."
+      ),
+      primaryLabel: tr("설치", "Install"),
       onPrimary: requestInstall,
       onSecondary: rememberInstallDismissal
     });
@@ -123,14 +137,17 @@
   function showIosInstallGuide() {
     if (!isIosSafari() || isStandalone() || wasInstallPromptRecentlyDismissed()) return;
     showBanner({
-      title: "홈 화면에 Meowde 추가",
-      text: "Safari의 공유 버튼을 누른 뒤 ‘홈 화면에 추가’를 선택하세요.",
-      primaryLabel: "확인",
+      title: tr("홈 화면에 Meowde 추가", "Add Meowde to Home Screen"),
+      text: tr(
+        "Safari의 공유 버튼을 누른 뒤 ‘홈 화면에 추가’를 선택하세요.",
+        "Tap Safari's Share button, then choose Add to Home Screen."
+      ),
+      primaryLabel: tr("확인", "Got it"),
       onPrimary: () => {
         rememberInstallDismissal();
         removeBanner();
       },
-      secondaryLabel: "닫기",
+      secondaryLabel: tr("닫기", "Close"),
       onSecondary: rememberInstallDismissal
     });
   }
@@ -143,11 +160,14 @@
     clearTimeout(updateTimer);
     updateTimer = window.setTimeout(() => {
       showBanner({
-        title: "업데이트가 지연되고 있어요",
-        text: "새 버전을 적용하려면 한 번 새로고침해 주세요.",
-        primaryLabel: "새로고침",
+        title: tr("업데이트가 지연되고 있어요", "The update is taking longer than expected"),
+        text: tr(
+          "새 버전을 적용하려면 한 번 새로고침해 주세요.",
+          "Refresh once to apply the latest version."
+        ),
+        primaryLabel: tr("새로고침", "Refresh"),
         onPrimary: () => window.location.reload(),
-        secondaryLabel: "계속 사용"
+        secondaryLabel: tr("계속 사용", "Keep using")
       });
     }, UPDATE_TIMEOUT_MS);
     return true;
@@ -160,11 +180,14 @@
       return;
     }
     showBanner({
-      title: "새 버전 준비 완료",
-      text: "현재 문제를 마친 뒤 업데이트하면 최신 화면과 오프라인 파일을 사용합니다.",
-      primaryLabel: "업데이트",
+      title: tr("새 버전 준비 완료", "A new version is ready"),
+      text: tr(
+        "현재 문제를 마친 뒤 업데이트하면 최신 화면과 오프라인 파일을 사용합니다.",
+        "Update after the current question to use the latest interface and offline files."
+      ),
+      primaryLabel: tr("업데이트", "Update"),
       onPrimary: () => activateWaitingWorker(registration),
-      secondaryLabel: "나중에"
+      secondaryLabel: tr("나중에", "Later")
     });
   }
 
@@ -194,11 +217,14 @@
     } catch (error) {
       console.error("Meowde service worker registration failed:", error);
       showBanner({
-        title: "오프라인 파일을 준비하지 못했어요",
-        text: "인터넷 연결을 확인한 뒤 다시 시도해 주세요.",
-        primaryLabel: "다시 시도",
+        title: tr("오프라인 파일을 준비하지 못했어요", "Offline files could not be prepared"),
+        text: tr(
+          "인터넷 연결을 확인한 뒤 다시 시도해 주세요.",
+          "Check your internet connection and try again."
+        ),
+        primaryLabel: tr("다시 시도", "Try again"),
         onPrimary: () => window.location.reload(),
-        secondaryLabel: "닫기"
+        secondaryLabel: tr("닫기", "Close")
       });
     }
   }
@@ -213,11 +239,14 @@
     deferredInstallPrompt = null;
     localStorage.removeItem(DISMISS_KEY);
     removeBanner();
-    showToast("Meowde 설치가 완료됐어요.");
+    showToast(tr("Meowde 설치가 완료됐어요.", "Meowde was installed."));
   });
 
-  window.addEventListener("online", () => showToast("인터넷에 다시 연결됐어요."));
-  window.addEventListener("offline", () => showToast("오프라인 모드예요. Python 실행은 연결이 필요할 수 있어요."));
+  window.addEventListener("online", () => showToast(tr("인터넷에 다시 연결됐어요.", "You are back online.")));
+  window.addEventListener("offline", () => showToast(tr(
+    "오프라인 모드예요. Python 실행은 연결이 필요할 수 있어요.",
+    "You are offline. Running Python may require a connection."
+  )));
 
   navigator.serviceWorker?.addEventListener("controllerchange", () => {
     clearTimeout(updateTimer);
@@ -229,7 +258,7 @@
 
   if (sessionStorage.getItem(RELOAD_KEY) === "reloaded") {
     sessionStorage.removeItem(RELOAD_KEY);
-    showToast("Meowde가 최신 버전으로 업데이트됐어요.");
+    showToast(tr("Meowde가 최신 버전으로 업데이트됐어요.", "Meowde is now up to date."));
   }
 
   window.MeowPWA = {
