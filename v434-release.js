@@ -1,7 +1,7 @@
-(function applyMeowdeV446ReleaseGuard(){
+(function applyMeowdeV447ReleaseGuard(){
   "use strict";
 
-  const VERSION="4.46";
+  const VERSION="4.47";
   const REQUIRED_FUNCTIONS=["renderHome","renderLesson","renderMap","renderReview","renderMy","startLesson","checkQ","finish","save","catSVG"];
   const REQUIRED_APIS=["MeowAchievements","MeowGrowth","MeowEvents","MeowQuests","MeowCharacterV430","MeowLearning","MeowPWA"];
   const ALLOWED_ACCESSORIES=new Set(["none","glasses","headphones","star","crown"]);
