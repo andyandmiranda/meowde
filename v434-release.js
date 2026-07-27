@@ -1,7 +1,7 @@
-(function applyMeowdeV443ReleaseGuard(){
+(function applyMeowdeV444ReleaseGuard(){
   "use strict";
 
-  const VERSION="4.43";
+  const VERSION="4.44";
   const REQUIRED_FUNCTIONS=["renderHome","renderLesson","renderMap","renderReview","renderMy","startLesson","checkQ","finish","save","catSVG"];
   const REQUIRED_APIS=["MeowAchievements","MeowGrowth","MeowEvents","MeowQuests","MeowCharacterV430","MeowLearning","MeowPWA"];
   const ALLOWED_ACCESSORIES=new Set(["none","glasses","headphones","star","crown"]);
@@ -19,13 +19,8 @@
     return document.getElementById("app")||document.querySelector(".app");
   }
 
-  function stateAvailable(){
-    return typeof S!=="undefined"&&S&&typeof S==="object";
-  }
-
-  function isEnglish(){
-    return stateAvailable()&&S.lang==="en";
-  }
+  function stateAvailable(){return typeof S!=="undefined"&&S&&typeof S==="object"}
+  function isEnglish(){return stateAvailable()&&S.lang==="en"}
 
   function storageAvailable(){
     try{
@@ -68,22 +63,9 @@
   }
 
   function loadEnhancements(){
-    loadExtension({
-      id:"meowde-v442-map-touch",
-      css:"v442-map-touch.css",
-      script:"v442-map-touch.js",
-      version:"442",
-      readyGlobal:"MeowMapTouch",
-      warning:"Map touch enhancement could not be loaded."
-    });
-    loadExtension({
-      id:"meowde-v443-single-companion",
-      css:"v443-single-companion.css",
-      script:"v443-single-companion.js",
-      version:"443",
-      readyGlobal:"MeowSingleCompanion",
-      warning:"Single companion branding could not be loaded."
-    });
+    loadExtension({id:"meowde-v442-map-touch",css:"v442-map-touch.css",script:"v442-map-touch.js",version:"442",readyGlobal:"MeowMapTouch",warning:"Map touch enhancement could not be loaded."});
+    loadExtension({id:"meowde-v443-single-companion",css:"v443-single-companion.css",script:"v443-single-companion.js",version:"443",readyGlobal:"MeowSingleCompanion",warning:"Single companion branding could not be loaded."});
+    loadExtension({id:"meowde-v444-visual-cohesion",css:"v444-visual-cohesion.css",script:"v444-visual-cohesion.js",version:"444",readyGlobal:"MeowVisualCohesion",warning:"Visual cohesion enhancement could not be loaded."});
   }
 
   function run(){
