@@ -35,7 +35,8 @@
     const scroll=document.querySelector(".screen>.scroll");
     if(!scroll)return;
 
-    const head=scroll.querySelector(".simple-head");
+    const heads=Array.from(scroll.querySelectorAll(".simple-head"));
+    const head=heads[0];
     if(head){
       const title=head.querySelector("h2");
       const copy=head.querySelector("p");
@@ -43,6 +44,19 @@
       const expectedCopy=isKorean()
         ?"단 하나의 코딩 파트너와 성장 기록과 액세서리를 관리하세요."
         :"Manage growth and accessories for your one coding companion.";
+      if(copy&&copy.textContent!==expectedCopy)copy.textContent=expectedCopy;
+    }
+    heads.slice(1).forEach(extraHead=>extraHead.remove());
+
+    const profileCard=scroll.querySelector(".profile-card");
+    if(profileCard){
+      const title=profileCard.querySelector("h3");
+      const copy=profileCard.querySelector("p");
+      const expectedTitle=isKorean()?"Meowde와 학습 중":"Learning with Meowde";
+      const expectedCopy=isKorean()
+        ?`${Number(S.done&&S.done.length)||0}개 레슨 완료 · ${Number(S.streak)||0}일 연속 학습`
+        :`${Number(S.done&&S.done.length)||0} lessons complete · ${Number(S.streak)||0} day streak`;
+      if(title&&title.textContent!==expectedTitle)title.textContent=expectedTitle;
       if(copy&&copy.textContent!==expectedCopy)copy.textContent=expectedCopy;
     }
 
