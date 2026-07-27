@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v442-map-touch-v1";
+const CACHE_NAME = "meowde-v443-single-companion-v1";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -60,7 +60,9 @@ const REQUIRED_ASSETS = [
   "/v434-release.js",
   "/v434-release.css",
   "/v442-map-touch.js",
-  "/v442-map-touch.css"
+  "/v442-map-touch.css",
+  "/v443-single-companion.js",
+  "/v443-single-companion.css"
 ];
 
 self.addEventListener("install", (event) => {

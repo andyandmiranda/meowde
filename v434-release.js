@@ -1,7 +1,7 @@
-(function applyMeowdeV442ReleaseGuard(){
+(function applyMeowdeV443ReleaseGuard(){
   "use strict";
 
-  const VERSION="4.42";
+  const VERSION="4.43";
   const REQUIRED_FUNCTIONS=["renderHome","renderLesson","renderMap","renderReview","renderMy","startLesson","checkQ","finish","save","catSVG"];
   const REQUIRED_APIS=["MeowAchievements","MeowGrowth","MeowEvents","MeowQuests","MeowCharacterV430","MeowLearning","MeowPWA"];
   const ALLOWED_ACCESSORIES=new Set(["none","glasses","headphones","star","crown"]);
@@ -46,25 +46,44 @@
     return false;
   }
 
-  function loadMapTouchModule(){
-    if(!document.getElementById("meowde-v442-map-touch-style")){
+  function loadExtension({id,css,script,version,readyGlobal,warning}){
+    if(css&&!document.getElementById(`${id}-style`)){
       const link=document.createElement("link");
-      link.id="meowde-v442-map-touch-style";
+      link.id=`${id}-style`;
       link.rel="stylesheet";
-      link.href="/v442-map-touch.css?v=442";
+      link.href=`/${css}?v=${version}`;
       document.head.appendChild(link);
     }
-    if(window.MeowMapTouch)return;
-    if(document.getElementById("meowde-v442-map-touch-script"))return;
-    const script=document.createElement("script");
-    script.id="meowde-v442-map-touch-script";
-    script.src="/v442-map-touch.js?v=442";
-    script.async=true;
-    script.addEventListener("error",()=>{
-      report.warnings.push("Map touch enhancement could not be loaded.");
+    if(readyGlobal&&window[readyGlobal])return;
+    if(document.getElementById(`${id}-script`))return;
+    const element=document.createElement("script");
+    element.id=`${id}-script`;
+    element.src=`/${script}?v=${version}`;
+    element.async=true;
+    element.addEventListener("error",()=>{
+      if(!report.warnings.includes(warning))report.warnings.push(warning);
       document.documentElement.dataset.releaseHealth=report.errors.length?"error":"warning";
     });
-    document.head.appendChild(script);
+    document.head.appendChild(element);
+  }
+
+  function loadEnhancements(){
+    loadExtension({
+      id:"meowde-v442-map-touch",
+      css:"v442-map-touch.css",
+      script:"v442-map-touch.js",
+      version:"442",
+      readyGlobal:"MeowMapTouch",
+      warning:"Map touch enhancement could not be loaded."
+    });
+    loadExtension({
+      id:"meowde-v443-single-companion",
+      css:"v443-single-companion.css",
+      script:"v443-single-companion.js",
+      version:"443",
+      readyGlobal:"MeowSingleCompanion",
+      warning:"Single companion branding could not be loaded."
+    });
   }
 
   function run(){
@@ -107,7 +126,7 @@
     return report;
   }
 
-  loadMapTouchModule();
+  loadEnhancements();
   run();
   window.MeowRelease={version:VERSION,report,rerun,isReady:function(){return report.errors.length===0}};
   recoveryPanel();
