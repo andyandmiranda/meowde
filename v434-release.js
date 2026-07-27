@@ -1,7 +1,7 @@
-(function applyMeowdeV441ReleaseGuard(){
+(function applyMeowdeV442ReleaseGuard(){
   "use strict";
 
-  const VERSION="4.41";
+  const VERSION="4.42";
   const REQUIRED_FUNCTIONS=["renderHome","renderLesson","renderMap","renderReview","renderMy","startLesson","checkQ","finish","save","catSVG"];
   const REQUIRED_APIS=["MeowAchievements","MeowGrowth","MeowEvents","MeowQuests","MeowCharacterV430","MeowLearning","MeowPWA"];
   const ALLOWED_ACCESSORIES=new Set(["none","glasses","headphones","star","crown"]);
@@ -46,6 +46,27 @@
     return false;
   }
 
+  function loadMapTouchModule(){
+    if(!document.getElementById("meowde-v442-map-touch-style")){
+      const link=document.createElement("link");
+      link.id="meowde-v442-map-touch-style";
+      link.rel="stylesheet";
+      link.href="/v442-map-touch.css?v=442";
+      document.head.appendChild(link);
+    }
+    if(window.MeowMapTouch)return;
+    if(document.getElementById("meowde-v442-map-touch-script"))return;
+    const script=document.createElement("script");
+    script.id="meowde-v442-map-touch-script";
+    script.src="/v442-map-touch.js?v=442";
+    script.async=true;
+    script.addEventListener("error",()=>{
+      report.warnings.push("Map touch enhancement could not be loaded.");
+      document.documentElement.dataset.releaseHealth=report.errors.length?"error":"warning";
+    });
+    document.head.appendChild(script);
+  }
+
   function run(){
     report.checks={};
     check("app-root",Boolean(appRoot()),"App root is unavailable.");
@@ -86,6 +107,7 @@
     return report;
   }
 
+  loadMapTouchModule();
   run();
   window.MeowRelease={version:VERSION,report,rerun,isReady:function(){return report.errors.length===0}};
   recoveryPanel();
