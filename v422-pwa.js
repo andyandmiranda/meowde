@@ -1,16 +1,17 @@
 (() => {
   "use strict";
 
-  const VERSION = "4.41";
+  const VERSION = "4.45";
   const DISMISS_KEY = "meowde-pwa-install-dismissed-at";
-  const RELOAD_KEY = "meowde-pwa-reload-v441";
+  const RELOAD_KEY = "meowde-pwa-reload-v445";
   const DISMISS_DAYS = 7;
-  const UPDATE_TIMEOUT_MS = 8000;
+  const UPDATE_TIMEOUT_MS = 4000;
 
   let deferredInstallPrompt = null;
   let activeBanner = null;
   let reloadForNewWorker = false;
   let updateTimer = null;
+  let updateInProgress = false;
 
   function currentLanguage() {
     try {
@@ -68,7 +69,22 @@
     primaryButton.type = "button";
     primaryButton.className = "meowde-pwa-btn primary";
     primaryButton.textContent = primaryLabel;
-    primaryButton.addEventListener("click", onPrimary);
+    primaryButton.addEventListener("click", async () => {
+      if (primaryButton.disabled) return;
+      primaryButton.disabled = true;
+      primaryButton.classList.add("busy");
+      primaryButton.textContent = tr("적용 중…", "Applying…");
+      try {
+        await onPrimary(primaryButton);
+      } catch (error) {
+        console.error("Meowde PWA action failed:", error);
+        primaryButton.disabled = false;
+        primaryButton.classList.remove("busy");
+        primaryButton.textContent = primaryLabel;
+        showToast(tr("업데이트를 적용하지 못했어요. 새로고침해 주세요.", "The update could not be applied. Please refresh."));
+      }
+    });
+
     const secondaryButton = document.createElement("button");
     secondaryButton.type = "button";
     secondaryButton.className = "meowde-pwa-btn ghost";
@@ -77,6 +93,7 @@
       removeBanner();
       if (typeof onSecondary === "function") onSecondary();
     });
+
     actions.append(primaryButton, secondaryButton);
     banner.append(copy, actions);
     document.body.appendChild(banner);
@@ -107,6 +124,12 @@
 
   function rememberInstallDismissal() {
     localStorage.setItem(DISMISS_KEY, String(Date.now()));
+  }
+
+  function cacheBustingReload() {
+    const url = new URL(window.location.href);
+    url.searchParams.set("_meowde_update", String(Date.now()));
+    window.location.replace(url.toString());
   }
 
   async function requestInstall() {
@@ -152,41 +175,62 @@
     });
   }
 
+  function armReloadFallback() {
+    clearTimeout(updateTimer);
+    updateTimer = window.setTimeout(cacheBustingReload, UPDATE_TIMEOUT_MS);
+  }
+
   function activateWaitingWorker(registration) {
-    if (!registration.waiting) return false;
+    if (!registration || !registration.waiting) return false;
     reloadForNewWorker = true;
+    updateInProgress = true;
     sessionStorage.setItem(RELOAD_KEY, "pending");
     registration.waiting.postMessage({ type: "SKIP_WAITING" });
-    clearTimeout(updateTimer);
-    updateTimer = window.setTimeout(() => {
-      showBanner({
-        title: tr("업데이트가 지연되고 있어요", "The update is taking longer than expected"),
-        text: tr(
-          "새 버전을 적용하려면 한 번 새로고침해 주세요.",
-          "Refresh once to apply the latest version."
-        ),
-        primaryLabel: tr("새로고침", "Refresh"),
-        onPrimary: () => window.location.reload(),
-        secondaryLabel: tr("계속 사용", "Keep using")
-      });
-    }, UPDATE_TIMEOUT_MS);
+    armReloadFallback();
     return true;
   }
 
+  async function applyAvailableUpdate(registration) {
+    if (updateInProgress) return;
+    updateInProgress = true;
+    reloadForNewWorker = true;
+    sessionStorage.setItem(RELOAD_KEY, "pending");
+
+    let current = registration;
+    if (!current) current = await navigator.serviceWorker?.getRegistration("/");
+    if (current) {
+      await current.update().catch(() => {});
+      current = await navigator.serviceWorker?.getRegistration("/") || current;
+    }
+
+    if (activateWaitingWorker(current)) return;
+
+    removeBanner();
+    armReloadFallback();
+    cacheBustingReload();
+  }
+
   function handleReadyUpdate(registration) {
-    if (!registration.waiting) return;
+    if (!registration) return;
     if (!isLearningNow() && document.visibilityState === "visible") {
-      activateWaitingWorker(registration);
+      applyAvailableUpdate(registration).catch((error) => {
+        console.error("Automatic Meowde update failed:", error);
+        showUpdateBanner(registration);
+      });
       return;
     }
+    showUpdateBanner(registration);
+  }
+
+  function showUpdateBanner(registration) {
     showBanner({
       title: tr("새 버전 준비 완료", "A new version is ready"),
       text: tr(
-        "현재 문제를 마친 뒤 업데이트하면 최신 화면과 오프라인 파일을 사용합니다.",
-        "Update after the current question to use the latest interface and offline files."
+        "업데이트하면 최신 화면과 오프라인 파일을 바로 적용합니다.",
+        "Update now to apply the latest interface and offline files."
       ),
       primaryLabel: tr("업데이트", "Update"),
-      onPrimary: () => activateWaitingWorker(registration),
+      onPrimary: () => applyAvailableUpdate(registration),
       secondaryLabel: tr("나중에", "Later")
     });
   }
@@ -223,7 +267,7 @@
           "Check your internet connection and try again."
         ),
         primaryLabel: tr("다시 시도", "Try again"),
-        onPrimary: () => window.location.reload(),
+        onPrimary: cacheBustingReload,
         secondaryLabel: tr("닫기", "Close")
       });
     }
@@ -253,11 +297,12 @@
     if (!reloadForNewWorker) return;
     if (sessionStorage.getItem(RELOAD_KEY) === "reloaded") return;
     sessionStorage.setItem(RELOAD_KEY, "reloaded");
-    window.location.reload();
+    cacheBustingReload();
   });
 
   if (sessionStorage.getItem(RELOAD_KEY) === "reloaded") {
     sessionStorage.removeItem(RELOAD_KEY);
+    updateInProgress = false;
     showToast(tr("Meowde가 최신 버전으로 업데이트됐어요.", "Meowde is now up to date."));
   }
 
@@ -266,10 +311,13 @@
     checkForUpdate: async () => {
       const registration = await navigator.serviceWorker?.getRegistration("/");
       if (!registration) return false;
-      await registration.update();
-      if (registration.waiting) handleReadyUpdate(registration);
-      return Boolean(registration.waiting);
-    }
+      await registration.update().catch(() => {});
+      const refreshed = await navigator.serviceWorker?.getRegistration("/") || registration;
+      if (refreshed.waiting) showUpdateBanner(refreshed);
+      return Boolean(refreshed.waiting);
+    },
+    applyUpdate: applyAvailableUpdate,
+    reloadFresh: cacheBustingReload
   };
 
   registerServiceWorker();
