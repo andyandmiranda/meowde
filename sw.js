@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v441-language-consistency-v1";
+const CACHE_NAME = "meowde-v442-map-touch-v1";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -58,7 +58,9 @@ const REQUIRED_ASSETS = [
   "/v433-learning.js",
   "/v433-learning.css",
   "/v434-release.js",
-  "/v434-release.css"
+  "/v434-release.css",
+  "/v442-map-touch.js",
+  "/v442-map-touch.css"
 ];
 
 self.addEventListener("install", (event) => {
