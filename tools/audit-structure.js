@@ -12,14 +12,14 @@ const expectedScripts = [
   "v422-pwa.js", "v423-character.js", "v425-state.js", "v419-achievements.js",
   "v425-playful.js", "v427-growth.js", "v428-events.js", "v429-quests.js",
   "v430-character.js", "v431-stability.js", "v432-humor.js", "v433-learning.js",
-  "v434-release.js",
+  "v443-single-companion.js", "v434-release.js",
 ];
 const expectedStyles = [
   "v413-ux.css", "v414-ux.css", "v415-ux.css", "v416-ux.css", "v417-ux.css",
   "v418-coach.css", "v419-achievements.css", "v420-profile.css", "v421-vault.css",
   "v422-pwa.css", "v423-brand.css", "v425-playful.css", "v429-quests.css",
   "v430-character.css", "v431-stability.css", "v432-humor.css", "v433-learning.css",
-  "v434-release.css",
+  "v434-release.css", "v443-single-companion.css",
 ];
 const html = read("v412.html");
 const scripts = [...html.matchAll(/src="\/(v4\d+[^"?]+\.js)/g)].map((m) => m[1]);
@@ -58,4 +58,4 @@ for (const file of [...expectedScripts, ...expectedStyles]) {
 }
 
 if (failed) process.exit(1);
-console.log("Structure audit passed for Meowde v4.34.");
+console.log("Structure audit passed for Meowde v4.43.");
