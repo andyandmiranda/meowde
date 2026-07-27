@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v444-visual-cohesion-v1";
+const CACHE_NAME = "meowde-v445-pwa-update-hotfix-v1";
 
 const REQUIRED_ASSETS = [
   "/",
