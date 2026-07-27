@@ -1,7 +1,7 @@
-(function applyMeowdeV436ReleaseGuard(){
+(function applyMeowdeV441ReleaseGuard(){
   "use strict";
 
-  const VERSION="4.36";
+  const VERSION="4.41";
   const REQUIRED_FUNCTIONS=["renderHome","renderLesson","renderMap","renderReview","renderMy","startLesson","checkQ","finish","save","catSVG"];
   const REQUIRED_APIS=["MeowAchievements","MeowGrowth","MeowEvents","MeowQuests","MeowCharacterV430","MeowLearning","MeowPWA"];
   const ALLOWED_ACCESSORIES=new Set(["none","glasses","headphones","star","crown"]);
@@ -21,6 +21,10 @@
 
   function stateAvailable(){
     return typeof S!=="undefined"&&S&&typeof S==="object";
+  }
+
+  function isEnglish(){
+    return stateAvailable()&&S.lang==="en";
   }
 
   function storageAvailable(){
@@ -54,7 +58,7 @@
     check("service-worker",("serviceWorker" in navigator),"Service worker is not supported in this browser.","warning");
     check("lessons",typeof window.lessons==="function"&&Array.isArray(window.lessons())&&window.lessons().length>0,"Lesson data is unavailable.");
     window.__MEOWDE_VERSION__=VERSION;
-    document.title="Meowde v4.36 — Production";
+    document.title=`Meowde v${VERSION}`;
     document.documentElement.dataset.meowdeVersion=VERSION;
     document.documentElement.dataset.releaseHealth=report.errors.length?"error":report.warnings.length?"warning":"ready";
     return report;
@@ -64,7 +68,7 @@
     const existing=document.querySelector(".v434-release-error");
     if(!report.errors.length){if(existing)existing.remove();return}
     if(existing)return;
-    const english=stateAvailable()&&S.lang==="en";
+    const english=isEnglish();
     const panel=document.createElement("aside");
     panel.className="v434-release-error";
     panel.setAttribute("role","alert");
