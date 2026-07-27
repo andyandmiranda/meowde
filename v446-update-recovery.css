@@ -1,0 +1,21 @@
+html.has-meowde-pwa-banner .screen>.scroll{padding-bottom:calc(var(--meowde-pwa-banner-height,96px) + 104px)!important;scroll-padding-bottom:calc(var(--meowde-pwa-banner-height,96px) + 104px)}
+.meowde-pwa-banner{max-height:min(42vh,210px);overflow:auto;overscroll-behavior:contain;touch-action:manipulation}
+.meowde-pwa-btn{min-height:36px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.meowde-pwa-btn:disabled{cursor:wait;opacity:.74}
+.meowde-pwa-btn.busy{position:relative;padding-left:28px}
+.meowde-pwa-btn.busy:before{content:"";position:absolute;left:10px;top:50%;width:10px;height:10px;margin-top:-6px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:meowdePwaSpin .7s linear infinite}
+@keyframes meowdePwaSpin{to{transform:rotate(360deg)}}
+@media(max-width:480px){
+  .meowde-pwa-banner{bottom:78px;width:calc(100vw - 24px);max-height:min(38vh,190px);gap:10px;padding:12px;border-radius:18px}
+  .meowde-pwa-copy{padding-right:2px}
+  .meowde-pwa-title{font-size:13px}
+  .meowde-pwa-text{font-size:11px;line-height:1.4}
+  .meowde-pwa-actions{flex-direction:row;align-items:center;gap:6px}
+  .meowde-pwa-btn{min-height:34px;padding:7px 10px;font-size:11px;white-space:nowrap}
+  html.has-meowde-pwa-banner .screen>.scroll{padding-bottom:calc(var(--meowde-pwa-banner-height,110px) + 96px)!important}
+}
+@media(max-width:360px){
+  .meowde-pwa-banner{display:grid;grid-template-columns:1fr;gap:9px}
+  .meowde-pwa-actions{justify-content:flex-end}
+}
+@media(prefers-reduced-motion:reduce){.meowde-pwa-btn.busy:before{animation:none}}

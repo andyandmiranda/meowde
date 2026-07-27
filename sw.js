@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v445-pwa-update-hotfix-v1";
+const CACHE_NAME = "meowde-v446-update-recovery-v1";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -64,7 +64,9 @@ const REQUIRED_ASSETS = [
   "/v443-single-companion.js",
   "/v443-single-companion.css",
   "/v444-visual-cohesion.js",
-  "/v444-visual-cohesion.css"
+  "/v444-visual-cohesion.css",
+  "/v446-update-recovery.js",
+  "/v446-update-recovery.css"
 ];
 
 self.addEventListener("install", (event) => {
