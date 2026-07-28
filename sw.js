@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v448-hero-layout-v1";
+const CACHE_NAME = "meowde-v449-character-variety-v1";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -11,6 +11,15 @@ const REQUIRED_ASSETS = [
   "/assets/meowde-approved-glasses.svg",
   "/assets/meowde-approved-headphones.svg",
   "/assets/meowde-approved-hero.svg",
+  "/assets/meowde-coding-cutout.svg",
+  "/assets/meowde-happy.svg",
+  "/assets/meowde-focus.svg",
+  "/assets/meowde-surprised.svg",
+  "/assets/meowde-smug.svg",
+  "/assets/meowde-meh.svg",
+  "/assets/meowde-music.svg",
+  "/assets/meowde-reading.svg",
+  "/assets/meowde-error.svg",
   "/manifest.webmanifest",
   "/meowde-icon-192.svg",
   "/meowde-icon-512.svg",
@@ -69,7 +78,9 @@ const REQUIRED_ASSETS = [
   "/v444-visual-cohesion.js",
   "/v444-visual-cohesion.css",
   "/v446-update-recovery.js",
-  "/v446-update-recovery.css"
+  "/v446-update-recovery.css",
+  "/v449-character-variety.js",
+  "/v449-character-variety.css"
 ];
 
 self.addEventListener("install", (event) => {
