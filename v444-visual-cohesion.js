@@ -10,7 +10,7 @@
 
   function heroMarkup(){
     const label=ko()?"헤드폰을 쓰고 노트북으로 코딩하는 Meowde":"Meowde coding on a laptop with headphones";
-    return `<div class="v444-coding-scene v448-approved-hero" aria-label="${label}" data-character-version="${VERSION}"><img class="v444-hero-art" src="${HERO_ASSET}" alt="${label}" width="484" height="340"></div>`;
+    return `<div class="v444-coding-scene v448-approved-hero" aria-label="${label}" data-character-version="${VERSION}"><img class="v444-hero-art" src="${HERO_ASSET}" alt="${label}" width="456" height="280"></div>`;
   }
 
   function refineHero(){
@@ -24,10 +24,15 @@
   }
 
   function refineBrand(){
-    const title=document.querySelector(".brand h1");
+    const brand=document.querySelector(".brand");
+    const title=brand&&brand.querySelector("h1");
+    const mark=brand&&brand.querySelector(".brand-mark");
     if(title){
       title.classList.add("v444-brand-wordmark");
       title.textContent="Meowde";
+    }
+    if(mark&&!mark.querySelector(".v448-brand-cat")){
+      mark.innerHTML=`<img class="v448-brand-cat" src="${BASE_ASSET}" alt="" width="42" height="42">`;
     }
   }
 
