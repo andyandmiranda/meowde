@@ -70,6 +70,9 @@ const REQUIRED_ASSETS = [
   "/v444-visual-cohesion.css",
   "/v446-update-recovery.js",
   "/v446-update-recovery.css",
+  "/v449-character-sprite-1.js",
+  "/v449-character-sprite-2.js",
+  "/v449-character-sprite-3.js",
   "/v449-character-sprite.js",
   "/v449-character-cutouts.js",
   "/v449-character-cutouts.css"
