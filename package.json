@@ -1,6 +1,6 @@
 {
   "name": "meowde",
-  "version": "4.46.0",
+  "version": "4.48.0",
   "private": true,
   "description": "Static coding-learning app validation tooling",
   "scripts": {
