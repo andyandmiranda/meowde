@@ -60,6 +60,12 @@ for (const pose of poses) {
 }
 expect(cutouts.includes("decorateHero"), "hero decorator is missing");
 expect(cutouts.includes("decorateCoach"), "lesson-state decorator is missing");
+expect(cutouts.includes("lessonPose"), "precise lesson pose resolver is missing");
+expect(cutouts.includes("runtimeErrorVisible"), "runtime error pose detection is missing");
+expect(cutouts.includes("rewardAccuracy"), "accuracy-based reward pose selection is missing");
+expect(cutouts.includes("decorateReview"), "review-state decorator is missing");
+expect(cutouts.includes("decorateRecovery"), "recovery-state decorator is missing");
+expect(cutouts.includes(".v420-avatar"), "profile avatar pose target is missing");
 expect(cutouts.includes("decorateRoom"), "pose gallery decorator is missing");
 
 const css = read("v449-character-cutouts.css");
@@ -69,6 +75,9 @@ for (const pose of poses) {
 expect(css.includes("background:transparent!important"), "hero background is not forced transparent");
 expect(css.includes("border:0!important"), "hero frame border is not removed");
 expect(css.includes("box-shadow:none!important"), "hero frame shadow is not removed");
+expect(css.includes(".v449-review-head"), "review pose layout is missing");
+expect(css.includes(".v449-profile-pose"), "profile pose layout is missing");
+expect(css.includes(".v449-character-error"), "recovery pose layout is missing");
 
 const release = read("v434-release.js");
 const loadChain = [
@@ -101,4 +110,4 @@ for (const asset of [...orderedAssets, "v449-character-cutouts.css"]) {
 }
 expect(serviceWorker.includes("meowde-v449-character-cutouts-v1"), "service-worker cache was not bumped");
 
-console.log(`Validated Meowde v4.49 character sprite (${bytes.length} bytes), ${poses.length} poses, ordered loading, and offline cache.`);
+console.log(`Validated Meowde v4.49 character sprite (${bytes.length} bytes), ${poses.length} poses, contextual state mapping, ordered loading, and offline cache.`);
