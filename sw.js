@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v447-approved-character-poses-v1";
+const CACHE_NAME = "meowde-v448-hero-layout-v1";
 
 const REQUIRED_ASSETS = [
   "/",
