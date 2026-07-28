@@ -6,8 +6,22 @@
   const POSES=new Set(["base","happy","smug","focus","surprised","meh","coding","music","reading","error"]);
   let queued=false;
 
-  function isEnglish(){
-    try{return Boolean(window.S&&S.lang==="en")}catch(error){return false}
+  function appState(){
+    try{return window.S&&S?S:{}}catch(error){return {}}
+  }
+
+  function isEnglish(){return appState().lang==="en"}
+
+  function currentExercise(){
+    try{return typeof cur==="function"?cur():null}catch(error){return null}
+  }
+
+  function runtimeErrorVisible(){
+    const state=appState();
+    const text=[state.output,state.error]
+      .concat(Array.from(document.querySelectorAll(".console,.v431-runtime-error,.v446-runtime-error")).map(node=>node.textContent))
+      .filter(Boolean).join(" ");
+    return /(traceback|syntaxerror|nameerror|typeerror|exception|runtimeerror|오류|에러)/i.test(text);
   }
 
   function poseMarkup(pose="base",extraClass="",label="Meowde"){
@@ -92,31 +106,31 @@
     if(badge&&badge.textContent!==String(level))badge.textContent=String(level);
   }
 
-  function coachPose(node){
-    const classes=node&&node.classList;
-    if(classes&&classes.contains("mood-happy"))return "happy";
-    if(classes&&classes.contains("mood-party"))return "surprised";
-    if(classes&&classes.contains("mood-oops"))return "error";
-    if(classes&&classes.contains("mood-focus"))return "focus";
-    return "reading";
+  function lessonPose(){
+    const state=appState();
+    const exercise=currentExercise();
+    if(runtimeErrorVisible())return "error";
+    if(state.checked)return state.correct?"happy":"surprised";
+    if(exercise&&exercise.type==="concept")return "reading";
+    return "focus";
   }
 
   function decorateCoach(){
+    const pose=lessonPose();
     document.querySelectorAll(".coach").forEach(coach=>{
       const current=coach.querySelector(":scope > .v449-character,:scope > .meowde-approved-character,:scope > svg");
-      if(!current)return;
-      let pose=coachPose(current);
-      try{if(window.S&&S.checked)pose=S.correct?"happy":"error"}catch(error){}
-      updatePose(current,pose,"",isEnglish()?`Meowde ${pose}`:`Meowde ${pose}`);
+      if(current)updatePose(current,pose,"",isEnglish()?`Meowde ${pose}`:`학습 상태를 표현하는 Meowde`);
+      else coach.insertAdjacentHTML("afterbegin",poseMarkup(pose,"",isEnglish()?`Meowde ${pose}`:"학습 상태를 표현하는 Meowde"));
     });
+    document.documentElement.dataset.lessonPose=pose;
   }
 
   function decorateTrail(){
     document.querySelectorAll(".trail-cat").forEach(holder=>{
-      const label=isEnglish()?"Meowde exploring the code map":"코드 지도를 탐험하는 Meowde";
+      const label=isEnglish()?"Confident Meowde at the current lesson":"현재 위치에서 자신만만한 Meowde";
       const current=holder.querySelector(".v449-character,.meowde-approved-character,svg");
-      if(current)updatePose(current,"focus","",label);
-      else holder.innerHTML=poseMarkup("focus","",label);
+      if(current)updatePose(current,"smug","",label);
+      else holder.innerHTML=poseMarkup("smug","",label);
     });
   }
 
@@ -143,18 +157,27 @@
     });
   }
 
+  function rewardAccuracy(reward){
+    const value=reward&&reward.querySelector(".stats3 .stat3:nth-child(3) b");
+    const match=value&&String(value.textContent||"").match(/\d+/);
+    return match?Number(match[0]):100;
+  }
+
   function decorateFeedback(){
     const reward=document.querySelector(".reward-screen");
     if(reward){
+      const accuracy=rewardAccuracy(reward);
+      const pose=accuracy>=85?"happy":accuracy>=65?"smug":"meh";
       const current=reward.querySelector(".v449-character,.meowde-approved-character,svg");
-      const label=isEnglish()?"Meowde celebrating":"축하하는 Meowde";
-      if(current)updatePose(current,"surprised","v449-feedback-character",label);
-      else if(!reward.querySelector(".v449-feedback-character"))reward.insertAdjacentHTML("afterbegin",poseMarkup("surprised","v449-feedback-character",label));
+      const label=isEnglish()?"Meowde reacting to the result":"학습 결과에 반응하는 Meowde";
+      if(current)updatePose(current,pose,"v449-feedback-character",label);
+      else if(!reward.querySelector(".v449-feedback-character"))reward.insertAdjacentHTML("afterbegin",poseMarkup(pose,"v449-feedback-character",label));
+      reward.dataset.meowdeRewardPose=pose;
     }
     const feedback=document.querySelector(".feedback");
     if(feedback){
-      const pose=feedback.classList.contains("ok")?"happy":"error";
-      const label=pose==="happy"?(isEnglish()?"Meowde is proud":"뿌듯한 Meowde"):(isEnglish()?"Meowde debugging":"오류를 고치는 Meowde");
+      const pose=runtimeErrorVisible()?"error":feedback.classList.contains("ok")?"happy":"surprised";
+      const label=pose==="happy"?(isEnglish()?"Meowde is proud":"뿌듯한 Meowde"):(pose==="error"?(isEnglish()?"Meowde debugging":"오류를 고치는 Meowde"):(isEnglish()?"Surprised Meowde":"깜짝 놀란 Meowde"));
       const current=feedback.querySelector(".v449-feedback-character");
       if(current)updatePose(current,pose,"v449-feedback-character",label);
       else feedback.insertAdjacentHTML("afterbegin",poseMarkup(pose,"v449-feedback-character",label));
@@ -197,10 +220,43 @@
   }
 
   function decorateProfile(){
-    const profile=document.querySelector(".v420-profile-card,.profile-card");
-    if(profile&&!profile.querySelector(".v449-profile-pose"))profile.insertAdjacentHTML("afterbegin",poseMarkup("meh","v449-profile-pose",isEnglish()?"Meowde profile":"Meowde 프로필"));
+    document.querySelectorAll(".v420-avatar").forEach(slot=>{
+      const current=slot.querySelector(":scope > .v449-character,:scope > .meowde-approved-character,:scope > svg");
+      const label=isEnglish()?"Meowde relaxing with headphones":"헤드폰으로 쉬는 Meowde";
+      if(current)updatePose(current,"music","v449-profile-pose",label);
+      else slot.insertAdjacentHTML("afterbegin",poseMarkup("music","v449-profile-pose",label));
+    });
     const achievements=document.querySelector(".v419-achievement-summary,.v419-achievements-hero");
     if(achievements&&!achievements.querySelector(".v449-achievement-pose"))achievements.insertAdjacentHTML("afterbegin",poseMarkup("smug","v449-achievement-pose",isEnglish()?"Proud Meowde":"뿌듯한 Meowde"));
+  }
+
+  function reviewPose(){
+    const mistakes=Array.isArray(appState().mistakes)?appState().mistakes.length:0;
+    return mistakes>0?"meh":"smug";
+  }
+
+  function decorateReview(){
+    if(appState().screen!=="review")return;
+    const pose=reviewPose();
+    const head=document.querySelector(".screen .simple-head");
+    if(head){
+      head.classList.add("v449-review-head");
+      const current=head.querySelector(":scope > .v449-review-pose");
+      const label=isEnglish()?"Meowde showing review status":"복습 상태를 보여주는 Meowde";
+      if(current)updatePose(current,pose,"v449-review-pose",label);
+      else head.insertAdjacentHTML("beforeend",poseMarkup(pose,"v449-review-pose",label));
+    }
+    document.querySelectorAll(".v417-smart-card").forEach(card=>{
+      card.classList.add("v449-smart-card");
+      if(!card.querySelector(":scope > .v449-smart-pose"))card.insertAdjacentHTML("beforeend",poseMarkup("reading","v449-smart-pose",isEnglish()?"Meowde preparing smart review":"맞춤 복습을 준비하는 Meowde"));
+    });
+  }
+
+  function decorateRecovery(){
+    document.querySelectorAll(".v434-release-error,.v446-update-recovery,.v446-recovery-panel").forEach(panel=>{
+      panel.classList.add("v449-character-error");
+      if(!panel.querySelector(":scope > .v449-error-pose"))panel.insertAdjacentHTML("afterbegin",poseMarkup("error","v449-error-pose",isEnglish()?"Meowde checking an error":"오류를 확인하는 Meowde"));
+    });
   }
 
   function decorate(){
@@ -214,6 +270,8 @@
     decorateFeedback();
     decorateRoom();
     decorateProfile();
+    decorateReview();
+    decorateRecovery();
     document.documentElement.dataset.characterCutouts=VERSION;
   }
 
@@ -234,7 +292,7 @@
     window[name]=wrapped;
   });
 
-  window.MeowCharacterCutouts=Object.freeze({version:VERSION,poses:Array.from(POSES),decorate,poseMarkup});
+  window.MeowCharacterCutouts=Object.freeze({version:VERSION,poses:Array.from(POSES),decorate,poseMarkup,lessonPose,reviewPose});
   window.__MEOWDE_VERSION__=VERSION;
   decorate();
 })();
