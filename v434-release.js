@@ -86,17 +86,34 @@
 
     if(window.__MEOWDE_V449_SPRITE__){startCutouts();return}
 
-    const spriteId="meowde-v449-character-sprite-script";
-    const existing=document.getElementById(spriteId);
-    if(existing){existing.addEventListener("load",startCutouts,{once:true});return}
+    function loadOrderedScript(scriptId,src){
+      return new Promise((resolve,reject)=>{
+        const existing=document.getElementById(scriptId);
+        if(existing){
+          if(existing.dataset.loaded==="true"){resolve();return}
+          existing.addEventListener("load",resolve,{once:true});
+          existing.addEventListener("error",reject,{once:true});
+          return;
+        }
+        const script=document.createElement("script");
+        script.id=scriptId;
+        script.src=src;
+        script.async=false;
+        script.addEventListener("load",()=>{script.dataset.loaded="true";resolve()},{once:true});
+        script.addEventListener("error",reject,{once:true});
+        document.head.appendChild(script);
+      });
+    }
 
-    const sprite=document.createElement("script");
-    sprite.id=spriteId;
-    sprite.src="/v449-character-sprite.js?v=449";
-    sprite.async=false;
-    sprite.addEventListener("load",startCutouts,{once:true});
-    sprite.addEventListener("error",()=>noteWarning("Character sprite could not be loaded."));
-    document.head.appendChild(sprite);
+    loadOrderedScript("meowde-v449-character-sprite-1","/v449-character-sprite-1.js?v=449")
+      .then(()=>loadOrderedScript("meowde-v449-character-sprite-2","/v449-character-sprite-2.js?v=449"))
+      .then(()=>loadOrderedScript("meowde-v449-character-sprite-3","/v449-character-sprite-3.js?v=449"))
+      .then(()=>loadOrderedScript("meowde-v449-character-sprite","/v449-character-sprite.js?v=449"))
+      .then(()=>{
+        if(!window.__MEOWDE_V449_SPRITE__)throw new Error("Sprite assembly failed");
+        startCutouts();
+      })
+      .catch(()=>noteWarning("Character sprite could not be loaded."));
   }
 
   function loadEnhancements(){
