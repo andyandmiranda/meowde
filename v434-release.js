@@ -1,7 +1,7 @@
-(function applyMeowdeV448ReleaseGuard(){
+(function applyMeowdeV449ReleaseGuard(){
   "use strict";
 
-  const VERSION="4.48";
+  const VERSION="4.49";
   const REQUIRED_FUNCTIONS=["renderHome","renderLesson","renderMap","renderReview","renderMy","startLesson","checkQ","finish","save","catSVG"];
   const REQUIRED_APIS=["MeowAchievements","MeowGrowth","MeowEvents","MeowQuests","MeowCharacterV430","MeowLearning","MeowPWA"];
   const ALLOWED_ACCESSORIES=new Set(["none","glasses","headphones","star","crown"]);
@@ -41,6 +41,11 @@
     return false;
   }
 
+  function noteWarning(message){
+    if(!report.warnings.includes(message))report.warnings.push(message);
+    document.documentElement.dataset.releaseHealth=report.errors.length?"error":"warning";
+  }
+
   function loadExtension({id,css,script,version,readyGlobal,warning}){
     if(css&&!document.getElementById(`${id}-style`)){
       const link=document.createElement("link");
@@ -55,11 +60,43 @@
     element.id=`${id}-script`;
     element.src=`/${script}?v=${version}`;
     element.async=true;
-    element.addEventListener("error",()=>{
-      if(!report.warnings.includes(warning))report.warnings.push(warning);
-      document.documentElement.dataset.releaseHealth=report.errors.length?"error":"warning";
-    });
+    element.addEventListener("error",()=>noteWarning(warning));
     document.head.appendChild(element);
+  }
+
+  function loadCharacterCutouts(){
+    const id="meowde-v449-character-cutouts";
+    if(!document.getElementById(`${id}-style`)){
+      const link=document.createElement("link");
+      link.id=`${id}-style`;
+      link.rel="stylesheet";
+      link.href="/v449-character-cutouts.css?v=449";
+      document.head.appendChild(link);
+    }
+
+    const startCutouts=()=>{
+      if(window.MeowCharacterCutouts||document.getElementById(`${id}-script`))return;
+      const script=document.createElement("script");
+      script.id=`${id}-script`;
+      script.src="/v449-character-cutouts.js?v=449";
+      script.async=false;
+      script.addEventListener("error",()=>noteWarning("Character cutout enhancement could not be loaded."));
+      document.head.appendChild(script);
+    };
+
+    if(window.__MEOWDE_V449_SPRITE__){startCutouts();return}
+
+    const spriteId="meowde-v449-character-sprite-script";
+    const existing=document.getElementById(spriteId);
+    if(existing){existing.addEventListener("load",startCutouts,{once:true});return}
+
+    const sprite=document.createElement("script");
+    sprite.id=spriteId;
+    sprite.src="/v449-character-sprite.js?v=449";
+    sprite.async=false;
+    sprite.addEventListener("load",startCutouts,{once:true});
+    sprite.addEventListener("error",()=>noteWarning("Character sprite could not be loaded."));
+    document.head.appendChild(sprite);
   }
 
   function loadEnhancements(){
@@ -67,6 +104,7 @@
     loadExtension({id:"meowde-v443-single-companion",css:"v443-single-companion.css",script:"v443-single-companion.js",version:"443",readyGlobal:"MeowSingleCompanion",warning:"Single companion branding could not be loaded."});
     loadExtension({id:"meowde-v444-visual-cohesion",css:"v444-visual-cohesion.css",script:"v444-visual-cohesion.js",version:"448",readyGlobal:"MeowVisualCohesion",warning:"Visual cohesion enhancement could not be loaded."});
     loadExtension({id:"meowde-v446-update-recovery",css:"v446-update-recovery.css",script:"v446-update-recovery.js",version:"446",readyGlobal:"MeowUpdateRecovery",warning:"Update recovery enhancement could not be loaded."});
+    loadCharacterCutouts();
   }
 
   function run(){
