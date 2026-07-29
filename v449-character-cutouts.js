@@ -1,56 +1,60 @@
-(function applyMeowdeV449CharacterCutouts(){
+(function applyMeowdeV450CharacterImages(){
   "use strict";
 
-  const VERSION="4.49";
-  const SPRITE=window.__MEOWDE_V449_SPRITE__||"";
+  const VERSION="4.50";
   const POSES=new Set(["base","happy","smug","focus","surprised","meh","coding","music","reading","error"]);
+  const ASSETS={
+    base:"/assets/meowde-approved-base.svg?v=450",
+    happy:"/assets/meowde-approved-base.svg?v=450",
+    smug:"/assets/meowde-approved-glasses.svg?v=450",
+    focus:"/assets/meowde-approved-base.svg?v=450",
+    surprised:"/assets/meowde-approved-base.svg?v=450",
+    meh:"/assets/meowde-approved-base.svg?v=450",
+    coding:"/assets/meowde-approved-headphones.svg?v=450",
+    music:"/assets/meowde-approved-headphones.svg?v=450",
+    reading:"/assets/meowde-approved-base.svg?v=450",
+    error:"/assets/meowde-approved-base.svg?v=450"
+  };
   let queued=false;
 
-  function appState(){
-    try{return window.S&&S?S:{}}catch(error){return {}}
-  }
-
-  function isEnglish(){return appState().lang==="en"}
-
-  function currentExercise(){
-    try{return typeof cur==="function"?cur():null}catch(error){return null}
-  }
-
-  function runtimeErrorVisible(){
-    const state=appState();
-    const text=[state.output,state.error]
+  function state(){try{return window.S&&S?S:{}}catch(error){return {}}}
+  function english(){return state().lang==="en"}
+  function exercise(){try{return typeof cur==="function"?cur():null}catch(error){return null}}
+  function runtimeError(){
+    const value=[state().output,state().error]
       .concat(Array.from(document.querySelectorAll(".console,.v431-runtime-error,.v446-runtime-error")).map(node=>node.textContent))
       .filter(Boolean).join(" ");
-    return /(traceback|syntaxerror|nameerror|typeerror|exception|runtimeerror|오류|에러)/i.test(text);
+    return /(traceback|syntaxerror|nameerror|typeerror|exception|runtimeerror|오류|에러)/i.test(value);
   }
-
-  function poseMarkup(pose="base",extraClass="",label="Meowde"){
-    const safe=POSES.has(pose)?pose:"base";
-    return `<span class="v449-character v449-pose-${safe} ${extraClass}" role="img" aria-label="${label}" data-v449-pose="${safe}" data-character-version="${VERSION}"></span>`;
+  function safePose(pose){return POSES.has(pose)?pose:"base"}
+  function imageMarkup(pose="base",extraClass="",label="Meowde"){
+    const safe=safePose(pose);
+    return `<img class="v449-character v449-pose-${safe} ${extraClass}" src="${ASSETS[safe]}" alt="${label}" data-v449-pose="${safe}" data-character-version="${VERSION}" decoding="async">`;
   }
-
-  function updatePose(node,pose,extraClass="",label="Meowde"){
+  function updateImage(node,pose,extraClass="",label="Meowde"){
     if(!node)return null;
-    const safe=POSES.has(pose)?pose:"base";
-    if(node.classList&&node.classList.contains("v449-character")){
-      if(node.dataset.v449Pose!==safe){
-        POSES.forEach(item=>node.classList.remove(`v449-pose-${item}`));
-        node.classList.add(`v449-pose-${safe}`);
-        node.dataset.v449Pose=safe;
-      }
+    const safe=safePose(pose);
+    if(node.tagName==="IMG"&&node.classList.contains("v449-character")){
+      node.src=ASSETS[safe];
+      node.alt=label;
+      POSES.forEach(item=>node.classList.remove(`v449-pose-${item}`));
+      node.classList.add(`v449-pose-${safe}`);
       extraClass.split(/\s+/).filter(Boolean).forEach(item=>node.classList.add(item));
-      if(node.getAttribute("aria-label")!==label)node.setAttribute("aria-label",label);
+      node.dataset.v449Pose=safe;
       return node;
     }
     const holder=document.createElement("div");
-    holder.innerHTML=poseMarkup(safe,extraClass,label);
+    holder.innerHTML=imageMarkup(safe,extraClass,label);
     const replacement=holder.firstElementChild;
     node.replaceWith(replacement);
     return replacement;
   }
-
-  function heroLabel(){
-    return isEnglish()?"Meowde coding with headphones and a laptop":"헤드폰을 쓰고 노트북으로 코딩하는 Meowde";
+  function replaceSlot(root,selector,pose,extraClass,label){
+    if(!root)return null;
+    const current=root.querySelector(selector);
+    if(current)return updateImage(current,pose,extraClass,label);
+    root.insertAdjacentHTML("afterbegin",imageMarkup(pose,extraClass,label));
+    return root.querySelector(`.${extraClass.split(/\s+/)[0]||"v449-character"}`);
   }
 
   function decorateHero(){
@@ -59,240 +63,131 @@
     let scene=hero.querySelector(".v449-coding-scene");
     if(!scene){
       const current=hero.querySelector(".v448-approved-hero,.v444-coding-scene,.v435-coding-scene");
-      const markup=`<div class="v444-coding-scene v448-approved-hero v449-coding-scene" data-character-version="${VERSION}">${poseMarkup("coding","",heroLabel())}</div>`;
+      const label=english()?"Meowde learning with headphones":"헤드폰을 쓰고 학습하는 Meowde";
+      const markup=`<div class="v444-coding-scene v448-approved-hero v449-coding-scene">${imageMarkup("coding","",label)}</div>`;
       if(current)current.outerHTML=markup;
       else (hero.querySelector(".hero-main")||hero).insertAdjacentHTML("afterbegin",markup);
       scene=hero.querySelector(".v449-coding-scene");
     }
-    if(!scene)return;
-    scene.querySelectorAll("img,.v444-hero-art").forEach(node=>node.remove());
+    scene.querySelectorAll(".v449-character").forEach((node,index)=>{if(index)node.remove()});
     const character=scene.querySelector(".v449-character");
-    if(character)updatePose(character,"coding","",heroLabel());
-    else scene.insertAdjacentHTML("afterbegin",poseMarkup("coding","",heroLabel()));
+    if(character)updateImage(character,"coding","",english()?"Meowde learning with headphones":"헤드폰을 쓰고 학습하는 Meowde");
   }
-
   function decorateBrand(){
     const mark=document.querySelector(".brand-mark");
     if(!mark)return;
-    const current=mark.querySelector(".v449-character");
-    if(current){updatePose(current,"base","v448-brand-cat","Meowde");return}
-    mark.innerHTML=poseMarkup("base","v448-brand-cat","Meowde");
+    mark.innerHTML=imageMarkup("base","v448-brand-cat","Meowde");
   }
-
-  function stageNumber(){
+  function level(){
     const current=window.MeowGrowth&&typeof MeowGrowth.stage==="function"?MeowGrowth.stage():null;
     const stages=window.MeowGrowth&&Array.isArray(MeowGrowth.stages)?MeowGrowth.stages:[];
-    const index=stages.findIndex(item=>current&&item.id===current.id);
-    return Math.max(1,index+1);
+    return Math.max(1,stages.findIndex(item=>current&&item.id===current.id)+1);
   }
-
-  function growthPose(level){
-    return ["base","happy","smug","focus","surprised"][Math.max(0,Math.min(4,level-1))];
-  }
-
+  function growthPose(value){return ["base","happy","smug","focus","surprised"][Math.max(0,Math.min(4,value-1))]}
   function decorateGrowth(){
-    const stageIcon=document.querySelector(".v427-growth-card .v427-stage-icon");
-    if(!stageIcon)return;
-    const level=stageNumber();
-    const pose=growthPose(level);
-    let character=stageIcon.querySelector(".v449-character");
-    if(character)updatePose(character,pose,"v448-growth-cat",`Meowde level ${level}`);
-    else{
-      stageIcon.innerHTML=`${poseMarkup(pose,"v448-growth-cat",`Meowde level ${level}`)}<span class="v448-level-badge" aria-label="Level ${level}">${level}</span>`;
-      character=stageIcon.querySelector(".v449-character");
-    }
-    let badge=stageIcon.querySelector(".v448-level-badge");
-    if(!badge){stageIcon.insertAdjacentHTML("beforeend",`<span class="v448-level-badge" aria-label="Level ${level}">${level}</span>`);badge=stageIcon.querySelector(".v448-level-badge")}
-    if(badge&&badge.textContent!==String(level))badge.textContent=String(level);
+    const slot=document.querySelector(".v427-growth-card .v427-stage-icon");
+    if(!slot)return;
+    const value=level();
+    slot.innerHTML=`${imageMarkup(growthPose(value),"v448-growth-cat",`Meowde level ${value}`)}<span class="v448-level-badge" aria-label="Level ${value}">${value}</span>`;
   }
-
   function lessonPose(){
-    const state=appState();
-    const exercise=currentExercise();
-    if(runtimeErrorVisible())return "error";
-    if(state.checked)return state.correct?"happy":"surprised";
-    if(exercise&&exercise.type==="concept")return "reading";
+    if(runtimeError())return "error";
+    if(state().checked)return state().correct?"happy":"surprised";
+    if(exercise()&&exercise().type==="concept")return "reading";
     return "focus";
   }
-
   function decorateCoach(){
     const pose=lessonPose();
     document.querySelectorAll(".coach").forEach(coach=>{
-      const current=coach.querySelector(":scope > .v449-character,:scope > .meowde-approved-character,:scope > svg");
-      if(current)updatePose(current,pose,"",isEnglish()?`Meowde ${pose}`:`학습 상태를 표현하는 Meowde`);
-      else coach.insertAdjacentHTML("afterbegin",poseMarkup(pose,"",isEnglish()?`Meowde ${pose}`:"학습 상태를 표현하는 Meowde"));
+      const current=coach.querySelector(":scope > .v449-character,:scope > .meowde-approved-character,:scope > svg,:scope > img");
+      if(current)updateImage(current,pose,"",english()?`Meowde ${pose}`:"학습 상태를 표현하는 Meowde");
+      else coach.insertAdjacentHTML("afterbegin",imageMarkup(pose,"",english()?`Meowde ${pose}`:"학습 상태를 표현하는 Meowde"));
     });
-    document.documentElement.dataset.lessonPose=pose;
   }
-
   function decorateTrail(){
-    document.querySelectorAll(".trail-cat").forEach(holder=>{
-      const label=isEnglish()?"Confident Meowde at the current lesson":"현재 위치에서 자신만만한 Meowde";
-      const current=holder.querySelector(".v449-character,.meowde-approved-character,svg");
-      if(current)updatePose(current,"smug","",label);
-      else holder.innerHTML=poseMarkup("smug","",label);
-    });
+    document.querySelectorAll(".trail-cat").forEach(slot=>{slot.innerHTML=imageMarkup("smug","",english()?"Confident Meowde":"자신만만한 Meowde")});
   }
-
-  function titleText(card){
-    const heading=card&&card.querySelector("h3");
-    return heading?heading.textContent.trim().toLowerCase():"";
-  }
-
+  function title(card){const heading=card&&card.querySelector("h3");return heading?heading.textContent.trim().toLowerCase():""}
   function addCardPose(card,pose,label){
     if(!card)return;
     card.classList.add("v449-decorated-card");
     const current=card.querySelector(":scope > .v449-card-pose");
-    if(current)updatePose(current,pose,"v449-card-pose",label);
-    else card.insertAdjacentHTML("beforeend",poseMarkup(pose,"v449-card-pose",label));
+    if(current)updateImage(current,pose,"v449-card-pose",label);
+    else card.insertAdjacentHTML("beforeend",imageMarkup(pose,"v449-card-pose",label));
   }
-
-  function decorateHomeCards(){
+  function decorateCards(){
     document.querySelectorAll(".screen .scroll > .card").forEach(card=>{
       if(card.classList.contains("hero")||card.classList.contains("v427-growth-card"))return;
-      const title=titleText(card);
-      if(title.includes("challenge")||title.includes("챌린지"))addCardPose(card,"music",isEnglish()?"Meowde enjoying a coding rhythm":"코딩 리듬을 즐기는 Meowde");
-      else if(title.includes("goal")||title.includes("목표")||title.includes("quest"))addCardPose(card,"reading",isEnglish()?"Meowde reading the next quest":"다음 목표를 읽는 Meowde");
-      else if(title.includes("next")||title.includes("다음")||title.includes("저장"))addCardPose(card,"smug",isEnglish()?"Meowde ready for the next lesson":"다음 레슨을 준비한 Meowde");
+      const text=title(card);
+      if(text.includes("challenge")||text.includes("챌린지"))addCardPose(card,"music",english()?"Music break":"뮤직 브레이크");
+      else if(text.includes("goal")||text.includes("목표")||text.includes("quest"))addCardPose(card,"reading",english()?"Reading goals":"목표를 읽는 Meowde");
+      else if(text.includes("next")||text.includes("다음")||text.includes("저장"))addCardPose(card,"smug",english()?"Ready for the next lesson":"다음 레슨 준비");
     });
   }
-
-  function rewardAccuracy(reward){
-    const value=reward&&reward.querySelector(".stats3 .stat3:nth-child(3) b");
-    const match=value&&String(value.textContent||"").match(/\d+/);
-    return match?Number(match[0]):100;
-  }
-
+  function accuracy(reward){const value=reward&&reward.querySelector(".stats3 .stat3:nth-child(3) b");const match=value&&String(value.textContent||"").match(/\d+/);return match?Number(match[0]):100}
   function decorateFeedback(){
     const reward=document.querySelector(".reward-screen");
     if(reward){
-      const accuracy=rewardAccuracy(reward);
-      const pose=accuracy>=85?"happy":accuracy>=65?"smug":"meh";
-      const current=reward.querySelector(".v449-character,.meowde-approved-character,svg");
-      const label=isEnglish()?"Meowde reacting to the result":"학습 결과에 반응하는 Meowde";
-      if(current)updatePose(current,pose,"v449-feedback-character",label);
-      else if(!reward.querySelector(".v449-feedback-character"))reward.insertAdjacentHTML("afterbegin",poseMarkup(pose,"v449-feedback-character",label));
-      reward.dataset.meowdeRewardPose=pose;
+      const value=accuracy(reward),pose=value>=85?"happy":value>=65?"smug":"meh";
+      const current=reward.querySelector(".v449-character,.meowde-approved-character,svg,img");
+      if(current)updateImage(current,pose,"v449-feedback-character",english()?"Meowde result":"학습 결과 Meowde");
+      else reward.insertAdjacentHTML("afterbegin",imageMarkup(pose,"v449-feedback-character",english()?"Meowde result":"학습 결과 Meowde"));
     }
     const feedback=document.querySelector(".feedback");
     if(feedback){
-      const pose=runtimeErrorVisible()?"error":feedback.classList.contains("ok")?"happy":"surprised";
-      const label=pose==="happy"?(isEnglish()?"Meowde is proud":"뿌듯한 Meowde"):(pose==="error"?(isEnglish()?"Meowde debugging":"오류를 고치는 Meowde"):(isEnglish()?"Surprised Meowde":"깜짝 놀란 Meowde"));
+      const pose=runtimeError()?"error":feedback.classList.contains("ok")?"happy":"surprised";
       const current=feedback.querySelector(".v449-feedback-character");
-      if(current)updatePose(current,pose,"v449-feedback-character",label);
-      else feedback.insertAdjacentHTML("afterbegin",poseMarkup(pose,"v449-feedback-character",label));
+      if(current)updateImage(current,pose,"v449-feedback-character","Meowde");
+      else feedback.insertAdjacentHTML("afterbegin",imageMarkup(pose,"v449-feedback-character","Meowde"));
     }
   }
-
-  function roomLabels(){
-    if(isEnglish())return [
-      ["coding","Coding mode","Laptop focus"],
-      ["music","Music break","Headphones on"],
-      ["reading","Study mode","Reading the next clue"],
-      ["happy","Victory face","Correct answer"],
-      ["smug","Confident mode","Ready for more"],
-      ["error","Debug mode","Fixing one bug"]
-    ];
-    return [
-      ["coding","코딩 모드","노트북 집중"],
-      ["music","뮤직 브레이크","헤드폰 장착"],
-      ["reading","공부 모드","다음 힌트 읽기"],
-      ["happy","정답 표정","문제 해결 완료"],
-      ["smug","자신감 모드","다음 문제 준비"],
-      ["error","디버그 모드","버그 하나 수정 중"]
-    ];
-  }
-
+  function roomItems(){return english()?[["coding","Coding mode","Focused learning"],["music","Music break","Headphones on"],["reading","Study mode","Reading clues"],["happy","Victory face","Correct answer"],["smug","Confident mode","Ready for more"],["error","Debug mode","Checking an error"]]:[["coding","코딩 모드","집중 학습"],["music","뮤직 브레이크","헤드폰 장착"],["reading","공부 모드","다음 힌트 읽기"],["happy","정답 표정","문제 해결 완료"],["smug","자신감 모드","다음 문제 준비"],["error","디버그 모드","오류 확인 중"]]}
   function decorateRoom(){
     const grid=document.querySelector(".room-grid");
     if(!grid)return;
     grid.classList.add("v449-room-grid");
-    const labels=roomLabels();
-    const signature=`${isEnglish()?"en":"ko"}:${labels.map(item=>item[0]).join("|")}`;
-    if(grid.dataset.v449Gallery!==signature){
-      grid.dataset.v449Gallery=signature;
-      grid.innerHTML=labels.map(([pose,title,copy])=>`<article class="v449-room-pose">${poseMarkup(pose,"",title)}<b>${title}</b><small>${copy}</small></article>`).join("");
-    }
-    const heading=document.querySelector(".simple-head h2");
-    const copy=document.querySelector(".simple-head p");
-    if(heading)heading.textContent=isEnglish()?"Meowde pose collection":"Meowde 포즈 컬렉션";
-    if(copy)copy.textContent=isEnglish()?"One mascot, many useful expressions and activities.":"하나의 캐릭터를 표정과 행동에 맞게 다양하게 활용해요.";
+    const items=roomItems();
+    grid.innerHTML=items.map(([pose,name,copy])=>`<article class="v449-room-pose">${imageMarkup(pose,"",name)}<b>${name}</b><small>${copy}</small></article>`).join("");
+    const heading=document.querySelector(".simple-head h2"),copy=document.querySelector(".simple-head p");
+    if(heading)heading.textContent=english()?"Meowde pose collection":"Meowde 포즈 컬렉션";
+    if(copy)copy.textContent=english()?"One mascot used across different states.":"하나의 캐릭터를 상황에 맞게 활용해요.";
   }
-
   function decorateProfile(){
     document.querySelectorAll(".v420-avatar").forEach(slot=>{
-      const current=slot.querySelector(":scope > .v449-character,:scope > .meowde-approved-character,:scope > svg");
-      const label=isEnglish()?"Meowde relaxing with headphones":"헤드폰으로 쉬는 Meowde";
-      if(current)updatePose(current,"music","v449-profile-pose",label);
-      else slot.insertAdjacentHTML("afterbegin",poseMarkup("music","v449-profile-pose",label));
+      const current=slot.querySelector(":scope > .v449-character,:scope > .meowde-approved-character,:scope > svg,:scope > img");
+      if(current)updateImage(current,"music","v449-profile-pose",english()?"Meowde with headphones":"헤드폰을 쓴 Meowde");
+      else slot.insertAdjacentHTML("afterbegin",imageMarkup("music","v449-profile-pose",english()?"Meowde with headphones":"헤드폰을 쓴 Meowde"));
     });
-    const achievements=document.querySelector(".v419-achievement-summary,.v419-achievements-hero");
-    if(achievements&&!achievements.querySelector(".v449-achievement-pose"))achievements.insertAdjacentHTML("afterbegin",poseMarkup("smug","v449-achievement-pose",isEnglish()?"Proud Meowde":"뿌듯한 Meowde"));
   }
-
-  function reviewPose(){
-    const mistakes=Array.isArray(appState().mistakes)?appState().mistakes.length:0;
-    return mistakes>0?"meh":"smug";
-  }
-
   function decorateReview(){
-    if(appState().screen!=="review")return;
-    const pose=reviewPose();
+    if(state().screen!=="review")return;
+    const pose=Array.isArray(state().mistakes)&&state().mistakes.length?"meh":"smug";
     const head=document.querySelector(".screen .simple-head");
     if(head){
       head.classList.add("v449-review-head");
       const current=head.querySelector(":scope > .v449-review-pose");
-      const label=isEnglish()?"Meowde showing review status":"복습 상태를 보여주는 Meowde";
-      if(current)updatePose(current,pose,"v449-review-pose",label);
-      else head.insertAdjacentHTML("beforeend",poseMarkup(pose,"v449-review-pose",label));
+      if(current)updateImage(current,pose,"v449-review-pose","Meowde");
+      else head.insertAdjacentHTML("beforeend",imageMarkup(pose,"v449-review-pose","Meowde"));
     }
-    document.querySelectorAll(".v417-smart-card").forEach(card=>{
-      card.classList.add("v449-smart-card");
-      if(!card.querySelector(":scope > .v449-smart-pose"))card.insertAdjacentHTML("beforeend",poseMarkup("reading","v449-smart-pose",isEnglish()?"Meowde preparing smart review":"맞춤 복습을 준비하는 Meowde"));
-    });
   }
-
   function decorateRecovery(){
     document.querySelectorAll(".v434-release-error,.v446-update-recovery,.v446-recovery-panel").forEach(panel=>{
       panel.classList.add("v449-character-error");
-      if(!panel.querySelector(":scope > .v449-error-pose"))panel.insertAdjacentHTML("afterbegin",poseMarkup("error","v449-error-pose",isEnglish()?"Meowde checking an error":"오류를 확인하는 Meowde"));
+      if(!panel.querySelector(":scope > .v449-error-pose"))panel.insertAdjacentHTML("afterbegin",imageMarkup("error","v449-error-pose","Meowde"));
     });
   }
-
   function decorate(){
-    document.documentElement.style.setProperty("--v449-sprite",`url("${SPRITE}")`);
-    decorateHero();
-    decorateBrand();
-    decorateGrowth();
-    decorateCoach();
-    decorateTrail();
-    decorateHomeCards();
-    decorateFeedback();
-    decorateRoom();
-    decorateProfile();
-    decorateReview();
-    decorateRecovery();
-    document.documentElement.dataset.characterCutouts=VERSION;
+    decorateHero();decorateBrand();decorateGrowth();decorateCoach();decorateTrail();decorateCards();decorateFeedback();decorateRoom();decorateProfile();decorateReview();decorateRecovery();
+    document.documentElement.dataset.characterImages=VERSION;
   }
-
-  function queue(){
-    if(queued)return;
-    queued=true;
-    requestAnimationFrame(()=>{queued=false;decorate()});
-  }
-
-  const observer=new MutationObserver(queue);
-  observer.observe(document.documentElement,{childList:true,subtree:true});
-
+  function queue(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;decorate()})}
+  new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true});
   ["renderHome","renderMap","renderRoom","renderLesson","renderReview","renderMy","renderProfile","renderAchievements","finish"].forEach(name=>{
-    const current=window[name];
-    if(typeof current!=="function"||current.__v449Wrapped)return;
+    const current=window[name];if(typeof current!=="function"||current.__v450Wrapped)return;
     function wrapped(){const result=current.apply(this,arguments);queue();return result}
-    wrapped.__v449Wrapped=true;
-    window[name]=wrapped;
+    wrapped.__v450Wrapped=true;window[name]=wrapped;
   });
-
-  window.MeowCharacterCutouts=Object.freeze({version:VERSION,poses:Array.from(POSES),decorate,poseMarkup,lessonPose,reviewPose});
+  window.MeowCharacterCutouts=Object.freeze({version:VERSION,poses:Array.from(POSES),decorate,imageMarkup,lessonPose});
   window.__MEOWDE_VERSION__=VERSION;
   decorate();
 })();
