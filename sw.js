@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v448-hero-layout-v1";
+const CACHE_NAME = "meowde-v449-character-cutouts-v1";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -69,7 +69,13 @@ const REQUIRED_ASSETS = [
   "/v444-visual-cohesion.js",
   "/v444-visual-cohesion.css",
   "/v446-update-recovery.js",
-  "/v446-update-recovery.css"
+  "/v446-update-recovery.css",
+  "/v449-character-sprite-1.js",
+  "/v449-character-sprite-2.js",
+  "/v449-character-sprite-3.js",
+  "/v449-character-sprite.js",
+  "/v449-character-cutouts.js",
+  "/v449-character-cutouts.css"
 ];
 
 self.addEventListener("install", (event) => {
