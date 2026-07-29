@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v451-vector-poses-v2";
+const CACHE_NAME = "meowde-v451-vector-poses-v3";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -16,7 +16,7 @@ const REQUIRED_ASSETS = [
   "/assets/characters/v451/meowde-music.svg",
   "/assets/characters/v451/meowde-reading.svg",
   "/assets/characters/v451/meowde-happy.svg",
-  "/assets/characters/v451/meowde-confident.svg",
+  "/assets/characters/v451/meowde-challenge.svg",
   "/assets/characters/v451/meowde-debug.svg",
   "/manifest.webmanifest",
   "/meowde-icon-192.svg",
