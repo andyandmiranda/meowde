@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v449-character-cutouts-v1";
+const CACHE_NAME = "meowde-v450-character-images-v1";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -70,66 +70,40 @@ const REQUIRED_ASSETS = [
   "/v444-visual-cohesion.css",
   "/v446-update-recovery.js",
   "/v446-update-recovery.css",
-  "/v449-character-sprite-1.js",
-  "/v449-character-sprite-2.js",
-  "/v449-character-sprite-3.js",
-  "/v449-character-sprite.js",
   "/v449-character-cutouts.js",
   "/v449-character-cutouts.css"
 ];
 
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => cache.addAll(REQUIRED_ASSETS))
-      .then(() => self.skipWaiting())
-  );
+self.addEventListener("install", event => {
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(REQUIRED_ASSETS)).then(() => self.skipWaiting()));
 });
 
-self.addEventListener("activate", (event) => {
+self.addEventListener("activate", event => {
   event.waitUntil(
-    caches
-      .keys()
-      .then((cacheNames) =>
-        Promise.all(
-          cacheNames
-            .filter(
-              (cacheName) =>
-                cacheName.startsWith(CACHE_PREFIX) && cacheName !== CACHE_NAME
-            )
-            .map((cacheName) => caches.delete(cacheName))
-        )
-      )
+    caches.keys()
+      .then(names => Promise.all(names.filter(name => name.startsWith(CACHE_PREFIX) && name !== CACHE_NAME).map(name => caches.delete(name))))
       .then(() => self.clients.claim())
   );
 });
 
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
-  }
+self.addEventListener("message", event => {
+  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
 });
 
-self.addEventListener("fetch", (event) => {
+self.addEventListener("fetch", event => {
   const request = event.request;
   if (request.method !== "GET") return;
-
   const requestUrl = new URL(request.url);
   if (requestUrl.origin !== self.location.origin) return;
-
-  const isHtmlRequest =
-    request.mode === "navigate" || requestUrl.pathname.endsWith(".html");
+  const isHtmlRequest = request.mode === "navigate" || requestUrl.pathname.endsWith(".html");
 
   if (isHtmlRequest) {
     event.respondWith(
       fetch(request)
-        .then((response) => {
+        .then(response => {
           if (response && response.ok) {
-            const responseCopy = response.clone();
-            event.waitUntil(
-              caches.open(CACHE_NAME).then((cache) => cache.put(request, responseCopy))
-            );
+            const copy = response.clone();
+            event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.put(request, copy)));
           }
           return response;
         })
@@ -144,14 +118,12 @@ self.addEventListener("fetch", (event) => {
   }
 
   event.respondWith(
-    caches.match(request, { ignoreSearch: true }).then((cachedResponse) => {
-      if (cachedResponse) return cachedResponse;
-      return fetch(request).then((response) => {
+    caches.match(request, { ignoreSearch: true }).then(cached => {
+      if (cached) return cached;
+      return fetch(request).then(response => {
         if (!response || !response.ok) return response;
-        const responseCopy = response.clone();
-        event.waitUntil(
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, responseCopy))
-        );
+        const copy = response.clone();
+        event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.put(request, copy)));
         return response;
       });
     })
