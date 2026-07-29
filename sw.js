@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v451-individual-poses-v1";
+const CACHE_NAME = "meowde-v451-vector-poses-v2";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -11,15 +11,13 @@ const REQUIRED_ASSETS = [
   "/assets/meowde-approved-glasses.svg",
   "/assets/meowde-approved-headphones.svg",
   "/assets/meowde-approved-hero.svg",
-  "/assets/meowde-happy.svg",
-  "/assets/meowde-smug.svg",
-  "/assets/meowde-focus.svg",
-  "/assets/meowde-surprised.svg",
-  "/assets/meowde-meh.svg",
-  "/assets/meowde-coding-cutout.svg",
-  "/assets/meowde-music.svg",
-  "/assets/meowde-reading.svg",
-  "/assets/meowde-error.svg",
+  "/assets/characters/v451/meowde-base.svg",
+  "/assets/characters/v451/meowde-coding.svg",
+  "/assets/characters/v451/meowde-music.svg",
+  "/assets/characters/v451/meowde-reading.svg",
+  "/assets/characters/v451/meowde-happy.svg",
+  "/assets/characters/v451/meowde-confident.svg",
+  "/assets/characters/v451/meowde-debug.svg",
   "/manifest.webmanifest",
   "/meowde-icon-192.svg",
   "/meowde-icon-512.svg",
