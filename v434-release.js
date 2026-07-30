@@ -1,7 +1,7 @@
-(function applyMeowdeV452ReleaseGuard(){
+(function applyMeowdeV453ReleaseGuard(){
   "use strict";
 
-  const VERSION="4.52";
+  const VERSION="4.53";
   const REQUIRED_FUNCTIONS=["renderHome","renderLesson","renderMap","renderReview","renderMy","startLesson","checkQ","finish","save","catSVG"];
   const REQUIRED_APIS=["MeowAchievements","MeowGrowth","MeowEvents","MeowQuests","MeowCharacterV430","MeowLearning","MeowPWA"];
   const ALLOWED_ACCESSORIES=new Set(["none","glasses","headphones","star","crown"]);
@@ -35,7 +35,7 @@
   }
   function loadEnhancements(){
     loadExtension({id:"meowde-v442-map-touch",css:"v442-map-touch.css",script:"v442-map-touch.js",version:"442",readyGlobal:"MeowMapTouch",warning:"Map touch enhancement could not be loaded."});
-    loadExtension({id:"meowde-v443-single-companion",css:"v443-single-companion.css",script:"v443-single-companion.js",version:"443",readyGlobal:"MeowSingleCompanion",warning:"Single companion branding could not be loaded."});
+    loadExtension({id:"meowde-v443-single-companion",css:"v443-single-companion.css",script:"v443-single-companion.js",version:"453",readyGlobal:"MeowSingleCompanion",warning:"Single companion branding could not be loaded."});
     loadExtension({id:"meowde-v444-visual-cohesion",css:"v444-visual-cohesion.css",script:"v444-visual-cohesion.js",version:"448",readyGlobal:"MeowVisualCohesion",warning:"Visual cohesion enhancement could not be loaded."});
     loadExtension({id:"meowde-v446-update-recovery",css:"v446-update-recovery.css",script:"v446-update-recovery.js",version:"446",readyGlobal:"MeowUpdateRecovery",warning:"Update recovery enhancement could not be loaded."});
     loadExtension({id:"meowde-v450-character-images",css:"v449-character-cutouts.css",script:"v449-character-cutouts.js",version:"450",readyGlobal:"MeowCharacterCutouts",warning:"Character image enhancement could not be loaded."});
