@@ -3,17 +3,17 @@
 
   const VERSION="4.51";
   const ASSETS=Object.freeze({
-    base:"/assets/characters/v451/meowde-base.svg?v=4513",
-    happy:"/assets/characters/v451/meowde-happy.svg?v=4513",
-    smug:"/assets/characters/v451/meowde-challenge.svg?v=4513",
-    challenge:"/assets/characters/v451/meowde-challenge.svg?v=4513",
-    focus:"/assets/characters/v451/meowde-coding.svg?v=4513",
-    surprised:"/assets/characters/v451/meowde-happy.svg?v=4513",
-    meh:"/assets/characters/v451/meowde-base.svg?v=4513",
-    coding:"/assets/characters/v451/meowde-coding.svg?v=4513",
-    music:"/assets/characters/v451/meowde-music.svg?v=4513",
-    reading:"/assets/characters/v451/meowde-reading.svg?v=4513",
-    error:"/assets/characters/v451/meowde-debug.svg?v=4513"
+    base:"/assets/characters/v451/meowde-base.svg?v=4514",
+    happy:"/assets/characters/v451/meowde-happy.webp?v=4514",
+    smug:"/assets/characters/v451/meowde-challenge.webp?v=4514",
+    challenge:"/assets/characters/v451/meowde-challenge.webp?v=4514",
+    focus:"/assets/characters/v451/meowde-coding.webp?v=4514",
+    surprised:"/assets/characters/v451/meowde-happy.webp?v=4514",
+    meh:"/assets/characters/v451/meowde-base.svg?v=4514",
+    coding:"/assets/characters/v451/meowde-coding.webp?v=4514",
+    music:"/assets/characters/v451/meowde-music.webp?v=4514",
+    reading:"/assets/characters/v451/meowde-reading.webp?v=4514",
+    error:"/assets/characters/v451/meowde-debug.webp?v=4514"
   });
   let queued=false;
 
