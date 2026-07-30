@@ -33,7 +33,11 @@ expect(bootstrap.includes("/v434-release.js"),"bootstrap does not load the relea
 expect(bootstrap.includes('cache: "no-store"'),"bootstrap does not bypass stale HTML caching");
 
 const sw=read("sw.js");
+expect(sw.includes('const CACHE_NAME = "meowde-v452-runtime-alignment-v1"'),"service worker cache is not aligned to v4.52");
 expect(sw.includes("/v434-release.js"),"service worker does not precache the release guard");
 expect(sw.includes("/v451-individual-character-poses.js"),"service worker does not precache the character mapper");
+for(const asset of ["meowde-coding.webp","meowde-music.webp","meowde-reading.webp","meowde-happy.webp","meowde-challenge.webp","meowde-debug.webp"]){
+  expect(sw.includes(asset),`${asset} is missing from the service worker cache`);
+}
 
-console.log("Validated Meowde v4.52 runtime, package, bootstrap, and character asset version alignment.");
+console.log("Validated Meowde v4.52 runtime, package, bootstrap, cache, and character asset version alignment.");
