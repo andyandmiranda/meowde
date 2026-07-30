@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v452-runtime-alignment-v1";
+const CACHE_NAME = "meowde-v453-bootstrap-alignment-v1";
 
 const REQUIRED_ASSETS = [
   "/",
