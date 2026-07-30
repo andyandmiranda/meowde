@@ -47,11 +47,11 @@ expect(!mapper.includes("meowde-coding-cutout.svg"),"broken coding cutout is sti
 expect(!mapper.includes("meowde-confident.svg"),"obsolete confident asset is still referenced");
 
 const release=readText("v434-release.js");
-expect(/const VERSION="4\.(51|52)"/.test(release),"release version is not compatible with v4.51 character assets");
+expect(/const VERSION="4\.(51|52|53)"/.test(release),"release version is not compatible with v4.51 character assets");
 expect(release.includes("v451-individual-character-poses.js"),"v4.51 mapper is not loaded");
 
 const sw=readText("sw.js");
-expect(/meowde-v4(51-webp-poses-v4|52-runtime-alignment-v1)/.test(sw),"service-worker cache is not compatible with final WebP assets");
+expect(/meowde-v4(51-webp-poses-v4|52-runtime-alignment-v1|53-bootstrap-alignment-v1)/.test(sw),"service-worker cache is not compatible with final WebP assets");
 expect(sw.includes("/v451-individual-character-poses.js"),"mapper is missing from precache");
 for(const file of Object.values(assets))expect(sw.includes(`/${file}`),`${file} is missing from precache`);
 expect(sw.includes(`/${base}`),`${base} is missing from precache`);
