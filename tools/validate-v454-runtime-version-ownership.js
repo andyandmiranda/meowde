@@ -26,12 +26,13 @@ expect(release.includes('const VERSION="4.54"'),"release version is not 4.54");
 expect(release.includes("function publishVersion()"),"release guard has no explicit version publisher");
 expect(release.includes("window.__MEOWDE_VERSION__=VERSION"),"release guard does not own the global release version");
 expect(release.includes("document.documentElement.dataset.meowdeVersion=VERSION"),"document release version is not published");
-expect(release.includes('version:"4515"'),"character mapper cache key is not refreshed");
+expect(release.includes('version:"4515"'),"character mapper request key is not refreshed");
 
 const mapper=read("v451-individual-character-poses.js");
 new vm.Script(mapper,{filename:"v451-individual-character-poses.js"});
 expect(mapper.includes('const VERSION="4.51"'),"character module identity changed unexpectedly");
-expect(mapper.includes("window.__MEOWDE_CHARACTER_ASSET_VERSION__=VERSION"),"character asset version is not namespaced");
+expect(mapper.includes('const ASSET_VERSION="4514"'),"character asset cache identity changed unexpectedly");
+expect(mapper.includes("window.__MEOWDE_CHARACTER_ASSET_VERSION__=ASSET_VERSION"),"character asset version is not namespaced");
 expect(!mapper.includes("window.__MEOWDE_VERSION__"),"character mapper still overwrites the application release version");
 expect(mapper.includes("dataset.individualCharacterPoses=VERSION"),"character dataset version is missing");
 
