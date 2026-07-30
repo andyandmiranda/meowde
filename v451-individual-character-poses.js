@@ -2,18 +2,19 @@
   "use strict";
 
   const VERSION="4.51";
+  const ASSET_VERSION="4514";
   const ASSETS=Object.freeze({
-    base:"/assets/characters/v451/meowde-base.svg?v=4514",
-    happy:"/assets/characters/v451/meowde-happy.webp?v=4514",
-    smug:"/assets/characters/v451/meowde-challenge.webp?v=4514",
-    challenge:"/assets/characters/v451/meowde-challenge.webp?v=4514",
-    focus:"/assets/characters/v451/meowde-coding.webp?v=4514",
-    surprised:"/assets/characters/v451/meowde-happy.webp?v=4514",
-    meh:"/assets/characters/v451/meowde-base.svg?v=4514",
-    coding:"/assets/characters/v451/meowde-coding.webp?v=4514",
-    music:"/assets/characters/v451/meowde-music.webp?v=4514",
-    reading:"/assets/characters/v451/meowde-reading.webp?v=4514",
-    error:"/assets/characters/v451/meowde-debug.webp?v=4514"
+    base:`/assets/characters/v451/meowde-base.svg?v=${ASSET_VERSION}`,
+    happy:`/assets/characters/v451/meowde-happy.webp?v=${ASSET_VERSION}`,
+    smug:`/assets/characters/v451/meowde-challenge.webp?v=${ASSET_VERSION}`,
+    challenge:`/assets/characters/v451/meowde-challenge.webp?v=${ASSET_VERSION}`,
+    focus:`/assets/characters/v451/meowde-coding.webp?v=${ASSET_VERSION}`,
+    surprised:`/assets/characters/v451/meowde-happy.webp?v=${ASSET_VERSION}`,
+    meh:`/assets/characters/v451/meowde-base.svg?v=${ASSET_VERSION}`,
+    coding:`/assets/characters/v451/meowde-coding.webp?v=${ASSET_VERSION}`,
+    music:`/assets/characters/v451/meowde-music.webp?v=${ASSET_VERSION}`,
+    reading:`/assets/characters/v451/meowde-reading.webp?v=${ASSET_VERSION}`,
+    error:`/assets/characters/v451/meowde-debug.webp?v=${ASSET_VERSION}`
   });
   let queued=false;
 
@@ -37,7 +38,7 @@
     if(root instanceof HTMLImageElement)applyPose(root);
     root.querySelectorAll?.("img.v449-character[data-v449-pose]").forEach(applyPose);
     document.documentElement.dataset.individualCharacterPoses=VERSION;
-    window.__MEOWDE_VERSION__=VERSION;
+    window.__MEOWDE_CHARACTER_ASSET_VERSION__=ASSET_VERSION;
   }
 
   function queue(){
@@ -53,6 +54,6 @@
     }
   }).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:["data-v449-pose","src"]});
 
-  window.MeowIndividualCharacterPoses=Object.freeze({version:VERSION,assets:ASSETS,decorate});
+  window.MeowIndividualCharacterPoses=Object.freeze({version:VERSION,assetVersion:ASSET_VERSION,assets:ASSETS,decorate});
   decorate();
 })();
