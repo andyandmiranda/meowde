@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v450-character-images-v1";
+const CACHE_NAME = "meowde-v451-webp-poses-v4";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -11,6 +11,13 @@ const REQUIRED_ASSETS = [
   "/assets/meowde-approved-glasses.svg",
   "/assets/meowde-approved-headphones.svg",
   "/assets/meowde-approved-hero.svg",
+  "/assets/characters/v451/meowde-base.svg",
+  "/assets/characters/v451/meowde-coding.webp",
+  "/assets/characters/v451/meowde-music.webp",
+  "/assets/characters/v451/meowde-reading.webp",
+  "/assets/characters/v451/meowde-happy.webp",
+  "/assets/characters/v451/meowde-challenge.webp",
+  "/assets/characters/v451/meowde-debug.webp",
   "/manifest.webmanifest",
   "/meowde-icon-192.svg",
   "/meowde-icon-512.svg",
@@ -71,7 +78,8 @@ const REQUIRED_ASSETS = [
   "/v446-update-recovery.js",
   "/v446-update-recovery.css",
   "/v449-character-cutouts.js",
-  "/v449-character-cutouts.css"
+  "/v449-character-cutouts.css",
+  "/v451-individual-character-poses.js"
 ];
 
 self.addEventListener("install", event => {
