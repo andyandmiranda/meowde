@@ -22,8 +22,22 @@ const expectedStyles = [
   "v434-release.css", "v443-single-companion.css",
 ];
 const html = read("v412.html");
-const scripts = [...html.matchAll(/src="\/(v4\d+[^"?]+\.js)/g)].map((m) => m[1]);
-const styles = [...html.matchAll(/href="\/(v4\d+[^"?]+\.css)/g)].map((m) => m[1]);
+
+function extractLiteralAssets(pattern) {
+  return [...html.matchAll(pattern)].map((match) => match[1]);
+}
+
+function extractDeclarativeAssets(variableName, extension) {
+  const block = html.match(new RegExp(`const\\s+${variableName}=\\[([\\s\\S]*?)\\];`));
+  if (!block) return [];
+  const pattern = new RegExp(`\\[\\"(v4\\d+[^\\"]+\\.${extension})\\",`, "g");
+  return [...block[1].matchAll(pattern)].map((match) => match[1]);
+}
+
+const literalScripts = extractLiteralAssets(/src="\/(v4\d+[^"?]+\.js)/g);
+const literalStyles = extractLiteralAssets(/href="\/(v4\d+[^"?]+\.css)/g);
+const scripts = literalScripts.length ? literalScripts : extractDeclarativeAssets("scripts", "js");
+const styles = literalStyles.length ? literalStyles : extractDeclarativeAssets("styles", "css");
 let failed = false;
 
 function compare(label, actual, expected) {
@@ -58,4 +72,4 @@ for (const file of [...expectedScripts, ...expectedStyles]) {
 }
 
 if (failed) process.exit(1);
-console.log("Structure audit passed for Meowde v4.43.");
+console.log("Structure audit passed for Meowde v4.53.");
