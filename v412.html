@@ -49,7 +49,7 @@
         ].join("");
         html=html.replace("</head>",headMarkup);
         const scripts=[
-          ["v412-hotfix.js","412"],["v413-core.js","413"],["v413-lesson.js","413"],["v414-state.js","414"],["v414-reward.js","414"],["v414-screens.js","414"],["v415-retention.js","415"],["v416-journey.js","416"],["v417-review.js","417"],["v418-coach.js","418"],["v420-profile.js","420"],["v421-vault.js","421"],["v422-pwa.js",VERSION],["v423-character.js","439"],["v425-state.js","425"],["v419-achievements.js","439"],["v425-playful.js","439"],["v427-growth.js","439"],["v428-events.js","428"],["v429-quests.js","429"],["v430-character.js",VERSION],["v431-stability.js","431"],["v432-humor.js","432"],["v433-learning.js","433"],["v443-single-companion.js",VERSION],["v434-release.js",VERSION]
+          ["v412-hotfix.js","412"],["v413-core.js","413"],["v413-lesson.js","413"],["v414-state.js","414"],["v414-reward.js","414"],["v414-screens.js","414"],["v415-retention.js","415"],["v416-journey.js","416"],["v417-review.js","417"],["v418-coach.js","418"],["v419-achievements.js","439"],["v420-profile.js","420"],["v421-vault.js","421"],["v422-pwa.js",VERSION],["v423-character.js","439"],["v425-state.js","425"],["v425-playful.js","439"],["v427-growth.js","439"],["v428-events.js","428"],["v429-quests.js","429"],["v430-character.js",VERSION],["v431-stability.js","431"],["v432-humor.js","432"],["v433-learning.js","433"],["v443-single-companion.js",VERSION],["v434-release.js",VERSION]
         ];
         html=html.replace("</body>",[...scripts.map(([file,version])=>`<script src="/${file}?v=${version}"><\\/script>`),"</body>"].join(""));
         document.open();document.write(html);document.close();
