@@ -3,60 +3,165 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meowde v4.54 — Loading</title>
+
+  <title>Meowde v4.43 — Loading</title>
+
   <style>
-    html,body{height:100%;margin:0}body{display:grid;place-items:center;background:#fff9ef;color:#2d2a28;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.loading{font-weight:800;letter-spacing:-.02em}.error{max-width:320px;padding:24px;text-align:center;line-height:1.6}
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      background: #fff9ef;
+      color: #2d2a28;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    }
+
+    .loading {
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .error {
+      max-width: 320px;
+      padding: 24px;
+      text-align: center;
+      line-height: 1.6;
+    }
   </style>
 </head>
+
 <body>
-  <div class="loading" id="status">Meowde를 준비하고 있어요…</div>
+  <div class="loading" id="status">
+    Meowde를 준비하고 있어요…
+  </div>
+
   <script>
-    (async()=>{
-      const VERSION="454";
-      const DISPLAY_VERSION="4.54";
-      const status=document.getElementById("status");
-      let preferredLanguage="ko";
-      try{
-        const saved=localStorage.getItem("meowde-v410-state");
-        if(saved){
-          try{
-            const parsed=JSON.parse(saved);
-            preferredLanguage=parsed&&parsed.lang==="en"?"en":"ko";
-          }catch(error){
-            localStorage.setItem("meowde-v425-state-backup",saved);
+    (async () => {
+      const status = document.getElementById("status");
+      let preferredLanguage = "ko";
+
+      try {
+        const saved = localStorage.getItem("meowde-v410-state");
+
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            preferredLanguage = parsed && parsed.lang === "en" ? "en" : "ko";
+          } catch (error) {
+            localStorage.setItem("meowde-v425-state-backup", saved);
             localStorage.removeItem("meowde-v410-state");
           }
         }
-        document.documentElement.lang=preferredLanguage;
-        status.textContent=preferredLanguage==="en"?"Preparing Meowde…":"Meowde를 준비하고 있어요…";
-        const response=await fetch(`/index.html?v=${VERSION}`,{cache:"no-store"});
-        if(!response.ok)throw new Error(`HTTP ${response.status}`);
-        let html=await response.text();
-        html=html.replace(/<html\b[^>]*>/i,`<html lang="${preferredLanguage}">`);
-        html=html.replace(/<title>[\s\S]*?<\/title>/i,`<title>Meowde v${DISPLAY_VERSION}</title>`);
-        const styles=[
-          ["v413-ux.css","413"],["v414-ux.css","414"],["v415-ux.css","415"],["v416-ux.css","416"],["v417-ux.css","417"],["v418-coach.css","418"],["v419-achievements.css","439"],["v420-profile.css","420"],["v421-vault.css","421"],["v422-pwa.css",VERSION],["v423-brand.css","439"],["v425-playful.css","439"],["v429-quests.css","429"],["v430-character.css",VERSION],["v431-stability.css","431"],["v432-humor.css","432"],["v433-learning.css","433"],["v434-release.css",VERSION],["v443-single-companion.css",VERSION]
-        ];
-        const headMarkup=[
-          `<link rel="manifest" href="/manifest.webmanifest?v=${VERSION}">`,
-          '<meta name="theme-color" content="#53c7a0">',
-          '<meta name="apple-mobile-web-app-capable" content="yes">',
-          '<meta name="apple-mobile-web-app-status-bar-style" content="default">',
-          '<meta name="apple-mobile-web-app-title" content="Meowde">',
-          `<link rel="apple-touch-icon" href="/icons/meowde-180.png?v=${VERSION}">`,
-          ...styles.map(([file,version])=>`<link rel="stylesheet" href="/${file}?v=${version}">`),
-          "</head>"
-        ].join("");
-        html=html.replace("</head>",headMarkup);
-        const scripts=[
-          ["v412-hotfix.js","412"],["v413-core.js","413"],["v413-lesson.js","413"],["v414-state.js","414"],["v414-reward.js","414"],["v414-screens.js","414"],["v415-retention.js","415"],["v416-journey.js","416"],["v417-review.js","417"],["v418-coach.js","418"],["v420-profile.js","420"],["v421-vault.js","421"],["v422-pwa.js",VERSION],["v423-character.js","439"],["v425-state.js","425"],["v419-achievements.js","439"],["v425-playful.js","439"],["v427-growth.js","439"],["v428-events.js","428"],["v429-quests.js","429"],["v430-character.js",VERSION],["v431-stability.js","431"],["v432-humor.js","432"],["v433-learning.js","433"],["v443-single-companion.js",VERSION],["v434-release.js",VERSION]
-        ];
-        html=html.replace("</body>",[...scripts.map(([file,version])=>`<script src="/${file}?v=${version}"><\\/script>`),"</body>"].join(""));
-        document.open();document.write(html);document.close();
-      }catch(error){
-        console.error(`Meowde v${DISPLAY_VERSION} bootstrap failed`,error);
-        status.className="error";
-        status.textContent=preferredLanguage==="en"?"Meowde could not be loaded. Please try again shortly.":"Meowde를 불러오지 못했습니다. 잠시 후 다시 접속해 주세요.";
+
+        document.documentElement.lang = preferredLanguage;
+        status.textContent = preferredLanguage === "en"
+          ? "Preparing Meowde…"
+          : "Meowde를 준비하고 있어요…";
+
+        const response = await fetch("/index.html?v=443", {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        let html = await response.text();
+
+        html = html.replace(
+          /<html\b[^>]*>/i,
+          `<html lang="${preferredLanguage}">`
+        );
+
+        html = html.replace(
+          /<title>[\s\S]*?<\/title>/i,
+          "<title>Meowde v4.43</title>"
+        );
+
+        html = html.replace(
+          "</head>",
+          [
+            '<link rel="manifest" href="/manifest.webmanifest?v=443">',
+            '<meta name="theme-color" content="#53c7a0">',
+            '<meta name="apple-mobile-web-app-capable" content="yes">',
+            '<meta name="apple-mobile-web-app-status-bar-style" content="default">',
+            '<meta name="apple-mobile-web-app-title" content="Meowde">',
+            '<link rel="apple-touch-icon" href="/icons/meowde-180.png?v=443">',
+            '<link rel="stylesheet" href="/v413-ux.css?v=413">',
+            '<link rel="stylesheet" href="/v414-ux.css?v=414">',
+            '<link rel="stylesheet" href="/v415-ux.css?v=415">',
+            '<link rel="stylesheet" href="/v416-ux.css?v=416">',
+            '<link rel="stylesheet" href="/v417-ux.css?v=417">',
+            '<link rel="stylesheet" href="/v418-coach.css?v=418">',
+            '<link rel="stylesheet" href="/v419-achievements.css?v=439">',
+            '<link rel="stylesheet" href="/v420-profile.css?v=420">',
+            '<link rel="stylesheet" href="/v421-vault.css?v=421">',
+            '<link rel="stylesheet" href="/v422-pwa.css?v=443">',
+            '<link rel="stylesheet" href="/v423-brand.css?v=439">',
+            '<link rel="stylesheet" href="/v425-playful.css?v=439">',
+            '<link rel="stylesheet" href="/v429-quests.css?v=429">',
+            '<link rel="stylesheet" href="/v430-character.css?v=443">',
+            '<link rel="stylesheet" href="/v431-stability.css?v=431">',
+            '<link rel="stylesheet" href="/v432-humor.css?v=432">',
+            '<link rel="stylesheet" href="/v433-learning.css?v=433">',
+            '<link rel="stylesheet" href="/v434-release.css?v=443">',
+            '<link rel="stylesheet" href="/v443-single-companion.css?v=443">',
+            '<style>.v427-growth-card,.v427-emotion-card{display:grid;gap:12px}.v427-growth-head{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}.v427-stage-icon{font-size:30px}.v427-growth-track,.v419-mini-progress,.v428-event-track{height:9px;border-radius:999px;background:#f0e7da;overflow:hidden}.v427-growth-track i,.v419-mini-progress i,.v428-event-track i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--mint),var(--butter));transition:width .35s ease}.v419-mini-progress{height:6px;margin-top:4px}.v427-growth-stages{display:flex;justify-content:space-between;gap:6px}.v427-growth-stages span{opacity:.35;filter:grayscale(1);font-size:18px}.v427-growth-stages span.reached{opacity:1;filter:none}.v427-emotion-card>div{display:flex;align-items:center;gap:8px}.v427-emotion-card p{margin:0;color:var(--muted);line-height:1.55}.v427-emotion-dot{width:10px;height:10px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 5px rgba(83,199,160,.12)}.v427-emotion-line{margin-top:6px;font-size:12px;font-weight:800;color:var(--muted)}.v426-section-title{padding:18px 18px 8px}.v426-section-title h3{margin:0;font-size:17px}.v426-section-title p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.45}.v426-accessory-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:0 18px 8px}.v426-accessory{display:grid;justify-items:center;gap:5px;padding:14px 10px;border:1.5px solid var(--line);border-radius:18px;background:#fff;text-align:center}.v426-accessory>span{font-size:27px}.v426-accessory b{font-size:13px}.v426-accessory small{font-size:11px;line-height:1.35;color:var(--muted)}.v426-accessory em{font-size:10px;font-style:normal;font-weight:900;color:#8a6818}.v426-accessory.selected{border-color:#e4ba47;outline:3px solid rgba(255,215,106,.24)}.v426-accessory.locked{opacity:.52}.v426-cat-accessory{pointer-events:none}.v428-season-card,.v428-visitor-card,.v428-collection{display:grid;gap:12px}.v428-season-head{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center}.v428-season-head>span{font-size:34px}.v428-season-head h3,.v428-visitor-copy h3,.v428-collection h3{margin:2px 0 0}.v428-season-head p,.v428-visitor-copy p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.5}.v428-event-foot{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--muted)}.v428-event-foot b{color:var(--ink)}.v428-claimed{padding:9px 11px;border-radius:13px;background:rgba(83,199,160,.12);font-size:12px;font-weight:900;color:#287d63;text-align:center}.v428-visitor-card{grid-template-columns:auto 1fr;align-items:center}.v428-visitor-avatar{width:58px;height:58px;border-radius:20px;display:grid;place-items:center;background:linear-gradient(145deg,#f4edff,#fff);font-size:31px;border:1.5px solid var(--line)}.v428-visitor-card>.btn{grid-column:1/-1}.v428-visitor-copy small{display:block;margin-top:7px;font-size:11px;font-weight:900;color:#8a6818}.v428-collection{grid-template-columns:1fr auto;align-items:center}.v428-collection>div:last-child{display:flex;gap:8px}.v428-collection>div:last-child span{width:38px;height:38px;border-radius:14px;display:grid;place-items:center;background:var(--cream);border:1.5px solid var(--line);font-size:20px}@media(max-width:360px){.v427-growth-head{grid-template-columns:auto 1fr}.v427-growth-head>.pill{grid-column:2;justify-self:start}.v426-accessory-grid{grid-template-columns:1fr}.v428-event-foot{display:grid}}</style>',
+            "</head>",
+          ].join("")
+        );
+
+        html = html.replace(
+          "</body>",
+          [
+            '<script src="/v412-hotfix.js?v=412"><\/script>',
+            '<script src="/v413-core.js?v=413"><\/script>',
+            '<script src="/v413-lesson.js?v=413"><\/script>',
+            '<script src="/v414-state.js?v=414"><\/script>',
+            '<script src="/v414-reward.js?v=414"><\/script>',
+            '<script src="/v414-screens.js?v=414"><\/script>',
+            '<script src="/v415-retention.js?v=415"><\/script>',
+            '<script src="/v416-journey.js?v=416"><\/script>',
+            '<script src="/v417-review.js?v=417"><\/script>',
+            '<script src="/v418-coach.js?v=418"><\/script>',
+            '<script src="/v420-profile.js?v=420"><\/script>',
+            '<script src="/v421-vault.js?v=421"><\/script>',
+            '<script src="/v422-pwa.js?v=443"><\/script>',
+            '<script src="/v423-character.js?v=439"><\/script>',
+            '<script src="/v425-state.js?v=425"><\/script>',
+            '<script src="/v425-playful.js?v=439"><\/script>',
+            '<script src="/v427-growth.js?v=439"><\/script>',
+            '<script src="/v428-events.js?v=428"><\/script>',
+            '<script src="/v429-quests.js?v=429"><\/script>',
+            '<script src="/v430-character.js?v=443"><\/script>',
+            '<script src="/v431-stability.js?v=431"><\/script>',
+            '<script src="/v432-humor.js?v=432"><\/script>',
+            '<script src="/v433-learning.js?v=433"><\/script>',
+            '<script src="/v443-single-companion.js?v=443"><\/script>',
+            '<script src="/v434-release.js?v=443"><\/script>',
+            "</body>",
+          ].join("")
+        );
+
+        document.open();
+        document.write(html);
+        document.close();
+      } catch (error) {
+        console.error("Meowde v4.43 bootstrap failed", error);
+
+        status.className = "error";
+        status.textContent = preferredLanguage === "en"
+          ? "Meowde could not be loaded. Please try again shortly."
+          : "Meowde를 불러오지 못했습니다. 잠시 후 다시 접속해 주세요.";
       }
     })();
   </script>

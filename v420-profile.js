@@ -76,5 +76,5 @@
   document.title='Meowde v4.20 — Player Profile';
   window.__MEOWDE_VERSION__='4.20';
   if(S.screen==='profile')renderProfile();
-  else if(['home','map','league','room','review','achievements'].includes(S.screen)){const rerender={home:renderHome,map:renderMap,league:renderLeague,room:renderRoom,review:renderReview,achievements:renderAchievements}[S.screen];if(typeof rerender==='function')rerender()}
+  else if(['home','map','league','room','review','achievements'].includes(S.screen)){const rerender={home:renderHome,map:renderMap,league:renderLeague,room:renderRoom,review:renderReview,achievements:window.renderAchievements}[S.screen];if(typeof rerender==='function')rerender()}
 })();
