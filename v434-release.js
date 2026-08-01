@@ -1,7 +1,7 @@
-(function applyMeowdeV454ReleaseGuard(){
+(function applyMeowdeV450ReleaseGuard(){
   "use strict";
 
-  const VERSION="4.54";
+  const VERSION="4.50";
   const REQUIRED_FUNCTIONS=["renderHome","renderLesson","renderMap","renderReview","renderMy","startLesson","checkQ","finish","save","catSVG"];
   const REQUIRED_APIS=["MeowAchievements","MeowGrowth","MeowEvents","MeowQuests","MeowCharacterV430","MeowLearning","MeowPWA"];
   const ALLOWED_ACCESSORIES=new Set(["none","glasses","headphones","star","crown"]);
@@ -35,16 +35,10 @@
   }
   function loadEnhancements(){
     loadExtension({id:"meowde-v442-map-touch",css:"v442-map-touch.css",script:"v442-map-touch.js",version:"442",readyGlobal:"MeowMapTouch",warning:"Map touch enhancement could not be loaded."});
-    loadExtension({id:"meowde-v443-single-companion",css:"v443-single-companion.css",script:"v443-single-companion.js",version:"454",readyGlobal:"MeowSingleCompanion",warning:"Single companion branding could not be loaded."});
+    loadExtension({id:"meowde-v443-single-companion",css:"v443-single-companion.css",script:"v443-single-companion.js",version:"443",readyGlobal:"MeowSingleCompanion",warning:"Single companion branding could not be loaded."});
     loadExtension({id:"meowde-v444-visual-cohesion",css:"v444-visual-cohesion.css",script:"v444-visual-cohesion.js",version:"448",readyGlobal:"MeowVisualCohesion",warning:"Visual cohesion enhancement could not be loaded."});
     loadExtension({id:"meowde-v446-update-recovery",css:"v446-update-recovery.css",script:"v446-update-recovery.js",version:"446",readyGlobal:"MeowUpdateRecovery",warning:"Update recovery enhancement could not be loaded."});
     loadExtension({id:"meowde-v450-character-images",css:"v449-character-cutouts.css",script:"v449-character-cutouts.js",version:"450",readyGlobal:"MeowCharacterCutouts",warning:"Character image enhancement could not be loaded."});
-    loadExtension({id:"meowde-v451-individual-character-poses",script:"v451-individual-character-poses.js",version:"4515",readyGlobal:"MeowIndividualCharacterPoses",warning:"Individual character poses could not be loaded."});
-  }
-  function publishVersion(){
-    window.__MEOWDE_VERSION__=VERSION;
-    document.title=`Meowde v${VERSION}`;
-    document.documentElement.dataset.meowdeVersion=VERSION;
   }
   function run(){
     report.checks={};
@@ -56,7 +50,9 @@
     check("accessory-state",normalizeAccessory(),"Invalid accessory state was reset.","warning");
     check("service-worker",("serviceWorker" in navigator),"Service worker is not supported in this browser.","warning");
     check("lessons",typeof window.lessons==="function"&&Array.isArray(window.lessons())&&window.lessons().length>0,"Lesson data is unavailable.");
-    publishVersion();
+    window.__MEOWDE_VERSION__=VERSION;
+    document.title=`Meowde v${VERSION}`;
+    document.documentElement.dataset.meowdeVersion=VERSION;
     document.documentElement.dataset.releaseHealth=report.errors.length?"error":report.warnings.length?"warning":"ready";
     return report;
   }

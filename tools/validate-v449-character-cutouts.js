@@ -5,7 +5,7 @@ const path=require("node:path");
 const vm=require("node:vm");
 const root=path.resolve(__dirname,"..");
 const read=name=>fs.readFileSync(path.join(root,name),"utf8");
-const expect=(condition,message)=>{if(!condition)throw new Error(`direct character image validation failed: ${message}`)};
+const expect=(condition,message)=>{if(!condition)throw new Error(`v4.50 character validation failed: ${message}`)};
 
 const files=["v449-character-cutouts.js","v449-character-cutouts.css","v434-release.js","sw.js"];
 for(const file of files){
@@ -17,7 +17,7 @@ for(const file of files){
 
 const renderer=read("v449-character-cutouts.js");
 const poses=["base","happy","smug","focus","surprised","meh","coding","music","reading","error"];
-for(const pose of poses)expect(renderer.includes(`"${pose}"`),`pose ${pose} is not registered`);
+for(const pose of poses)expect(renderer.includes(`\"${pose}\"`),`pose ${pose} is not registered`);
 expect(renderer.includes("<img class=\"v449-character"),"character renderer does not use img elements");
 expect(renderer.includes("/assets/meowde-approved-base.svg?v=450"),"base image asset is missing");
 expect(renderer.includes("/assets/meowde-approved-glasses.svg?v=450"),"glasses image asset is missing");
@@ -35,14 +35,14 @@ expect(css.includes("border:0!important"),"hero border is not removed");
 expect(css.includes("box-shadow:none!important"),"hero shadow is not removed");
 
 const release=read("v434-release.js");
-expect(/const VERSION="4\.(?:5\d|[6-9]\d)"/.test(release),"release version is older than the direct image renderer");
+expect(release.includes('const VERSION="4.50"'),"release version is not 4.50");
 expect(release.includes('version:"450"'),"v4.50 renderer cache bust is missing");
 expect(!release.includes("character-sprite"),"legacy sprite loader remains active");
 
 const serviceWorker=read("sw.js");
-expect(/meowde-v45\d-/.test(serviceWorker),"service-worker cache is older than the direct image renderer");
+expect(serviceWorker.includes("meowde-v450-character-images-v1"),"service-worker cache was not bumped");
 for(const asset of ["/v449-character-cutouts.js","/v449-character-cutouts.css","/assets/meowde-approved-base.svg","/assets/meowde-approved-glasses.svg","/assets/meowde-approved-headphones.svg"]){
   expect(serviceWorker.includes(asset),`${asset} is missing from offline precache`);
 }
 
-console.log(`Validated Safari-safe direct image rendering for ${poses.length} character states.`);
+console.log(`Validated Meowde v4.50 direct image rendering for ${poses.length} character states.`);
