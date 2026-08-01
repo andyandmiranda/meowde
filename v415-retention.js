@@ -86,7 +86,7 @@
   function renderLevelCard(){
     const ko=S.lang==='ko';
     const info=levelInfo();
-    return `<section class="card v415-level-card"><div class="v415-growth-head"><div class="growth-avatar">${catSVG(S.cat,'happy',76)}<span>${info.level}</span></div><div class="v415-growth-copy"><div class="section-kicker">${ko?'코치 성장':'Coach growth'}</div><h3>Lv.${info.level} ${esc(info.title)}</h3><p>${ko?`${100-info.current} XP 후 다음 레벨`:`${100-info.current} XP to next level`}</p></div></div><div class="v415-level-track"><span style="width:${info.percent}%"></span></div><div class="v415-level-meta"><span>${info.current} XP</span><span>100 XP</span></div></section>`;
+    return `<section class="card v415-level-card"><div class="v415-growth-head"><div class="growth-avatar">${catSVG(S.cat,'reading',76)}<span>${info.level}</span></div><div class="v415-growth-copy"><div class="section-kicker">${ko?'코치 성장':'Coach growth'}</div><h3>Lv.${info.level} ${esc(info.title)}</h3><p>${ko?`${100-info.current} XP 후 다음 레벨`:`${100-info.current} XP to next level`}</p></div></div><div class="v415-level-track"><span style="width:${info.percent}%"></span></div><div class="v415-level-meta"><span>${info.current} XP</span><span>100 XP</span></div></section>`;
   }
 
   function achievementItems(){
@@ -149,7 +149,7 @@
       if(!scroll)return;
       const info=levelInfo();
       const ko=S.lang==='ko';
-      const growth=`<section class="card v415-profile-growth"><div class="v415-growth-head"><div class="growth-avatar large">${catSVG(S.cat,'happy',92)}<span>${info.level}</span></div><div class="v415-growth-copy"><div class="section-kicker">${ko?'현재 칭호':'Current title'}</div><h3>${esc(info.title)}</h3><p>${ko?`총 ${S.xp} XP · ${S.streak}일 연속`:`${S.xp} XP total · ${S.streak} day streak`}</p></div></div><div class="v415-level-track"><span style="width:${info.percent}%"></span></div></section>`;
+      const growth=`<section class="card v415-profile-growth"><div class="v415-growth-head"><div class="growth-avatar large">${catSVG(S.cat,'smug',92)}<span>${info.level}</span></div><div class="v415-growth-copy"><div class="section-kicker">${ko?'현재 칭호':'Current title'}</div><h3>${esc(info.title)}</h3><p>${ko?`총 ${S.xp} XP · ${S.streak}일 연속`:`${S.xp} XP total · ${S.streak} day streak`}</p></div></div><div class="v415-level-track"><span style="width:${info.percent}%"></span></div></section>`;
       const statsBlock=scroll.querySelector('.profile-stats');
       if(statsBlock)statsBlock.insertAdjacentHTML('afterend',growth+renderAchievements());
       else scroll.insertAdjacentHTML('beforeend',growth+renderAchievements());

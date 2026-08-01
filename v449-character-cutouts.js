@@ -2,7 +2,7 @@
   "use strict";
 
   const VERSION="4.50";
-  const POSES=new Set(["base","happy","smug","focus","surprised","meh","coding","music","reading","challenge","error"]);
+  const POSES=new Set(["base","happy","smug","focus","surprised","meh","coding","music","reading","error"]);
   const ASSETS={
     base:"/assets/meowde-approved-base.svg?v=450",
     happy:"/assets/meowde-approved-base.svg?v=450",
@@ -13,10 +13,30 @@
     coding:"/assets/meowde-approved-headphones.svg?v=450",
     music:"/assets/meowde-approved-headphones.svg?v=450",
     reading:"/assets/meowde-approved-base.svg?v=450",
-    challenge:"/assets/meowde-approved-glasses.svg?v=450",
     error:"/assets/meowde-approved-base.svg?v=450"
   };
   let queued=false;
+
+  const ROOM_ASSETS={
+  coding:"/assets/characters/v451/meowde-coding.webp",
+  music:"/assets/characters/v451/meowde-music.webp",
+  reading:"/assets/characters/v451/meowde-reading.webp",
+  happy:"/assets/characters/v451/meowde-happy.webp",
+  smug:"/assets/characters/v451/meowde-challenge.webp",
+  error:"/assets/characters/v451/meowde-debug.webp"
+  };
+
+  function roomImageMarkup(pose="coding",label="Meowde"){
+    const src=ROOM_ASSETS[pose]||ROOM_ASSETS.coding;
+    return `<img
+      class="v449-character v449-pose-${pose}"
+      src="${src}"
+      alt="${label}"
+      data-v449-pose="${pose}"
+      data-character-version="4.51-room-only"
+      decoding="async">`;
+  }
+
 
   function state(){try{return window.S&&S?S:{}}catch(error){return {}}}
   function english(){return state().lang==="en"}
@@ -106,7 +126,7 @@
     });
   }
   function decorateTrail(){
-    document.querySelectorAll(".trail-cat").forEach(slot=>{slot.innerHTML=imageMarkup("challenge","",english()?"Challenge-ready Meowde":"도전을 준비하는 Meowde")});
+    document.querySelectorAll(".trail-cat").forEach(slot=>{slot.innerHTML=imageMarkup("smug","",english()?"Confident Meowde":"자신만만한 Meowde")});
   }
   function title(card){const heading=card&&card.querySelector("h3");return heading?heading.textContent.trim().toLowerCase():""}
   function addCardPose(card,pose,label){
@@ -122,14 +142,14 @@
       const text=title(card);
       if(text.includes("challenge")||text.includes("챌린지"))addCardPose(card,"music",english()?"Music break":"뮤직 브레이크");
       else if(text.includes("goal")||text.includes("목표")||text.includes("quest"))addCardPose(card,"reading",english()?"Reading goals":"목표를 읽는 Meowde");
-      else if(text.includes("next")||text.includes("다음")||text.includes("저장"))addCardPose(card,"challenge",english()?"Ready for the next challenge":"다음 도전 준비");
+      else if(text.includes("next")||text.includes("다음")||text.includes("저장"))addCardPose(card,"smug",english()?"Ready for the next lesson":"다음 레슨 준비");
     });
   }
   function accuracy(reward){const value=reward&&reward.querySelector(".stats3 .stat3:nth-child(3) b");const match=value&&String(value.textContent||"").match(/\d+/);return match?Number(match[0]):100}
   function decorateFeedback(){
     const reward=document.querySelector(".reward-screen");
     if(reward){
-      const value=accuracy(reward),pose=value>=85?"happy":value>=65?"challenge":"meh";
+      const value=accuracy(reward),pose=value>=85?"happy":value>=65?"smug":"meh";
       const current=reward.querySelector(".v449-character,.meowde-approved-character,svg,img");
       if(current)updateImage(current,pose,"v449-feedback-character",english()?"Meowde result":"학습 결과 Meowde");
       else reward.insertAdjacentHTML("afterbegin",imageMarkup(pose,"v449-feedback-character",english()?"Meowde result":"학습 결과 Meowde"));
@@ -142,13 +162,32 @@
       else feedback.insertAdjacentHTML("afterbegin",imageMarkup(pose,"v449-feedback-character","Meowde"));
     }
   }
-  function roomItems(){return english()?[ ["coding","Coding mode","Focused learning"],["music","Music break","Headphones on"],["reading","Study mode","Reading clues"],["happy","Victory face","Correct answer"],["challenge","Challenge mode","Solo coding challenge"],["error","Debug mode","Finding the cause"] ]:[["coding","코딩 모드","집중 학습"],["music","뮤직 브레이크","헤드폰 장착"],["reading","공부 모드","다음 힌트 읽기"],["happy","정답 표정","문제 해결 완료"],["challenge","도전 모드","혼자서 코딩 도전"],["error","디버그 모드","오류 원인 찾기"]]}
+  function roomItems(){
+  return english()
+    ?[
+      ["coding","Coding mode","Focused learning"],
+      ["music","Music break","Headphones on"],
+      ["reading","Study mode","Reading clues"],
+      ["happy","Victory face","Correct answer"],
+      ["smug","Challenge mode","Solo coding challenge"],
+      ["error","Debug mode","Checking an error"]
+    ]
+    :[
+      ["coding","코딩 모드","집중 학습"],
+      ["music","뮤직 브레이크","헤드폰 장착"],
+      ["reading","공부 모드","다음 힌트 읽기"],
+      ["happy","정답 표정","문제 해결 완료"],
+      ["smug","도전 모드","혼자서 코딩 도전"],
+      ["error","디버그 모드","오류 확인 중"]
+    ];
+}
+
   function decorateRoom(){
     const grid=document.querySelector(".room-grid");
     if(!grid)return;
     grid.classList.add("v449-room-grid");
     const items=roomItems();
-    grid.innerHTML=items.map(([pose,name,copy])=>`<article class="v449-room-pose">${imageMarkup(pose,"",name)}<b>${name}</b><small>${copy}</small></article>`).join("");
+    grid.innerHTML=items.map(([pose,name,copy])=>`<article class="v449-room-pose">${roomImageMarkup(pose,name)}<b>${name}</b><small>${copy}</small></article>`).join("");
     const heading=document.querySelector(".simple-head h2"),copy=document.querySelector(".simple-head p");
     if(heading)heading.textContent=english()?"Meowde pose collection":"Meowde 포즈 컬렉션";
     if(copy)copy.textContent=english()?"One mascot used across different states.":"하나의 캐릭터를 상황에 맞게 활용해요.";
@@ -162,7 +201,7 @@
   }
   function decorateReview(){
     if(state().screen!=="review")return;
-    const pose=Array.isArray(state().mistakes)&&state().mistakes.length?"meh":"challenge";
+    const pose=Array.isArray(state().mistakes)&&state().mistakes.length?"meh":"smug";
     const head=document.querySelector(".screen .simple-head");
     if(head){
       head.classList.add("v449-review-head");
