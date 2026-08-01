@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v450-character-images-v1";
+const CACHE_NAME = "meowde-v450-approved-v2";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -11,6 +11,12 @@ const REQUIRED_ASSETS = [
   "/assets/meowde-approved-glasses.svg",
   "/assets/meowde-approved-headphones.svg",
   "/assets/meowde-approved-hero.svg",
+  "/assets/characters/v451/meowde-coding.webp",
+  "/assets/characters/v451/meowde-music.webp",
+  "/assets/characters/v451/meowde-reading.webp",
+  "/assets/characters/v451/meowde-happy.webp",
+  "/assets/characters/v451/meowde-challenge.webp",
+  "/assets/characters/v451/meowde-debug.webp",
   "/manifest.webmanifest",
   "/meowde-icon-192.svg",
   "/meowde-icon-512.svg",
