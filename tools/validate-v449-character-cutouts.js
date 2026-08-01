@@ -40,8 +40,20 @@ expect(release.includes('version:"450"'),"v4.50 renderer cache bust is missing")
 expect(!release.includes("character-sprite"),"legacy sprite loader remains active");
 
 const serviceWorker=read("sw.js");
-expect(serviceWorker.includes("meowde-v450-character-images-v1"),"service-worker cache was not bumped");
-for(const asset of ["/v449-character-cutouts.js","/v449-character-cutouts.css","/assets/meowde-approved-base.svg","/assets/meowde-approved-glasses.svg","/assets/meowde-approved-headphones.svg"]){
+expect(serviceWorker.includes("meowde-v450-approved-v2"),"approved service-worker cache generation is missing");
+for(const asset of [
+  "/v449-character-cutouts.js",
+  "/v449-character-cutouts.css",
+  "/assets/meowde-approved-base.svg",
+  "/assets/meowde-approved-glasses.svg",
+  "/assets/meowde-approved-headphones.svg",
+  "/assets/characters/v451/meowde-coding.webp",
+  "/assets/characters/v451/meowde-music.webp",
+  "/assets/characters/v451/meowde-reading.webp",
+  "/assets/characters/v451/meowde-happy.webp",
+  "/assets/characters/v451/meowde-challenge.webp",
+  "/assets/characters/v451/meowde-debug.webp"
+]){
   expect(serviceWorker.includes(asset),`${asset} is missing from offline precache`);
 }
 
