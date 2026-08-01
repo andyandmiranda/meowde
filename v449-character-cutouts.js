@@ -192,12 +192,32 @@
     if(heading)heading.textContent=english()?"Meowde pose collection":"Meowde 포즈 컬렉션";
     if(copy)copy.textContent=english()?"One mascot used across different states.":"하나의 캐릭터를 상황에 맞게 활용해요.";
   }
+  function setProfilePose(selector,pose,label){
+    const slot=document.querySelector(selector);
+    if(!slot)return;
+    const current=slot.querySelector(":scope > .v449-character,:scope > .meowde-approved-character,:scope > svg,:scope > img");
+    if(current)updateImage(current,pose,"v449-profile-pose",label);
+    else slot.insertAdjacentHTML("afterbegin",imageMarkup(pose,"v449-profile-pose",label));
+  }
   function decorateProfile(){
     document.querySelectorAll(".v420-avatar").forEach(slot=>{
       const current=slot.querySelector(":scope > .v449-character,:scope > .meowde-approved-character,:scope > svg,:scope > img");
-      if(current)updateImage(current,"music","v449-profile-pose",english()?"Meowde with headphones":"헤드폰을 쓴 Meowde");
-      else slot.insertAdjacentHTML("afterbegin",imageMarkup("music","v449-profile-pose",english()?"Meowde with headphones":"헤드폰을 쓴 Meowde"));
+      const label=english()?"Meowde with headphones":"헤드폰을 쓴 Meowde";
+      if(current)updateImage(current,"music","v449-profile-pose",label);
+      else slot.insertAdjacentHTML("afterbegin",imageMarkup("music","v449-profile-pose",label));
     });
+
+    setProfilePose(
+      ".profile-card",
+      "coding",
+      english()?"Meowde learning with headphones":"헤드폰을 쓰고 학습하는 Meowde"
+    );
+
+    setProfilePose(
+      ".v415-profile-growth .growth-avatar",
+      "smug",
+      english()?"Confident Meowde":"안경을 쓴 자신만만한 Meowde"
+    );
   }
   function decorateReview(){
     if(state().screen!=="review")return;
