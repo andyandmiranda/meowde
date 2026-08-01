@@ -17,6 +17,27 @@
   };
   let queued=false;
 
+  const ROOM_ASSETS={
+  coding:"/assets/characters/v451/meowde-coding.webp",
+  music:"/assets/characters/v451/meowde-music.webp",
+  reading:"/assets/characters/v451/meowde-reading.webp",
+  happy:"/assets/characters/v451/meowde-happy.webp",
+  smug:"/assets/characters/v451/meowde-challenge.webp",
+  error:"/assets/characters/v451/meowde-debug.webp"
+  };
+
+  function roomImageMarkup(pose="coding",label="Meowde"){
+    const src=ROOM_ASSETS[pose]||ROOM_ASSETS.coding;
+    return `<img
+      class="v449-character v449-pose-${pose}"
+      src="${src}"
+      alt="${label}"
+      data-v449-pose="${pose}"
+      data-character-version="4.51-room-only"
+      decoding="async">`;
+  }
+
+
   function state(){try{return window.S&&S?S:{}}catch(error){return {}}}
   function english(){return state().lang==="en"}
   function exercise(){try{return typeof cur==="function"?cur():null}catch(error){return null}}
@@ -141,13 +162,32 @@
       else feedback.insertAdjacentHTML("afterbegin",imageMarkup(pose,"v449-feedback-character","Meowde"));
     }
   }
-  function roomItems(){return english()?[["coding","Coding mode","Focused learning"],["music","Music break","Headphones on"],["reading","Study mode","Reading clues"],["happy","Victory face","Correct answer"],["smug","Confident mode","Ready for more"],["error","Debug mode","Checking an error"]]:[["coding","코딩 모드","집중 학습"],["music","뮤직 브레이크","헤드폰 장착"],["reading","공부 모드","다음 힌트 읽기"],["happy","정답 표정","문제 해결 완료"],["smug","자신감 모드","다음 문제 준비"],["error","디버그 모드","오류 확인 중"]]}
+  function roomItems(){
+  return english()
+    ?[
+      ["coding","Coding mode","Focused learning"],
+      ["music","Music break","Headphones on"],
+      ["reading","Study mode","Reading clues"],
+      ["happy","Victory face","Correct answer"],
+      ["smug","Challenge mode","Solo coding challenge"],
+      ["error","Debug mode","Checking an error"]
+    ]
+    :[
+      ["coding","코딩 모드","집중 학습"],
+      ["music","뮤직 브레이크","헤드폰 장착"],
+      ["reading","공부 모드","다음 힌트 읽기"],
+      ["happy","정답 표정","문제 해결 완료"],
+      ["smug","도전 모드","혼자서 코딩 도전"],
+      ["error","디버그 모드","오류 확인 중"]
+    ];
+}
+
   function decorateRoom(){
     const grid=document.querySelector(".room-grid");
     if(!grid)return;
     grid.classList.add("v449-room-grid");
     const items=roomItems();
-    grid.innerHTML=items.map(([pose,name,copy])=>`<article class="v449-room-pose">${imageMarkup(pose,"",name)}<b>${name}</b><small>${copy}</small></article>`).join("");
+    grid.innerHTML=items.map(([pose,name,copy])=>`<article class="v449-room-pose">${roomImageMarkup(pose,name)}<b>${name}</b><small>${copy}</small></article>`).join("");
     const heading=document.querySelector(".simple-head h2"),copy=document.querySelector(".simple-head p");
     if(heading)heading.textContent=english()?"Meowde pose collection":"Meowde 포즈 컬렉션";
     if(copy)copy.textContent=english()?"One mascot used across different states.":"하나의 캐릭터를 상황에 맞게 활용해요.";
