@@ -1,7 +1,7 @@
 (function applyMeowdeV450CharacterImages(){
   "use strict";
 
-  const VERSION="4.50-phase5-learn";
+  const VERSION="4.50-phase5-review";
   const POSES=new Set(["base","happy","smug","focus","surprised","meh","coding","music","reading","error"]);
   const ASSETS={
     base:"/assets/meowde-approved-base.svg?v=450",
@@ -98,20 +98,19 @@
     setProfilePose(".profile-card","coding",english()?"Meowde learning with headphones":"헤드폰을 쓰고 학습하는 Meowde");
     setProfilePose(".v415-profile-growth .growth-avatar","smug",english()?"Confident Meowde":"안경을 쓴 자신만만한 Meowde");
   }
-  function decorateReview(){if(state().screen!=="review")return;const pose=Array.isArray(state().mistakes)&&state().mistakes.length?"meh":"smug",head=document.querySelector(".screen .simple-head");if(head){head.classList.add("v449-review-head");const current=head.querySelector(":scope > .v449-review-pose");if(current)updateImage(current,pose,"v449-review-pose","Meowde");else head.insertAdjacentHTML("beforeend",imageMarkup(pose,"v449-review-pose","Meowde"))}}
   function decorateRecovery(){document.querySelectorAll(".v434-release-error,.v446-update-recovery,.v446-recovery-panel").forEach(panel=>{panel.classList.add("v449-character-error");if(!panel.querySelector(":scope > .v449-error-pose"))panel.insertAdjacentHTML("afterbegin",imageMarkup("error","v449-error-pose","Meowde"))})}
   function decorate(){
-    if(state().screen==="map"){
+    if(["map","review"].includes(state().screen)){
       document.documentElement.dataset.characterImages=VERSION;
       return;
     }
     if(state().screen!=="home"){decorateHero();decorateBrand();decorateCards()}
-    decorateGrowth();decorateCoach();decorateTrail();decorateFeedback();decorateProfile();decorateReview();decorateRecovery();
+    decorateGrowth();decorateCoach();decorateTrail();decorateFeedback();decorateProfile();decorateRecovery();
     document.documentElement.dataset.characterImages=VERSION;
   }
   function queue(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;decorate()})}
   new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true});
-  ["renderLesson","renderReview","renderProfile","renderAchievements","finish"].forEach(name=>{
+  ["renderLesson","renderProfile","renderAchievements","finish"].forEach(name=>{
     const current=window[name];if(typeof current!=="function"||current.__v450Wrapped)return;
     function wrapped(){const result=current.apply(this,arguments);queue();return result}
     wrapped.__v450Wrapped=true;window[name]=wrapped;
@@ -119,10 +118,13 @@
   window.MeowCharacterCutouts=Object.freeze({version:VERSION,poses:Array.from(POSES),decorate,imageMarkup,lessonPose});
   document.documentElement.dataset.homeCharacterImages="canonical-v414";
   document.documentElement.dataset.learnCharacterImages="canonical-v413";
+  document.documentElement.dataset.reviewCharacterImages="canonical-v414";
   window.__MEOWDE_VERSION__=VERSION;
   if(typeof window.__MEOWDE_CANONICAL_HOME_RENDERER__==="function")window.renderHome=window.__MEOWDE_CANONICAL_HOME_RENDERER__;
   if(typeof window.__MEOWDE_CANONICAL_LEARN_RENDERER__==="function")window.renderMap=window.__MEOWDE_CANONICAL_LEARN_RENDERER__;
+  if(typeof window.__MEOWDE_CANONICAL_REVIEW_RENDERER__==="function")window.renderReview=window.__MEOWDE_CANONICAL_REVIEW_RENDERER__;
   if(state().screen==="home"&&typeof window.renderHome==="function")window.renderHome();
   else if(state().screen==="map"&&typeof window.renderMap==="function")window.renderMap();
+  else if(state().screen==="review"&&typeof window.renderReview==="function")window.renderReview();
   else decorate();
 })();
