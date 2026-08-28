@@ -108,7 +108,7 @@
   const observer=new MutationObserver(queue);
   observer.observe(document.documentElement,{childList:true,subtree:true});
 
-  ["renderHome","renderRoom","renderProfile"].forEach(name=>{
+  ["renderHome","renderProfile"].forEach(name=>{
     const current=window[name];
     if(typeof current!=="function")return;
     window[name]=function(){const result=current.apply(this,arguments);decorate();return result};
