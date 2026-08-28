@@ -1,13 +1,13 @@
 (function applyMeowdeV448VisualCohesion(){
   "use strict";
 
-  const VERSION="4.48-phase5-learn";
+  const VERSION="4.48-phase5-secondary";
   const HERO_ASSET="/assets/meowde-approved-hero.svg?v=4481";
   const BASE_ASSET="/assets/meowde-approved-base.svg?v=4481";
   let queued=false;
 
   function ko(){return !window.S||S.lang!=="en"}
-  function isCanonicalStaticSurface(){return Boolean(window.S&&["home","map"].includes(S.screen))}
+  function isCanonicalStaticSurface(){return Boolean(window.S&&["home","map","review","profile","achievements"].includes(S.screen))}
 
   function heroMarkup(){
     const label=ko()?"헤드폰을 쓰고 노트북으로 코딩하는 Meowde":"Meowde coding on a laptop with headphones";
@@ -60,14 +60,11 @@
   function queue(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;decorate()})}
   const observer=new MutationObserver(queue);observer.observe(document.documentElement,{childList:true,subtree:true});
 
-  ["renderProfile"].forEach(name=>{
-    const current=window[name];if(typeof current!=="function")return;
-    window[name]=function(){const result=current.apply(this,arguments);decorate();return result};
-  });
-
   window.MeowVisualCohesion=Object.freeze({version:VERSION,decorate,refineHero,refineGrowth,refineBrand});
   document.documentElement.dataset.homeVisualSurface="canonical-v414";
   document.documentElement.dataset.learnVisualSurface="canonical-v413";
+  document.documentElement.dataset.profileVisualSurface="canonical-v420";
+  document.documentElement.dataset.achievementsVisualSurface="canonical-v419";
   window.__MEOWDE_VERSION__=VERSION;
   decorate();
 })();
