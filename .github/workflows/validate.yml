@@ -30,6 +30,7 @@ jobs:
       - name: Validate JavaScript syntax
         run: |
           node --check sw.js
+          node --check v413-core.js
           node --check v413-lesson.js
           node --check v414-state.js
           node --check v414-reward.js
@@ -58,6 +59,7 @@ jobs:
           node --check tools/validate-phase5-lesson-renderer.js
           node --check tools/validate-phase5-room-renderer.js
           node --check tools/validate-phase5-home-renderer.js
+          node --check tools/validate-phase5-learn-renderer.js
 
       - name: Validate Phase 2 daily consolidation
         run: node tools/validate-phase2-daily.js
@@ -76,6 +78,9 @@ jobs:
 
       - name: Validate Phase 5 canonical Home renderer
         run: node tools/validate-phase5-home-renderer.js
+
+      - name: Validate Phase 5 canonical Learn renderer
+        run: node tools/validate-phase5-learn-renderer.js
 
       - name: Run validation suite
         run: npm run validate
