@@ -18,12 +18,12 @@
   let queued=false;
 
   const ROOM_ASSETS={
-  coding:"/assets/characters/v451/meowde-coding.webp",
-  music:"/assets/characters/v451/meowde-music.webp",
-  reading:"/assets/characters/v451/meowde-reading.webp",
-  happy:"/assets/characters/v451/meowde-happy.webp",
-  smug:"/assets/characters/v451/meowde-challenge.webp",
-  error:"/assets/characters/v451/meowde-debug.webp"
+    coding:"/assets/characters/v451/meowde-coding.webp",
+    music:"/assets/characters/v451/meowde-music.webp",
+    reading:"/assets/characters/v451/meowde-reading.webp",
+    happy:"/assets/characters/v451/meowde-happy.webp",
+    smug:"/assets/characters/v451/meowde-challenge.webp",
+    error:"/assets/characters/v451/meowde-debug.webp"
   };
 
   function roomImageMarkup(pose="coding",label="Meowde"){
@@ -36,7 +36,6 @@
       data-character-version="4.51-room-only"
       decoding="async">`;
   }
-
 
   function state(){try{return window.S&&S?S:{}}catch(error){return {}}}
   function english(){return state().lang==="en"}
@@ -163,24 +162,24 @@
     }
   }
   function roomItems(){
-  return english()
-    ?[
-      ["coding","Coding mode","Focused learning"],
-      ["music","Music break","Headphones on"],
-      ["reading","Study mode","Reading clues"],
-      ["happy","Victory face","Correct answer"],
-      ["smug","Challenge mode","Solo coding challenge"],
-      ["error","Debug mode","Checking an error"]
-    ]
-    :[
-      ["coding","코딩 모드","집중 학습"],
-      ["music","뮤직 브레이크","헤드폰 장착"],
-      ["reading","공부 모드","다음 힌트 읽기"],
-      ["happy","정답 표정","문제 해결 완료"],
-      ["smug","도전 모드","혼자서 코딩 도전"],
-      ["error","디버그 모드","오류 확인 중"]
-    ];
-}
+    return english()
+      ?[
+        ["coding","Coding mode","Focused learning"],
+        ["music","Music break","Headphones on"],
+        ["reading","Study mode","Reading clues"],
+        ["happy","Victory face","Correct answer"],
+        ["smug","Challenge mode","Solo coding challenge"],
+        ["error","Debug mode","Checking an error"]
+      ]
+      :[
+        ["coding","코딩 모드","집중 학습"],
+        ["music","뮤직 브레이크","헤드폰 장착"],
+        ["reading","공부 모드","다음 힌트 읽기"],
+        ["happy","정답 표정","문제 해결 완료"],
+        ["smug","도전 모드","혼자서 코딩 도전"],
+        ["error","디버그 모드","오류 확인 중"]
+      ];
+  }
 
   function decorateRoom(){
     const grid=document.querySelector(".room-grid");
@@ -237,12 +236,12 @@
     });
   }
   function decorate(){
-    decorateHero();decorateBrand();decorateGrowth();decorateCoach();decorateTrail();decorateCards();decorateFeedback();decorateRoom();decorateProfile();decorateReview();decorateRecovery();
+    decorateHero();decorateBrand();decorateGrowth();decorateCoach();decorateTrail();decorateCards();decorateFeedback();decorateProfile();decorateReview();decorateRecovery();
     document.documentElement.dataset.characterImages=VERSION;
   }
   function queue(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;decorate()})}
   new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true});
-  ["renderHome","renderMap","renderRoom","renderLesson","renderReview","renderMy","renderProfile","renderAchievements","finish"].forEach(name=>{
+  ["renderHome","renderMap","renderLesson","renderReview","renderProfile","renderAchievements","finish"].forEach(name=>{
     const current=window[name];if(typeof current!=="function"||current.__v450Wrapped)return;
     function wrapped(){const result=current.apply(this,arguments);queue();return result}
     wrapped.__v450Wrapped=true;window[name]=wrapped;
