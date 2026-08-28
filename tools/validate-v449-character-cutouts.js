@@ -23,9 +23,10 @@ expect(renderer.includes("/assets/meowde-approved-base.svg?v=450"),"base image a
 expect(renderer.includes("/assets/meowde-approved-glasses.svg?v=450"),"glasses image asset is missing");
 expect(renderer.includes("/assets/meowde-approved-headphones.svg?v=450"),"headphones image asset is missing");
 expect(!renderer.includes("__MEOWDE_V449_SPRITE__"),"legacy sprite dependency remains");
-expect(renderer.includes("decorateHero"),"hero decorator is missing");
+expect(renderer.includes("decorateHero"),"hero helper is missing");
 expect(renderer.includes("decorateCoach"),"lesson decorator is missing");
-expect(renderer.includes("decorateRoom"),"room decorator is missing");
+expect(!renderer.includes("function decorateRoom"),"character layer must not replace the canonical Room renderer");
+expect(renderer.includes('window.__MEOWDE_CANONICAL_HOME_RENDERER__'),"character layer does not defer to canonical Home");
 
 const css=read("v449-character-cutouts.css");
 expect(css.includes("object-fit:contain"),"character images are not constrained with object-fit");
@@ -57,4 +58,4 @@ for(const asset of [
   expect(serviceWorker.includes(asset),`${asset} is missing from offline precache`);
 }
 
-console.log(`Validated Meowde v4.50 direct image rendering for ${poses.length} character states.`);
+console.log(`Validated Meowde v4.50 direct image rendering for ${poses.length} character states with canonical Home/Room ownership.`);
