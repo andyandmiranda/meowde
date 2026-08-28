@@ -19,9 +19,9 @@ assert(!playful.includes('scheduleIdleBehavior'),'idle lesson behavior is retire
 assert(!playful.includes('setTimeout'),'playful layer has no recurring idle timer');
 assert(growth.includes('dataset.lessonEmotionSurface="none"'),'growth emotion is not rendered in lessons');
 assert(!growth.includes('v427-emotion-line'),'growth layer no longer injects a lesson emotion line');
-assert(humor.includes('dataset.lessonReactionOwner="feedback"'),'feedback owns the single Meowde reaction');
+assert(humor.includes('dataset.lessonReactionOwner="canonical-v413"'),'canonical lesson renderer owns the single Meowde reaction');
 assert(!humor.includes('function decorateReward'),'humor layer no longer adds reward-screen delight');
-assert(learning.includes('dataset.lessonMetadata="single-auxiliary"'),'lesson metadata is limited to one auxiliary item');
+assert(learning.includes('dataset.lessonMetadata="canonical-v413"'),'canonical lesson renderer owns the single auxiliary metadata item');
 assert(!learning.includes('onclick="MeowLearning.retryCurrent()"'),'wrong-answer UI no longer forks into immediate retry actions');
 assert(!learning.includes('style.display="none"'),'canonical Continue button is not hidden');
 assert(lesson.includes("S.hint?`<div class=\"hint\">"),'canonical lesson hint remains available');
