@@ -22,7 +22,7 @@ assert(!character.includes('oldHome=window.renderHome'),'v430 no longer wraps Ho
 assert(character.includes('dataset.homeCharacterSurface="canonical-v414"'),'v430 defers Home character surface to v414');
 
 assert(!companion.includes('"renderHome"'),'v443 no longer includes Home in renderer wrappers');
-assert(companion.includes('["home","map"].includes(S.screen)'),'v443 navigation decorator skips canonical Home and Learn DOM');
+assert(companion.includes('["home","map","review"].includes(S.screen)'),'v443 navigation decorator skips canonical Home, Learn, and Review DOM');
 
 assert(!cohesion.includes('["renderHome","renderProfile"]'),'v444 no longer wraps Home');
 assert(cohesion.includes('isCanonicalStaticSurface'),'v444 recognizes canonical Home and Learn surfaces');
