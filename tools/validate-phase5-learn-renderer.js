@@ -28,15 +28,15 @@ assert(mapSource.includes("done?'done':''")&&mapSource.includes("current?'curren
 assert(!mapSource.includes('stone')&&!mapSource.includes('bush')&&!mapSource.includes('unit-flag')&&!mapSource.includes('trail-cat'),'Learn no longer generates decorative trail DOM');
 assert(!mapSource.includes('v416-now-tag')&&!mapSource.includes('v416-node-reward'),'Learn does not generate reward or NOW overlays');
 
-assert(companion.includes('["renderReview","renderProfile","renderAchievements"].forEach(wrapRenderer)'),'v443 no longer wraps Learn');
-assert(companion.includes('["home","map"].includes(S.screen)'),'v443 observer skips canonical Learn navigation');
+assert(companion.includes('["renderProfile","renderAchievements"].forEach(wrapRenderer)'),'v443 no longer wraps Learn or Review');
+assert(companion.includes('["home","map","review"].includes(S.screen)'),'v443 observer skips canonical Learn navigation');
 assert(companion.includes('window.renderMap=window.__MEOWDE_CANONICAL_LEARN_RENDERER__'),'v443 restores canonical Learn regardless of async load order');
 
 assert(cohesion.includes('["home","map"].includes(S.screen)'),'v444 skips Learn visual post-processing');
 assert(cohesion.includes('dataset.learnVisualSurface="canonical-v413"'),'v444 records canonical Learn visual ownership');
 
-assert(cutouts.includes('if(state().screen==="map")'),'v449 observer exits before mutating canonical Learn');
-assert(cutouts.includes('["renderLesson","renderReview","renderProfile","renderAchievements","finish"]'),'v449 no longer wraps Learn');
+assert(cutouts.includes('["map","review"].includes(state().screen)'),'v449 observer exits before mutating canonical Learn or Review');
+assert(cutouts.includes('["renderLesson","renderProfile","renderAchievements","finish"]'),'v449 no longer wraps Learn or Review');
 assert(cutouts.includes('window.renderMap=window.__MEOWDE_CANONICAL_LEARN_RENDERER__'),'late character layer restores canonical Learn');
 assert(cutouts.includes('dataset.learnCharacterImages="canonical-v413"'),'v449 records canonical Learn character ownership');
 

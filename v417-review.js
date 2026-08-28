@@ -128,13 +128,13 @@
       const note=screen.querySelector('.reward-note');if(note)note.textContent=first?(S.lang==='ko'?'오늘의 맞춤 복습 보상을 받았습니다.':'Today’s Smart Review reward has been added.'):(S.lang==='ko'?'오늘 보상은 이미 받았으며 복습 기록만 추가했습니다.':'Today’s reward was already claimed; this practice was recorded.');
     }
   };
-  const baseRenderReview=renderReview;
-  renderReview=function(){
-    baseRenderReview();
-    const scroll=document.querySelector('.screen>.scroll'),head=scroll&&scroll.querySelector('.simple-head');
-    if(head)head.insertAdjacentHTML('afterend',card());
-  };
+
+  window.MeowSmartReview=Object.freeze({state:R,storageKey:KEY,card,recommendations,streak,dayKey,mistakes,start:window.startSmartReview});
+  document.documentElement.dataset.smartReviewSurface='canonical-v414';
   document.title='Meowde v4.17 — Smart Review';
-  window.__MEOWDE_VERSION__='4.17';
-  if(S.screen==='review')renderReview();
+  window.__MEOWDE_VERSION__='4.17-phase5-review';
+
+  // v4.14 may render Review before this helper loads during bootstrap.
+  // Refresh once so the canonical Review renderer can include Smart Review.
+  if(window.S&&S.screen==='review'&&typeof window.renderReview==='function')window.renderReview();
 })();
