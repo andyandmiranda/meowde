@@ -35,8 +35,10 @@
 
     const anchor=container.querySelector("a");
     if(anchor){
-      anchor.textContent=label();
-      anchor.setAttribute("aria-label",label().replace(" ↗",""));
+      const nextLabel=label();
+      const nextAriaLabel=nextLabel.replace(" ↗","");
+      if(anchor.textContent!==nextLabel)anchor.textContent=nextLabel;
+      if(anchor.getAttribute("aria-label")!==nextAriaLabel)anchor.setAttribute("aria-label",nextAriaLabel);
     }
   }
 
