@@ -45,17 +45,22 @@ jobs:
           node --check v428-events.js
           node --check v429-quests.js
           node --check v430-character.js
+          node --check v432-humor.js
           node --check v433-learning.js
           node --check v434-release.js
           node --check v443-single-companion.js
           node --check tools/validate-phase2-daily.js
           node --check tools/validate-phase3-surfaces.js
+          node --check tools/validate-phase4-lesson.js
 
       - name: Validate Phase 2 daily consolidation
         run: node tools/validate-phase2-daily.js
 
       - name: Validate Phase 3 surface separation
         run: node tools/validate-phase3-surfaces.js
+
+      - name: Validate Phase 4 lesson simplification
+        run: node tools/validate-phase4-lesson.js
 
       - name: Run validation suite
         run: npm run validate
