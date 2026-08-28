@@ -49,10 +49,13 @@ jobs:
           node --check v433-learning.js
           node --check v434-release.js
           node --check v443-single-companion.js
+          node --check v444-visual-cohesion.js
+          node --check v449-character-cutouts.js
           node --check tools/validate-phase2-daily.js
           node --check tools/validate-phase3-surfaces.js
           node --check tools/validate-phase4-lesson.js
           node --check tools/validate-phase5-lesson-renderer.js
+          node --check tools/validate-phase5-room-renderer.js
 
       - name: Validate Phase 2 daily consolidation
         run: node tools/validate-phase2-daily.js
@@ -65,6 +68,9 @@ jobs:
 
       - name: Validate Phase 5 canonical Lesson renderer
         run: node tools/validate-phase5-lesson-renderer.js
+
+      - name: Validate Phase 5 canonical Room renderer
+        run: node tools/validate-phase5-room-renderer.js
 
       - name: Run validation suite
         run: npm run validate
