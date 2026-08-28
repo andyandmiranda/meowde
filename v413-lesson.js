@@ -5,6 +5,27 @@
     return {lessonIndex,lesson:lessons()[lessonIndex]||null,exercise:exercise||null};
   }
 
+  function lessonOutcome(){
+    if(!S.checked)return 'idle';
+    return S.correct?'correct':'wrong';
+  }
+
+  function auxiliaryMarkup(exercise){
+    const learning=window.MeowLearning;
+    if(!learning||typeof learning.auxiliaryLabel!=='function')return '';
+    const label=learning.auxiliaryLabel(exercise);
+    if(!label)return '';
+    return `<div class="v433-meta"><span class="v433-chip ${esc(label.kind||'')}">${esc(label.text||'')}</span></div>`;
+  }
+
+  function reactionMarkup(){
+    if(!S.checked)return '';
+    const humor=window.MeowHumor;
+    if(!humor||typeof humor.line!=='function')return '';
+    const text=humor.line();
+    return text?`<div class="v432-reaction">${esc(text)}</div>`:'';
+  }
+
   renderLesson=function(){
     if(!hasLessonProgress())return renderHome();
     S.screen='lesson';
@@ -19,10 +40,10 @@
     let body='';
     let qhead='';
     if(ex.type!=='concept'){
-      qhead=`<div class="coach">${catSVG(S.cat,S.checked?(S.correct?'happy':'oops'):'focus',62)}<div class="bubble"><div style="font-size:10.5px;font-weight:950;letter-spacing:.08em;color:var(--muted);margin-bottom:7px;text-transform:uppercase">Q ${esc(qcode)}</div><div class="prompt">${esc(ex.prompt)}</div>${S.hint?`<div class="hint">${esc(ex.hint)}</div>`:`<button class="hint" onclick="S.hint=true;save();renderLesson()">${t('hint')}</button>`}</div></div>`;
+      qhead=`<div class="coach" data-lesson-outcome="${lessonOutcome()}">${catSVG(S.cat,S.checked?(S.correct?'happy':'oops'):'focus',62)}<div class="bubble"><div style="font-size:10.5px;font-weight:950;letter-spacing:.08em;color:var(--muted);margin-bottom:7px;text-transform:uppercase">Q ${esc(qcode)}</div><div class="prompt">${esc(ex.prompt)}</div>${S.hint?`<div class="hint">${esc(ex.hint)}</div>`:`<button class="hint" onclick="S.hint=true;save();renderLesson()">${t('hint')}</button>`}${auxiliaryMarkup(ex)}</div></div>`;
     }
     if(ex.type==='concept'){
-      qhead=`<div class="coach">${catSVG(S.cat,'idle',62)}<div class="bubble"><div class="prompt">${t('conceptCoach')}</div></div></div>`;
+      qhead=`<div class="coach" data-lesson-outcome="idle">${catSVG(S.cat,'idle',62)}<div class="bubble"><div class="prompt">${t('conceptCoach')}</div></div></div>`;
       body=`<div class="card"><div class="pill" style="display:inline-flex;margin-bottom:10px">Q ${esc(qcode)}</div><h3>${esc(ex.title)}</h3><p style="font-size:14px;color:var(--muted);line-height:1.6;margin:8px 0 12px">${esc(ex.body)}</p><div class="code">${esc(ex.code)}</div></div>`;
     }else if(ex.type==='predict'){
       body=`<div class="code">${esc(ex.code)}</div><div class="choices">${ex.choices.map((choice,index)=>`<button class="choice ${S.sel===index?'sel':''} ${S.checked&&index===ex.answer?'right':''} ${S.checked&&S.sel===index&&index!==ex.answer?'wrong':''}" onclick="S.sel=${index};save();renderLesson()">${esc(choice)}</button>`).join('')}</div>${S.checked&&S.correct?`<div class="console">${esc(ex.output)}</div>`:''}`;
@@ -38,10 +59,11 @@
     const foot=ex.type==='concept'
       ?`<div class="lesson-foot"><button class="btn" onclick="nextQ()">${t('got')}</button></div>`
       :S.checked
-        ?`<div class="feedback ${S.correct?'ok':'no'}"><h3>${S.correct?t('correct'):t('wrong')}</h3><p>${esc(ex.explain)} ${!S.correct?t('tryAgain'):''}</p><button class="btn" onclick="nextQ()">${t('continue')}</button></div>`
+        ?`<div class="feedback ${S.correct?'ok':'no'}"><h3>${S.correct?t('correct'):t('wrong')}</h3>${reactionMarkup()}<p>${esc(ex.explain)} ${!S.correct?t('tryAgain'):''}</p><button class="btn" onclick="nextQ()">${t('continue')}</button></div>`
         :`<div class="lesson-foot"><button class="btn" ${!can?'disabled':''} onclick="checkQ()">${ex.type==='write'?(S.loading?t('pyLoading'):(S.lang==='ko'?'코드 실행':'Run code')):t('check')}</button></div>`;
     const modeLabel=typeof meowdeMode==='function'&&meowdeMode()==='smart-review'?(S.lang==='ko'?'Smart Review':'Smart Review'):'';
     app.innerHTML=`<div class="screen"><div class="lesson-bg"></div><div class="lesson-top"><button class="close" aria-label="${S.lang==='ko'?'나가기':'Exit'}" onclick="renderHome()"></button><div class="lesson-title"><b>${modeLabel?`${esc(modeLabel)} · `:''}${esc(L.title)}</b><div class="progress"><span style="width:${pct}%"></span></div></div><div class="lesson-meta"><span class="autosave">${S.lang==='ko'?'자동 저장':'Saved'}</span><span class="pill">${step}/${S.queue.length}</span></div></div><div class="scroll"><main class="lesson-main">${qhead}${body}</main></div>${foot}</div>`;
+    document.documentElement.dataset.lessonRenderer='canonical-v413';
   };
 
   overlay=function(html){
@@ -59,7 +81,7 @@
   };
 
   document.title='Meowde v4.13 — Mobile UX Refresh';
-  window.__MEOWDE_VERSION__='4.13';
+  window.__MEOWDE_VERSION__='4.13-phase5';
   if(S.screen==='lesson'&&hasLessonProgress())renderLesson();
   else renderHome();
 })();
