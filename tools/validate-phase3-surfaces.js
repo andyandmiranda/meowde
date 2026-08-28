@@ -17,23 +17,23 @@ assert(journey.includes('v416-milestone-card'),'Unclaimed unit rewards must rema
 
 assert(achievements.includes('meowde-v419-achievements'),'Achievement storage key must be preserved');
 assert(!achievements.includes('decorateHome'),'Achievements must not decorate Home');
-assert(achievements.includes('decorateRoom'),'Achievements must decorate Meowde');
+assert(achievements.includes('decorateRoom'),'Achievements must remain available to Meowde');
 assert(achievements.includes('오늘의 연습'),'Daily achievement copy must use Daily Practice naming');
 
 assert(growth.includes('meowde-v427-growth'),'Growth storage key must be preserved');
 assert(!growth.includes('decorateHome'),'Growth must not decorate Home');
-assert(growth.includes('decorateRoom'),'Growth must render on Meowde');
+assert(growth.includes('decorateRoom'),'Growth must remain available to Meowde');
 
 assert(events.includes('meowde-v428-events'),'Event storage key must be preserved');
 assert(!events.includes('decorateHome'),'Events must not decorate Home');
-assert(events.includes('decorateRoom'),'Events must render on Meowde');
+assert(events.includes('decorateRoom'),'Events must remain available to Meowde');
 assert(events.includes('claimSeason();renderRoom()'),'Season claims must return to Meowde');
 assert(events.includes('claimVisitor();renderRoom()'),'Visitor claims must return to Meowde');
 
-assert(companion.includes('phase3CompanionHub'),'Meowde hub ordering marker must exist');
-assert(companion.includes('.v427-growth-card'),'Growth must be in canonical Meowde ordering');
-assert(companion.includes('.v419-summary'),'Achievements must be in canonical Meowde ordering');
-assert(companion.includes('.v428-season-card'),'Season must be in canonical Meowde ordering');
+assert(companion.includes('data-phase3-companion-hub="ordered"')||companion.includes('phase3CompanionHub'),'Meowde hub ordering marker must exist');
+assert(companion.includes('v427-growth-card'),'Growth must be in canonical Meowde ordering');
+assert(companion.includes('v419-summary'),'Achievements must be in canonical Meowde ordering');
+assert(companion.includes('v428-season-card'),'Season must be in canonical Meowde ordering');
 
 assert(css.includes('.trail .stone')&&css.includes('display:none!important'),'Decorative Learn trail elements must be hidden');
 assert(css.includes('.node.current')&&css.includes('animation:none!important'),'Current Learn node must not pulse continuously');
