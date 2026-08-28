@@ -28,7 +28,13 @@
   if(previousVisitGap>1000*60*30)G.returnCount++;
   G.lastSeenAt=now;
 
-  function todayKey(){return new Date().toISOString().slice(0,10)}
+  function todayKey(){
+    const value=new Date();
+    const y=value.getFullYear();
+    const m=String(value.getMonth()+1).padStart(2,"0");
+    const d=String(value.getDate()).padStart(2,"0");
+    return `${y}-${m}-${d}`;
+  }
   if(G.lastStudyDate!==todayKey()){
     G.correctToday=0;
     G.wrongToday=0;
@@ -55,13 +61,11 @@
     const value=xp();
     return STAGES.find(item=>value>=item.min&&value<=item.max)||STAGES[0];
   }
-
   function nextStage(){
     const current=stage();
     const index=STAGES.findIndex(item=>item.id===current.id);
     return STAGES[index+1]||null;
   }
-
   function evolutionProgress(){
     const current=stage();
     const next=nextStage();
@@ -70,7 +74,6 @@
     const gained=Math.max(0,xp()-current.min);
     return {current:gained,target:span,percent:Math.min(100,Math.round(gained/span*100))};
   }
-
   function emotion(){
     const total=G.correctToday+G.wrongToday;
     if(previousVisitGap>1000*60*60*24*3)return "lonely";
@@ -81,7 +84,6 @@
     if(window.S&&S.checked&&S.correct)return "proud";
     return "curious";
   }
-
   function emotionCopy(){
     const ko=isKorean();
     const copy={
@@ -93,46 +95,30 @@
     };
     return copy[emotion()]||copy.curious;
   }
-
   function recordAnswer(correct){
     if(correct)G.correctToday++;
     else G.wrongToday++;
     G.lastEmotion=emotion();
     persist();
   }
-
   function evolutionCard(){
     const ko=isKorean();
     const current=stage();
     const next=nextStage();
     const progress=evolutionProgress();
-    return `<section class="card v427-growth-card"><div class="v427-growth-head"><span class="v427-stage-icon">${current.icon}</span><div><div class="section-kicker">${ko?"고양이 성장":"Cat evolution"}</div><h3>${ko?current.labelKo:current.labelEn}</h3><p>${next?(ko?`${next.labelKo}까지 ${Math.max(0,next.min-xp())} XP`:`${Math.max(0,next.min-xp())} XP to ${next.labelEn}`):(ko?"최종 성장 단계 달성":"Final evolution reached")}</p></div><span class="pill">${xp()} XP</span></div><div class="v427-growth-track"><i style="width:${progress.percent}%"></i></div><div class="v427-growth-stages">${STAGES.map(item=>`<span class="${xp()>=item.min?"reached":""}" title="${ko?item.labelKo:item.labelEn}">${item.icon}</span>`).join("")}</div></section>`;
+    return `<section class="card v427-growth-card"><div class="v427-growth-head"><span class="v427-stage-icon">${current.icon}</span><div><div class="section-kicker">${ko?"Meowde 성장":"Meowde growth"}</div><h3>${ko?current.labelKo:current.labelEn}</h3><p>${next?(ko?`${next.labelKo}까지 ${Math.max(0,next.min-xp())} XP`:`${Math.max(0,next.min-xp())} XP to ${next.labelEn}`):(ko?"최종 성장 단계 달성":"Final evolution reached")}</p></div><span class="pill">${xp()} XP</span></div><div class="v427-growth-track"><i style="width:${progress.percent}%"></i></div><div class="v427-growth-stages">${STAGES.map(item=>`<span class="${xp()>=item.min?"reached":""}" title="${ko?item.labelKo:item.labelEn}">${item.icon}</span>`).join("")}</div></section>`;
   }
-
-  function emotionCard(){
-    const ko=isKorean();
-    return `<section class="card v427-emotion-card" data-emotion="${emotion()}"><div><span class="v427-emotion-dot"></span><b>${ko?"오늘의 마음":"Today's mood"}</b></div><p>${emotionCopy()}</p></section>`;
-  }
-
-  function replaceCard(scroll,selector,markup,position){
-    const existing=scroll.querySelector(selector);
-    if(existing){existing.outerHTML=markup;return}
-    scroll.insertAdjacentHTML(position,markup);
-  }
-
-  function decorateHome(){
-    const scroll=document.querySelector(".screen>.scroll");
-    if(!scroll)return;
-    replaceCard(scroll,".v427-emotion-card",emotionCard(),"afterbegin");
-    replaceCard(scroll,".v427-growth-card",evolutionCard(),"beforeend");
-  }
-
   function decorateRoom(){
     const scroll=document.querySelector(".screen>.scroll");
     if(!scroll)return;
-    replaceCard(scroll,".v427-growth-card",evolutionCard(),"afterbegin");
+    const existing=scroll.querySelector(".v427-growth-card");
+    if(existing)existing.outerHTML=evolutionCard();
+    else{
+      const head=scroll.querySelector(".simple-head");
+      if(head)head.insertAdjacentHTML("afterend",evolutionCard());
+      else scroll.insertAdjacentHTML("afterbegin",evolutionCard());
+    }
   }
-
   function decorateLesson(){
     const bubble=document.querySelector(".coach .bubble");
     if(!bubble)return;
@@ -144,14 +130,9 @@
     }
     line.textContent=emotionCopy();
     const coach=document.querySelector(".coach");
-    if(coach){
-      coach.dataset.emotion=emotion();
-      coach.dataset.stage=stage().id;
-    }
+    if(coach){coach.dataset.emotion=emotion();coach.dataset.stage=stage().id}
   }
 
-  const baseRenderHome=window.renderHome;
-  if(typeof baseRenderHome==="function")window.renderHome=function(){baseRenderHome.apply(this,arguments);decorateHome()};
   const baseRenderRoom=window.renderRoom;
   if(typeof baseRenderRoom==="function")window.renderRoom=function(){baseRenderRoom.apply(this,arguments);decorateRoom()};
   const baseRenderLesson=window.renderLesson;
@@ -168,12 +149,12 @@
   window.addEventListener("pagehide",()=>{G.lastSeenAt=Date.now();persist()});
 
   window.MeowGrowth={state:G,stages:STAGES,stage,nextStage,emotion,evolutionProgress,recordAnswer};
-  window.__MEOWDE_GROWTH_VERSION__="4.38";
+  document.documentElement.dataset.growthSurface="meowde";
+  window.__MEOWDE_GROWTH_VERSION__="4.38-phase3";
   persist();
 
   if(window.S){
-    if(S.screen==="home"&&typeof window.renderHome==="function")window.renderHome();
-    else if(S.screen==="room"&&typeof window.renderRoom==="function")window.renderRoom();
+    if(S.screen==="room"&&typeof window.renderRoom==="function")window.renderRoom();
     else if(S.screen==="lesson"&&typeof window.renderLesson==="function")window.renderLesson();
   }
 })();
