@@ -60,6 +60,7 @@ jobs:
           node --check tools/validate-phase5-room-renderer.js
           node --check tools/validate-phase5-home-renderer.js
           node --check tools/validate-phase5-learn-renderer.js
+          node --check tools/validate-phase5-review-renderer.js
 
       - name: Validate Phase 2 daily consolidation
         run: node tools/validate-phase2-daily.js
@@ -81,6 +82,9 @@ jobs:
 
       - name: Validate Phase 5 canonical Learn renderer
         run: node tools/validate-phase5-learn-renderer.js
+
+      - name: Validate Phase 5 canonical Review renderer
+        run: node tools/validate-phase5-review-renderer.js
 
       - name: Run validation suite
         run: npm run validate
