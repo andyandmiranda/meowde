@@ -1,5 +1,11 @@
 (function applyMeowdeV420Profile(){
+  "use strict";
+
   const KEY='meowde-v420-profile';
+  const VERSION='4.20-phase5-secondary';
+  const BASE_ASSET='/assets/meowde-approved-base.svg?v=450';
+  const HEADPHONES_ASSET='/assets/meowde-approved-headphones.svg?v=450';
+
   function readJSON(key){try{const value=JSON.parse(localStorage.getItem(key)||'{}');return value&&typeof value==='object'?value:{}}catch(error){return {}}}
   const P=readJSON(KEY);
   P.name=typeof P.name==='string'&&P.name.trim()?P.name.trim():'Amy';
@@ -32,6 +38,18 @@
     const patterns=mentor.patterns||{},top=Object.keys(patterns).sort((x,y)=>(Number(patterns[y])||0)-(Number(patterns[x])||0))[0]||'';
     const patternLabels={debugging:S.lang==='ko'?'디버깅':'Debugging',syntax:S.lang==='ko'?'문법':'Syntax',prediction:S.lang==='ko'?'실행 결과 예측':'Prediction','code-writing':S.lang==='ko'?'코드 작성':'Code writing',general:S.lang==='ko'?'기본 문제':'General'};
     return {mistakes,hints,reviews:Array.isArray(review.history)?review.history.length:0,best:Number(a.bestCorrectStreak)||0,noHints:Number(a.noHintWins)||0,top:top?patternLabels[top]||top:''};
+  }
+  function canonicalBrand(){
+    const ko=S.lang==='ko',tagline=typeof t==='function'?t('tagline'):'Learn to code playfully.';
+    return `<div class="top"><div class="brand"><span class="brand-mark"><img class="v449-character v449-pose-base v448-brand-cat" src="${BASE_ASSET}" alt="" width="42" height="42" data-v449-pose="base" data-character-version="4.50" decoding="async"></span><div><h1 class="v444-brand-wordmark">Meowde</h1><p>${esc(tagline)}</p></div></div><button class="lang" onclick="langSheet()">${ko?'KO':'EN'}</button></div>`;
+  }
+  function canonicalTabs(){
+    const ko=S.lang==='ko';
+    return `<div class="tabbar" data-phase1-navigation="four-tabs"><button onclick="renderHome()" aria-label="${ko?'홈':'Home'}">${icon('home')}<span>${ko?'홈':'Home'}</span></button><button onclick="renderMap()" aria-label="${ko?'학습':'Learn'}">${icon('map')}<span>${ko?'학습':'Learn'}</span></button><button onclick="renderReview()" aria-label="${ko?'복습':'Review'}">${icon('code')}<span>${ko?'복습':'Review'}</span></button><button class="on" onclick="renderRoom()" aria-label="Meowde">${icon('cat')}<span>Meowde</span></button></div>`;
+  }
+  function profileAvatar(level){
+    const label=S.lang==='ko'?'헤드폰을 쓴 Meowde':'Meowde with headphones';
+    return `<div class="v420-avatar"><img class="v449-character v449-pose-music v449-profile-pose" src="${HEADPHONES_ASSET}" alt="${label}" data-v449-pose="music" data-character-version="4.50" decoding="async"><span class="v420-avatar-level">${level}</span></div>`;
   }
   function statsGrid(){
     const ko=S.lang==='ko',daily=S.dailyHistory&&typeof S.dailyHistory==='object'?Object.keys(S.dailyHistory).length:0;
@@ -70,11 +88,12 @@
   window.renderProfile=function(){
     S.screen='profile';save();
     const ko=S.lang==='ko',info=levelInfo(),badge=featuredBadge(),badgeTitle=badge?(ko?badge.titleKo:badge.titleEn):(ko?'대표 배지 없음':'No featured badge');
-    app.innerHTML=`<div class="screen">${brand()}${stats()}<div class="scroll"><div class="simple-head"><h2>${ko?'프로필':'Profile'}</h2><p>${ko?'학습 진도와 성장 기록을 한곳에서 확인하세요.':'See progress, growth, and practice history in one place.'}</p></div><section class="v420-profile-hero"><div class="v420-profile-top"><div class="v420-avatar">${catSVG(S.cat,'happy',92)}<span class="v420-avatar-level">${info.level}</span></div><div class="v420-profile-copy"><div class="v420-profile-name-row"><h2>${esc(P.name)}</h2><button class="v420-edit-name" onclick="editProfileName()">✎</button></div><div class="v420-profile-title">Lv.${info.level} ${esc(info.title)}</div><div class="v420-featured"><span>${badge?badge.icon:'🔒'}</span><span>${esc(badgeTitle)}</span></div></div></div><div class="v420-level-track"><span style="width:${info.percent}%"></span></div><div class="v420-level-meta"><span>${info.current} XP</span><span>${info.target-info.current} XP ${ko?'후 레벨업':'to level up'}</span></div><div class="v420-profile-actions"><button class="btn ghost" onclick="renderAchievements()">🏅 ${ko?'업적':'Achievements'}</button><button class="btn ghost" onclick="renderRoom()">🐱 ${ko?'고양이':'Cat room'}</button></div></section><section class="card">${statsGrid()}</section>${weekCard()}${masteryCard()}${insightCard()}${goalsCard()}</div>${tabs('profile')}</div>`;
+    app.innerHTML=`<div class="screen">${canonicalBrand()}${stats()}<div class="scroll"><div class="simple-head"><h2>${ko?'프로필':'Profile'}</h2><p>${ko?'학습 진도와 성장 기록을 한곳에서 확인하세요.':'See progress, growth, and practice history in one place.'}</p></div><section class="v420-profile-hero"><div class="v420-profile-top">${profileAvatar(info.level)}<div class="v420-profile-copy"><div class="v420-profile-name-row"><h2>${esc(P.name)}</h2><button class="v420-edit-name" onclick="editProfileName()">✎</button></div><div class="v420-profile-title">Lv.${info.level} ${esc(info.title)}</div><div class="v420-featured"><span>${badge?badge.icon:'🔒'}</span><span>${esc(badgeTitle)}</span></div></div></div><div class="v420-level-track"><span style="width:${info.percent}%"></span></div><div class="v420-level-meta"><span>${info.current} XP</span><span>${info.target-info.current} XP ${ko?'후 레벨업':'to level up'}</span></div><div class="v420-profile-actions"><button class="btn ghost" onclick="renderAchievements()">🏅 ${ko?'업적':'Achievements'}</button><button class="btn ghost" onclick="renderRoom()">🐱 Meowde</button></div></section><section class="card">${statsGrid()}</section>${weekCard()}${masteryCard()}${insightCard()}${goalsCard()}</div>${canonicalTabs()}</div>`;
+    document.documentElement.dataset.profileRenderer='canonical-v420';
+    document.documentElement.dataset.navigation='phase1-four-tabs';
   };
-  tabs=function(active){return `<div class="tabbar"><button class="${active==='home'?'on':''}" onclick="renderHome()">${icon('home')}<span>${t('home')}</span></button><button class="${active==='map'?'on':''}" onclick="renderMap()">${icon('map')}<span>${t('map')}</span></button><button class="${active==='league'?'on':''}" onclick="renderLeague()">${icon('league')}<span>${t('league')}</span></button><button class="${active==='room'?'on':''}" onclick="renderRoom()">${icon('room')}<span>${t('room')}</span></button><button class="${active==='profile'?'on':''}" onclick="renderProfile()">${icon('cat')}<span>${S.lang==='ko'?'프로필':'Profile'}</span></button></div>`};
-  document.title='Meowde v4.20 — Player Profile';
-  window.__MEOWDE_VERSION__='4.20';
+  window.__MEOWDE_CANONICAL_PROFILE_RENDERER__=window.renderProfile;
+  document.title='Meowde — Profile';
+  window.__MEOWDE_VERSION__=VERSION;
   if(S.screen==='profile')renderProfile();
-  else if(['home','map','league','room','review','achievements'].includes(S.screen)){const rerender={home:renderHome,map:renderMap,league:renderLeague,room:renderRoom,review:renderReview,achievements:window.renderAchievements}[S.screen];if(typeof rerender==='function')rerender()}
 })();
