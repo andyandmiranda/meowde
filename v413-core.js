@@ -1,6 +1,4 @@
 (function applyMeowdeV413UX(){
-  const originalRenderMap=renderMap;
-
   function progressPercent(){
     return Math.min(100,Math.round((S.done.length/Math.max(1,lessons().length))*100));
   }
@@ -21,6 +19,16 @@
       <button class="${active==='my'?'on':''}" onclick="renderMy()">${icon('room')}<span>${labels.my}</span></button>
     </div>`;
   };
+
+  function learnBrand(){
+    const ko=S.lang==='ko';
+    const tagline=typeof t==='function'?t('tagline'):'Learn to code playfully.';
+    return `<div class="top"><div class="brand"><span class="brand-mark"><img class="v449-character v449-pose-base v448-brand-cat" src="/assets/meowde-approved-base.svg?v=450" alt="" width="42" height="42" data-v449-pose="base" data-character-version="4.50" decoding="async"></span><div><h1 class="v444-brand-wordmark">Meowde</h1><p>${esc(tagline)}</p></div></div><button class="lang" onclick="langSheet()">${ko?'KO':'EN'}</button></div>`;
+  }
+  function learnTabs(){
+    const ko=S.lang==='ko';
+    return `<div class="tabbar" data-phase1-navigation="four-tabs"><button onclick="renderHome()" aria-label="${ko?'홈':'Home'}">${icon('home')}<span>${ko?'홈':'Home'}</span></button><button class="on" onclick="renderMap()" aria-label="${ko?'학습':'Learn'}">${icon('map')}<span>${ko?'학습':'Learn'}</span></button><button onclick="renderReview()" aria-label="${ko?'복습':'Review'}">${icon('code')}<span>${ko?'복습':'Review'}</span></button><button onclick="renderRoom()" aria-label="Meowde">${icon('cat')}<span>Meowde</span></button></div>`;
+  }
 
   renderHome=function(){
     S.screen='home';
@@ -48,17 +56,29 @@
   };
 
   renderMap=function(){
-    originalRenderMap();
     S.screen='map';
-    const heading=document.querySelector('.map-head h2');
-    const copy=document.querySelector('.map-head p');
-    if(heading)heading.textContent=S.lang==='ko'?'학습 경로':'Learning path';
-    if(copy)copy.textContent=S.lang==='ko'?'레슨은 권장 순서대로 열립니다. 완료한 레슨은 언제든 다시 복습할 수 있어요.':'Lessons unlock in the recommended order. Completed lessons can be reviewed anytime.';
-    const unitNames=S.lang==='ko'?['01 Python 기초','02 조건과 반복','03 함수와 프로젝트']:['01 Python Basics','02 Control & Loops','03 Functions & Projects'];
-    document.querySelectorAll('.unit-tabs button').forEach((button,index)=>{button.textContent=unitNames[index]||button.textContent});
-    const bar=document.querySelector('.tabbar');
-    if(bar)bar.outerHTML=tabs('study');
+    S.unit=Math.max(0,Math.min(2,Number(S.unit)||0));
+    save();
+    const start=S.unit*10;
+    const XS=[50,26,50,74,50,26,50,74,50,26],STEP=106,TOP=64,H=TOP+9*STEP+118;
+    const ko=S.lang==='ko';
+    const unitNames=ko?['01 Python 기초','02 조건과 반복','03 함수와 프로젝트']:['01 Python Basics','02 Control & Loops','03 Functions & Projects'];
+    const nodes=lessons().slice(start,start+10).map((lesson,index)=>{
+      const lessonIndex=start+index;
+      const done=Array.isArray(S.done)&&S.done.includes(lessonIndex);
+      const current=lessonIndex===S.next;
+      const locked=!done&&lessonIndex>S.next;
+      const x=XS[index],y=TOP+index*STEP;
+      const inner=done?icon('check'):locked?icon('lock'):String(lessonIndex+1).padStart(2,'0');
+      const action=locked?`toast(t('lockedToast'))`:`startLesson(${lessonIndex})`;
+      return `<button class="node ${done?'done':''} ${current?'current':''} ${locked?'locked':''}" style="left:${x}%;top:${y}px" onclick="${action}" aria-label="${esc(lesson.title)}">${inner}</button><span class="node-label ${locked?'lk':''}" style="left:${x}%;top:${y+38}px">${esc(lesson.short)}</span>`;
+    }).join('');
+    const unitTabs=unitNames.map((name,index)=>`<button class="${S.unit===index?'on':''}" onclick="S.unit=${index};save();renderMap()">${name}</button>`).join('');
+    app.innerHTML=`<div class="screen">${learnBrand()}${stats()}<div class="scroll"><div class="map-head"><h2>${ko?'학습 경로':'Learning path'}</h2><p>${ko?'레슨은 권장 순서대로 열립니다. 완료한 레슨은 언제든 다시 복습할 수 있어요.':'Lessons unlock in the recommended order. Completed lessons can be reviewed anytime.'}</p></div><div class="unit-tabs">${unitTabs}</div><div class="trail" style="height:${H}px" data-learn-path="canonical">${nodes}</div></div>${learnTabs()}</div>`;
+    document.documentElement.dataset.learnRenderer='canonical-v413';
+    document.documentElement.dataset.navigation='phase1-four-tabs';
   };
+  window.__MEOWDE_CANONICAL_LEARN_RENDERER__=renderMap;
 
   renderReview=function(){
     S.screen='review';
