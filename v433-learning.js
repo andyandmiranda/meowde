@@ -76,19 +76,6 @@
     return null;
   }
 
-  function decorateLesson(){
-    if(!window.S)return;
-    const exercise=typeof window.cur==="function"?cur():null;
-    if(!exercise)return;
-    document.querySelectorAll(".v433-meta,.v433-hint-progress,.v433-retry-actions").forEach(node=>node.remove());
-    const feedbackButton=document.querySelector(".feedback .btn");
-    if(feedbackButton)feedbackButton.style.display="";
-    const label=auxiliaryLabel(exercise);
-    if(!label)return;
-    const bubble=document.querySelector(".coach .bubble");
-    if(bubble)bubble.insertAdjacentHTML("beforeend",`<div class="v433-meta"><span class="v433-chip ${label.kind}">${esc(label.text)}</span></div>`);
-  }
-
   // Kept for API compatibility; the UI no longer offers an immediate fork.
   // Wrong answers continue normally and remain eligible for the existing queued retry.
   function resetAnswer(exercise){
@@ -122,15 +109,15 @@
     const queue=Array.isArray(queueOverride)?dedupeQueue(queueOverride):queueOverride;
     return baseStartLesson.call(this,index,daily,queue,options);
   };
-  const baseRenderLesson=window.renderLesson;
-  if(typeof baseRenderLesson==="function")window.renderLesson=function(){baseRenderLesson.apply(this,arguments);decorateLesson()};
+
+  // Phase 5: no renderLesson wrapper here. v4.13 owns Lesson DOM and reads
+  // auxiliaryLabel() directly at render time.
   const baseCheckQ=window.checkQ;
   if(typeof baseCheckQ==="function")window.checkQ=async function(){
     const exercise=typeof window.cur==="function"?cur():null;
     const first=exercise&&!S.checked&&!exercise.retry;
     await baseCheckQ.apply(this,arguments);
     if(first&&exercise&&exercise.type!=="concept")recordAttempt(exercise);
-    decorateLesson();
   };
   const baseNextQ=window.nextQ;
   if(typeof baseNextQ==="function")window.nextQ=function(){
@@ -145,11 +132,13 @@
     if(scroll&&!scroll.querySelector(".v433-review-quality"))scroll.insertAdjacentHTML("beforeend",reviewQualityCard());
   };
 
-  window.MeowLearning={state:L,signature,dedupeQueue,difficulty,auxiliaryLabel,retryCurrent,continueAfterWrong,decorateLesson};
-  document.documentElement.dataset.lessonMetadata="single-auxiliary";
-  window.__MEOWDE_VERSION__="4.33-phase4";
+  window.MeowLearning={state:L,signature,dedupeQueue,difficulty,auxiliaryLabel,retryCurrent,continueAfterWrong};
+  document.documentElement.dataset.lessonMetadata="canonical-v413";
+  window.__MEOWDE_VERSION__="4.33-phase5";
   persist();
 
-  if(window.S&&S.screen==="lesson")decorateLesson();
+  // v4.13 rendered once before this helper existed during bootstrap. Refresh a
+  // resumed Lesson once after helpers are registered; subsequent renders are canonical.
+  if(window.S&&S.screen==="lesson"&&typeof window.renderLesson==="function")window.renderLesson();
   if(window.S&&S.screen==="review"&&typeof window.renderReview==="function")window.renderReview();
 })();
