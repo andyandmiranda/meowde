@@ -32,15 +32,22 @@ jobs:
           node --check sw.js
           node --check v413-lesson.js
           node --check v414-state.js
+          node --check v414-reward.js
           node --check v414-screens.js
+          node --check v415-retention.js
           node --check v417-review.js
           node --check v418-coach.js
           node --check v422-pwa.js
           node --check v425-playful.js
+          node --check v429-quests.js
           node --check v430-character.js
           node --check v433-learning.js
           node --check v434-release.js
           node --check v443-single-companion.js
+          node --check tools/validate-phase2-daily.js
+
+      - name: Validate Phase 2 daily consolidation
+        run: node tools/validate-phase2-daily.js
 
       - name: Run validation suite
         run: npm run validate

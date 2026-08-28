@@ -54,19 +54,20 @@
     const treatLabel=ko?'츄르':'Churu';
     const titles={
       lesson:ko?'레슨 완료':'Lesson complete',
-      daily:ko?'오늘의 챌린지 완료':'Daily challenge complete',
+      daily:ko?'오늘의 연습 완료':'Daily practice complete',
       review:ko?'재학습 완료':'Review complete',
       mistake:ko?'오답 복습 완료':'Mistake review complete'
     };
     const labels={
-      daily:ko?'오늘의 1문제':'Today’s task',
+      daily:ko?'오늘의 1문제':'Today’s practice',
       mistake:ko?'오답 1문제':'One mistake task'
     };
     const doneLabel=labels[currentMode]||(lessons()[finishedLessonIndex]?lessons()[finishedLessonIndex].title:'Meowde');
     const nextAction=currentMode==='daily'?'renderHome()':(currentMode==='lesson'?'renderMap()':'renderReview()');
     const nextLabel=currentMode==='daily'?(ko?'홈으로':'Back home'):(currentMode==='lesson'?(ko?'학습 지도로':'Learning path'):(ko?'복습으로':'Back to review'));
     let note='';
-    if(currentMode==='daily'&&!firstDailyCompletion)note=ko?'오늘의 보상은 이미 받았어요. 연습 기록만 저장했습니다.':'Today’s reward was already claimed. This run was saved as practice.';
+    if(currentMode==='daily'&&!firstDailyCompletion)note=ko?'오늘의 연습 보상은 이미 받았어요. 이번 기록은 연습으로만 저장됩니다.':'Today’s practice reward was already earned. This run is saved as practice only.';
+    else if(currentMode==='daily')note=ko?'오늘의 연습 보상은 하루 한 번만 지급돼요.':'Daily Practice rewards are granted once per day.';
     else if(currentMode==='review'||currentMode==='mistake')note=ko?'재학습은 진도와 보상을 중복 지급하지 않아요.':'Review practice does not duplicate progress or rewards.';
     else note=ko?'츄르는 학습을 막는 재화가 아니라 완료 보상이에요.':'Churu is a completion reward, not an energy gate.';
 
@@ -74,5 +75,5 @@
   };
 
   document.title='Meowde v4.14 — Practice Memory';
-  window.__MEOWDE_VERSION__='4.14';
+  window.__MEOWDE_VERSION__='4.14-phase2';
 })();
