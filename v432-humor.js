@@ -23,27 +23,6 @@
     return pick(copy()[type]||copy().correct,`${key()}:${type}`);
   }
 
-  function removeLegacyLessonNoise(){
-    document.querySelectorAll(".v425-reaction,.v425-punchline,.v427-emotion-line,.v432-feedback-tag,.v432-retry-note").forEach(node=>node.remove());
-  }
-
-  function decorateLesson(){
-    removeLegacyLessonNoise();
-    const coach=document.querySelector(".coach");
-    if(coach){
-      coach.removeAttribute("data-v432-pose");
-      coach.dataset.lessonOutcome=state();
-    }
-    const feedback=document.querySelector(".feedback");
-    if(!feedback||!S.checked)return;
-    feedback.querySelectorAll(".v432-reaction").forEach(node=>node.remove());
-    const text=line();
-    if(!text)return;
-    const heading=feedback.querySelector("h3");
-    if(heading)heading.insertAdjacentHTML("afterend",`<div class="v432-reaction">${esc(text)}</div>`);
-    else feedback.insertAdjacentHTML("afterbegin",`<div class="v432-reaction">${esc(text)}</div>`);
-  }
-
   function showOfflineChip(message){
     document.querySelectorAll(".v432-offline-chip").forEach(node=>node.remove());
     const node=document.createElement("div");
@@ -53,14 +32,12 @@
     setTimeout(()=>node.remove(),2200);
   }
 
-  const baseRenderLesson=window.renderLesson;
-  if(typeof baseRenderLesson==="function")window.renderLesson=function(){baseRenderLesson.apply(this,arguments);decorateLesson()};
-
+  // Phase 5: this layer owns copy/error helpers only. The canonical v4.13
+  // lesson renderer reads MeowHumor.line() directly and owns all Lesson DOM.
   const baseCheckQ=window.checkQ;
   if(typeof baseCheckQ==="function")window.checkQ=async function(){
     try{
       await baseCheckQ.apply(this,arguments);
-      decorateLesson();
     }catch(error){
       console.error("Meowde answer check failed:",error);
       showOfflineChip(S.lang==="ko"?"연결이 불안정해요. 잠시 후 다시 시도해 주세요.":"Connection issue. Please try again.");
@@ -71,8 +48,7 @@
   window.addEventListener("offline",()=>showOfflineChip(S&&S.lang==="en"?"Offline mode":"오프라인 모드"));
   window.addEventListener("online",()=>showOfflineChip(S&&S.lang==="en"?"Back online":"다시 연결됐어요"));
 
-  window.MeowHumor={line,decorateLesson};
-  document.documentElement.dataset.lessonReactionOwner="feedback";
-  window.__MEOWDE_VERSION__="4.32-phase4";
-  if(window.S&&S.screen==="lesson")decorateLesson();
+  window.MeowHumor=Object.freeze({line,state,showOfflineChip});
+  document.documentElement.dataset.lessonReactionOwner="canonical-v413";
+  window.__MEOWDE_VERSION__="4.32-phase5";
 })();
