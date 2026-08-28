@@ -1,7 +1,7 @@
 (function applyMeowdeV443SingleCompanion(){
   "use strict";
 
-  const VERSION="4.43";
+  const VERSION="4.43-phase1";
   const WRAPPED=Symbol("meowde-v443-wrapped");
   let decorationQueued=false;
 
@@ -16,16 +16,34 @@
     return true;
   }
 
+  function tabMarkup(){
+    if(!window.S)return "";
+    const screen=S.screen||"home";
+    const ko=isKorean();
+    const learnActive=screen==="map";
+    const reviewActive=screen==="review";
+    const meowdeActive=["room","my","achievements","profile"].includes(screen);
+    return [
+      `<button class="${screen==='home'?'on':''}" onclick="renderHome()" aria-label="${ko?'홈':'Home'}">${icon('home')}<span>${ko?'홈':'Home'}</span></button>`,
+      `<button class="${learnActive?'on':''}" onclick="renderMap()" aria-label="${ko?'학습':'Learn'}">${icon('map')}<span>${ko?'학습':'Learn'}</span></button>`,
+      `<button class="${reviewActive?'on':''}" onclick="renderReview()" aria-label="${ko?'복습':'Review'}">${icon('code')}<span>${ko?'복습':'Review'}</span></button>`,
+      `<button class="${meowdeActive?'on':''}" onclick="renderRoom()" aria-label="${ko?'Meowde 파트너':'Meowde companion'}">${icon('cat')}<span>Meowde</span></button>`
+    ].join("");
+  }
+
   function normalizeNavigation(root=document){
     if(!root||typeof root.querySelectorAll!=="function")return;
+    root.querySelectorAll(".tabbar").forEach(bar=>{
+      const expected=tabMarkup();
+      if(expected&&bar.innerHTML!==expected)bar.innerHTML=expected;
+      bar.dataset.phase1Navigation="four-tabs";
+    });
     root.querySelectorAll('button[onclick*="renderRoom"]').forEach(button=>{
-      const tabLabel=button.querySelector(":scope > span:last-child");
-      if(button.closest(".tabbar")&&tabLabel){
-        if(tabLabel.textContent!=="Meowde")tabLabel.textContent="Meowde";
-      }else if(button.closest(".v420-profile-actions")){
+      if(button.closest(".tabbar"))return;
+      if(button.closest(".v420-profile-actions")){
         if(button.textContent.trim()!=="🐱 Meowde")button.textContent="🐱 Meowde";
+        button.setAttribute("aria-label",isKorean()?"Meowde 파트너":"Meowde companion");
       }
-      button.setAttribute("aria-label",isKorean()?"Meowde 파트너":"Meowde companion");
     });
   }
 
@@ -101,6 +119,7 @@
     if(window.S&&["room","my"].includes(S.screen))normalizeRoom();
     if(window.S&&S.screen==="profile")normalizeProfile();
     document.documentElement.dataset.companionSystem="single";
+    document.documentElement.dataset.navigation="phase1-four-tabs";
   }
 
   function queueDecoration(root=document){
