@@ -39,6 +39,7 @@
     loadExtension({id:"meowde-v444-visual-cohesion",css:"v444-visual-cohesion.css",script:"v444-visual-cohesion.js",version:"448",readyGlobal:"MeowVisualCohesion",warning:"Visual cohesion enhancement could not be loaded."});
     loadExtension({id:"meowde-v446-update-recovery",css:"v446-update-recovery.css",script:"v446-update-recovery.js",version:"446",readyGlobal:"MeowUpdateRecovery",warning:"Update recovery enhancement could not be loaded."});
     loadExtension({id:"meowde-v450-character-images",css:"v449-character-cutouts.css",script:"v449-character-cutouts.js",version:"450",readyGlobal:"MeowCharacterCutouts",warning:"Character image enhancement could not be loaded."});
+    loadExtension({id:"meowde-v451-contact",css:"v451-contact.css",script:"v451-contact.js",version:"451",readyGlobal:"MeowContact",warning:"Contact link could not be loaded."});
   }
   function run(){
     report.checks={};
