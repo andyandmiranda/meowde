@@ -1,7 +1,7 @@
 (function installApprovedMeowde(){
   "use strict";
 
-  const VERSION="4.47";
+  const VERSION="4.47-phase5-home";
   const LEGACY_VIEWBOX="0 0 120 112";
   const ASSETS=Object.freeze({
     none:"/assets/meowde-approved-base.svg?v=4471",
@@ -30,9 +30,7 @@
     return "";
   }
 
-  function variantFor(item){
-    return VARIANTS[item]||VARIANTS.none;
-  }
+  function variantFor(item){return VARIANTS[item]||VARIANTS.none}
 
   function renderMascot(_kind="meowde",mood="idle",size=80,options){
     const item=selected(options&&options.accessory);
@@ -48,9 +46,7 @@
   function installTypography(){
     if(!document.getElementById("meowde-serif-font")){
       const link=document.createElement("link");
-      link.id="meowde-serif-font";
-      link.rel="stylesheet";
-      link.href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700&display=swap";
+      link.id="meowde-serif-font";link.rel="stylesheet";link.href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700&display=swap";
       document.head.appendChild(link);
     }
   }
@@ -64,83 +60,54 @@
     document.head.appendChild(style);
   }
 
-  function syncLanguage(){
-    const lang=typeof S!=="undefined"&&S&&S.lang==="en"?"en":"ko";
-    document.documentElement.lang=lang;
-    return lang;
-  }
-
+  function syncLanguage(){const lang=typeof S!=="undefined"&&S&&S.lang==="en"?"en":"ko";document.documentElement.lang=lang;return lang}
   function setLanguage(language){
     if(typeof S==="undefined"||!S)return;
-    S.lang=language==="en"?"en":"ko";
-    syncLanguage();
+    S.lang=language==="en"?"en":"ko";syncLanguage();
     try{if(typeof save==="function")save()}catch(error){}
     if(typeof closeOverlay==="function")closeOverlay();
     if(typeof renderHome==="function")renderHome();
   }
-
   function languageSheet(){
     const ko=syncLanguage()==="ko";
     if(typeof overlay!=="function")return;
     overlay(`<h3>${ko?"언어 선택":"Choose language"}</h3><p>${ko?"한국어와 영어로 학습 화면과 안내 문구를 볼 수 있어요.":"Use Meowde's lessons and interface in Korean or English."}</p><div class="grid2"><button class="btn" onclick="setMeowdeLanguage('ko')">한국어</button><button class="btn ghost" onclick="setMeowdeLanguage('en')">English</button></div>`);
   }
-
   function brandMarkup(){
     syncLanguage();
     const tagline=typeof t==="function"?t("tagline"):"Learn to code playfully.";
     const lang=typeof S!=="undefined"&&S&&S.lang?S.lang.toUpperCase():"KO";
     return `<div class="top"><div class="brand"><span class="brand-mark">${renderFace(38)}</span><div><h1>Meowde</h1><p>${tagline}</p></div></div><button class="lang" onclick="langSheet()">${lang}</button></div>`;
   }
-
-  function hero(){
-    return `<div class="v435-coding-scene" data-character-version="${VERSION}"><img class="v447-coding-hero" src="${ASSETS.hero}" alt="Meowde coding with silver headphones" width="484" height="340"></div>`;
-  }
-
-  function legacySvg(node){
-    return node instanceof SVGElement&&node.getAttribute("viewBox")===LEGACY_VIEWBOX;
-  }
-
+  function hero(){return `<div class="v435-coding-scene" data-character-version="${VERSION}"><img class="v447-coding-hero" src="${ASSETS.hero}" alt="Meowde coding with silver headphones" width="484" height="340"></div>`}
+  function legacySvg(node){return node instanceof SVGElement&&node.getAttribute("viewBox")===LEGACY_VIEWBOX}
   function replaceLegacySvg(svg){
     if(!legacySvg(svg)||!svg.isConnected)return;
-    const brand=svg.closest(".brand-mark");
-    if(brand){svg.outerHTML=renderFace(38);return}
-    const heroCard=svg.closest(".hero");
-    if(heroCard){
-      if(!heroCard.querySelector(".v435-coding-scene"))svg.outerHTML=hero();
-      else svg.remove();
-      return;
-    }
+    const brand=svg.closest(".brand-mark");if(brand){svg.outerHTML=renderFace(38);return}
+    const heroCard=svg.closest(".hero");if(heroCard){if(!heroCard.querySelector(".v435-coding-scene"))svg.outerHTML=hero();else svg.remove();return}
     if(svg.closest(".trail-cat")){svg.outerHTML=renderMascot("meowde","idle",44,{accessory:"none"});return}
     if(svg.closest(".coach")){svg.outerHTML=renderMascot("meowde","idle",58,{accessory:"none"});return}
     if(svg.closest(".cat-card-head")){svg.outerHTML=renderMascot("meowde","idle",88,{accessory:"none"});return}
     svg.outerHTML=renderMascot("meowde","idle",80,{accessory:"none"});
   }
-
   function purgeLegacyCats(root=document){
     if(root instanceof SVGElement&&legacySvg(root))replaceLegacySvg(root);
     if(root&&typeof root.querySelectorAll==="function")root.querySelectorAll(`svg[viewBox="${LEGACY_VIEWBOX}"]`).forEach(replaceLegacySvg);
   }
-
   function decorateHome(){
-    styles();
-    syncLanguage();
-    purgeLegacyCats();
+    styles();syncLanguage();purgeLegacyCats();
     const heroCard=document.querySelector(".hero");
     if(!heroCard||heroCard.querySelector(".v435-coding-scene"))return;
     const root=heroCard.querySelector(".hero-main")||heroCard;
     const cat=root.querySelector(":scope > .meowde-cat, :scope > svg");
-    if(cat)cat.outerHTML=hero();
-    else root.insertAdjacentHTML("afterbegin",hero());
+    if(cat)cat.outerHTML=hero();else root.insertAdjacentHTML("afterbegin",hero());
   }
-
   function cleanRoom(){
-    syncLanguage();
-    purgeLegacyCats();
+    syncLanguage();purgeLegacyCats();
     const grid=document.querySelector(".room-grid");if(!grid)return;
     const cards=Array.from(grid.querySelectorAll(".cat-card"));cards.slice(1).forEach(card=>card.remove());
     const first=cards[0];if(!first)return;
-    const head=first.querySelector(".cat-card-head");
-    if(head&&!head.querySelector(".meowde-approved-character"))head.insertAdjacentHTML("afterbegin",renderMascot("meowde","idle",88,{accessory:"none"}));
+    const head=first.querySelector(".cat-card-head");if(head&&!head.querySelector(".meowde-approved-character"))head.insertAdjacentHTML("afterbegin",renderMascot("meowde","idle",88,{accessory:"none"}));
     const h=first.querySelector("h3");if(h)h.textContent="Meowde";
     const p=first.querySelector("p");if(p)p.textContent=typeof S!=="undefined"&&S.lang==="en"?"Your one coding companion":"함께 코딩하는 단 하나의 파트너";
     const b=first.querySelector("button");if(b){b.disabled=true;b.textContent=typeof S!=="undefined"&&S.lang==="en"?"Selected":"기본 캐릭터";b.className="btn"}
@@ -150,9 +117,9 @@
   styles();syncLanguage();window.catSVG=renderMascot;window.brand=brandMarkup;window.langSheet=languageSheet;window.setMeowdeLanguage=setLanguage;installHeadphones();
   const observer=new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(node=>{if(node.nodeType===1)purgeLegacyCats(node)})));
   observer.observe(document.documentElement,{childList:true,subtree:true});
-  const oldHome=window.renderHome;if(typeof oldHome==="function")window.renderHome=function(){syncLanguage();oldHome.apply(this,arguments);decorateHome();purgeLegacyCats()};
   const oldRoom=window.renderRoom;if(typeof oldRoom==="function")window.renderRoom=function(){syncLanguage();oldRoom.apply(this,arguments);cleanRoom();purgeLegacyCats()};
   window.MeowCharacterV430=window.MeowCharacterMaster=Object.freeze({version:VERSION,asset:ASSETS.none,assets:ASSETS,render:renderMascot,renderFace,accessory:selected,decorateHome,cleanRoom,purgeLegacyCats,installHeadphones,setLanguage,languageSheet});
+  document.documentElement.dataset.homeCharacterSurface="canonical-v414";
   if(typeof S!=="undefined"){
     if(S.screen==="lesson"&&typeof renderLesson==="function")renderLesson();
     else if(S.screen==="room"&&typeof renderRoom==="function")renderRoom();

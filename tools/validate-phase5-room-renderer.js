@@ -20,13 +20,13 @@ assert(companion.includes('v419-summary'),'canonical Room renders achievement su
 assert(companion.includes('v416-milestone-card'),'canonical Room renders pending milestone rewards directly');
 assert(companion.includes('v428-season-card'),'canonical Room renders seasonal events directly');
 assert(companion.includes('v443-single-companion'),'canonical Room renders one companion card directly');
-assert(companion.includes('["renderHome","renderMap","renderReview","renderProfile","renderAchievements"].forEach(wrapRenderer)'),'v443 navigation wrappers exclude Room and My');
+assert(companion.includes('["renderMap","renderReview","renderProfile","renderAchievements"].forEach(wrapRenderer)'),'v443 wrappers exclude Room, My, and canonical Home');
 
-assert(!visual.includes('["renderHome","renderRoom","renderProfile"]'),'visual cohesion no longer wraps Room');
-assert(visual.includes('["renderHome","renderProfile"]'),'visual cohesion keeps non-Room enhancement hooks');
-assert(!cutouts.includes('decorateFeedback();decorateRoom();decorateProfile()'),'character cutouts no longer replace Room contents');
+assert(!visual.includes('renderRoom'),'visual cohesion does not wrap Room');
+assert(visual.includes('["renderProfile"].forEach(name=>'),'visual cohesion keeps Profile enhancement only');
+assert(!cutouts.includes('decorateRoom()'),'character cutouts do not replace Room contents');
 assert(cutouts.includes('decorateFeedback();decorateProfile()'),'character cutouts keep non-Room visual decoration');
-assert(cutouts.includes('["renderHome","renderMap","renderLesson","renderReview","renderProfile","renderAchievements","finish"]'),'character cutout wrappers exclude Room and My');
+assert(cutouts.includes('["renderMap","renderLesson","renderReview","renderProfile","renderAchievements","finish"]'),'character cutout wrappers exclude Room, My, and canonical Home');
 
 assert(journey.includes('meowde-v416-journey'),'journey persistence key is preserved');
 assert(achievements.includes('meowde-v419-achievements'),'achievement persistence key is preserved');
