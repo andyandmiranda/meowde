@@ -1,21 +1,17 @@
 (function applyMeowdeV443SingleCompanion(){
   "use strict";
 
-  const VERSION="4.43-phase1";
+  const VERSION="4.43-phase3";
   const WRAPPED=Symbol("meowde-v443-wrapped");
   let decorationQueued=false;
 
-  function isKorean(){
-    return !window.S||S.lang!=="en";
-  }
-
+  function isKorean(){return !window.S||S.lang!=="en"}
   function forceSingleCompanion(){
     if(!window.S||S.cat==="meowde")return false;
     S.cat="meowde";
     try{if(typeof window.save==="function")window.save()}catch(error){console.warn("Meowde companion state could not be saved:",error)}
     return true;
   }
-
   function tabMarkup(){
     if(!window.S)return "";
     const screen=S.screen||"home";
@@ -27,10 +23,9 @@
       `<button class="${screen==='home'?'on':''}" onclick="renderHome()" aria-label="${ko?'홈':'Home'}">${icon('home')}<span>${ko?'홈':'Home'}</span></button>`,
       `<button class="${learnActive?'on':''}" onclick="renderMap()" aria-label="${ko?'학습':'Learn'}">${icon('map')}<span>${ko?'학습':'Learn'}</span></button>`,
       `<button class="${reviewActive?'on':''}" onclick="renderReview()" aria-label="${ko?'복습':'Review'}">${icon('code')}<span>${ko?'복습':'Review'}</span></button>`,
-      `<button class="${meowdeActive?'on':''}" onclick="renderRoom()" aria-label="${ko?'Meowde 파트너':'Meowde companion'}">${icon('cat')}<span>Meowde</span></button>`
+      `<button class="${meowdeActive?'on':''}" onclick="renderRoom()" aria-label="${ko?'Meowde':'Meowde'}">${icon('cat')}<span>Meowde</span></button>`
     ].join("");
   }
-
   function normalizeNavigation(root=document){
     if(!root||typeof root.querySelectorAll!=="function")return;
     root.querySelectorAll(".tabbar").forEach(bar=>{
@@ -42,8 +37,34 @@
       if(button.closest(".tabbar"))return;
       if(button.closest(".v420-profile-actions")){
         if(button.textContent.trim()!=="🐱 Meowde")button.textContent="🐱 Meowde";
-        button.setAttribute("aria-label",isKorean()?"Meowde 파트너":"Meowde companion");
+        button.setAttribute("aria-label",isKorean()?"Meowde":"Meowde companion");
       }
+    });
+  }
+
+  function orderRoomSections(scroll,head,profileCard,grid){
+    let anchor=head||null;
+    if(profileCard){
+      if(anchor)anchor.insertAdjacentElement("afterend",profileCard);
+      anchor=profileCard;
+    }
+    if(grid){
+      if(anchor)anchor.insertAdjacentElement("afterend",grid);
+      anchor=grid;
+    }
+    [
+      ".v427-growth-card",
+      ".v419-summary",
+      ".v416-milestone-card",
+      ".v428-season-card",
+      ".v428-visitor-card",
+      ".v428-collection"
+    ].forEach(selector=>{
+      const node=scroll.querySelector(selector);
+      if(!node)return;
+      if(anchor)anchor.insertAdjacentElement("afterend",node);
+      else scroll.insertAdjacentElement("afterbegin",node);
+      anchor=node;
     });
   }
 
@@ -60,8 +81,8 @@
       const copy=head.querySelector("p");
       if(title&&title.textContent!=="Meowde")title.textContent="Meowde";
       const expectedCopy=isKorean()
-        ?"단 하나의 코딩 파트너와 성장 기록과 액세서리를 관리하세요."
-        :"Manage growth and accessories for your one coding companion.";
+        ?"함께 공부하며 자라는 Meowde의 성장, 업적과 특별한 기록을 확인하세요."
+        :"See Meowde's growth, achievements, and special memories from learning together.";
       if(copy&&copy.textContent!==expectedCopy)copy.textContent=expectedCopy;
     }
     heads.slice(1).forEach(extraHead=>extraHead.remove());
@@ -79,40 +100,38 @@
     }
 
     const grid=scroll.querySelector(".room-grid");
-    if(!grid)return;
-    grid.classList.add("v443-single-companion");
-
-    const cards=Array.from(grid.querySelectorAll(".cat-card"));
-    cards.slice(1).forEach(card=>card.remove());
-    const card=cards[0];
-    if(!card)return;
-    card.classList.add("v443-companion-card");
-
-    const title=card.querySelector("h3");
-    const copy=card.querySelector("p");
-    if(title&&title.textContent!=="Meowde")title.textContent="Meowde";
-    const expectedCardCopy=isKorean()
-      ?"함께 코딩하며 성장하는 나의 파트너"
-      :"Your one companion for learning and growing through code";
-    if(copy&&copy.textContent!==expectedCardCopy)copy.textContent=expectedCardCopy;
-
-    const button=card.querySelector("button");
-    if(button){
-      button.disabled=true;
-      button.className="v443-companion-status";
-      const label=isKorean()?"나의 파트너":"My companion";
-      if(button.textContent!==label)button.textContent=label;
-      button.setAttribute("aria-label",label);
+    if(grid){
+      grid.classList.add("v443-single-companion");
+      const cards=Array.from(grid.querySelectorAll(".cat-card"));
+      cards.slice(1).forEach(card=>card.remove());
+      const card=cards[0];
+      if(card){
+        card.classList.add("v443-companion-card");
+        const title=card.querySelector("h3");
+        const copy=card.querySelector("p");
+        if(title&&title.textContent!=="Meowde")title.textContent="Meowde";
+        const expectedCardCopy=isKorean()?"함께 코딩하며 성장하는 나의 파트너":"Your one companion for learning and growing through code";
+        if(copy&&copy.textContent!==expectedCardCopy)copy.textContent=expectedCardCopy;
+        const button=card.querySelector("button");
+        if(button){
+          button.disabled=true;
+          button.className="v443-companion-status";
+          const label=isKorean()?"나의 파트너":"My companion";
+          if(button.textContent!==label)button.textContent=label;
+          button.setAttribute("aria-label",label);
+        }
+      }
     }
-  }
 
+    orderRoomSections(scroll,head,profileCard,grid);
+    scroll.dataset.phase3CompanionHub="ordered";
+  }
   function normalizeProfile(){
     const actions=document.querySelector(".v420-profile-actions");
     if(!actions)return;
     const roomButton=actions.querySelector('button[onclick*="renderRoom"]');
     if(roomButton&&roomButton.textContent.trim()!=="🐱 Meowde")roomButton.textContent="🐱 Meowde";
   }
-
   function decorate(root=document){
     forceSingleCompanion();
     normalizeNavigation(root);
@@ -121,7 +140,6 @@
     document.documentElement.dataset.companionSystem="single";
     document.documentElement.dataset.navigation="phase1-four-tabs";
   }
-
   function queueDecoration(root=document){
     if(decorationQueued)return;
     decorationQueued=true;
@@ -130,7 +148,6 @@
       decorate(root&&root.isConnected?root:document);
     });
   }
-
   function wrapRenderer(name){
     const current=window[name];
     if(typeof current!=="function"||current[WRAPPED])return;
@@ -151,14 +168,7 @@
   });
   observer.observe(document.documentElement,{childList:true,subtree:true});
 
-  window.MeowSingleCompanion=Object.freeze({
-    version:VERSION,
-    decorate,
-    normalizeRoom,
-    normalizeProfile,
-    normalizeNavigation,
-    forceSingleCompanion
-  });
+  window.MeowSingleCompanion=Object.freeze({version:VERSION,decorate,normalizeRoom,normalizeProfile,normalizeNavigation,forceSingleCompanion});
   window.__MEOWDE_VERSION__=VERSION;
   decorate();
 })();
