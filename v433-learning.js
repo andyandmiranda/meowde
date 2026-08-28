@@ -110,8 +110,7 @@
     return baseStartLesson.call(this,index,daily,queue,options);
   };
 
-  // Phase 5: no renderLesson wrapper here. v4.13 owns Lesson DOM and reads
-  // auxiliaryLabel() directly at render time.
+  // v4.13 remains the canonical Lesson DOM owner and reads auxiliaryLabel().
   const baseCheckQ=window.checkQ;
   if(typeof baseCheckQ==="function")window.checkQ=async function(){
     const exercise=typeof window.cur==="function"?cur():null;
@@ -125,20 +124,14 @@
     if(exercise&&exercise.retry)delete exercise.retry;
     return baseNextQ.apply(this,arguments);
   };
-  const baseRenderReview=window.renderReview;
-  if(typeof baseRenderReview==="function")window.renderReview=function(){
-    baseRenderReview.apply(this,arguments);
-    const scroll=document.querySelector(".screen>.scroll");
-    if(scroll&&!scroll.querySelector(".v433-review-quality"))scroll.insertAdjacentHTML("beforeend",reviewQualityCard());
-  };
 
-  window.MeowLearning={state:L,signature,dedupeQueue,difficulty,auxiliaryLabel,retryCurrent,continueAfterWrong};
+  window.MeowLearning={state:L,storageKey:KEY,signature,dedupeQueue,difficulty,auxiliaryLabel,retryCurrent,continueAfterWrong,reviewQualityCard};
   document.documentElement.dataset.lessonMetadata="canonical-v413";
-  window.__MEOWDE_VERSION__="4.33-phase5";
+  document.documentElement.dataset.reviewQualitySurface="canonical-v414";
+  window.__MEOWDE_VERSION__="4.33-phase5-review";
   persist();
 
-  // v4.13 rendered once before this helper existed during bootstrap. Refresh a
-  // resumed Lesson once after helpers are registered; subsequent renders are canonical.
+  // Canonical screens may have rendered before this helper registered during bootstrap.
   if(window.S&&S.screen==="lesson"&&typeof window.renderLesson==="function")window.renderLesson();
   if(window.S&&S.screen==="review"&&typeof window.renderReview==="function")window.renderReview();
 })();
