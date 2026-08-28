@@ -1,7 +1,7 @@
 (function applyMeowdeV443SingleCompanion(){
   "use strict";
 
-  const VERSION="4.43-phase5-home";
+  const VERSION="4.43-phase5-learn";
   const WRAPPED=Symbol("meowde-v443-wrapped");
   let decorationQueued=false;
 
@@ -110,8 +110,8 @@
   }
   function decorate(root=document){
     forceSingleCompanion();
-    const home=window.S&&S.screen==="home";
-    if(!home)normalizeNavigation(root);
+    const canonicalSurface=window.S&&["home","map"].includes(S.screen);
+    if(!canonicalSurface)normalizeNavigation(root);
     if(window.S&&S.screen==="profile")normalizeProfile();
     document.documentElement.dataset.companionSystem="single";document.documentElement.dataset.navigation="phase1-four-tabs";
   }
@@ -123,12 +123,17 @@
   }
 
   window.renderRoom=renderCompanionHub;window.renderMy=renderCompanionHub;
-  ["renderMap","renderReview","renderProfile","renderAchievements"].forEach(wrapRenderer);
+  ["renderReview","renderProfile","renderAchievements"].forEach(wrapRenderer);
 
   const observer=new MutationObserver(records=>{const added=records.some(record=>record.addedNodes&&record.addedNodes.length);if(added)queueDecoration(document)});
   observer.observe(document.documentElement,{childList:true,subtree:true});
 
   window.MeowSingleCompanion=Object.freeze({version:VERSION,render:renderCompanionHub,tabs:canonicalTabs,decorate,normalizeProfile,normalizeNavigation,forceSingleCompanion});
   window.__MEOWDE_VERSION__=VERSION;
-  if(window.S&&["room","my"].includes(S.screen))renderCompanionHub();else decorate();
+  if(typeof window.__MEOWDE_CANONICAL_HOME_RENDERER__==="function")window.renderHome=window.__MEOWDE_CANONICAL_HOME_RENDERER__;
+  if(typeof window.__MEOWDE_CANONICAL_LEARN_RENDERER__==="function")window.renderMap=window.__MEOWDE_CANONICAL_LEARN_RENDERER__;
+  forceSingleCompanion();
+  if(window.S&&["room","my"].includes(S.screen))renderCompanionHub();
+  else if(window.S&&S.screen==="map"&&typeof window.renderMap==="function")window.renderMap();
+  else decorate();
 })();
