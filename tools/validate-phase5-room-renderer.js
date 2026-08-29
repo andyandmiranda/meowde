@@ -19,11 +19,21 @@ assert(companion.includes('v427-growth-card'),'canonical Room renders growth dir
 assert(companion.includes('v419-summary'),'Achievements must be in canonical Meowde ordering');
 assert(companion.includes('v416-milestone-card'),'canonical Room renders pending milestone rewards directly');
 assert(companion.includes('v428-season-card'),'canonical Room renders seasonal events directly');
-assert(companion.includes('v443-single-companion'),'canonical Room renders one companion card directly');
+assert(companion.includes('v443-single-companion'),'canonical Room renders the single Meowde identity directly');
 assert(!companion.includes('wrapRenderer'),'v443 no longer wraps secondary canonical screens');
 assert(companion.includes('function runtimeState()'),'v443 resolves the lexical runtime state explicitly');
 assert(companion.includes('typeof S!=="undefined"'),'v443 checks the actual runtime S binding');
 assert(!companion.includes('window.S'),'v443 does not gate Room on a nonexistent window.S property');
+
+assert(companion.includes('const MODE_STORAGE_KEY="meowde-v443-coach-mode"'),'coach mode uses an additive persistence key');
+['focus','dance','study','cheer','challenge','debug'].forEach(id=>assert(companion.includes(`id:"${id}"`),`coach mode ${id} is available`));
+['coding','music','reading','happy','challenge','debug'].forEach(asset=>assert(companion.includes(`asset:"${asset}"`),`approved coach asset ${asset} is mapped`));
+assert(companion.includes('labelKo:"집중 모드"'),'Focus mode keeps the intended Korean label');
+assert(companion.includes('labelKo:"댄싱 모드"'),'Dancing mode keeps the intended Korean label');
+assert(companion.includes('window.MeowCoachMode=Object.freeze'),'coach mode API is exposed');
+assert(companion.includes('localStorage.setItem(MODE_STORAGE_KEY,mode.id)'),'coach mode selection persists');
+assert(!companion.includes('localStorage.removeItem(MODE_STORAGE_KEY)'),'coach mode restoration never deletes its persisted selection');
+assert(companion.includes('aria-pressed'),'mode picker exposes selected state accessibly');
 
 assert(!visual.includes('renderRoom'),'visual cohesion does not wrap Room');
 assert(!visual.includes('renderProfile"].forEach'),'visual cohesion no longer wraps Profile');
@@ -31,6 +41,10 @@ assert(!cutouts.includes('decorateRoom()'),'character cutouts do not replace Roo
 assert(cutouts.includes('decorateFeedback();decorateProfile()'),'character cutouts keep Room/lesson visual decoration');
 assert(!cutouts.includes('__v450Wrapped'),'character enhancement installs no renderer wrappers');
 assert(cutouts.includes('dataset.characterEnhancement="observer-only"'),'character enhancement is observer-only');
+assert(cutouts.includes('function selectedCoachMode()'),'lesson enhancement can read the selected coach mode');
+assert(cutouts.includes('updateCoachModeImage'),'selected coach mode is applied before answer feedback');
+assert(cutouts.includes('!runtimeError()&&!currentState.checked'),'answer feedback can still override the selected mode');
+assert(!cutouts.includes('window.S'),'character enhancement uses the real lexical runtime state');
 
 assert(journey.includes('meowde-v416-journey'),'journey persistence key is preserved');
 assert(achievements.includes('meowde-v419-achievements'),'achievement persistence key is preserved');
