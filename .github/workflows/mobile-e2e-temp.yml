@@ -28,7 +28,7 @@ jobs:
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
 
-      - name: Run 390x844 Production E2E
+      - name: Run 390x844 Production E2E after mobile fixes
         run: node tools/mobile-production-e2e.mjs
 
       - name: Upload mobile screenshots and report
