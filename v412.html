@@ -87,6 +87,13 @@
           "<title>Meowde v4.43</title>"
         );
 
+        // The legacy shell used to force a language sheet on every first visit.
+        // Keep the language toggle available, but let visitors start learning immediately.
+        html = html.replace(
+          "if(!localStorage.getItem('meowde-v410-seen')){localStorage.setItem('meowde-v410-seen','1');setTimeout(()=>langSheet(),300)}",
+          "if(!localStorage.getItem('meowde-v410-seen'))localStorage.setItem('meowde-v410-seen','1')"
+        );
+
         html = html.replace(
           "</head>",
           [

@@ -21,6 +21,9 @@ assert(companion.includes('v416-milestone-card'),'canonical Room renders pending
 assert(companion.includes('v428-season-card'),'canonical Room renders seasonal events directly');
 assert(companion.includes('v443-single-companion'),'canonical Room renders one companion card directly');
 assert(!companion.includes('wrapRenderer'),'v443 no longer wraps secondary canonical screens');
+assert(companion.includes('function runtimeState()'),'v443 resolves the lexical runtime state explicitly');
+assert(companion.includes('typeof S!=="undefined"'),'v443 checks the actual runtime S binding');
+assert(!companion.includes('window.S'),'v443 does not gate Room on a nonexistent window.S property');
 
 assert(!visual.includes('renderRoom'),'visual cohesion does not wrap Room');
 assert(!visual.includes('renderProfile"].forEach'),'visual cohesion no longer wraps Profile');
