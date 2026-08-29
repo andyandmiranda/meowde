@@ -40,6 +40,7 @@ jobs:
           node --check v417-review.js
           node --check v418-coach.js
           node --check v419-achievements.js
+          node --check v420-profile.js
           node --check v422-pwa.js
           node --check v425-playful.js
           node --check v427-growth.js
@@ -61,6 +62,7 @@ jobs:
           node --check tools/validate-phase5-home-renderer.js
           node --check tools/validate-phase5-learn-renderer.js
           node --check tools/validate-phase5-review-renderer.js
+          node --check tools/validate-phase5-secondary-renderers.js
 
       - name: Validate Phase 2 daily consolidation
         run: node tools/validate-phase2-daily.js
@@ -85,6 +87,9 @@ jobs:
 
       - name: Validate Phase 5 canonical Review renderer
         run: node tools/validate-phase5-review-renderer.js
+
+      - name: Validate Phase 5 secondary renderers
+        run: node tools/validate-phase5-secondary-renderers.js
 
       - name: Run validation suite
         run: npm run validate
