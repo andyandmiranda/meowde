@@ -50,8 +50,10 @@ jobs:
           node --check v432-humor.js
           node --check v433-learning.js
           node --check v434-release.js
+          node --check v442-map-touch.js
           node --check v443-single-companion.js
           node --check v444-visual-cohesion.js
+          node --check v446-update-recovery.js
           node --check v449-character-cutouts.js
           node --check v451-contact.js
           node --check tools/validate-phase2-daily.js
@@ -63,6 +65,7 @@ jobs:
           node --check tools/validate-phase5-learn-renderer.js
           node --check tools/validate-phase5-review-renderer.js
           node --check tools/validate-phase5-secondary-renderers.js
+          node --check tools/validate-phase5-bootstrap.js
 
       - name: Validate Phase 2 daily consolidation
         run: node tools/validate-phase2-daily.js
@@ -90,6 +93,9 @@ jobs:
 
       - name: Validate Phase 5 secondary renderers
         run: node tools/validate-phase5-secondary-renderers.js
+
+      - name: Validate Phase 5 ordered bootstrap
+        run: node tools/validate-phase5-bootstrap.js
 
       - name: Run validation suite
         run: npm run validate
