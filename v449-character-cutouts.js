@@ -1,7 +1,7 @@
 (function applyMeowdeV450CharacterImages(){
   "use strict";
 
-  const VERSION="4.50-phase5-secondary";
+  const VERSION="4.50-phase5-final";
   const POSES=new Set(["base","happy","smug","focus","surprised","meh","coding","music","reading","error"]);
   const ASSETS={
     base:"/assets/meowde-approved-base.svg?v=450",
@@ -110,12 +110,12 @@
   }
   function queue(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;decorate()})}
   new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true});
-  ["renderLesson","finish"].forEach(name=>{
-    const current=window[name];if(typeof current!=="function"||current.__v450Wrapped)return;
-    function wrapped(){const result=current.apply(this,arguments);queue();return result}
-    wrapped.__v450Wrapped=true;window[name]=wrapped;
-  });
+
+  // Phase 5 closeout: DOM mutation observation already catches Lesson and reward
+  // screen renders. Do not wrap renderLesson() or finish() just to schedule the
+  // same visual decoration pass.
   window.MeowCharacterCutouts=Object.freeze({version:VERSION,poses:Array.from(POSES),decorate,imageMarkup,lessonPose});
+  document.documentElement.dataset.characterEnhancement="observer-only";
   document.documentElement.dataset.homeCharacterImages="canonical-v414";
   document.documentElement.dataset.learnCharacterImages="canonical-v413";
   document.documentElement.dataset.reviewCharacterImages="canonical-v414";
@@ -132,5 +132,5 @@
   else if(state().screen==="review"&&typeof window.renderReview==="function")window.renderReview();
   else if(state().screen==="profile"&&typeof window.renderProfile==="function")window.renderProfile();
   else if(state().screen==="achievements"&&typeof window.renderAchievements==="function")window.renderAchievements();
-  else decorate();
+  else queue();
 })();
