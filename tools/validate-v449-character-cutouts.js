@@ -36,8 +36,9 @@ expect(css.includes("border:0!important"),"hero border is not removed");
 expect(css.includes("box-shadow:none!important"),"hero shadow is not removed");
 
 const release=read("v434-release.js");
-expect(release.includes('const VERSION="4.50"'),"release version is not 4.50");
+expect(release.includes('const VERSION="4.50-phase5-bootstrap"'),"release bootstrap version is not current");
 expect(release.includes('version:"450"'),"v4.50 renderer cache bust is missing");
+expect(release.includes('element.async=false'),"character enhancement is not loaded through the ordered pipeline");
 expect(!release.includes("character-sprite"),"legacy sprite loader remains active");
 
 const serviceWorker=read("sw.js");
@@ -58,4 +59,4 @@ for(const asset of [
   expect(serviceWorker.includes(asset),`${asset} is missing from offline precache`);
 }
 
-console.log(`Validated Meowde v4.50 direct image rendering for ${poses.length} character states with canonical Home/Room ownership.`);
+console.log(`Validated Meowde v4.50 direct image rendering for ${poses.length} character states with ordered enhancement bootstrap.`);
