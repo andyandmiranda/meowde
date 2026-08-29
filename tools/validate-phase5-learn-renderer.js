@@ -35,7 +35,7 @@ assert(!mapTouch.includes('const baseTabs'),'v442 does not wrap canonical naviga
 assert(mapTouch.includes('dataset.mapTouchSurface="enhancement-only"'),'v442 is explicitly enhancement-only');
 
 assert(!companion.includes('wrapRenderer'),'v443 no longer wraps Learn or secondary canonical screens');
-assert(companion.includes('["home","map","review","profile","achievements"].includes(S.screen)'),'v443 observer skips canonical Learn navigation');
+assert(companion.includes('["home","map","review","profile","achievements"].includes(current.screen)'),'v443 observer skips canonical Learn navigation');
 assert(companion.includes('window.renderMap=window.__MEOWDE_CANONICAL_LEARN_RENDERER__'),'v443 restores canonical Learn regardless of load order');
 assert(cohesion.includes('["home","map","review","profile","achievements"].includes(S.screen)'),'v444 skips Learn visual post-processing');
 assert(cohesion.includes('dataset.learnVisualSurface="canonical-v413"'),'v444 records canonical Learn visual ownership');
