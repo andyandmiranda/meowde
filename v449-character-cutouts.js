@@ -1,7 +1,7 @@
 (function applyMeowdeV450CharacterImages(){
   "use strict";
 
-  const VERSION="4.50-phase5-final";
+  const VERSION="4.50-coach-modes";
   const POSES=new Set(["base","happy","smug","focus","surprised","meh","coding","music","reading","error"]);
   const ASSETS={
     base:"/assets/meowde-approved-base.svg?v=450",
@@ -22,7 +22,9 @@
     music:"/assets/characters/v451/meowde-music.webp",
     reading:"/assets/characters/v451/meowde-reading.webp",
     happy:"/assets/characters/v451/meowde-happy.webp",
+    challenge:"/assets/characters/v451/meowde-challenge.webp",
     smug:"/assets/characters/v451/meowde-challenge.webp",
+    debug:"/assets/characters/v451/meowde-debug.webp",
     error:"/assets/characters/v451/meowde-debug.webp"
   };
 
@@ -30,9 +32,10 @@
     const src=ROOM_ASSETS[pose]||ROOM_ASSETS.coding;
     return `<img class="v449-character v449-pose-${pose}" src="${src}" alt="${label}" data-v449-pose="${pose}" data-character-version="4.51-room-only" decoding="async">`;
   }
-  function state(){try{return window.S&&S?S:{}}catch(error){return {}}}
+  function state(){try{return typeof S!=="undefined"&&S&&typeof S==="object"?S:{}}catch(error){return {}}}
   function english(){return state().lang==="en"}
   function exercise(){try{return typeof cur==="function"?cur():null}catch(error){return null}}
+  function selectedCoachMode(){try{return window.MeowCoachMode&&typeof MeowCoachMode.current==="function"?MeowCoachMode.current():null}catch(error){return null}}
   function runtimeError(){
     const value=[state().output,state().error].concat(Array.from(document.querySelectorAll(".console,.v431-runtime-error,.v446-runtime-error")).map(node=>node.textContent)).filter(Boolean).join(" ");
     return /(traceback|syntaxerror|nameerror|typeerror|exception|runtimeerror|오류|에러)/i.test(value);
@@ -47,9 +50,17 @@
     const safe=safePose(pose);
     if(node.tagName==="IMG"&&node.classList.contains("v449-character")){
       node.src=ASSETS[safe];node.alt=label;POSES.forEach(item=>node.classList.remove(`v449-pose-${item}`));node.classList.add(`v449-pose-${safe}`);
-      extraClass.split(/\s+/).filter(Boolean).forEach(item=>node.classList.add(item));node.dataset.v449Pose=safe;return node;
+      extraClass.split(/\s+/).filter(Boolean).forEach(item=>node.classList.add(item));node.dataset.v449Pose=safe;delete node.dataset.coachMode;return node;
     }
     const holder=document.createElement("div");holder.innerHTML=imageMarkup(safe,extraClass,label);const replacement=holder.firstElementChild;node.replaceWith(replacement);return replacement;
+  }
+  function updateCoachModeImage(node,mode,label="Meowde"){
+    if(!node||!mode)return null;
+    const pose=mode.asset||"coding",src=ROOM_ASSETS[pose]||ROOM_ASSETS.coding;
+    if(node.tagName==="IMG"){
+      node.src=src;node.alt=label;node.className=`v449-character v449-pose-${pose} v443-lesson-coach-mode`;node.dataset.v449Pose=pose;node.dataset.coachMode=mode.id||"focus";node.dataset.characterVersion="4.51-coach-mode";return node;
+    }
+    const holder=document.createElement("div");holder.innerHTML=`<img class="v449-character v449-pose-${pose} v443-lesson-coach-mode" src="${src}" alt="${label}" data-v449-pose="${pose}" data-coach-mode="${mode.id||'focus'}" data-character-version="4.51-coach-mode" decoding="async">`;const replacement=holder.firstElementChild;node.replaceWith(replacement);return replacement;
   }
 
   function decorateHero(){
@@ -70,6 +81,11 @@
   function decorateGrowth(){const slot=document.querySelector(".v427-growth-card .v427-stage-icon");if(!slot)return;const value=level();slot.innerHTML=`${imageMarkup(growthPose(value),"v448-growth-cat",`Meowde level ${value}`)}<span class="v448-level-badge" aria-label="Level ${value}">${value}</span>`}
   function lessonPose(){if(runtimeError())return "error";if(state().checked)return state().correct?"happy":"surprised";if(exercise()&&exercise().type==="concept")return "reading";return "focus"}
   function decorateCoach(){
+    const currentState=state(),mode=!runtimeError()&&!currentState.checked?selectedCoachMode():null;
+    if(mode){
+      document.querySelectorAll(".coach").forEach(coach=>{const current=coach.querySelector(":scope > .v449-character,:scope > .meowde-approved-character,:scope > svg,:scope > img"),label=english()?`Meowde ${mode.labelEn||'coach mode'}`:`Meowde ${mode.labelKo||'코치 모드'}`;if(current)updateCoachModeImage(current,mode,label);else coach.insertAdjacentHTML("afterbegin",roomImageMarkup(mode.asset,label))});
+      return;
+    }
     const pose=lessonPose();
     document.querySelectorAll(".coach").forEach(coach=>{const current=coach.querySelector(":scope > .v449-character,:scope > .meowde-approved-character,:scope > svg,:scope > img");if(current)updateImage(current,pose,"",english()?`Meowde ${pose}`:"학습 상태를 표현하는 Meowde");else coach.insertAdjacentHTML("afterbegin",imageMarkup(pose,"",english()?`Meowde ${pose}`:"학습 상태를 표현하는 Meowde"))});
   }

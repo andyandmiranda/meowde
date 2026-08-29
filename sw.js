@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v450-approved-v2";
+const CACHE_NAME = "meowde-v451-coach-modes";
 
 const REQUIRED_ASSETS = [
   "/",
