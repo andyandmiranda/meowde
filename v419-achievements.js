@@ -2,6 +2,8 @@
   "use strict";
 
   const KEY="meowde-v419-achievements";
+  const VERSION="4.19-phase5-secondary";
+  const BASE_ASSET="/assets/meowde-approved-base.svg?v=450";
 
   function read(){
     try{
@@ -106,15 +108,27 @@
     const ko=S.lang==="ko",count=unlockedCount(),item=featured(),percent=Math.round(count/DEFINITIONS.length*100);
     return `<section class="card v419-summary"><div class="v419-summary-head">${badgeMarkup(item,"large")}<div><div class="section-kicker">${ko?"업적":"Achievements"}</div><h3>${item?esc(title(item)):(ko?"첫 업적에 도전하세요":"Earn your first badge")}</h3><p>${count}/${DEFINITIONS.length} ${ko?"달성":"unlocked"}</p></div><span class="pill">${percent}%</span></div><div class="v419-progress"><span style="width:${percent}%"></span></div><button class="text-link" onclick="renderAchievements()">${ko?"업적과 액세서리 보기":"View achievements & accessories"} →</button></section>`;
   }
+  function canonicalBrand(){
+    const ko=S.lang==="ko",tagline=typeof t==="function"?t("tagline"):"Learn to code playfully.";
+    return `<div class="top"><div class="brand"><span class="brand-mark"><img class="v449-character v449-pose-base v448-brand-cat" src="${BASE_ASSET}" alt="" width="42" height="42" data-v449-pose="base" data-character-version="4.50" decoding="async"></span><div><h1 class="v444-brand-wordmark">Meowde</h1><p>${esc(tagline)}</p></div></div><button class="lang" onclick="langSheet()">${ko?"KO":"EN"}</button></div>`;
+  }
+  function canonicalTabs(){
+    const ko=S.lang==="ko";
+    return `<div class="tabbar" data-phase1-navigation="four-tabs"><button onclick="renderHome()" aria-label="${ko?"홈":"Home"}">${icon("home")}<span>${ko?"홈":"Home"}</span></button><button onclick="renderMap()" aria-label="${ko?"학습":"Learn"}">${icon("map")}<span>${ko?"학습":"Learn"}</span></button><button onclick="renderReview()" aria-label="${ko?"복습":"Review"}">${icon("code")}<span>${ko?"복습":"Review"}</span></button><button class="on" onclick="renderRoom()" aria-label="Meowde">${icon("cat")}<span>Meowde</span></button></div>`;
+  }
 
   window.renderAchievements=function(){
+    evaluate(false);
     S.screen="achievements";save();
     const ko=S.lang==="ko",count=unlockedCount();
-    app.innerHTML=`<div class="screen">${brand()}<div class="scroll"><div class="simple-head"><h2>${ko?"업적과 액세서리":"Achievements & accessories"}</h2><p>${ko?"학습으로 얻은 배지와 Meowde 꾸미기 아이템을 확인하세요.":"See badges and Meowde accessories earned through learning."}</p></div><section class="card v419-overview"><div><b>${count}</b><span> / ${DEFINITIONS.length}</span><p>${ko?"달성한 업적":"Achievements unlocked"}</p></div><div><b>${A.bestCorrectStreak}</b><p>${ko?"최고 연속 정답":"Best answer streak"}</p></div><div><b>${A.totalCorrect}</b><p>${ko?"누적 정답":"Total correct"}</p></div></section><div class="v426-section-title"><h3>${ko?"액세서리":"Accessories"}</h3></div><div class="v426-accessory-grid">${ACCESSORIES.map(accessoryCard).join("")}</div><div class="v426-section-title"><h3>${ko?"배지 컬렉션":"Badge collection"}</h3></div><div class="v419-list">${DEFINITIONS.map(achievementCard).join("")}</div></div>${tabs("room")}</div>`;
+    app.innerHTML=`<div class="screen">${canonicalBrand()}<div class="scroll"><div class="simple-head"><h2>${ko?"업적과 액세서리":"Achievements & accessories"}</h2><p>${ko?"학습으로 얻은 배지와 Meowde 꾸미기 아이템을 확인하세요.":"See badges and Meowde accessories earned through learning."}</p></div><section class="card v419-overview"><div><b>${count}</b><span> / ${DEFINITIONS.length}</span><p>${ko?"달성한 업적":"Achievements unlocked"}</p></div><div><b>${A.bestCorrectStreak}</b><p>${ko?"최고 연속 정답":"Best answer streak"}</p></div><div><b>${A.totalCorrect}</b><p>${ko?"누적 정답":"Total correct"}</p></div></section><div class="v426-section-title"><h3>${ko?"액세서리":"Accessories"}</h3></div><div class="v426-accessory-grid">${ACCESSORIES.map(accessoryCard).join("")}</div><div class="v426-section-title"><h3>${ko?"배지 컬렉션":"Badge collection"}</h3></div><div class="v419-list">${DEFINITIONS.map(achievementCard).join("")}</div></div>${canonicalTabs()}</div>`;
+    document.documentElement.dataset.achievementsRenderer="canonical-v419";
+    document.documentElement.dataset.navigation="phase1-four-tabs";
   };
+  window.__MEOWDE_CANONICAL_ACHIEVEMENTS_RENDERER__=window.renderAchievements;
 
   window.MeowAchievements={
-    state:A,definitions:DEFINITIONS,accessories:ACCESSORIES,
+    state:A,definitions:DEFINITIONS,accessories:ACCESSORIES,summaryCard,
     feature:function(id){
       if(!isUnlocked(id))return;
       A.featured=id;persist();
@@ -132,22 +146,6 @@
     evaluate
   };
 
-  function decorateRoom(){
-    const scroll=document.querySelector(".screen>.scroll");
-    if(!scroll)return;
-    const existing=scroll.querySelector(".v419-summary");
-    if(existing)existing.outerHTML=summaryCard();
-    else{
-      const growth=scroll.querySelector(".v427-growth-card");
-      const head=scroll.querySelector(".simple-head");
-      if(growth)growth.insertAdjacentHTML("afterend",summaryCard());
-      else if(head)head.insertAdjacentHTML("afterend",summaryCard());
-      else scroll.insertAdjacentHTML("beforeend",summaryCard());
-    }
-  }
-
-  const baseRenderRoom=renderRoom;
-  renderRoom=function(){evaluate(false);baseRenderRoom();decorateRoom()};
   const baseCheckQ=checkQ;
   checkQ=async function(){
     const ex=typeof cur==="function"?cur():null,first=!S.checked;
@@ -177,7 +175,6 @@
 
   evaluate(false);
   document.documentElement.dataset.achievementSurface="meowde";
-  window.__MEOWDE_ACHIEVEMENTS_VERSION__="4.37-phase3";
-  if(S.screen==="room")renderRoom();
-  else if(S.screen==="achievements")renderAchievements();
+  window.__MEOWDE_ACHIEVEMENTS_VERSION__=VERSION;
+  if(S.screen==="achievements")renderAchievements();
 })();

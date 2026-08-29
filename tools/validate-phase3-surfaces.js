@@ -17,7 +17,8 @@ assert(journey.includes('v416-milestone-card'),'Unclaimed unit rewards must rema
 
 assert(achievements.includes('meowde-v419-achievements'),'Achievement storage key must be preserved');
 assert(!achievements.includes('decorateHome'),'Achievements must not decorate Home');
-assert(achievements.includes('decorateRoom'),'Achievements must remain available to Meowde');
+assert(achievements.includes('summaryCard'),'Achievement summary API must remain available to Meowde');
+assert(!achievements.includes('baseRenderRoom'),'Achievements must not wrap the canonical Room renderer');
 assert(achievements.includes('오늘의 연습'),'Daily achievement copy must use Daily Practice naming');
 
 assert(growth.includes('meowde-v427-growth'),'Growth storage key must be preserved');

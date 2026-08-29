@@ -1,8 +1,7 @@
 (function applyMeowdeV443SingleCompanion(){
   "use strict";
 
-  const VERSION="4.43-phase5-review";
-  const WRAPPED=Symbol("meowde-v443-wrapped");
+  const VERSION="4.43-phase5-secondary";
   let decorationQueued=false;
 
   function isKorean(){return !window.S||S.lang!=="en"}
@@ -34,19 +33,6 @@
       if(expected&&bar.innerHTML!==expected)bar.innerHTML=expected;
       bar.dataset.phase1Navigation="four-tabs";
     });
-    root.querySelectorAll('button[onclick*="renderRoom"]').forEach(button=>{
-      if(button.closest(".tabbar"))return;
-      if(button.closest(".v420-profile-actions")){
-        if(button.textContent.trim()!=="🐱 Meowde")button.textContent="🐱 Meowde";
-        button.setAttribute("aria-label",isKorean()?"Meowde":"Meowde companion");
-      }
-    });
-  }
-  function normalizeProfile(){
-    const actions=document.querySelector(".v420-profile-actions");
-    if(!actions)return;
-    const roomButton=actions.querySelector('button[onclick*="renderRoom"]');
-    if(roomButton&&roomButton.textContent.trim()!=="🐱 Meowde")roomButton.textContent="🐱 Meowde";
   }
   function progressPercent(){
     const total=typeof window.lessons==="function"?lessons().length:0;
@@ -110,32 +96,29 @@
   }
   function decorate(root=document){
     forceSingleCompanion();
-    const canonicalSurface=window.S&&["home","map","review"].includes(S.screen);
+    const canonicalSurface=window.S&&["home","map","review","profile","achievements"].includes(S.screen);
     if(!canonicalSurface)normalizeNavigation(root);
-    if(window.S&&S.screen==="profile")normalizeProfile();
     document.documentElement.dataset.companionSystem="single";document.documentElement.dataset.navigation="phase1-four-tabs";
   }
   function queueDecoration(root=document){if(decorationQueued)return;decorationQueued=true;requestAnimationFrame(()=>{decorationQueued=false;decorate(root&&root.isConnected?root:document)})}
-  function wrapRenderer(name){
-    const current=window[name];if(typeof current!=="function"||current[WRAPPED])return;
-    function wrappedRenderer(){const result=current.apply(this,arguments);decorate();return result}
-    wrappedRenderer[WRAPPED]=true;window[name]=wrappedRenderer;
-  }
 
   window.renderRoom=renderCompanionHub;window.renderMy=renderCompanionHub;
-  ["renderProfile","renderAchievements"].forEach(wrapRenderer);
 
   const observer=new MutationObserver(records=>{const added=records.some(record=>record.addedNodes&&record.addedNodes.length);if(added)queueDecoration(document)});
   observer.observe(document.documentElement,{childList:true,subtree:true});
 
-  window.MeowSingleCompanion=Object.freeze({version:VERSION,render:renderCompanionHub,tabs:canonicalTabs,decorate,normalizeProfile,normalizeNavigation,forceSingleCompanion});
+  window.MeowSingleCompanion=Object.freeze({version:VERSION,render:renderCompanionHub,tabs:canonicalTabs,decorate,normalizeNavigation,forceSingleCompanion});
   window.__MEOWDE_VERSION__=VERSION;
   if(typeof window.__MEOWDE_CANONICAL_HOME_RENDERER__==="function")window.renderHome=window.__MEOWDE_CANONICAL_HOME_RENDERER__;
   if(typeof window.__MEOWDE_CANONICAL_LEARN_RENDERER__==="function")window.renderMap=window.__MEOWDE_CANONICAL_LEARN_RENDERER__;
   if(typeof window.__MEOWDE_CANONICAL_REVIEW_RENDERER__==="function")window.renderReview=window.__MEOWDE_CANONICAL_REVIEW_RENDERER__;
+  if(typeof window.__MEOWDE_CANONICAL_PROFILE_RENDERER__==="function")window.renderProfile=window.__MEOWDE_CANONICAL_PROFILE_RENDERER__;
+  if(typeof window.__MEOWDE_CANONICAL_ACHIEVEMENTS_RENDERER__==="function")window.renderAchievements=window.__MEOWDE_CANONICAL_ACHIEVEMENTS_RENDERER__;
   forceSingleCompanion();
   if(window.S&&["room","my"].includes(S.screen))renderCompanionHub();
   else if(window.S&&S.screen==="map"&&typeof window.renderMap==="function")window.renderMap();
   else if(window.S&&S.screen==="review"&&typeof window.renderReview==="function")window.renderReview();
+  else if(window.S&&S.screen==="profile"&&typeof window.renderProfile==="function")window.renderProfile();
+  else if(window.S&&S.screen==="achievements"&&typeof window.renderAchievements==="function")window.renderAchievements();
   else decorate();
 })();

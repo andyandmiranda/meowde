@@ -20,16 +20,17 @@ assert(companion.includes('v419-summary'),'canonical Room renders achievement su
 assert(companion.includes('v416-milestone-card'),'canonical Room renders pending milestone rewards directly');
 assert(companion.includes('v428-season-card'),'canonical Room renders seasonal events directly');
 assert(companion.includes('v443-single-companion'),'canonical Room renders one companion card directly');
-assert(companion.includes('["renderProfile","renderAchievements"].forEach(wrapRenderer)'),'v443 wrappers exclude Room, My, Home, Learn, and Review');
+assert(!companion.includes('wrapRenderer'),'v443 no longer wraps secondary canonical screens');
 
 assert(!visual.includes('renderRoom'),'visual cohesion does not wrap Room');
-assert(visual.includes('["renderProfile"].forEach(name=>'),'visual cohesion keeps Profile enhancement only');
+assert(!visual.includes('renderProfile"].forEach'),'visual cohesion no longer wraps Profile');
 assert(!cutouts.includes('decorateRoom()'),'character cutouts do not replace Room contents');
-assert(cutouts.includes('decorateFeedback();decorateProfile()'),'character cutouts keep non-Room visual decoration');
-assert(cutouts.includes('["renderLesson","renderProfile","renderAchievements","finish"]'),'character cutout wrappers exclude Room, My, Home, Learn, and Review');
+assert(cutouts.includes('decorateFeedback();decorateProfile()'),'character cutouts keep Room/lesson visual decoration');
+assert(cutouts.includes('["renderLesson","finish"]'),'character cutout wrappers are limited to lesson/reward surfaces');
 
 assert(journey.includes('meowde-v416-journey'),'journey persistence key is preserved');
 assert(achievements.includes('meowde-v419-achievements'),'achievement persistence key is preserved');
+assert(!achievements.includes('baseRenderRoom'),'achievements no longer wraps canonical Room');
 assert(growth.includes('meowde-v427-growth'),'growth persistence key is preserved');
 assert(events.includes('meowde-v428-events'),'event persistence key is preserved');
 

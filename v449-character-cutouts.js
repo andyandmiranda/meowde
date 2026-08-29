@@ -1,7 +1,7 @@
 (function applyMeowdeV450CharacterImages(){
   "use strict";
 
-  const VERSION="4.50-phase5-review";
+  const VERSION="4.50-phase5-secondary";
   const POSES=new Set(["base","happy","smug","focus","surprised","meh","coding","music","reading","error"]);
   const ASSETS={
     base:"/assets/meowde-approved-base.svg?v=450",
@@ -100,17 +100,17 @@
   }
   function decorateRecovery(){document.querySelectorAll(".v434-release-error,.v446-update-recovery,.v446-recovery-panel").forEach(panel=>{panel.classList.add("v449-character-error");if(!panel.querySelector(":scope > .v449-error-pose"))panel.insertAdjacentHTML("afterbegin",imageMarkup("error","v449-error-pose","Meowde"))})}
   function decorate(){
-    if(["map","review"].includes(state().screen)){
+    if(["home","map","review","profile","achievements"].includes(state().screen)){
       document.documentElement.dataset.characterImages=VERSION;
       return;
     }
-    if(state().screen!=="home"){decorateHero();decorateBrand();decorateCards()}
+    decorateHero();decorateBrand();decorateCards();
     decorateGrowth();decorateCoach();decorateTrail();decorateFeedback();decorateProfile();decorateRecovery();
     document.documentElement.dataset.characterImages=VERSION;
   }
   function queue(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;decorate()})}
   new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true});
-  ["renderLesson","renderProfile","renderAchievements","finish"].forEach(name=>{
+  ["renderLesson","finish"].forEach(name=>{
     const current=window[name];if(typeof current!=="function"||current.__v450Wrapped)return;
     function wrapped(){const result=current.apply(this,arguments);queue();return result}
     wrapped.__v450Wrapped=true;window[name]=wrapped;
@@ -119,12 +119,18 @@
   document.documentElement.dataset.homeCharacterImages="canonical-v414";
   document.documentElement.dataset.learnCharacterImages="canonical-v413";
   document.documentElement.dataset.reviewCharacterImages="canonical-v414";
+  document.documentElement.dataset.profileCharacterImages="canonical-v420";
+  document.documentElement.dataset.achievementsCharacterImages="canonical-v419";
   window.__MEOWDE_VERSION__=VERSION;
   if(typeof window.__MEOWDE_CANONICAL_HOME_RENDERER__==="function")window.renderHome=window.__MEOWDE_CANONICAL_HOME_RENDERER__;
   if(typeof window.__MEOWDE_CANONICAL_LEARN_RENDERER__==="function")window.renderMap=window.__MEOWDE_CANONICAL_LEARN_RENDERER__;
   if(typeof window.__MEOWDE_CANONICAL_REVIEW_RENDERER__==="function")window.renderReview=window.__MEOWDE_CANONICAL_REVIEW_RENDERER__;
+  if(typeof window.__MEOWDE_CANONICAL_PROFILE_RENDERER__==="function")window.renderProfile=window.__MEOWDE_CANONICAL_PROFILE_RENDERER__;
+  if(typeof window.__MEOWDE_CANONICAL_ACHIEVEMENTS_RENDERER__==="function")window.renderAchievements=window.__MEOWDE_CANONICAL_ACHIEVEMENTS_RENDERER__;
   if(state().screen==="home"&&typeof window.renderHome==="function")window.renderHome();
   else if(state().screen==="map"&&typeof window.renderMap==="function")window.renderMap();
   else if(state().screen==="review"&&typeof window.renderReview==="function")window.renderReview();
+  else if(state().screen==="profile"&&typeof window.renderProfile==="function")window.renderProfile();
+  else if(state().screen==="achievements"&&typeof window.renderAchievements==="function")window.renderAchievements();
   else decorate();
 })();
