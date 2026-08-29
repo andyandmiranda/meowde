@@ -1,8 +1,9 @@
 (function applyMeowdeV442MapTouch(){
   "use strict";
 
-  const VERSION="4.42";
+  const VERSION="4.42-phase5-bootstrap";
   const UNIT_SIZE=10;
+  let queued=false;
 
   function state(){
     try{return typeof S!=="undefined"&&S?S:null}catch(error){return null}
@@ -51,12 +52,12 @@
 
   function decorateMap(){
     normalizeMapState();
+    if(!state()||state().screen!=="map")return false;
     activateMapTab();
     const trail=document.querySelector(".trail");
     if(!trail)return false;
     trail.classList.add("v442-map-ready");
-    const current=state();
-    const unit=Math.max(0,Number(current&&current.unit)||0);
+    const unit=Math.max(0,Number(state().unit)||0);
     const nodes=Array.from(trail.querySelectorAll("button.node"));
     const labels=Array.from(trail.querySelectorAll(".node-label"));
 
@@ -76,6 +77,7 @@
         node.setAttribute("aria-describedby",id);
       }
     });
+    document.documentElement.dataset.mapTouchSurface="enhancement-only";
     return true;
   }
 
@@ -99,27 +101,23 @@
     if(label)triggerLabel(label,event);
   });
 
-  const baseTabs=window.tabs;
-  if(typeof baseTabs==="function"){
-    window.tabs=function tabsV442(active){
-      return baseTabs.call(this,active==="study"?"map":active);
-    };
+  function queueDecorate(){
+    if(queued)return;
+    queued=true;
+    requestAnimationFrame(()=>{queued=false;decorateMap()});
   }
+  const observer=new MutationObserver(records=>{
+    if(!state()||state().screen!=="map")return;
+    if(records.some(record=>record.addedNodes&&record.addedNodes.length))queueDecorate();
+  });
+  observer.observe(document.documentElement,{childList:true,subtree:true});
 
-  const baseRenderMap=window.renderMap;
-  if(typeof baseRenderMap==="function"){
-    window.renderMap=function renderMapV442(){
-      normalizeMapState();
-      const result=baseRenderMap.apply(this,arguments);
-      decorateMap();
-      requestAnimationFrame(decorateMap);
-      return result;
-    };
-  }
-
+  // Phase 5-7: accessibility/touch behavior is enhancement-only. It no longer
+  // wraps tabs() or renderMap(), so v4.13 remains the sole Learn DOM owner.
   window.MeowMapTouch=Object.freeze({version:VERSION,decorateMap,activateMapTab,normalizeMapState});
   window.__MEOWDE_MAP_TOUCH_VERSION__=VERSION;
+  document.documentElement.dataset.learnTouchOwnership="canonical-v413";
 
   const current=state();
-  if(current&&(current.screen==="map"||current.screen==="study")&&typeof window.renderMap==="function")window.renderMap();
+  if(current&&(current.screen==="map"||current.screen==="study"))queueDecorate();
 })();

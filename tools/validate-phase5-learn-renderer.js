@@ -4,12 +4,13 @@ function read(path){return fs.readFileSync(path,'utf8')}
 function assert(condition,message){if(!condition){console.error(`FAIL: ${message}`);process.exitCode=1}else console.log(`PASS: ${message}`)}
 
 const learn=read('v413-core.js');
+const mapTouch=read('v442-map-touch.js');
 const companion=read('v443-single-companion.js');
 const cohesion=read('v444-visual-cohesion.js');
 const cutouts=read('v449-character-cutouts.js');
 const journey=read('v416-journey.js');
 const css=read('v416-ux.css');
-const files=[learn,companion,cohesion,cutouts,journey];
+const files=[learn,mapTouch,companion,cohesion,cutouts,journey];
 
 assert(!learn.includes('originalRenderMap'),'v413 no longer delegates Learn to the legacy index renderer');
 assert(learn.includes("dataset.learnRenderer='canonical-v413'"),'v413 declares canonical Learn ownership');
@@ -27,6 +28,11 @@ assert(Boolean(mapSource),'canonical renderMap block is discoverable');
 assert(mapSource.includes("done?'done':''")&&mapSource.includes("current?'current':''")&&mapSource.includes("locked?'locked':''"),'Learn renders only completed/current/locked node states');
 assert(!mapSource.includes('stone')&&!mapSource.includes('bush')&&!mapSource.includes('unit-flag')&&!mapSource.includes('trail-cat'),'Learn no longer generates decorative trail DOM');
 assert(!mapSource.includes('v416-now-tag')&&!mapSource.includes('v416-node-reward'),'Learn does not generate reward or NOW overlays');
+
+assert(!mapTouch.includes('const baseRenderMap'),'v442 does not capture canonical Learn');
+assert(!mapTouch.includes('window.renderMap=function'),'v442 does not wrap canonical Learn');
+assert(!mapTouch.includes('const baseTabs'),'v442 does not wrap canonical navigation');
+assert(mapTouch.includes('dataset.mapTouchSurface="enhancement-only"'),'v442 is explicitly enhancement-only');
 
 assert(!companion.includes('wrapRenderer'),'v443 no longer wraps Learn or secondary canonical screens');
 assert(companion.includes('["home","map","review","profile","achievements"].includes(S.screen)'),'v443 observer skips canonical Learn navigation');
