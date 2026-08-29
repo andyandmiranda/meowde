@@ -32,14 +32,13 @@ assert(learning.includes('reviewQualityCard}'),'v433 exposes Learning Quality ca
 assert(learning.includes('dataset.reviewQualitySurface="canonical-v414"'),'v433 defers Learning Quality UI ownership to v414');
 assert(learning.includes('dedupeQueue'),'Smart Review dedupe behavior remains active');
 
-assert(companion.includes('["home","map","review"].includes(S.screen)'),'v443 observer skips canonical Review navigation');
-assert(companion.includes('["renderProfile","renderAchievements"].forEach(wrapRenderer)'),'v443 no longer wraps Review');
-assert(companion.includes('window.renderReview=window.__MEOWDE_CANONICAL_REVIEW_RENDERER__'),'v443 restores canonical Review regardless of async order');
-
-assert(cutouts.includes('["map","review"].includes(state().screen)'),'v449 observer exits before mutating canonical Review');
-assert(cutouts.includes('["renderLesson","renderProfile","renderAchievements","finish"]'),'v449 no longer wraps Review');
+assert(!companion.includes('wrapRenderer'),'v443 no longer wraps Review or secondary canonical screens');
+assert(companion.includes('["home","map","review","profile","achievements"].includes(S.screen)'),'v443 observer skips canonical Review navigation');
+assert(companion.includes('window.renderReview=window.__MEOWDE_CANONICAL_REVIEW_RENDERER__'),'v443 restores canonical Review regardless of load order');
+assert(cutouts.includes('["home","map","review","profile","achievements"].includes(state().screen)'),'v449 observer exits before mutating canonical Review');
+assert(cutouts.includes('["renderLesson","finish"]'),'v449 no longer wraps Review');
 assert(cutouts.includes('dataset.reviewCharacterImages="canonical-v414"'),'v449 records canonical Review character ownership');
-assert(cutouts.includes('window.renderReview=window.__MEOWDE_CANONICAL_REVIEW_RENDERER__'),'late character layer restores canonical Review');
+assert(cutouts.includes('window.renderReview=window.__MEOWDE_CANONICAL_REVIEW_RENDERER__'),'character layer restores canonical Review');
 
 assert(files.every(source=>!source.includes('localStorage.removeItem(')),'Review consolidation does not delete persisted data');
 
