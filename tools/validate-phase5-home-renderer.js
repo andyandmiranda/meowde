@@ -20,16 +20,11 @@ assert(home.includes('https://amis-os.vercel.app/feedback'),'Home renders Feedba
 
 assert(!character.includes('oldHome=window.renderHome'),'v430 no longer wraps Home');
 assert(character.includes('dataset.homeCharacterSurface="canonical-v414"'),'v430 defers Home character surface to v414');
-
-assert(!companion.includes('"renderHome"'),'v443 no longer includes Home in renderer wrappers');
-assert(companion.includes('["home","map","review"].includes(S.screen)'),'v443 navigation decorator skips canonical Home, Learn, and Review DOM');
-
-assert(!cohesion.includes('["renderHome","renderProfile"]'),'v444 no longer wraps Home');
-assert(cohesion.includes('isCanonicalStaticSurface'),'v444 recognizes canonical Home and Learn surfaces');
-
-assert(!cutouts.includes('["renderHome","renderMap"'),'v449 no longer wraps Home or Learn');
-assert(cutouts.includes('if(state().screen!=="home"){decorateHero();decorateBrand();decorateCards()}'),'v449 skips Home visual post-processing');
-assert(cutouts.includes('window.renderHome=window.__MEOWDE_CANONICAL_HOME_RENDERER__'),'late character layer restores canonical Home regardless of async order');
+assert(!companion.includes('wrapRenderer'),'v443 no longer wraps canonical screen renderers');
+assert(companion.includes('["home","map","review","profile","achievements"].includes(S.screen)'),'v443 navigation decorator skips canonical screen DOM');
+assert(cohesion.includes('["home","map","review","profile","achievements"].includes(S.screen)'),'v444 recognizes all canonical static surfaces');
+assert(cutouts.includes('["home","map","review","profile","achievements"].includes(state().screen)'),'v449 exits before mutating canonical static surfaces');
+assert(cutouts.includes('window.renderHome=window.__MEOWDE_CANONICAL_HOME_RENDERER__'),'character layer restores canonical Home');
 
 assert(!contact.includes('MutationObserver'),'v451 no longer injects Contact through a DOM observer');
 assert(contact.includes('dataset.homeContactSurface="canonical-v414"'),'v451 defers Contact surface to v414');
