@@ -38,7 +38,8 @@ assert(visual.includes('dataset.profileVisualSurface="canonical-v420"'),'v444 de
 assert(visual.includes('dataset.achievementsVisualSurface="canonical-v419"'),'v444 defers Achievements visuals to v419');
 
 assert(cutouts.includes('["home","map","review","profile","achievements"].includes(state().screen)'),'v449 observer skips Profile and Achievements');
-assert(cutouts.includes('["renderLesson","finish"]'),'v449 wrappers are limited to lesson/reward surfaces');
+assert(!cutouts.includes('__v450Wrapped'),'v449 no longer installs renderer wrappers');
+assert(cutouts.includes('dataset.characterEnhancement="observer-only"'),'v449 character enhancement is observer-only');
 assert(cutouts.includes('dataset.profileCharacterImages="canonical-v420"'),'v449 records canonical Profile character ownership');
 assert(cutouts.includes('dataset.achievementsCharacterImages="canonical-v419"'),'v449 records canonical Achievements character ownership');
 

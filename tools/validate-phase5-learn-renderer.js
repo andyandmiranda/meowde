@@ -40,7 +40,8 @@ assert(companion.includes('window.renderMap=window.__MEOWDE_CANONICAL_LEARN_REND
 assert(cohesion.includes('["home","map","review","profile","achievements"].includes(S.screen)'),'v444 skips Learn visual post-processing');
 assert(cohesion.includes('dataset.learnVisualSurface="canonical-v413"'),'v444 records canonical Learn visual ownership');
 assert(cutouts.includes('["home","map","review","profile","achievements"].includes(state().screen)'),'v449 observer exits before mutating canonical Learn');
-assert(cutouts.includes('["renderLesson","finish"]'),'v449 only wraps lesson/reward visual surfaces');
+assert(!cutouts.includes('__v450Wrapped'),'v449 no longer wraps any renderer');
+assert(cutouts.includes('dataset.characterEnhancement="observer-only"'),'v449 character enhancement is observer-only');
 assert(cutouts.includes('window.renderMap=window.__MEOWDE_CANONICAL_LEARN_RENDERER__'),'character layer restores canonical Learn');
 assert(cutouts.includes('dataset.learnCharacterImages="canonical-v413"'),'v449 records canonical Learn character ownership');
 
