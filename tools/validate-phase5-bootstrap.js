@@ -11,6 +11,8 @@ const state=read('v425-state.js');
 
 assert(bootstrap.indexOf('v443-single-companion.js')<bootstrap.indexOf('v434-release.js'),'sync companion runtime loads before the release guard');
 assert((bootstrap.match(/v443-single-companion\.js/g)||[]).length===1,'v443 bootstrap script is declared exactly once');
+assert(bootstrap.includes("setTimeout(()=>langSheet(),300)"),'bootstrap identifies the legacy first-open language gate in fetched index source');
+assert(bootstrap.includes("if(!localStorage.getItem('meowde-v410-seen'))localStorage.setItem('meowde-v410-seen','1')"),'bootstrap removes the forced first-open language sheet while preserving the seen marker');
 
 const orderedIds=['meowde-v442-map-touch','meowde-v444-visual-cohesion','meowde-v446-update-recovery','meowde-v450-character-images','meowde-v451-contact'];
 let previous=-1;
