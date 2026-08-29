@@ -1,19 +1,22 @@
 (function applyMeowdeV443SingleCompanion(){
   "use strict";
 
-  const VERSION="4.43-phase5-secondary";
+  const VERSION="4.43-mobile-e2e-fix";
   let decorationQueued=false;
 
-  function isKorean(){return !window.S||S.lang!=="en"}
+  function runtimeState(){try{return typeof S!=="undefined"&&S&&typeof S==="object"?S:null}catch(error){return null}}
+  function isKorean(){const current=runtimeState();return !current||current.lang!=="en"}
   function forceSingleCompanion(){
-    if(!window.S||S.cat==="meowde")return false;
-    S.cat="meowde";
+    const current=runtimeState();
+    if(!current||current.cat==="meowde")return false;
+    current.cat="meowde";
     try{if(typeof window.save==="function")window.save()}catch(error){console.warn("Meowde companion state could not be saved:",error)}
     return true;
   }
   function tabMarkup(){
-    if(!window.S)return "";
-    const screen=S.screen||"home";
+    const current=runtimeState();
+    if(!current)return "";
+    const screen=current.screen||"home";
     const ko=isKorean();
     const learnActive=screen==="map";
     const reviewActive=screen==="review";
@@ -35,8 +38,9 @@
     });
   }
   function progressPercent(){
+    const current=runtimeState();
     const total=typeof window.lessons==="function"?lessons().length:0;
-    return Math.min(100,Math.round(((S.done||[]).length/Math.max(1,total))*100));
+    return current?Math.min(100,Math.round(((current.done||[]).length/Math.max(1,total))*100)):0;
   }
   function achievementSummary(){
     const api=window.MeowAchievements;
@@ -53,7 +57,8 @@
   function growthCard(){
     const api=window.MeowGrowth;
     if(!api||typeof api.stage!=="function"||typeof api.evolutionProgress!=="function")return "";
-    const ko=isKorean(),current=api.stage(),next=typeof api.nextStage==="function"?api.nextStage():null,progress=api.evolutionProgress(),xp=Math.max(0,Number(S.xp)||0),stages=Array.isArray(api.stages)?api.stages:[];
+    const currentState=runtimeState();if(!currentState)return "";
+    const ko=isKorean(),current=api.stage(),next=typeof api.nextStage==="function"?api.nextStage():null,progress=api.evolutionProgress(),xp=Math.max(0,Number(currentState.xp)||0),stages=Array.isArray(api.stages)?api.stages:[];
     return `<section class="card v427-growth-card"><div class="v427-growth-head"><span class="v427-stage-icon">${current&&current.icon||"🐱"}</span><div><div class="section-kicker">${ko?"Meowde 성장":"Meowde growth"}</div><h3>${esc(current?(ko?current.labelKo:current.labelEn):(ko?"아기 냥":"Kitten"))}</h3><p>${next?(ko?`${next.labelKo}까지 ${Math.max(0,next.min-xp)} XP`:`${Math.max(0,next.min-xp)} XP to ${next.labelEn}`):(ko?"최종 성장 단계 달성":"Final evolution reached")}</p></div><span class="pill">${xp} XP</span></div><div class="v427-growth-track"><i style="width:${progress.percent}%"></i></div><div class="v427-growth-stages">${stages.map(item=>`<span class="${xp>=item.min?"reached":""}" title="${esc(ko?item.labelKo:item.labelEn)}">${item.icon}</span>`).join("")}</div></section>`;
   }
   function milestoneCard(){
@@ -83,20 +88,22 @@
     return season+visitor+collection;
   }
   function renderCompanionHub(){
-    if(!window.S)return;
-    forceSingleCompanion();S.screen="room";try{if(typeof save==="function")save()}catch(error){}
-    const ko=isKorean(),done=Number(S.done&&S.done.length)||0,streak=Number(S.streak)||0,partnerLabel=ko?"나의 파트너":"My companion";
+    const current=runtimeState();
+    if(!current)return;
+    forceSingleCompanion();current.screen="room";try{if(typeof save==="function")save()}catch(error){}
+    const ko=isKorean(),done=Number(current.done&&current.done.length)||0,streak=Number(current.streak)||0,partnerLabel=ko?"나의 파트너":"My companion";
     const intro=ko?"함께 공부하며 자라는 Meowde의 성장, 업적과 특별한 기록을 확인하세요.":"See Meowde's growth, achievements, and special memories from learning together.";
     const profileCopy=ko?`${done}개 레슨 완료 · ${streak}일 연속 학습`:`${done} lessons complete · ${streak} day streak`;
     const companionCopy=ko?"함께 코딩하며 성장하는 나의 파트너":"Your one companion for learning and growing through code";
     const sections=growthCard()+achievementSummary()+milestoneCard()+eventCards();
-    app.innerHTML=`<div class="screen">${brand()}${stats()}<div class="scroll" data-phase3-companion-hub="ordered"><div class="simple-head"><h2>Meowde</h2><p>${intro}</p></div><section class="card profile-card">${catSVG("meowde","coding",82)}<div class="profile-copy"><h3>${ko?"Meowde와 학습 중":"Learning with Meowde"}</h3><p>${profileCopy}</p></div></section><div class="room-grid v443-single-companion"><div class="cat-card v443-companion-card"><div class="cat-card-head">${catSVG("meowde","idle",82)}<div><h3>Meowde</h3><p>${companionCopy}</p></div></div><button class="v443-companion-status" disabled aria-label="${partnerLabel}">${partnerLabel}</button></div></div>${sections}<div class="profile-stats"><div class="profile-stat"><b>${Number(S.xp)||0}</b><span>XP</span></div><div class="profile-stat"><b>${Number(S.churu)||0}</b><span>${ko?"츄르":"Churu"}</span></div><div class="profile-stat"><b>${progressPercent()}%</b><span>${ko?"진도":"Progress"}</span></div></div></div>${canonicalTabs()}</div>`;
+    app.innerHTML=`<div class="screen">${brand()}${stats()}<div class="scroll" data-phase3-companion-hub="ordered"><div class="simple-head"><h2>Meowde</h2><p>${intro}</p></div><section class="card profile-card">${catSVG("meowde","coding",82)}<div class="profile-copy"><h3>${ko?"Meowde와 학습 중":"Learning with Meowde"}</h3><p>${profileCopy}</p></div></section><div class="room-grid v443-single-companion"><div class="cat-card v443-companion-card"><div class="cat-card-head">${catSVG("meowde","idle",82)}<div><h3>Meowde</h3><p>${companionCopy}</p></div></div><button class="v443-companion-status" disabled aria-label="${partnerLabel}">${partnerLabel}</button></div></div>${sections}<div class="profile-stats"><div class="profile-stat"><b>${Number(current.xp)||0}</b><span>XP</span></div><div class="profile-stat"><b>${Number(current.churu)||0}</b><span>${ko?"츄르":"Churu"}</span></div><div class="profile-stat"><b>${progressPercent()}%</b><span>${ko?"진도":"Progress"}</span></div></div></div>${canonicalTabs()}</div>`;
     document.documentElement.dataset.companionSystem="single";document.documentElement.dataset.navigation="phase1-four-tabs";document.documentElement.dataset.roomRenderer="canonical-v443";
     if(window.MeowCharacterMaster&&typeof MeowCharacterMaster.purgeLegacyCats==="function")MeowCharacterMaster.purgeLegacyCats();
   }
   function decorate(root=document){
     forceSingleCompanion();
-    const canonicalSurface=window.S&&["home","map","review","profile","achievements"].includes(S.screen);
+    const current=runtimeState();
+    const canonicalSurface=current&&["home","map","review","profile","achievements"].includes(current.screen);
     if(!canonicalSurface)normalizeNavigation(root);
     document.documentElement.dataset.companionSystem="single";document.documentElement.dataset.navigation="phase1-four-tabs";
   }
@@ -115,10 +122,11 @@
   if(typeof window.__MEOWDE_CANONICAL_PROFILE_RENDERER__==="function")window.renderProfile=window.__MEOWDE_CANONICAL_PROFILE_RENDERER__;
   if(typeof window.__MEOWDE_CANONICAL_ACHIEVEMENTS_RENDERER__==="function")window.renderAchievements=window.__MEOWDE_CANONICAL_ACHIEVEMENTS_RENDERER__;
   forceSingleCompanion();
-  if(window.S&&["room","my"].includes(S.screen))renderCompanionHub();
-  else if(window.S&&S.screen==="map"&&typeof window.renderMap==="function")window.renderMap();
-  else if(window.S&&S.screen==="review"&&typeof window.renderReview==="function")window.renderReview();
-  else if(window.S&&S.screen==="profile"&&typeof window.renderProfile==="function")window.renderProfile();
-  else if(window.S&&S.screen==="achievements"&&typeof window.renderAchievements==="function")window.renderAchievements();
+  const current=runtimeState();
+  if(current&&["room","my"].includes(current.screen))renderCompanionHub();
+  else if(current&&current.screen==="map"&&typeof window.renderMap==="function")window.renderMap();
+  else if(current&&current.screen==="review"&&typeof window.renderReview==="function")window.renderReview();
+  else if(current&&current.screen==="profile"&&typeof window.renderProfile==="function")window.renderProfile();
+  else if(current&&current.screen==="achievements"&&typeof window.renderAchievements==="function")window.renderAchievements();
   else decorate();
 })();
