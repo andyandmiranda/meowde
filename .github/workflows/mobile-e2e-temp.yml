@@ -1,0 +1,41 @@
+name: Temporary Mobile Production E2E
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  mobile-production-e2e:
+    if: github.head_ref == 'agent/mobile-e2e-production'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Run 390x844 Production E2E
+        run: node tools/mobile-production-e2e.mjs
+
+      - name: Upload mobile screenshots and report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: meowde-mobile-production-e2e
+          path: mobile-e2e-artifacts
+          if-no-files-found: warn
+          retention-days: 7
