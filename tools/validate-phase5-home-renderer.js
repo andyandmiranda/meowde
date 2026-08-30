@@ -21,7 +21,7 @@ assert(home.includes('https://amis-os.vercel.app/feedback'),'Home renders Feedba
 assert(!character.includes('oldHome=window.renderHome'),'v430 no longer wraps Home');
 assert(character.includes('dataset.homeCharacterSurface="canonical-v414"'),'v430 defers Home character surface to v414');
 assert(!companion.includes('wrapRenderer'),'v443 no longer wraps canonical screen renderers');
-assert(companion.includes('["home","map","review","profile","achievements"].includes(current.screen)'),'v443 navigation decorator skips canonical screen DOM');
+assert(companion.includes('["home","map","review","profile","achievements","room","my"].includes(current.screen)'),'v443 navigation decorator skips every canonical screen including Room/My');
 assert(cohesion.includes('["home","map","review","profile","achievements"].includes(S.screen)'),'v444 recognizes all canonical static surfaces');
 assert(cutouts.includes('["home","map","review","profile","achievements","room","my"].includes(state().screen)'),'v449 exits before mutating canonical screen surfaces including Room');
 assert(cutouts.includes('window.renderHome=window.__MEOWDE_CANONICAL_HOME_RENDERER__'),'character layer restores canonical Home');
