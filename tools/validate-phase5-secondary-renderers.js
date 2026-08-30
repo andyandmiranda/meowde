@@ -31,7 +31,7 @@ assert(achievements.includes('const baseFinish=finish'),'achievement completion/
 assert(!companion.includes('wrapRenderer'),'v443 has no secondary screen renderer wrappers');
 assert(companion.includes('window.renderProfile=window.__MEOWDE_CANONICAL_PROFILE_RENDERER__'),'v443 restores canonical Profile');
 assert(companion.includes('window.renderAchievements=window.__MEOWDE_CANONICAL_ACHIEVEMENTS_RENDERER__'),'v443 restores canonical Achievements');
-assert(companion.includes('["home","map","review","profile","achievements"].includes(current.screen)'),'v443 observer skips all canonical static screens');
+assert(companion.includes('["home","map","review","profile","achievements","room","my"].includes(current.screen)'),'v443 observer skips all canonical screens including Room/My');
 
 assert(!visual.includes('renderProfile"].forEach'),'v444 no longer wraps Profile');
 assert(visual.includes('dataset.profileVisualSurface="canonical-v420"'),'v444 defers Profile visuals to v420');
