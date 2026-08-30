@@ -1,7 +1,7 @@
 (function applyMeowdeV450CharacterImages(){
   "use strict";
 
-  const VERSION="4.50-coach-modes";
+  const VERSION="4.50-coach-modes-room-safe";
   const POSES=new Set(["base","happy","smug","focus","surprised","meh","coding","music","reading","error"]);
   const ASSETS={
     base:"/assets/meowde-approved-base.svg?v=450",
@@ -116,7 +116,7 @@
   }
   function decorateRecovery(){document.querySelectorAll(".v434-release-error,.v446-update-recovery,.v446-recovery-panel").forEach(panel=>{panel.classList.add("v449-character-error");if(!panel.querySelector(":scope > .v449-error-pose"))panel.insertAdjacentHTML("afterbegin",imageMarkup("error","v449-error-pose","Meowde"))})}
   function decorate(){
-    if(["home","map","review","profile","achievements"].includes(state().screen)){
+    if(["home","map","review","profile","achievements","room","my"].includes(state().screen)){
       document.documentElement.dataset.characterImages=VERSION;
       return;
     }
@@ -137,6 +137,7 @@
   document.documentElement.dataset.reviewCharacterImages="canonical-v414";
   document.documentElement.dataset.profileCharacterImages="canonical-v420";
   document.documentElement.dataset.achievementsCharacterImages="canonical-v419";
+  document.documentElement.dataset.roomCharacterImages="canonical-v443";
   window.__MEOWDE_VERSION__=VERSION;
   if(typeof window.__MEOWDE_CANONICAL_HOME_RENDERER__==="function")window.renderHome=window.__MEOWDE_CANONICAL_HOME_RENDERER__;
   if(typeof window.__MEOWDE_CANONICAL_LEARN_RENDERER__==="function")window.renderMap=window.__MEOWDE_CANONICAL_LEARN_RENDERER__;
