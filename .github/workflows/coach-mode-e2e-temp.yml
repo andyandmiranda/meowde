@@ -1,0 +1,41 @@
+name: Temporary Coach Mode Production E2E
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  coach-mode-production-e2e:
+    if: github.head_ref == 'agent/coach-mode-production-e2e'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Run 390x844 Production coach mode E2E
+        run: node tools/coach-mode-production-e2e.mjs
+
+      - name: Upload coach mode screenshots and report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: meowde-coach-mode-production-e2e
+          path: coach-mode-e2e-artifacts
+          if-no-files-found: warn
+          retention-days: 7
