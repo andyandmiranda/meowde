@@ -1,7 +1,7 @@
 (function applyMeowdeV443SingleCompanion(){
   "use strict";
 
-  const VERSION="4.43-coach-modes";
+  const VERSION="4.43-coach-modes-nav-stable";
   const MODE_STORAGE_KEY="meowde-v443-coach-mode";
   const COACH_MODES=Object.freeze([
     Object.freeze({id:"focus",asset:"coding",labelKo:"집중 모드",labelEn:"Focus mode",copyKo:"코딩에 몰입하는 Meowde",copyEn:"Meowde focused on coding"}),
@@ -136,7 +136,7 @@
   function decorate(root=document){
     forceSingleCompanion();
     const current=runtimeState();
-    const canonicalSurface=current&&["home","map","review","profile","achievements"].includes(current.screen);
+    const canonicalSurface=current&&["home","map","review","profile","achievements","room","my"].includes(current.screen);
     if(!canonicalSurface)normalizeNavigation(root);
     document.documentElement.dataset.companionSystem="single";document.documentElement.dataset.navigation="phase1-four-tabs";document.documentElement.dataset.coachMode=currentCoachMode().id;
   }

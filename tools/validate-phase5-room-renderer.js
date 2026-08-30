@@ -24,6 +24,7 @@ assert(!companion.includes('wrapRenderer'),'v443 no longer wraps secondary canon
 assert(companion.includes('function runtimeState()'),'v443 resolves the lexical runtime state explicitly');
 assert(companion.includes('typeof S!=="undefined"'),'v443 checks the actual runtime S binding');
 assert(!companion.includes('window.S'),'v443 does not gate Room on a nonexistent window.S property');
+assert(companion.includes('["home","map","review","profile","achievements","room","my"].includes(current.screen)'),'v443 observer does not re-normalize canonical Room/My navigation');
 
 assert(companion.includes('const MODE_STORAGE_KEY="meowde-v443-coach-mode"'),'coach mode uses an additive persistence key');
 ['focus','dance','study','cheer','challenge','debug'].forEach(id=>assert(companion.includes(`id:"${id}"`),`coach mode ${id} is available`));
