@@ -35,7 +35,7 @@ assert(learning.includes('dedupeQueue'),'Smart Review dedupe behavior remains ac
 assert(!companion.includes('wrapRenderer'),'v443 no longer wraps Review or secondary canonical screens');
 assert(companion.includes('["home","map","review","profile","achievements"].includes(current.screen)'),'v443 observer skips canonical Review navigation');
 assert(companion.includes('window.renderReview=window.__MEOWDE_CANONICAL_REVIEW_RENDERER__'),'v443 restores canonical Review regardless of load order');
-assert(cutouts.includes('["home","map","review","profile","achievements"].includes(state().screen)'),'v449 observer exits before mutating canonical Review');
+assert(cutouts.includes('["home","map","review","profile","achievements","room","my"].includes(state().screen)'),'v449 observer exits before mutating canonical surfaces including Review and Room');
 assert(!cutouts.includes('__v450Wrapped'),'v449 installs no renderer wrappers');
 assert(cutouts.includes('dataset.characterEnhancement="observer-only"'),'v449 uses observer-only visual enhancement');
 assert(cutouts.includes('dataset.reviewCharacterImages="canonical-v414"'),'v449 records canonical Review character ownership');

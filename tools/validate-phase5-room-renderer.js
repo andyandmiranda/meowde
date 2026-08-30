@@ -38,7 +38,9 @@ assert(companion.includes('aria-pressed'),'mode picker exposes selected state ac
 assert(!visual.includes('renderRoom'),'visual cohesion does not wrap Room');
 assert(!visual.includes('renderProfile"].forEach'),'visual cohesion no longer wraps Profile');
 assert(!cutouts.includes('decorateRoom()'),'character cutouts do not replace Room contents');
-assert(cutouts.includes('decorateFeedback();decorateProfile()'),'character cutouts keep Room/lesson visual decoration');
+assert(cutouts.includes('["home","map","review","profile","achievements","room","my"]'),'character postprocessing explicitly skips canonical Room/My surfaces');
+assert(cutouts.includes('dataset.roomCharacterImages="canonical-v443"'),'character layer marks Room image ownership as canonical v443');
+assert(cutouts.includes('decorateFeedback();decorateProfile()'),'character cutouts retain non-Room lesson/profile helpers');
 assert(!cutouts.includes('__v450Wrapped'),'character enhancement installs no renderer wrappers');
 assert(cutouts.includes('dataset.characterEnhancement="observer-only"'),'character enhancement is observer-only');
 assert(cutouts.includes('function selectedCoachMode()'),'lesson enhancement can read the selected coach mode');

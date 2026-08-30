@@ -37,11 +37,12 @@ assert(!visual.includes('renderProfile"].forEach'),'v444 no longer wraps Profile
 assert(visual.includes('dataset.profileVisualSurface="canonical-v420"'),'v444 defers Profile visuals to v420');
 assert(visual.includes('dataset.achievementsVisualSurface="canonical-v419"'),'v444 defers Achievements visuals to v419');
 
-assert(cutouts.includes('["home","map","review","profile","achievements"].includes(state().screen)'),'v449 observer skips Profile and Achievements');
+assert(cutouts.includes('["home","map","review","profile","achievements","room","my"].includes(state().screen)'),'v449 observer skips Profile, Achievements, and canonical Room');
 assert(!cutouts.includes('__v450Wrapped'),'v449 no longer installs renderer wrappers');
 assert(cutouts.includes('dataset.characterEnhancement="observer-only"'),'v449 character enhancement is observer-only');
 assert(cutouts.includes('dataset.profileCharacterImages="canonical-v420"'),'v449 records canonical Profile character ownership');
 assert(cutouts.includes('dataset.achievementsCharacterImages="canonical-v419"'),'v449 records canonical Achievements character ownership');
+assert(cutouts.includes('dataset.roomCharacterImages="canonical-v443"'),'v449 records canonical Room character ownership');
 
 assert(files.every(source=>!source.includes('localStorage.removeItem(')),'secondary consolidation does not delete persisted data');
 
