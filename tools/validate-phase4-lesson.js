@@ -24,7 +24,9 @@ assert(!humor.includes('function decorateReward'),'humor layer no longer adds re
 assert(learning.includes('dataset.lessonMetadata="canonical-v413"'),'canonical lesson renderer owns the single auxiliary metadata item');
 assert(!learning.includes('onclick="MeowLearning.retryCurrent()"'),'wrong-answer UI no longer forks into immediate retry actions');
 assert(!learning.includes('style.display="none"'),'canonical Continue button is not hidden');
-assert(lesson.includes("S.hint?`<div class=\"hint\">"),'canonical lesson hint remains available');
+assert(lesson.includes('function hintControl(exercise)'),'canonical Lesson owns the hint control');
+assert(lesson.includes('if(S.hint)return `<div class="hint">'),'revealed canonical hint remains available');
+assert(lesson.includes('onclick="S.hint=true;save();renderLesson()"'),'hint remains a one-tap reveal without changing answer flow');
 assert(lesson.includes('onclick="nextQ()"'),'canonical Continue flow remains available');
 assert(!playfulCss.includes('@keyframes'),'playful CSS has no idle/outcome animation keyframes');
 assert(!humorCss.includes('@keyframes'),'humor CSS has no lesson/reward animation keyframes');
