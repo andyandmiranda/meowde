@@ -62,7 +62,7 @@
     const start=S.unit*10;
     const XS=[50,26,50,74,50,26,50,74,50,26],STEP=106,TOP=64,H=TOP+9*STEP+118;
     const ko=S.lang==='ko';
-    const unitNames=ko?['01 Python 기초','02 조건과 반복','03 함수와 프로젝트']:['01 Python Basics','02 Control & Loops','03 Functions & Projects'];
+    const unitNames=ko?['01 Python 기초','02 입력과 조건','03 컬렉션·반복·함수']:['01 Python Basics','02 Input & Decisions','03 Collections, Loops & Functions'];
     const nodes=lessons().slice(start,start+10).map((lesson,index)=>{
       const lessonIndex=start+index;
       const done=Array.isArray(S.done)&&S.done.includes(lessonIndex);
