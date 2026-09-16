@@ -15,7 +15,7 @@
     const end=Math.min(start+size,lessons().length);
     let done=0;
     for(let index=start;index<end;index++)if(Array.isArray(S.done)&&S.done.includes(index))done++;
-    const names=S.lang==='ko'?['Python 기초','조건과 반복','함수와 프로젝트']:['Python Basics','Control & Loops','Functions & Projects'];
+    const names=S.lang==='ko'?['Python 기초','입력과 조건','컬렉션·반복·함수']:['Python Basics','Input & Decisions','Collections, Loops & Functions'];
     return {unit,start,end,total:Math.max(0,end-start),done,name:names[unit]||(S.lang==='ko'?`유닛 ${unit+1}`:`Unit ${unit+1}`)};
   }
   function dailyCard(){

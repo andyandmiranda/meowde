@@ -5,6 +5,7 @@ function assert(condition,message){if(!condition){console.error(`FAIL: ${message
 
 const bootstrap=read('v412.html');
 const release=read('v434-release.js');
+const curriculum=read('v452-curriculum.js');
 const mapTouch=read('v442-map-touch.js');
 const learn=read('v413-core.js');
 const state=read('v425-state.js');
@@ -14,13 +15,15 @@ assert((bootstrap.match(/v443-single-companion\.js/g)||[]).length===1,'v443 boot
 assert(bootstrap.includes("setTimeout(()=>langSheet(),300)"),'bootstrap identifies the legacy first-open language gate in fetched index source');
 assert(bootstrap.includes("if(!localStorage.getItem('meowde-v410-seen'))localStorage.setItem('meowde-v410-seen','1')"),'bootstrap removes the forced first-open language sheet while preserving the seen marker');
 
-const orderedIds=['meowde-v442-map-touch','meowde-v444-visual-cohesion','meowde-v446-update-recovery','meowde-v450-character-images','meowde-v451-contact'];
+const orderedIds=['meowde-v452-curriculum','meowde-v442-map-touch','meowde-v444-visual-cohesion','meowde-v446-update-recovery','meowde-v450-character-images','meowde-v451-contact'];
 let previous=-1;
 orderedIds.forEach(id=>{
   const index=release.indexOf(`id:"${id}"`);
   assert(index>previous,`${id} appears in deterministic enhancement order`);
   previous=index;
 });
+assert(release.includes('readyGlobal:"MeowCurriculum"'),'release guard waits for curriculum migration readiness');
+assert(curriculum.includes('const VERSION="4.52-curriculum-v1"'),'curriculum enhancement has an explicit version');
 assert(!release.includes('id:"meowde-v443-single-companion"'),'release guard does not dynamically reload the sync v443 runtime');
 assert(release.includes('for(const item of ENHANCEMENTS)results.push(await loadEnhancement(item))'),'enhancements load sequentially, one completion at a time');
 assert(release.includes('element.async=false'),'dynamic enhancement scripts explicitly opt out of parallel async execution');
