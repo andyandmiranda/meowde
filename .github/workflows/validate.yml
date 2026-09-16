@@ -56,6 +56,9 @@ jobs:
           node --check v446-update-recovery.js
           node --check v449-character-cutouts.js
           node --check v451-contact.js
+          node --check v452-curriculum.js
+          node --check tools/audit-curriculum.js
+          node --check tools/validate-curriculum-v452.js
           node --check tools/validate-phase2-daily.js
           node --check tools/validate-phase3-surfaces.js
           node --check tools/validate-phase4-lesson.js
@@ -96,6 +99,9 @@ jobs:
 
       - name: Validate Phase 5 ordered bootstrap
         run: node tools/validate-phase5-bootstrap.js
+
+      - name: Validate v4.52 curriculum migration
+        run: node tools/validate-curriculum-v452.js
 
       - name: Run validation suite
         run: npm run validate
