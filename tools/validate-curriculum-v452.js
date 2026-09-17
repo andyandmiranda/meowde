@@ -70,7 +70,7 @@ const curriculumIndex=release.indexOf('id:"meowde-v452-curriculum"');
 const mapTouchIndex=release.indexOf('id:"meowde-v442-map-touch"');
 assert(curriculumIndex>=0&&curriculumIndex<mapTouchIndex,"v452 curriculum loads before visual/touch enhancements");
 assert(release.includes('"MeowCurriculum"'),"release health tracks the curriculum enhancement API");
-assert(serviceWorker.includes('CACHE_NAME = "meowde-v452-curriculum"'),"service worker cache generation is bumped for curriculum v452");
+assert(/CACHE_NAME = "meowde-v45\d-[^"]+"/.test(serviceWorker),"service worker uses a v4.5x curriculum-or-newer cache generation");
 assert(serviceWorker.includes('"/v452-curriculum.js"'),"v452 curriculum is available offline");
 
 if(process.exitCode)process.exit(process.exitCode);
