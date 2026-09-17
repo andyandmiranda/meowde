@@ -1,13 +1,14 @@
 {
   "name": "meowde",
-  "version": "4.52.0",
+  "version": "4.53.0",
   "private": true,
   "description": "Static coding-learning app validation tooling",
   "scripts": {
-    "validate": "node tools/run-v423-validation.js && node tools/validate-v449-character-cutouts.js && node tools/validate-coach-mode-learning-styles.js && node tools/validate-curriculum-v452.js",
+    "validate": "node tools/run-v423-validation.js && node tools/validate-v449-character-cutouts.js && node tools/validate-coach-mode-learning-styles.js && node tools/validate-curriculum-v452.js && node tools/validate-curriculum-v453.js",
     "validate:characters": "node tools/validate-v449-character-cutouts.js",
     "validate:coach-styles": "node tools/validate-coach-mode-learning-styles.js",
     "validate:curriculum": "node tools/validate-curriculum-v452.js",
+    "validate:curriculum-practice": "node tools/validate-curriculum-v453.js",
     "validate:lessons": "node tools/validate-lessons.js",
     "validate:canonical": "node tools/validate-canonical-lessons.js",
     "validate:fallback": "node tools/validate-runtime-fallback.js",
