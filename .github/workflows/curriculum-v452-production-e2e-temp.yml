@@ -1,0 +1,36 @@
+name: Curriculum v4.52 Production E2E
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  curriculum-production-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Run 390x844 Production curriculum E2E
+        run: node tools/curriculum-v452-production-e2e.mjs
+      - name: Upload curriculum screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: meowde-curriculum-v452-production-e2e
+          path: curriculum-v452-e2e-artifacts
+          if-no-files-found: warn
+          retention-days: 7
