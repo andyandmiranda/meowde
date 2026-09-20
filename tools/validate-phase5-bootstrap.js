@@ -15,7 +15,7 @@ assert((bootstrap.match(/v443-single-companion\.js/g)||[]).length===1,'v443 boot
 assert(bootstrap.includes("setTimeout(()=>langSheet(),300)"),'bootstrap identifies the legacy first-open language gate in fetched index source');
 assert(bootstrap.includes("if(!localStorage.getItem('meowde-v410-seen'))localStorage.setItem('meowde-v410-seen','1')"),'bootstrap removes the forced first-open language sheet while preserving the seen marker');
 
-const orderedIds=['meowde-v452-curriculum','meowde-v442-map-touch','meowde-v444-visual-cohesion','meowde-v446-update-recovery','meowde-v450-character-images','meowde-v451-contact'];
+const orderedIds=['meowde-v452-curriculum','meowde-v453-curriculum-practice','meowde-v454-input-practice','meowde-v442-map-touch','meowde-v444-visual-cohesion','meowde-v446-update-recovery','meowde-v450-character-images','meowde-v451-contact'];
 let previous=-1;
 orderedIds.forEach(id=>{
   const index=release.indexOf(`id:"${id}"`);

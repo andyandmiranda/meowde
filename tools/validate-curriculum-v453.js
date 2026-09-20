@@ -48,7 +48,7 @@ const i453=release.indexOf('id:"meowde-v453-curriculum-practice"');
 const i442=release.indexOf('id:"meowde-v442-map-touch"');
 assert(i452>=0&&i453>i452&&i442>i453,"v453 loads after v452 and before visual/touch enhancements");
 assert(release.includes('"MeowCurriculumPractice"'),"release health tracks v453 API");
-assert(serviceWorker.includes('CACHE_NAME = "meowde-v453-practice"'),"service worker cache generation is bumped");
+assert(/CACHE_NAME = "meowde-v45\d-[^"]+"/.test(serviceWorker),"service worker uses a v4.53-or-newer cache generation");
 assert(serviceWorker.includes('"/v453-curriculum-practice.js"'),"v453 practice layer is available offline");
 
 if(process.exitCode)process.exit(process.exitCode);

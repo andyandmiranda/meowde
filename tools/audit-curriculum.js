@@ -37,10 +37,11 @@ function clone(value){return JSON.parse(JSON.stringify(value))}
 function effectiveData(){
   const raw=loadInlineData();
   const data={ko:clone(raw.ko),en:clone(raw.en)};
-  const source=fs.readFileSync("v452-curriculum.js","utf8");
   const context={window:{MEOWDE_LESSONS_KO:data.ko,MEOWDE_LESSONS_EN:data.en},document:{documentElement:{dataset:{}}},console};
   vm.createContext(context);
-  vm.runInContext(source,context,{filename:"v452-curriculum.js"});
+  for(const file of ["v452-curriculum.js","v453-curriculum-practice.js","v454-input-practice.js"]){
+    vm.runInContext(fs.readFileSync(file,"utf8"),context,{filename:file});
+  }
   return data;
 }
 function textOf(value){
@@ -83,7 +84,7 @@ const koSummary=summarizeLanguage(ko),enSummary=summarizeLanguage(en),concepts=c
 const missing=concepts.filter(item=>!item.hits.length);
 
 console.log("# Meowde Effective Beginner Python Curriculum Audit\n");
-console.log(`- Runtime curriculum: v452 applied over canonical lesson assets`);
+console.log(`- Runtime curriculum: v452 + v453 + v454 applied over canonical lesson assets`);
 console.log(`- Korean lessons/exercises: ${ko.length}/${koSummary.totalExercises}`);
 console.log(`- English lessons/exercises: ${en.length}/${enSummary.totalExercises}`);
 console.log(`- Exercise types (KO): ${JSON.stringify(koSummary.typeCounts)}`);
@@ -110,7 +111,7 @@ console.log("## High-signal findings");
 console.log(`- Missing core v1 concepts: ${missing.length?missing.map(item=>item.id).join(", "):"none"}`);
 console.log(`- KO/EN structural warnings: ${alignment.length?alignment.join("; "):"none"}`);
 console.log(`- Deferred beyond v1 core: dictionaries, string methods, modules/files/OOP`);
-console.log(`- Progress-safety invariant: lesson count/index, slugs, exercise IDs/types remain stable under v452`);
+console.log(`- Progress-safety invariant: lesson count/index, slugs, exercise IDs/types remain stable under v454`);
 console.log("");
 console.log("## Machine-readable summary");
 console.log(JSON.stringify({lessonCount:ko.length,exerciseCount:koSummary.totalExercises,typeCounts:koSummary.typeCounts,missing:missing.map(item=>item.id),alignmentWarnings:alignment,duplicateCount:koSummary.duplicates.length},null,2));
