@@ -1,0 +1,34 @@
+name: Temporary v4.55 Production E2E
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  v455-production-e2e:
+    if: github.head_ref == 'agent/v455-production-e2e'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Run v4.55 Production E2E
+        run: node tools/v455-production-e2e.mjs
+      - name: Upload screenshots and report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: meowde-v455-production-e2e
+          path: v455-e2e-artifacts
+          if-no-files-found: warn
+          retention-days: 7
