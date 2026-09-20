@@ -73,7 +73,7 @@ Promise.resolve(context.runPython('name = input()\nprint("Welcome " + name)')).t
   const i442=release.indexOf('id:"meowde-v442-map-touch"');
   assert(i453>=0&&i454>i453&&i442>i454,"v454 loads after curriculum practice and before visual/touch enhancements");
   assert(release.includes('"MeowRealInput"'),"release health tracks the real-input API");
-  assert(serviceWorker.includes('CACHE_NAME = "meowde-v454-real-input"'),"service worker cache generation is bumped for v454");
+  assert(/CACHE_NAME = "meowde-v45[4-9]-/.test(serviceWorker),"service worker uses a v4.54-or-newer cache generation");
   assert(serviceWorker.includes('"/v454-input-practice.js"'),"v454 input layer is available offline");
 
   if(process.exitCode)process.exit(process.exitCode);
