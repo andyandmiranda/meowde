@@ -79,7 +79,8 @@ const REQUIRED_ASSETS = [
   "/v449-character-cutouts.js",
   "/v449-character-cutouts.css",
   "/v452-curriculum.js",
-  "/v453-curriculum-practice.js",\n  "/v454-input-practice.js"
+  "/v453-curriculum-practice.js",
+  "/v454-input-practice.js"
 ];
 
 self.addEventListener("install", event => {
