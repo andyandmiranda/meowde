@@ -44,6 +44,28 @@
     return `<button class="hint" data-coach-hint="${esc(style.id)}" onclick="S.hint=true;save();renderLesson()">${esc(style.hint||t('hint'))}</button>`;
   }
 
+  function inputValue(exercise){
+    if(!exercise||!exercise.stdin)return '';
+    const fallback=String(exercise.stdin.default||'');
+    if(S.stdinExerciseId!==exercise.id){
+      S.stdinExerciseId=exercise.id||'';
+      S.stdinValue=fallback;
+      save();
+    }else if(typeof S.stdinValue!=='string'){
+      S.stdinValue=fallback;
+      save();
+    }
+    return S.stdinValue;
+  }
+
+  function inputControl(exercise){
+    if(!exercise||!exercise.stdin)return '';
+    const value=inputValue(exercise);
+    const label=S.lang==='ko'?(exercise.stdin.labelKo||'프로그램 입력값'):(exercise.stdin.labelEn||'Program input');
+    const help=S.lang==='ko'?'이 값이 Python의 input()으로 전달돼요.':'This value is sent to Python input().';
+    return `<label class="program-input"><span><b>${esc(label)}</b><small>${esc(help)}</small></span><input id="program-stdin" type="text" value="${esc(value)}" autocomplete="off" autocapitalize="off" spellcheck="false" oninput="S.stdinExerciseId='${esc(exercise.id||'')}';S.stdinValue=this.value;save()"></label>`;
+  }
+
   function reactionMarkup(){
     if(!S.checked)return '';
     const humor=window.MeowHumor;
@@ -86,7 +108,7 @@
       body=`<div class="lines">${ex.lines.map((line,index)=>`<button class="linebtn ${S.sel===index?'sel':''} ${S.checked&&index===ex.buggy?'right':''}" onclick="S.sel=${index};save();renderLesson()">${index+1}. ${esc(line)}</button>`).join('')}</div>${S.checked?`<div class="fix">${S.lang==='ko'?'수정 코드':'Fixed code'}: ${esc(ex.fixed)}</div>`:''}`;
     }else if(ex.type==='write'){
       const initial=S.write||ex.starter;
-      body=`<textarea id="code-editor" class="codearea" spellcheck="false" autocapitalize="off" autocomplete="off" oninput="S.write=this.value;save()">${esc(initial)}</textarea><div class="code-toolbar" aria-label="${S.lang==='ko'?'코딩 보조키':'Coding helper keys'}"><button class="code-key wide" onclick="insertCodeToken('TAB')">Tab</button><button class="code-key" onclick="insertCodeToken('()')">( )</button><button class="code-key" onclick="insertCodeToken('[]')">[ ]</button><button class="code-key" onclick="insertCodeToken(':')">:</button><button class="code-key" onclick="insertCodeToken('=')">=</button><button class="code-key" onclick="insertCodeToken('_')">_</button><button class="code-key" onclick="insertCodeToken(String.fromCharCode(34,34))">&quot; &quot;</button><button class="code-key" onclick="insertCodeToken(String.fromCharCode(39,39))">' '</button></div><div class="pill" style="margin-top:10px">${esc(ex.testcase)}</div>${S.output?`<div class="console">${esc(S.output)}</div>`:''}`;
+      body=`${inputControl(ex)}<textarea id="code-editor" class="codearea" spellcheck="false" autocapitalize="off" autocomplete="off" oninput="S.write=this.value;save()">${esc(initial)}</textarea><div class="code-toolbar" aria-label="${S.lang==='ko'?'코딩 보조키':'Coding helper keys'}"><button class="code-key wide" onclick="insertCodeToken('TAB')">Tab</button><button class="code-key" onclick="insertCodeToken('()')">( )</button><button class="code-key" onclick="insertCodeToken('[]')">[ ]</button><button class="code-key" onclick="insertCodeToken(':')">:</button><button class="code-key" onclick="insertCodeToken('=')">=</button><button class="code-key" onclick="insertCodeToken('_')">_</button><button class="code-key" onclick="insertCodeToken(String.fromCharCode(34,34))">&quot; &quot;</button><button class="code-key" onclick="insertCodeToken(String.fromCharCode(39,39))">' '</button></div><div class="pill" style="margin-top:10px">${esc(ex.testcase)}</div>${S.output?`<div class="console">${esc(S.output)}</div>`:''}`;
     }
     const can=ex.type==='concept'||S.checked||S.loading?true:(ex.type==='predict'||ex.type==='bughunt'?S.sel!==null:ex.type==='fill'?Boolean(S.fill):true);
     const foot=ex.type==='concept'
