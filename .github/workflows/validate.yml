@@ -58,9 +58,11 @@ jobs:
           node --check v451-contact.js
           node --check v452-curriculum.js
           node --check v453-curriculum-practice.js
+          node --check v454-input-practice.js
           node --check tools/audit-curriculum.js
           node --check tools/validate-curriculum-v452.js
           node --check tools/validate-curriculum-v453.js
+          node --check tools/validate-input-practice-v454.js
           node --check tools/validate-phase2-daily.js
           node --check tools/validate-phase3-surfaces.js
           node --check tools/validate-phase4-lesson.js
@@ -107,6 +109,9 @@ jobs:
 
       - name: Validate v4.53 practice quality
         run: node tools/validate-curriculum-v453.js
+
+      - name: Validate v4.54 real input practice
+        run: node tools/validate-input-practice-v454.js
 
       - name: Run validation suite
         run: npm run validate
