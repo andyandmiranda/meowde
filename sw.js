@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v453-practice";
+const CACHE_NAME = "meowde-v454-real-input";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -79,7 +79,8 @@ const REQUIRED_ASSETS = [
   "/v449-character-cutouts.js",
   "/v449-character-cutouts.css",
   "/v452-curriculum.js",
-  "/v453-curriculum-practice.js"
+  "/v453-curriculum-practice.js",
+  "/v454-input-practice.js"
 ];
 
 self.addEventListener("install", event => {

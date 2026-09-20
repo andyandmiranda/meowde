@@ -46,10 +46,14 @@
     S.v414Mode=rawState.inProgress.mode||normalizeMode();
     S.v414DailyKey=rawState.inProgress.dailyKey||'';
     S.v414MistakeId=rawState.inProgress.mistakeId||'';
+    S.stdinExerciseId=rawState.inProgress.stdinExerciseId||'';
+    S.stdinValue=typeof rawState.inProgress.stdinValue==='string'?rawState.inProgress.stdinValue:'';
   }else{
     S.v414Mode='';
     S.v414DailyKey='';
     S.v414MistakeId='';
+    S.stdinExerciseId='';
+    S.stdinValue='';
   }
 
   function v414Save(){
@@ -65,6 +69,7 @@
         firstCorrect:S.firstCorrect,xpEarned:S.xpEarned,daily:S.daily,
         sel:S.sel,fill:S.fill,checked:S.checked,correct:S.correct,
         hint:S.hint,output:S.output||'',write:S.write||'',
+        stdinExerciseId:S.stdinExerciseId||'',stdinValue:typeof S.stdinValue==='string'?S.stdinValue:'',
         mode:normalizeMode(),dailyKey:S.v414DailyKey||'',
         mistakeId:S.v414MistakeId||''
       };

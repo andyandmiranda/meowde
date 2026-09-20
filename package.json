@@ -1,10 +1,10 @@
 {
   "name": "meowde",
-  "version": "4.53.0",
+  "version": "4.54.0",
   "private": true,
   "description": "Static coding-learning app validation tooling",
   "scripts": {
-    "validate": "node tools/run-v423-validation.js && node tools/validate-v449-character-cutouts.js && node tools/validate-coach-mode-learning-styles.js && node tools/validate-curriculum-v452.js && node tools/validate-curriculum-v453.js",
+    "validate": "node tools/run-v423-validation.js && node tools/validate-v449-character-cutouts.js && node tools/validate-coach-mode-learning-styles.js && node tools/validate-curriculum-v452.js && node tools/validate-curriculum-v453.js && node tools/validate-input-practice-v454.js",
     "validate:characters": "node tools/validate-v449-character-cutouts.js",
     "validate:coach-styles": "node tools/validate-coach-mode-learning-styles.js",
     "validate:curriculum": "node tools/validate-curriculum-v452.js",
@@ -16,7 +16,8 @@
     "validate:structure": "node tools/audit-structure.js",
     "audit:data": "node tools/audit-data-diff.js",
     "audit:curriculum": "node tools/audit-curriculum.js",
-    "report:canonical": "node tools/generate-canonical-lessons.js"
+    "report:canonical": "node tools/generate-canonical-lessons.js",
+    "validate:input-practice": "node tools/validate-input-practice-v454.js"
   },
   "engines": {
     "node": ">=20"
