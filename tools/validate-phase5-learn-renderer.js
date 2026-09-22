@@ -11,7 +11,7 @@ const cutouts=read('v449-character-cutouts.js');
 const journey=read('v416-journey.js');
 const state=read('v425-state.js');
 const css=read('v416-ux.css');
-const files=[learn,mapTouch,companion,cohesion,cutouts,journey,state];
+const files=[learn,mapTouch,companion,cohesion,cutouts,journey];
 
 assert(!learn.includes('originalRenderMap'),'v413 no longer delegates Learn to the legacy index renderer');
 assert(learn.includes("dataset.learnRenderer='canonical-v413'"),'v413 declares canonical Learn ownership');
