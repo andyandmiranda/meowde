@@ -18,8 +18,11 @@ assert(learn.includes('window.__MEOWDE_CANONICAL_LEARN_RENDERER__=renderMap'),'c
 assert(learn.includes('data-learn-path="canonical"'),'canonical Learn path marker is rendered directly');
 assert(learn.includes('v448-brand-cat'),'Learn renders the final brand mark directly');
 assert(learn.includes('data-phase1-navigation="four-tabs"'),'Learn renders the four-tab navigation directly');
-assert(learn.includes("['01 Python 기초','02 입력과 조건','03 컬렉션·반복·함수']"),'Learn owns Korean unit labels directly');
-assert(learn.includes("['01 Python Basics','02 Input & Decisions','03 Collections, Loops & Functions']"),'Learn owns English unit labels directly');
+assert(learn.includes("['01 Python 기초','02 입력과 조건','03 컬렉션·반복·함수','04 문자열·딕셔너리·데이터']"),'Learn owns Korean unit labels through Unit 04');
+assert(learn.includes("['01 Python Basics','02 Input & Decisions','03 Collections, Loops & Functions','04 Strings, Dictionaries & Data']"),'Learn owns English unit labels through Unit 04');
+
+assert(learn.includes('Math.ceil(lessons().length/10)'), 'Learn derives unit count from lesson count');
+assert(!learn.includes('Math.min(2,Number(S.unit)'), 'Learn no longer hard-caps navigation at three units');
 
 const mapStart=learn.indexOf('renderMap=function(){');
 const mapEnd=learn.indexOf('window.__MEOWDE_CANONICAL_LEARN_RENDERER__=renderMap');

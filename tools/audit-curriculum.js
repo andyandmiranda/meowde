@@ -5,7 +5,7 @@ const vm=require("vm");
 const {loadInlineData}=require("./lib-meowde");
 
 const UNIT_SIZE=10;
-const UNIT_NAMES=["Python Basics","Input & Decisions","Collections, Loops & Functions"];
+const UNIT_NAMES=["Python Basics","Input & Decisions","Collections, Loops & Functions","Strings, Dictionaries & Data"];
 const TARGET=[
   {id:"print",unit:1,patterns:[/\bprint\s*\(/i,/\bprint\b/i,/출력/]},
   {id:"strings",unit:1,patterns:[/string/i,/문자열|따옴표/]},
@@ -30,17 +30,37 @@ const TARGET=[
   {id:"functions",unit:3,patterns:[/\bdef\s+\w+/i,/function/i,/함수/]},
   {id:"parameters",unit:3,patterns:[/parameter|argument/i,/파라미터|매개변수|인자/]},
   {id:"return",unit:3,patterns:[/\breturn\b/i,/반환/]},
-  {id:"mini-project",unit:3,patterns:[/project/i,/프로젝트/]}
+  {id:"mini-project",unit:3,patterns:[/project/i,/프로젝트/]},
+  {id:"string-methods",unit:4,patterns:[/\.upper\s*\(/i,/\.lower\s*\(/i,/string method/i,/문자열 메서드/]},
+  {id:"slicing",unit:4,patterns:[/slic/i,/슬라이싱/,/\[[^\]]*:[^\]]*\]/]},
+  {id:"membership",unit:4,patterns:[/\bin\b|\bnot in\b/i,/포함 여부/]},
+  {id:"dictionaries",unit:4,patterns:[/dictionary/i,/딕셔너리/]},
+  {id:"dictionary-get",unit:4,patterns:[/\.get\s*\(/i,/안전한 조회/]},
+  {id:"dictionary-items",unit:4,patterns:[/\.items\s*\(/i,/키와 값/]},
+  {id:"tuples",unit:4,patterns:[/tuple/i,/튜플/]},
+  {id:"sets",unit:4,patterns:[/\bset\s*\(/i,/집합/]},
+  {id:"data-project",unit:4,patterns:[/structured data/i,/데이터 미니 프로젝트|구조화된 데이터/]}
 ];
 
 function clone(value){return JSON.parse(JSON.stringify(value))}
 function effectiveData(){
   const raw=loadInlineData();
   const data={ko:clone(raw.ko),en:clone(raw.en)};
-  const source=fs.readFileSync("v452-curriculum.js","utf8");
-  const context={window:{MEOWDE_LESSONS_KO:data.ko,MEOWDE_LESSONS_EN:data.en},document:{documentElement:{dataset:{}}},console};
+  const context={
+    window:{MEOWDE_LESSONS_KO:data.ko,MEOWDE_LESSONS_EN:data.en},
+    document:{documentElement:{dataset:{}}},
+    console,
+    S:{screen:"lesson",lang:"ko",stdinValue:"Amy",done:[],next:0,unit:0},
+    save:()=>{},
+    runPython:async()=>"",
+    warmPy:async()=>{},
+    pyodide:{runPython:()=>""},
+    cur:()=>null
+  };
   vm.createContext(context);
-  vm.runInContext(source,context,{filename:"v452-curriculum.js"});
+  for(const file of ["v452-curriculum.js","v453-curriculum-practice.js","v454-input-practice.js","v455-write-grading.js","v456-unit4-data.js"]){
+    vm.runInContext(fs.readFileSync(file,"utf8"),context,{filename:file});
+  }
   return data;
 }
 function textOf(value){
@@ -83,7 +103,7 @@ const koSummary=summarizeLanguage(ko),enSummary=summarizeLanguage(en),concepts=c
 const missing=concepts.filter(item=>!item.hits.length);
 
 console.log("# Meowde Effective Beginner Python Curriculum Audit\n");
-console.log(`- Runtime curriculum: v452 applied over canonical lesson assets`);
+console.log(`- Runtime curriculum: v452 → v456 applied over canonical lesson assets`);
 console.log(`- Korean lessons/exercises: ${ko.length}/${koSummary.totalExercises}`);
 console.log(`- English lessons/exercises: ${en.length}/${enSummary.totalExercises}`);
 console.log(`- Exercise types (KO): ${JSON.stringify(koSummary.typeCounts)}`);
@@ -109,8 +129,8 @@ console.log("");
 console.log("## High-signal findings");
 console.log(`- Missing core v1 concepts: ${missing.length?missing.map(item=>item.id).join(", "):"none"}`);
 console.log(`- KO/EN structural warnings: ${alignment.length?alignment.join("; "):"none"}`);
-console.log(`- Deferred beyond v1 core: dictionaries, string methods, modules/files/OOP`);
-console.log(`- Progress-safety invariant: lesson count/index, slugs, exercise IDs/types remain stable under v452`);
+console.log(`- Deferred beyond Unit 04: modules/files, exceptions, advanced functions, OOP`);
+console.log(`- Progress-safety invariant: lessons 1-30 keep their indices/slugs/exercise IDs/types; Unit 04 appends lessons 31-40`);
 console.log("");
 console.log("## Machine-readable summary");
 console.log(JSON.stringify({lessonCount:ko.length,exerciseCount:koSummary.totalExercises,typeCounts:koSummary.typeCounts,missing:missing.map(item=>item.id),alignmentWarnings:alignment,duplicateCount:koSummary.duplicates.length},null,2));

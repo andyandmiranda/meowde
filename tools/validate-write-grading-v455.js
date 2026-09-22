@@ -95,7 +95,7 @@ function applySimple(source,data,globalName){
   const i442=release.indexOf('id:"meowde-v442-map-touch"');
   assert(i454>=0&&i455>i454&&i442>i455,"v455 loads after real input and before visual/touch enhancements");
   assert(release.includes('"MeowWriteGrading"'),"release health tracks v455 grading API");
-  assert(sw.includes('CACHE_NAME = "meowde-v455-multicase"'),"service worker cache generation is bumped for v455");
+  assert(/CACHE_NAME = "meowde-v45[5-9]-/.test(sw),"service worker uses a v4.55-or-newer cache generation");
   assert(sw.includes('"/v455-write-grading.js"'),"v455 grading layer is available offline");
 
   if(process.exitCode)process.exit(process.exitCode);
