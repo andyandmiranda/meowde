@@ -9,19 +9,31 @@ const results={};
 const expect=(condition,message)=>{if(!condition){failures.push(message);console.error("FAIL:",message)}else console.log("PASS:",message)};
 
 const browser=await chromium.launch({headless:true});
-const context=await browser.newContext({viewport:{width:390,height:844},screen:{width:390,height:844},deviceScaleFactor:1,isMobile:true,hasTouch:true,locale:"ko-KR"});
-const page=await context.newPage();
 const errors=[];
-page.on("pageerror",e=>errors.push("pageerror: "+e.message));
-page.on("console",m=>{if(m.type()==="error")errors.push("console-error: "+m.text())});
 
-try{
+async function fresh(seed=null){
+  const context=await browser.newContext({viewport:{width:390,height:844},screen:{width:390,height:844},deviceScaleFactor:1,isMobile:true,hasTouch:true,locale:"ko-KR"});
+  if(seed){
+    await context.addInitScript(value=>{
+      localStorage.setItem("meowde-v410-state",JSON.stringify(value));
+    },seed);
+  }
+  const page=await context.newPage();
+  page.on("pageerror",e=>errors.push("pageerror: "+e.message));
+  page.on("console",m=>{if(m.type()==="error")errors.push("console-error: "+m.text())});
   const response=await page.goto(BASE,{waitUntil:"domcontentloaded",timeout:45000});
-  expect(Boolean(response&&response.ok()),"Production returns HTTP 2xx");
   await page.waitForFunction(()=>typeof S!=="undefined"&&document.querySelector(".screen"),null,{timeout:20000});
   await page.evaluate(async()=>{if(window.MeowRelease&&MeowRelease.loadPromise)await MeowRelease.loadPromise});
   await page.waitForFunction(()=>window.MeowCurriculumExpansion&&MeowCurriculumExpansion.version==="4.56-unit4-data",null,{timeout:10000});
+  return {context,page,response};
+}
 
+try{
+  const baseline=await fresh();
+  let context=baseline.context;
+  let page=baseline.page;
+  const response=baseline.response;
+  expect(Boolean(response&&response.ok()),"Production returns HTTP 2xx");
   const runtime=await page.evaluate(()=>({
     ko:window.MEOWDE_LESSONS_KO?.length,
     en:window.MEOWDE_LESSONS_EN?.length,
@@ -34,19 +46,22 @@ try{
   expect(runtime.health!=="error","Release health is not error");
   expect(runtime.order.includes("meowde-v456-unit4-data"),"Ordered bootstrap includes Unit 04 expansion");
 
-  await page.evaluate(()=>{
-    const state={lang:"ko",done:Array.from({length:30},(_,i)=>i),next:29,xp:0,churu:120,streak:1,milk:5,cat:"meowde",unit:2,mistakes:[],dailyHistory:{},activityDates:[]};
-    localStorage.setItem("meowde-v410-state",JSON.stringify(state));
-  });
-  await page.reload({waitUntil:"domcontentloaded"});
-  await page.waitForFunction(()=>typeof S!=="undefined"&&document.querySelector(".screen"),null,{timeout:20000});
-  await page.evaluate(async()=>{if(window.MeowRelease&&MeowRelease.loadPromise)await MeowRelease.loadPromise});
-  await page.waitForFunction(()=>window.MeowCurriculumExpansion&&window.MEOWDE_LESSONS_KO.length===40,null,{timeout:10000});
-  const unlocked=await page.evaluate(()=>({next:S.next,done:S.done.length,homeText:document.body.innerText.slice(0,1200)}));
+  await context.close();
+  const legacy={lang:"ko",done:Array.from({length:30},(_,i)=>i),next:29,xp:0,churu:120,streak:1,milk:5,cat:"meowde",unit:2,mistakes:[],dailyHistory:{},activityDates:[]};
+  const seeded=await fresh(legacy);
+  context=seeded.context;
+  page=seeded.page;
+  const unlocked=await page.evaluate(()=>({
+    next:S.next,
+    done:S.done.length,
+    persisted:JSON.parse(localStorage.getItem("meowde-v410-state")||"{}").next,
+    homeText:document.body.innerText.slice(0,1200)
+  }));
+  console.log("legacy unlock state:",JSON.stringify(unlocked));
   results.unlocked=unlocked;
   expect(unlocked.next===30,"Original 30-lesson completer unlocks lesson 31");
 
-  await page.getByRole("button",{name:"학습"}).click();
+  await page.locator('.tabbar button[aria-label="학습"]').click();
   await page.waitForFunction(()=>S.screen==="map");
   const unitLabels=await page.locator(".unit-tabs button").allTextContents();
   results.unitLabels=unitLabels;
@@ -111,6 +126,7 @@ try{
   console.error(error);
 }
 
+await context.close().catch(()=>{});
 results.errors=errors;
 results.failures=failures;
 fs.writeFileSync(`${OUT}/report.json`,JSON.stringify(results,null,2));
