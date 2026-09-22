@@ -146,15 +146,15 @@
       }
     }
     if(id==="return-spring-w"){
-      if(!/\breturn\b/.test(code)){
-        return lang==="ko"
-          ?{kind:"generalization",cause:"함수에서 계산 결과를 return하지 않았어요.",reason:"화면에 9를 출력하는 것과 triple(x)가 값을 돌려주는 것은 달라요.",action:"함수 안에서 return x * 3을 사용하고, 바깥에서 print(triple(3)) 하세요."}
-          :{kind:"generalization",cause:"The function does not return its calculated value.",reason:"Printing 9 is different from triple(x) returning a value.",action:"Use return x * 3 inside the function, then print(triple(3)) outside."};
-      }
       if(/\breturn\s+9\b|\bprint\s*\(\s*9\s*\)/.test(code)){
         return lang==="ko"
           ?{kind:"generalization",cause:"9를 특정 값으로 하드코딩했어요.",reason:"triple(3)에는 맞지만 triple(5) 같은 다른 입력에서는 3배 규칙이 적용되지 않아요.",action:"고정 숫자 9 대신 파라미터 x를 사용해 return x * 3으로 계산하세요."}
           :{kind:"generalization",cause:"The value 9 is hardcoded.",reason:"It matches triple(3), but another input such as triple(5) does not follow the times-three rule.",action:"Use the parameter: return x * 3 instead of a fixed 9."};
+      }
+      if(!/\breturn\b/.test(code)){
+        return lang==="ko"
+          ?{kind:"generalization",cause:"함수에서 계산 결과를 return하지 않았어요.",reason:"화면에 값을 출력하는 것과 triple(x)가 값을 돌려주는 것은 달라요.",action:"함수 안에서 return x * 3을 사용하고, 바깥에서 print(triple(3)) 하세요."}
+          :{kind:"generalization",cause:"The function does not return its calculated value.",reason:"Printing a value is different from triple(x) returning one.",action:"Use return x * 3 inside the function, then print(triple(3)) outside."};
       }
     }
     const preset=HIDDEN[id]&&HIDDEN[id][lang];
