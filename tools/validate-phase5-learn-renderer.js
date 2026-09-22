@@ -9,8 +9,9 @@ const companion=read('v443-single-companion.js');
 const cohesion=read('v444-visual-cohesion.js');
 const cutouts=read('v449-character-cutouts.js');
 const journey=read('v416-journey.js');
+const state=read('v425-state.js');
 const css=read('v416-ux.css');
-const files=[learn,mapTouch,companion,cohesion,cutouts,journey];
+const files=[learn,mapTouch,companion,cohesion,cutouts,journey,state];
 
 assert(!learn.includes('originalRenderMap'),'v413 no longer delegates Learn to the legacy index renderer');
 assert(learn.includes("dataset.learnRenderer='canonical-v413'"),'v413 declares canonical Learn ownership');
@@ -23,6 +24,8 @@ assert(learn.includes("['01 Python Basics','02 Input & Decisions','03 Collection
 
 assert(learn.includes('Math.ceil(lessons().length/10)'), 'Learn derives unit count from lesson count');
 assert(!learn.includes('Math.min(2,Number(S.unit)'), 'Learn no longer hard-caps navigation at three units');
+assert(state.includes('Math.ceil(lessonCount/10)'), 'state normalization derives unit count from lesson count');
+assert(!state.includes('S.unit=integer(S.unit,0,0,2)'), 'state normalization no longer forces Unit 03 as the maximum');
 
 const mapStart=learn.indexOf('renderMap=function(){');
 const mapEnd=learn.indexOf('window.__MEOWDE_CANONICAL_LEARN_RENDERER__=renderMap');
