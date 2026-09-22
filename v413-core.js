@@ -57,12 +57,13 @@
 
   renderMap=function(){
     S.screen='map';
-    S.unit=Math.max(0,Math.min(2,Number(S.unit)||0));
+    const unitCount=Math.max(1,Math.ceil(lessons().length/10));
+    S.unit=Math.max(0,Math.min(unitCount-1,Number(S.unit)||0));
     save();
     const start=S.unit*10;
     const XS=[50,26,50,74,50,26,50,74,50,26],STEP=106,TOP=64,H=TOP+9*STEP+118;
     const ko=S.lang==='ko';
-    const unitNames=ko?['01 Python 기초','02 입력과 조건','03 컬렉션·반복·함수']:['01 Python Basics','02 Input & Decisions','03 Collections, Loops & Functions'];
+    const unitNames=ko?['01 Python 기초','02 입력과 조건','03 컬렉션·반복·함수','04 문자열·딕셔너리·데이터']:['01 Python Basics','02 Input & Decisions','03 Collections, Loops & Functions','04 Strings, Dictionaries & Data'];
     const nodes=lessons().slice(start,start+10).map((lesson,index)=>{
       const lessonIndex=start+index;
       const done=Array.isArray(S.done)&&S.done.includes(lessonIndex);
@@ -73,7 +74,7 @@
       const action=locked?`toast(t('lockedToast'))`:`startLesson(${lessonIndex})`;
       return `<button class="node ${done?'done':''} ${current?'current':''} ${locked?'locked':''}" style="left:${x}%;top:${y}px" onclick="${action}" aria-label="${esc(lesson.title)}">${inner}</button><span class="node-label ${locked?'lk':''}" style="left:${x}%;top:${y+38}px">${esc(lesson.short)}</span>`;
     }).join('');
-    const unitTabs=unitNames.map((name,index)=>`<button class="${S.unit===index?'on':''}" onclick="S.unit=${index};save();renderMap()">${name}</button>`).join('');
+    const unitTabs=unitNames.slice(0,unitCount).map((name,index)=>`<button class="${S.unit===index?'on':''}" onclick="S.unit=${index};save();renderMap()">${name}</button>`).join('');
     app.innerHTML=`<div class="screen">${learnBrand()}${stats()}<div class="scroll"><div class="map-head"><h2>${ko?'학습 경로':'Learning path'}</h2><p>${ko?'레슨은 권장 순서대로 열립니다. 완료한 레슨은 언제든 다시 복습할 수 있어요.':'Lessons unlock in the recommended order. Completed lessons can be reviewed anytime.'}</p></div><div class="unit-tabs">${unitTabs}</div><div class="trail" style="height:${H}px" data-learn-path="canonical">${nodes}</div></div>${learnTabs()}</div>`;
     document.documentElement.dataset.learnRenderer='canonical-v413';
     document.documentElement.dataset.navigation='phase1-four-tabs';
