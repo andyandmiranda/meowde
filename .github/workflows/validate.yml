@@ -61,12 +61,14 @@ jobs:
           node --check v454-input-practice.js
           node --check v455-write-grading.js
           node --check v456-unit4-data.js
+          node --check v457-diagnostic-feedback.js
           node --check tools/audit-curriculum.js
           node --check tools/validate-curriculum-v452.js
           node --check tools/validate-curriculum-v453.js
           node --check tools/validate-input-practice-v454.js
           node --check tools/validate-write-grading-v455.js
           node --check tools/validate-unit4-v456.js
+          node --check tools/validate-diagnostic-feedback-v457.js
           node --check tools/validate-phase2-daily.js
           node --check tools/validate-phase3-surfaces.js
           node --check tools/validate-phase4-lesson.js
@@ -122,6 +124,9 @@ jobs:
 
       - name: Validate v4.56 Unit 04 curriculum expansion
         run: node tools/validate-unit4-v456.js
+
+      - name: Validate v4.57 diagnostic learning feedback
+        run: node tools/validate-diagnostic-feedback-v457.js
 
       - name: Run validation suite
         run: npm run validate

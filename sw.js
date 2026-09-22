@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v456-unit4";
+const CACHE_NAME = "meowde-v457-diagnostic-feedback";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -82,7 +82,9 @@ const REQUIRED_ASSETS = [
   "/v453-curriculum-practice.js",
   "/v454-input-practice.js",
   "/v455-write-grading.js",
-  "/v456-unit4-data.js"
+  "/v456-unit4-data.js",
+  "/v457-diagnostic-feedback.js",
+  "/v457-diagnostic-feedback.css"
 ];
 
 self.addEventListener("install", event => {

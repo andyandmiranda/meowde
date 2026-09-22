@@ -80,6 +80,15 @@
     return `${prefix}${esc(exercise.explain)} ${!S.correct?t('tryAgain'):''}`;
   }
 
+  function diagnosticMarkup(exercise){
+    const api=window.MeowDiagnosticFeedback;
+    const diagnosis=api&&typeof api.diagnose==='function'?api.diagnose(exercise):null;
+    if(!diagnosis)return `<p>${feedbackExplanation(exercise)}</p>`;
+    const labels=typeof api.labels==='function'?api.labels():{cause:'Cause',reason:'Why',action:'Next'};
+    const row=(label,value)=>value?`<div class="v457-diagnostic-row"><b>${esc(label)}</b><span>${esc(value)}</span></div>`:'';
+    return `<div class="v457-diagnostic" data-diagnostic-kind="${esc(diagnosis.kind||'general')}">${row(labels.cause,diagnosis.cause)}${row(labels.reason,diagnosis.reason)}${row(labels.action,diagnosis.action)}</div>`;
+  }
+
   renderLesson=function(){
     if(!hasLessonProgress())return renderHome();
     S.screen='lesson';
@@ -114,7 +123,7 @@
     const foot=ex.type==='concept'
       ?`<div class="lesson-foot"><button class="btn" onclick="nextQ()">${t('got')}</button></div>`
       :S.checked
-        ?`<div class="feedback ${S.correct?'ok':'no'}"><h3>${S.correct?t('correct'):t('wrong')}</h3>${reactionMarkup()}<p>${feedbackExplanation(ex)}</p><button class="btn" onclick="nextQ()">${t('continue')}</button></div>`
+        ?`<div class="feedback ${S.correct?'ok':'no'}"><h3>${S.correct?t('correct'):t('wrong')}</h3>${reactionMarkup()}${S.correct?`<p>${feedbackExplanation(ex)}</p>`:diagnosticMarkup(ex)}<button class="btn" onclick="nextQ()">${t('continue')}</button></div>`
         :`<div class="lesson-foot"><button class="btn" ${!can?'disabled':''} onclick="checkQ()">${ex.type==='write'?(S.loading?t('pyLoading'):(S.lang==='ko'?'코드 실행':'Run code')):t('check')}</button></div>`;
     const modeLabel=typeof meowdeMode==='function'&&meowdeMode()==='smart-review'?(S.lang==='ko'?'Smart Review':'Smart Review'):'';
     app.innerHTML=`<div class="screen"><div class="lesson-bg"></div><div class="lesson-top"><button class="close" aria-label="${S.lang==='ko'?'나가기':'Exit'}" onclick="renderHome()"></button><div class="lesson-title"><b>${modeLabel?`${esc(modeLabel)} · `:''}${esc(L.title)}</b><div class="progress"><span style="width:${pct}%"></span></div></div><div class="lesson-meta"><span class="autosave">${S.lang==='ko'?'자동 저장':'Saved'}</span><span class="pill">${step}/${S.queue.length}</span></div></div><div class="scroll"><main class="lesson-main">${qhead}${body}</main></div>${foot}</div>`;
