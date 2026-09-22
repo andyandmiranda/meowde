@@ -45,7 +45,8 @@
     S.streak=integer(S.streak,1,0);
     S.milk=integer(S.milk,5,0);
     S.cat=["a","b","c","d"].includes(S.cat)?S.cat:"a";
-    S.unit=integer(S.unit,0,0,2);
+    const unitCount=Math.max(1,Math.ceil(lessonCount/10));
+    S.unit=integer(S.unit,0,0,unitCount-1);
     S.lessonIndex=integer(S.lessonIndex,0,0,lessonCount-1);
     S.queue=Array.isArray(S.queue)?S.queue:[];
     S.idx=integer(S.idx,0,0,S.queue.length?S.queue.length-1:0);
