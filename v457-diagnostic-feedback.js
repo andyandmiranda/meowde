@@ -231,5 +231,6 @@
   document.documentElement.dataset.diagnosticFeedback="v457";
   window.__MEOWDE_VERSION__=VERSION;
 
-  if(window.S&&S.screen==="lesson"&&typeof window.renderLesson==="function")window.renderLesson();
+  const current=state();
+  if(current&&current.screen==="lesson"&&typeof window.renderLesson==="function")window.renderLesson();
 })();
