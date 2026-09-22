@@ -44,7 +44,7 @@
   }
   function unitName(unit){
     const ko=S.lang==="ko";
-    const names=ko?["Python 기초","조건과 반복","함수와 프로젝트"]:["Python Basics","Control & Loops","Functions & Projects"];
+    const names=ko?["Python 기초","입력과 조건","컬렉션·반복·함수","문자열·딕셔너리·데이터"]:["Python Basics","Input & Decisions","Collections, Loops & Functions","Strings, Dictionaries & Data"];
     return names[safeUnit(unit)]||(ko?`유닛 ${safeUnit(unit)+1}`:`Unit ${safeUnit(unit)+1}`);
   }
   function pendingRewardUnit(){
