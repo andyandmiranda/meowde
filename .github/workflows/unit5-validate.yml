@@ -28,12 +28,17 @@ jobs:
 
       - name: Validate Unit 05 JavaScript syntax
         run: |
+          node --check v425-state.js
           node --check v458-unit5-data.js
           node --check v459-unit5-integration.js
           node --check tools/validate-unit5-v458.js
+          node --check tools/validate-expanded-progress-v460.js
 
       - name: Run existing regression suite
         run: npm run validate
 
       - name: Validate Unit 05 curriculum and diagnostics
         run: node tools/validate-unit5-v458.js
+
+      - name: Validate expanded-course progress preservation
+        run: node tools/validate-expanded-progress-v460.js
