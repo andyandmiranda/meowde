@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v459-unit5";
+const CACHE_NAME = "meowde-v462-unit6";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -87,7 +87,10 @@ const REQUIRED_ASSETS = [
   "/v457-diagnostic-feedback.css",
   "/v458-unit5-data.js",
   "/v459-unit5-integration.js",
-  "/v459-unit5-integration.css"
+  "/v459-unit5-integration.css",
+  "/v461-unit6-oop.js",
+  "/v461-unit6-en.js",
+  "/v462-unit6-integration.js"
 ];
 
 self.addEventListener("install", event => {
@@ -139,7 +142,7 @@ self.addEventListener("fetch", event => {
       return fetch(request).then(response => {
         if (!response || !response.ok) return response;
         const copy = response.clone();
-        event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.put(request, copy)));
+        event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.put(request,copy)));
         return response;
       });
     })
