@@ -50,8 +50,10 @@
       });
       tabs.appendChild(button);
     }
-    button.textContent=label();
-    button.classList.toggle("on",Number(current.unit)===UNIT_INDEX);
+    const nextLabel=label();
+    if(button.textContent!==nextLabel)button.textContent=nextLabel;
+    const shouldBeOn=Number(current.unit)===UNIT_INDEX;
+    if(button.classList.contains("on")!==shouldBeOn)button.classList.toggle("on",shouldBeOn);
   }
 
   function decorateHome(){
@@ -61,11 +63,12 @@
     if(Math.floor(next/10)!==UNIT_INDEX)return;
     const unitName=name();
     const title=document.querySelector(".phase1-unit-copy b");
-    if(title)title.textContent=unitName;
+    if(title&&title.textContent!==unitName)title.textContent=unitName;
     const kicker=document.querySelector(".phase1-hero .section-kicker");
     if(kicker){
       const lessonMatch=kicker.textContent.match(/^Lesson\s+\d+/i);
-      kicker.textContent=lessonMatch?`${lessonMatch[0]} · ${unitName}`:unitName;
+      const nextText=lessonMatch?`${lessonMatch[0]} · ${unitName}`:unitName;
+      if(kicker.textContent!==nextText)kicker.textContent=nextText;
     }
   }
 
