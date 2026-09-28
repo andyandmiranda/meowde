@@ -1,0 +1,1 @@
+.unit-tabs{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;padding-bottom:4px}.unit-tabs::-webkit-scrollbar{display:none}.unit-tabs button{flex:0 0 auto;white-space:nowrap;scroll-snap-align:start}.unit-tabs button[data-v459-unit="5"]{min-height:44px}
