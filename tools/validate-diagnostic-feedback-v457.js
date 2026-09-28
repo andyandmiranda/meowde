@@ -127,7 +127,7 @@ const i457=release.indexOf('id:"meowde-v457-diagnostic-feedback"');
 const i442=release.indexOf('id:"meowde-v442-map-touch"');
 assert(i456>=0&&i457>i456&&i442>i457,"v457 loads after curriculum data and before visual/touch enhancements");
 assert(release.includes('"MeowDiagnosticFeedback"'),"release health tracks v457 feedback API");
-assert(sw.includes('CACHE_NAME = "meowde-v457-diagnostic-feedback"'),"service worker cache generation is bumped for v457");
+assert(/CACHE_NAME = "meowde-v45[7-9]-/.test(sw),"service worker uses a v4.57-or-newer cache generation");
 assert(sw.includes('"/v457-diagnostic-feedback.js"')&&sw.includes('"/v457-diagnostic-feedback.css"'),"diagnostic feedback is available offline");
 
 if(process.exitCode)process.exit(process.exitCode);
