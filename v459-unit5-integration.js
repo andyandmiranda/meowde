@@ -18,6 +18,24 @@
     return result&&result.visiblePassed===true&&result.passed===false?result:null;
   }
 
+  function restoreExpandedProgress(){
+    const recovery=window.meowdeV425;
+    const restored=Boolean(recovery&&typeof recovery.restoreDeferredProgress==="function"&&recovery.restoreDeferredProgress());
+    const current=state();
+    let unlocked=false;
+    if(current&&lessonCount()>=50&&Array.isArray(current.done)){
+      const completedUnit4=Array.from({length:40},(_,index)=>index).every(index=>current.done.includes(index));
+      if(completedUnit4&&Number(current.next)<40){
+        current.next=40;
+        if(typeof save==="function")save();
+        unlocked=true;
+      }
+    }
+    return Object.freeze({restored,unlocked});
+  }
+
+  const progressRecovery=restoreExpandedProgress();
+
   const baseDiagnostic=window.MeowDiagnosticFeedback;
   if(baseDiagnostic&&typeof baseDiagnostic.diagnose==="function"){
     const baseDiagnose=baseDiagnostic.diagnose.bind(baseDiagnostic);
@@ -86,7 +104,7 @@
   if(root)observer.observe(root,{childList:true,subtree:true});
   decorate();
 
-  window.MeowUnit5Integration=Object.freeze({version:VERSION,unitIndex:UNIT_INDEX,label,name,decorate,observer});
+  window.MeowUnit5Integration=Object.freeze({version:VERSION,unitIndex:UNIT_INDEX,label,name,decorate,observer,progressRecovery});
   document.documentElement.dataset.unit5Integration="v459";
   window.__MEOWDE_VERSION__=VERSION;
 })();
