@@ -1,0 +1,40 @@
+name: Validate Meowde Unit 06
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-unit6-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-unit6:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Validate Unit 06 JavaScript syntax
+        run: |
+          node --check v461-unit6-oop.js
+          node --check v461-unit6-en.js
+          node --check v462-unit6-integration.js
+          node --check tools/validate-unit6-v461.js
+
+      - name: Run existing regression suite
+        run: npm run validate
+
+      - name: Validate Unit 06 curriculum, localization, and unlock
+        run: node tools/validate-unit6-v461.js

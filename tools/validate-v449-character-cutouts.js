@@ -42,7 +42,8 @@ expect(release.includes('element.async=false'),"character enhancement is not loa
 expect(!release.includes("character-sprite"),"legacy sprite loader remains active");
 
 const serviceWorker=read("sw.js");
-expect(/CACHE_NAME = "meowde-v45\d-[^"]+"/.test(serviceWorker),"current v4.5x service-worker cache generation is missing");
+const cacheMatch=serviceWorker.match(/CACHE_NAME = "meowde-v(\d{3})-[^"]+"/);
+expect(cacheMatch&&Number(cacheMatch[1])>=450,"service-worker cache generation must be v450 or newer");
 for(const asset of [
   "/v449-character-cutouts.js",
   "/v449-character-cutouts.css",

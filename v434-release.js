@@ -4,7 +4,7 @@
   const VERSION="4.50-phase5-bootstrap";
   const REQUIRED_FUNCTIONS=["renderHome","renderLesson","renderMap","renderReview","renderRoom","renderMy","renderProfile","renderAchievements","startLesson","checkQ","finish","save","catSVG"];
   const REQUIRED_APIS=["MeowAchievements","MeowGrowth","MeowEvents","MeowQuests","MeowCharacterV430","MeowLearning","MeowPWA","MeowSingleCompanion"];
-  const ENHANCEMENT_APIS=["MeowCurriculum","MeowCurriculumPractice","MeowRealInput","MeowWriteGrading","MeowCurriculumExpansion","MeowDiagnosticFeedback","MeowCurriculumUnit5","MeowUnit5Integration","MeowMapTouch","MeowVisualCohesion","MeowUpdateRecovery","MeowCharacterCutouts","MeowContact"];
+  const ENHANCEMENT_APIS=["MeowCurriculum","MeowCurriculumPractice","MeowRealInput","MeowWriteGrading","MeowCurriculumExpansion","MeowDiagnosticFeedback","MeowCurriculumUnit5","MeowUnit5Integration","MeowCurriculumUnit6","MeowCurriculumUnit6English","MeowUnit6Integration","MeowMapTouch","MeowVisualCohesion","MeowUpdateRecovery","MeowCharacterCutouts","MeowContact"];
   const ALLOWED_ACCESSORIES=new Set(["none","glasses","headphones","star","crown"]);
   const ENHANCEMENTS=[
     {id:"meowde-v452-curriculum",script:"v452-curriculum.js",version:"452",readyGlobal:"MeowCurriculum",warning:"Curriculum enhancement could not be loaded."},
@@ -15,6 +15,9 @@
     {id:"meowde-v457-diagnostic-feedback",css:"v457-diagnostic-feedback.css",script:"v457-diagnostic-feedback.js",version:"457",readyGlobal:"MeowDiagnosticFeedback",warning:"Diagnostic learning feedback could not be loaded."},
     {id:"meowde-v458-unit5-data",script:"v458-unit5-data.js",version:"458",readyGlobal:"MeowCurriculumUnit5",warning:"Unit 05 curriculum expansion could not be loaded."},
     {id:"meowde-v459-unit5-integration",css:"v459-unit5-integration.css",script:"v459-unit5-integration.js",version:"459",readyGlobal:"MeowUnit5Integration",warning:"Unit 05 integration could not be loaded."},
+    {id:"meowde-v461-unit6-data",script:"v461-unit6-oop.js",version:"461",readyGlobal:"MeowCurriculumUnit6",warning:"Unit 06 curriculum expansion could not be loaded."},
+    {id:"meowde-v461-unit6-english",script:"v461-unit6-en.js",version:"461",readyGlobal:"MeowCurriculumUnit6English",warning:"Unit 06 English copy could not be loaded."},
+    {id:"meowde-v462-unit6-integration",script:"v462-unit6-integration.js",version:"462",readyGlobal:"MeowUnit6Integration",warning:"Unit 06 integration could not be loaded."},
     {id:"meowde-v442-map-touch",css:"v442-map-touch.css",script:"v442-map-touch.js",version:"442",readyGlobal:"MeowMapTouch",warning:"Map touch enhancement could not be loaded."},
     {id:"meowde-v444-visual-cohesion",css:"v444-visual-cohesion.css",script:"v444-visual-cohesion.js",version:"448",readyGlobal:"MeowVisualCohesion",warning:"Visual cohesion enhancement could not be loaded."},
     {id:"meowde-v446-update-recovery",css:"v446-update-recovery.css",script:"v446-update-recovery.js",version:"446",readyGlobal:"MeowUpdateRecovery",warning:"Update recovery enhancement could not be loaded."},
