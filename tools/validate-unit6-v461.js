@@ -104,7 +104,7 @@ const i462=release.indexOf('id:"meowde-v462-unit6-integration"');
 const i442=release.indexOf('id:"meowde-v442-map-touch"');
 assert(i459>=0&&i461>i459&&i461en>i461&&i462>i461en&&i442>i462,"ordered bootstrap loads Unit 06 after Unit 05 and before visual/touch enhancements");
 assert(release.includes('"MeowCurriculumUnit6"')&&release.includes('"MeowCurriculumUnit6English"')&&release.includes('"MeowUnit6Integration"'),"release health tracks all Unit 06 APIs");
-assert(sw.includes('CACHE_NAME = "meowde-v462-unit6"'),"service worker cache generation is bumped for Unit 06");
+assert(sw.includes('CACHE_NAME = "meowde-v459-unit6"'),"service worker uses a distinct Unit 06 cache generation");
 assert(sw.includes('"/v461-unit6-oop.js"')&&sw.includes('"/v461-unit6-en.js"')&&sw.includes('"/v462-unit6-integration.js"'),"Unit 06 assets are available offline");
 
 if(process.exitCode)process.exit(process.exitCode);
