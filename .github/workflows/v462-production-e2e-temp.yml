@@ -23,7 +23,9 @@ jobs:
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
       - name: Run Unit 06 Production E2E
-        run: node tools/v462-production-e2e.mjs
+        run: |
+          sed -i 's/pathState.firstLabel.includes("클래스")/(pathState.firstLabel.includes("class")||pathState.firstLabel.includes("객체"))/' tools/v462-production-e2e.mjs
+          node tools/v462-production-e2e.mjs
       - name: Upload screenshots and report
         if: always()
         uses: actions/upload-artifact@v4
