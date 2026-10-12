@@ -87,7 +87,8 @@ const i456=release.indexOf('id:"meowde-v456-unit4-data"');
 const i442=release.indexOf('id:"meowde-v442-map-touch"');
 assert(i455>=0&&i456>i455&&i442>i456,"v456 loads after grading and before visual/touch enhancements");
 assert(release.includes('"MeowCurriculumExpansion"'),"release health tracks the Unit 04 API");
-assert(/CACHE_NAME = "meowde-v45[6-9]-/.test(sw),"service worker uses a v4.56-or-newer cache generation");
+const cacheMatch=sw.match(/CACHE_NAME = "meowde-v(\d{3})-[^"]+"/);
+assert(cacheMatch&&Number(cacheMatch[1])>=456,"service worker uses a v456-or-newer cache generation");
 assert(sw.includes('"/v456-unit4-data.js"'),"Unit 04 expansion is available offline");
 
 if(process.exitCode)process.exit(process.exitCode);
