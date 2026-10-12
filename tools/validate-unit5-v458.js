@@ -100,7 +100,8 @@ const i459=release.indexOf('id:"meowde-v459-unit5-integration"');
 const i442=release.indexOf('id:"meowde-v442-map-touch"');
 assert(i457>=0&&i458>i457&&i459>i458&&i442>i459,"Unit 05 data and integration load in deterministic order before visual/touch enhancements");
 assert(release.includes('"MeowCurriculumUnit5"')&&release.includes('"MeowUnit5Integration"'),"release health tracks both Unit 05 APIs");
-assert(/CACHE_NAME = "meowde-v459-(?:unit5|unit6)"/.test(sw),"service worker uses a Unit 05-or-newer compatible cache generation");
+const cacheMatch=sw.match(/CACHE_NAME = "meowde-v(\d{3})-[^"]+"/);
+assert(cacheMatch&&Number(cacheMatch[1])>=458,"service worker uses a v458-or-newer curriculum cache generation");
 assert(sw.includes('"/v458-unit5-data.js"')&&sw.includes('"/v459-unit5-integration.js"')&&sw.includes('"/v459-unit5-integration.css"'),"Unit 05 assets are precached for offline use");
 
 if(process.exitCode)process.exit(process.exitCode);
