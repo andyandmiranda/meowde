@@ -51,3 +51,35 @@ test("focused micro lesson reveals optional tools on demand",async({page})=>{
  await page.locator("#more-learning > summary").click();
  await expect(page.locator("#lesson")).toBeVisible();
 });
+
+test("Linux subject home stays focused and fits a narrow phone",async({page})=>{
+ await page.setViewportSize({width:375,height:812});
+ await page.goto(base+"/linux-home.html");
+ await expect(page.getByRole("heading",{name:"Linux, 하나씩 배워요"})).toBeVisible();
+ await expect(page.locator("#meowde-mascot svg")).toBeVisible();
+ await expect(page.getByRole("link",{name:/학습 시작하기/})).toBeVisible();
+ await expect(page.getByRole("link",{name:/전체 단원/})).toBeVisible();
+ const size=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:window.innerWidth}));
+ expect(size.scroll).toBeLessThanOrEqual(size.viewport);
+ const action=page.getByRole("link",{name:/학습 시작하기/});
+ const rect=await action.boundingBox();
+ expect(rect.width).toBeGreaterThan(44);
+ expect(rect.height).toBeGreaterThanOrEqual(44);
+ await action.click();
+ await expect(page.locator("#micro-e1")).toBeVisible();
+});
+test("subject home reads progress but never rewrites legacy records",async({page})=>{
+ await page.goto(base+"/linux-home.html");
+ await page.evaluate(()=>{
+  localStorage.setItem("meowde-linux-cram-v1",JSON.stringify({done:{"0":true,"1":true},index:2}));
+  localStorage.setItem("meowde-linux-robotics-v1",'{"done":{"0-0":true}}');
+ });
+ await page.reload();
+ await expect(page.locator("#course-count")).toHaveText("개념 학습 2 / 9");
+ const value=await page.evaluate(()=>({
+  old:localStorage.getItem("meowde-linux-robotics-v1"),
+  course:JSON.parse(localStorage.getItem("meowde-linux-cram-v1"))
+ }));
+ expect(value.old).toBe('{"done":{"0-0":true}}');
+ expect(value.course.index).toBe(2);
+});
