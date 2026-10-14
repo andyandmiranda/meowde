@@ -31,4 +31,23 @@ cmd("cd ..");assert.equal(cmd("pwd"),"/home/student");
 for(const input of ["rm -rf /","cat /etc/passwd","ls; pwd","touch hi && pwd","mkdir ../oops | pwd","touch /dev/null","cp notes.txt ../../secret.txt","mkdir a/b"]){cmd(input,false)}
 sim.reset();assert.equal(sim.snapshot().files["/home/student/training"],undefined);
 assert.equal(sim.snapshot().cwd,"/home/student");
+
+// Mission regression: check final filesystem state, not exact command syntax.
+function mission0(s){return s.files["/home/student/training"]?.type==="dir"&&s.files["/home/student/training/hello.txt"]?.type==="file"}
+function mission1(s){return s.files["/home/student/notes.txt"]?.type==="file"&&s.files["/home/student/projects/notes.txt"]?.text===s.files["/home/student/notes.txt"].text}
+function mission2(s){return !s.files["/home/student/notes.txt"]&&s.files["/home/student/memo.txt"]?.type==="file"}
+sim.reset();
+assert.equal(mission0(sim.snapshot()),false);
+cmd("mkdir training");cmd("touch training/hello.txt");
+assert.equal(mission0(sim.snapshot()),true);
+sim.reset();
+assert.equal(mission1(sim.snapshot()),false);
+cmd("cp notes.txt projects/notes.txt");
+assert.equal(mission1(sim.snapshot()),true);
+sim.reset();
+assert.equal(mission2(sim.snapshot()),false);
+cmd("mv notes.txt memo.txt");
+assert.equal(mission2(sim.snapshot()),true);
+assert.match(html,/id="sim-help"/);
+assert.match(html,/id="sim-missions"/);
 console.log("PASS: mobile Linux simulator state, path boundaries, unsupported commands and reset");
