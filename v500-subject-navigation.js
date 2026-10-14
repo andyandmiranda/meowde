@@ -23,6 +23,7 @@
   }
   function showSubject(id){
     if(id==="python")return resumePython();
+    if(id==="linux"&&window.MeowLinux){state.active=id;persist();close();window.MeowLinux.render();placeholder=window.MeowLinux.currentScreen;return;}
     state.active=id;persist();close();
     const s=current(), app=document.getElementById("app");
     if(!app)return;
