@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#fff9ef"><title>MEOWDE Linux · 모바일 속성학습</title>
 <style>:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#2d2a28;background:#e8f8f0}*{box-sizing:border-box}body{margin:0}.app{max-width:680px;margin:auto;min-height:100dvh;padding:18px;background:#fff9ef}h1{font-size:1.6rem}h2{font-size:1.2rem}.sub{color:#675f5a;line-height:1.6}.card{background:white;border:1px solid #e8ded0;border-radius:18px;padding:16px;margin:14px 0}.pill{color:#16694f;background:#e7f8f0;padding:5px 10px;border-radius:20px;font-size:.78rem}button,a.btn{font:inherit;display:inline-block;border:0;border-radius:12px;padding:12px 15px;background:#42b28d;color:#102b21;font-weight:700;cursor:pointer;text-decoration:none;min-height:44px}.outline{background:white;border:1px solid #bcddd0}.lessons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.lessons button{padding:10px 5px;font-size:.9rem}button[aria-current=true]{outline:3px solid #0e7257}pre{background:#1d2934;color:#ecfff4;padding:15px;border-radius:13px;white-space:pre-wrap;overflow-wrap:anywhere}input{width:100%;padding:14px;border-radius:12px;border:1px solid #9eaaa4;font-size:16px}.answers{display:grid;gap:8px}.answers button{background:#f2f7f3;text-align:left;color:#203d32}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #155fdd;outline-offset:3px}.status{min-height:28px}footer{font-size:.8rem;color:#685f5b}</style></head>
-<body><main class="app"><a class="btn outline" href="/robotics.html">← Linux 학습으로</a><h1>Linux 하루 완주</h1><p class="sub">Ubuntu 설치 없이 개념과 명령어를 연습해요. 이 화면의 터미널은 실제 시스템 명령을 실행하지 않는 안전한 학습 예시입니다.</p><section class="card"><b>단원 선택 · E1~E9</b><div class="lessons" id="nav" style="margin-top:12px"></div><p class="sub" id="progress" aria-live="polite"></p></section><section class="card" id="lesson" aria-live="polite"></section><section class="card" aria-label="가상 리눅스 터미널"><h2>모바일 가상 터미널</h2><p class="sub">실제 Ubuntu가 아닌 브라우저 안의 임시 파일 시스템이야. <code>pwd</code>, <code>ls</code>, <code>cd</code>, <code>mkdir</code>, <code>touch</code>, <code>cat</code>, <code>cp</code>, <code>mv</code>를 연습할 수 있어. 다른 파일이나 서버에는 접근하지 않아.</p><p><b>미션:</b> <code>training</code> 폴더를 만들고 그 안에 <code>hello.txt</code> 파일을 생성해 봐.</p><pre id="sim-out" aria-live="polite">student@meowde:/home/student$</pre><input id="sim-input" aria-label="가상 Linux 터미널 명령어" placeholder="예: pwd" autocomplete="off" autocapitalize="off" spellcheck="false"><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button type="button" id="sim-run">명령어 실행(모의)</button><button type="button" class="outline" id="sim-check">미션 채점</button><button type="button" class="outline" id="sim-reset">실습 초기화</button></div><p class="status" id="sim-feedback" role="status"></p></section><footer>이 페이지의 진도는 별도 브라우저 저장 공간에 보관돼요. 기존 MEOWDE Linux 학습 기록을 삭제하거나 변경하지 않습니다. 문제와 예시는 독창적으로 작성한 교육용 연습이며 실제 Ubuntu 명령 실행 결과와는 차이가 있을 수 있습니다.</footer></main>
+<body><main class="app"><a class="btn outline" href="/robotics.html">← Linux 학습으로</a><h1>Linux 하루 완주</h1><p class="sub">Ubuntu 설치 없이 개념과 명령어를 연습해요. 이 화면의 터미널은 실제 시스템 명령을 실행하지 않는 안전한 학습 예시입니다.</p><section class="card"><b>단원 선택 · E1~E9</b><div class="lessons" id="nav" style="margin-top:12px"></div><p class="sub" id="progress" aria-live="polite"></p></section><section class="card" id="lesson" aria-live="polite"></section><section class="card" aria-label="가상 리눅스 터미널"><h2>모바일 가상 터미널</h2><p class="sub">실제 Ubuntu가 아닌 브라우저 안의 임시 파일 시스템이야. <code>pwd</code>, <code>ls</code>, <code>cd</code>, <code>mkdir</code>, <code>touch</code>, <code>cat</code>, <code>cp</code>, <code>mv</code>를 연습할 수 있어. 다른 파일이나 서버에는 접근하지 않아.</p><p><b>상태 기반 실습 미션</b> · 개념 → 실습 → 힌트 → 채점 → 재도전</p><div id="sim-missions" class="lessons" aria-label="실습 미션 선택"></div><p class="sub" id="sim-goal"></p><p class="sub" id="sim-hint" hidden></p><pre id="sim-out" aria-live="polite">student@meowde:/home/student$</pre><input id="sim-input" aria-label="가상 Linux 터미널 명령어" placeholder="예: pwd" autocomplete="off" autocapitalize="off" spellcheck="false"><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button type="button" id="sim-run">명령어 실행(모의)</button><button type="button" class="outline" id="sim-check">미션 채점</button><button type="button" class="outline" id="sim-help">힌트 보기</button><button type="button" class="outline" id="sim-reset">실습 초기화</button></div><p class="status" id="sim-feedback" role="status"></p></section><footer>이 페이지의 진도는 별도 브라우저 저장 공간에 보관돼요. 기존 MEOWDE Linux 학습 기록을 삭제하거나 변경하지 않습니다. 문제와 예시는 독창적으로 작성한 교육용 연습이며 실제 Ubuntu 명령 실행 결과와는 차이가 있을 수 있습니다.</footer></main>
 <script>
 "use strict";
 const LESSONS=[
@@ -21,20 +21,29 @@ const KEY="meowde-linux-cram-v1";let saved={};try{saved=JSON.parse(localStorage.
 "use strict";
 const terminal=window.MeowdeLinuxSim.create();
 const input=document.getElementById("sim-input"),output=document.getElementById("sim-out"),feedback=document.getElementById("sim-feedback");
+const missions=[
+ {title:"E1 폴더·파일",goal:"training 폴더를 만들고 안에 hello.txt를 생성해 봐.",hint:"mkdir training → touch training/hello.txt",test:s=>s.files["/home/student/training"]?.type==="dir"&&s.files["/home/student/training/hello.txt"]?.type==="file"},
+ {title:"E1 파일 복사",goal:"notes.txt를 projects 폴더 안에 원본을 남기고 복사해 봐.",hint:"cp notes.txt projects/",test:s=>s.files["/home/student/notes.txt"]?.type==="file"&&s.files["/home/student/projects/notes.txt"]?.text===s.files["/home/student/notes.txt"].text},
+ {title:"E2 파일 이동",goal:"notes.txt의 이름을 memo.txt로 바꿔 봐.",hint:"mv notes.txt memo.txt",test:s=>!s.files["/home/student/notes.txt"]&&s.files["/home/student/memo.txt"]?.type==="file"}
+];
+let current=0,attempts=0;
+const goals=document.getElementById("sim-goal"),hint=document.getElementById("sim-hint");
+function choose(index){current=index;attempts=0;terminal.reset();feedback.textContent="새 미션을 시작했어. 가상 파일 시스템만 초기화했어.";output.textContent="student@meowde:/home/student$";hint.hidden=true;hint.textContent="";goals.textContent=missions[index].goal;document.querySelectorAll("#sim-missions button").forEach((b,i)=>b.setAttribute("aria-current",String(i===index)))}
+missions.forEach((m,i)=>{const b=document.createElement("button");b.type="button";b.className="outline";b.textContent=m.title;b.addEventListener("click",()=>choose(i));document.getElementById("sim-missions").appendChild(b)});
 function run(){
- const raw=input.value, result=terminal.run(raw);
+ const raw=input.value,result=terminal.run(raw);
  output.textContent="student@meowde:"+terminal.snapshot().cwd+"$ "+raw+"\n"+result.output;
- feedback.textContent=result.ok?"명령어 처리 완료. 파일·폴더 상태가 변경되었을 수 있어.":"명령어를 확인하고 다시 시도해 봐.";
+ feedback.textContent=result.ok?"명령어 처리 완료. 미션 채점으로 목표를 확인해 봐.":"입력이 처리되지 않았어: "+result.output;
  input.value="";input.focus();
 }
 document.getElementById("sim-run").addEventListener("click",run);
 input.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();run()}});
 document.getElementById("sim-check").addEventListener("click",()=>{
- const files=terminal.snapshot().files;
- feedback.textContent=files["/home/student/training"]?.type==="dir"&&files["/home/student/training/hello.txt"]?.type==="file"?"미션 성공! 폴더와 파일을 직접 만들었어.":"아직 미완료야. 힌트: mkdir training 다음에 touch training/hello.txt를 실행해 봐.";
+ attempts++;
+ feedback.textContent=missions[current].test(terminal.snapshot())?"미션 성공! 파일 시스템의 실제 상태로 확인했어.":"아직 목표 상태가 아니야. "+(attempts>=2?"힌트 보기를 눌러 확인하고 다시 시도해 봐.":"현재 파일·폴더를 ls로 확인해 봐.");
 });
-document.getElementById("sim-reset").addEventListener("click",()=>{
- terminal.reset();output.textContent="student@meowde:/home/student$";feedback.textContent="실습 파일 시스템만 초기화했어. 학습 진도는 그대로야.";
-});
+document.getElementById("sim-help").addEventListener("click",()=>{hint.textContent="힌트: "+missions[current].hint;hint.hidden=false});
+document.getElementById("sim-reset").addEventListener("click",()=>{terminal.reset();attempts=0;output.textContent="student@meowde:/home/student$";feedback.textContent="실습 파일 시스템만 초기화했어. 학습 진도는 그대로야."});
+choose(0);
 })();
 </script></body></html>
