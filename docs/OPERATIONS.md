@@ -1,6 +1,6 @@
 # MEOWDE — Shared Operations Ledger
 Updated: 2026-10-14 KST
-Status: PROPOSED / DRAFT PR ONLY. This file is not authoritative until reviewed and merged into main.
+Status: ACTIVE only when this file exists on `main`; branch and PR copies are proposals. Changes to this policy require CEO approval.
 
 ## System of record
 - Live code and release: `main`, GitHub PRs/checks, and Vercel **production** deployment (not a READY preview).
