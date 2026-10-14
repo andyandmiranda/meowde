@@ -24,14 +24,16 @@ const input=document.getElementById("sim-input"),output=document.getElementById(
 const missions=[
  {title:"E1 폴더·파일",goal:"training 폴더를 만들고 안에 hello.txt를 생성해 봐.",hint:"mkdir training → touch training/hello.txt",test:s=>s.files["/home/student/training"]?.type==="dir"&&s.files["/home/student/training/hello.txt"]?.type==="file"},
  {title:"E1 파일 복사",goal:"notes.txt를 projects 폴더 안에 원본을 남기고 복사해 봐.",hint:"cp notes.txt projects/",test:s=>s.files["/home/student/notes.txt"]?.type==="file"&&s.files["/home/student/projects/notes.txt"]?.text===s.files["/home/student/notes.txt"].text},
- {title:"E2 파일 이동",goal:"notes.txt의 이름을 memo.txt로 바꿔 봐.",hint:"mv notes.txt memo.txt",test:s=>!s.files["/home/student/notes.txt"]&&s.files["/home/student/memo.txt"]?.type==="file"}
+ {title:"E2 파일 이동",goal:"notes.txt의 이름을 memo.txt로 바꿔 봐.",hint:"mv notes.txt memo.txt",test:s=>!s.files["/home/student/notes.txt"]&&s.files["/home/student/memo.txt"]?.type==="file"},
+ {title:"E3 오류 줄 찾기",goal:"app.log에서 ERROR가 포함된 줄을 줄 번호와 함께 찾아 봐.",hint:"grep -n ERROR app.log",test:(s,last)=>last?.ok===true&&last.command==="grep"&&last.output==="2:ERROR network\n4:ERROR timeout"}
 ];
-let current=0,attempts=0;
+let current=0,attempts=0,lastResult=null;
 const goals=document.getElementById("sim-goal"),hint=document.getElementById("sim-hint");
-function choose(index){current=index;attempts=0;terminal.reset();feedback.textContent="새 미션을 시작했어. 가상 파일 시스템만 초기화했어.";output.textContent="student@meowde:/home/student$";hint.hidden=true;hint.textContent="";goals.textContent=missions[index].goal;document.querySelectorAll("#sim-missions button").forEach((b,i)=>b.setAttribute("aria-current",String(i===index)))}
+function choose(index){current=index;attempts=0;lastResult=null;terminal.reset();feedback.textContent="새 미션을 시작했어. 가상 파일 시스템만 초기화했어.";output.textContent="student@meowde:/home/student$";hint.hidden=true;hint.textContent="";goals.textContent=missions[index].goal;document.querySelectorAll("#sim-missions button").forEach((b,i)=>b.setAttribute("aria-current",String(i===index)))}
 missions.forEach((m,i)=>{const b=document.createElement("button");b.type="button";b.className="outline";b.textContent=m.title;b.addEventListener("click",()=>choose(i));document.getElementById("sim-missions").appendChild(b)});
 function run(){
  const raw=input.value,result=terminal.run(raw);
+ lastResult={ok:result.ok,command:raw.trim().split(/\s+/)[0],output:result.output};
  output.textContent="student@meowde:"+terminal.snapshot().cwd+"$ "+raw+"\n"+result.output;
  feedback.textContent=result.ok?"명령어 처리 완료. 미션 채점으로 목표를 확인해 봐.":"입력이 처리되지 않았어: "+result.output;
  input.value="";input.focus();
@@ -40,10 +42,10 @@ document.getElementById("sim-run").addEventListener("click",run);
 input.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();run()}});
 document.getElementById("sim-check").addEventListener("click",()=>{
  attempts++;
- feedback.textContent=missions[current].test(terminal.snapshot())?"미션 성공! 파일 시스템의 실제 상태로 확인했어.":"아직 목표 상태가 아니야. "+(attempts>=2?"힌트 보기를 눌러 확인하고 다시 시도해 봐.":"현재 파일·폴더를 ls로 확인해 봐.");
+ feedback.textContent=missions[current].test(terminal.snapshot(),lastResult)?"미션 성공! 파일 시스템의 실제 상태로 확인했어.":"아직 목표 상태가 아니야. "+(attempts>=2?"힌트 보기를 눌러 확인하고 다시 시도해 봐.":"현재 파일·폴더를 ls로 확인해 봐.");
 });
 document.getElementById("sim-help").addEventListener("click",()=>{hint.textContent="힌트: "+missions[current].hint;hint.hidden=false});
-document.getElementById("sim-reset").addEventListener("click",()=>{terminal.reset();attempts=0;output.textContent="student@meowde:/home/student$";feedback.textContent="실습 파일 시스템만 초기화했어. 학습 진도는 그대로야."});
+document.getElementById("sim-reset").addEventListener("click",()=>{terminal.reset();attempts=0;lastResult=null;output.textContent="student@meowde:/home/student$";feedback.textContent="실습 파일 시스템만 초기화했어. 학습 진도는 그대로야."});
 choose(0);
 })();
 </script></body></html>
