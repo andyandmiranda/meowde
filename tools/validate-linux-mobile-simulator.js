@@ -50,4 +50,14 @@ cmd("mv notes.txt memo.txt");
 assert.equal(mission2(sim.snapshot()),true);
 assert.match(html,/id="sim-help"/);
 assert.match(html,/id="sim-missions"/);
+
+// E2-E3 reading/searching commands and sandbox regression.
+sim.reset();
+assert.match(cmd("cat app.log"),/ERROR network/);
+assert.match(cmd("head -n 2 app.log"),/^INFO boot\nERROR network$/);
+assert.match(cmd("tail -n 2 app.log"),/^INFO retry\nERROR timeout$/);
+assert.match(cmd("grep ERROR app.log"),/ERROR timeout/);
+assert.match(cmd("grep -n ERROR app.log"),/^2:ERROR network/);
+assert.match(cmd("find . -name '*.txt'"),/notes\.txt/);
+for(const input of ["grep ERROR /etc/passwd","find / -name '*.txt'","tail -n 2 ../../etc/passwd","head -n 1000 app.log","find . -exec rm -rf {}"]){cmd(input,false)}
 console.log("PASS: mobile Linux simulator state, path boundaries, unsupported commands and reset");
