@@ -1,0 +1,38 @@
+#!/usr/bin/env node
+"use strict";
+const assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm");
+const html=fs.readFileSync("linux-crash-course.html","utf8");
+const scripts=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(Boolean);
+assert.equal(scripts.length,4,"Expected lesson, simulator, condition trace and Bash grading scripts");
+scripts.forEach((script,i)=>new vm.Script(script,{filename:"inline-"+i+".js"}));
+assert.match(html,/\[hidden\]\{display:none!important\}/);
+assert.match(html,/id="sim-next" hidden/);
+assert.match(html,/window\.MeowdeChooseMission=choose/);
+assert.match(html,/lastResult=null;terminal\.reset\(\)/);
+assert.match(html,/const passed=missions\[current\]\.test/);
+const lesson=scripts[0];
+const start=lesson.indexOf('const KEY="meowde-linux-cram-v1"');
+const end=lesson.indexOf("function show()",start);
+assert.ok(start>=0&&end>start);
+const init=lesson.slice(start,end);
+function load(data){
+ const entries=new Map(Object.entries(data));
+ const localStorage={getItem:k=>entries.has(k)?entries.get(k):null,setItem:(k,v)=>entries.set(k,v)};
+ const context=vm.createContext({localStorage,document:{getElementById:()=>({})}});
+ const state=vm.runInContext(init+"\n({index,done,persist})",context);
+ return {state,entries};
+}
+const oldKey="meowde-linux-robotics-v1",oldValue='{"done":{"1-0":true}}';
+const progressKey="meowde-linux-cram-v1";
+const initial=load({[oldKey]:oldValue,[progressKey]:'{"index":2,"done":{"0":true}}'});
+assert.equal(initial.state.index,2);
+assert.equal(initial.state.done["0"],true);
+initial.state.done["1"]=true;initial.state.persist();
+assert.equal(JSON.parse(initial.entries.get(progressKey)).done["1"],true);
+assert.equal(initial.entries.get(oldKey),oldValue,"Existing robotics records must not be overwritten");
+const corrupt=load({[progressKey]:"{broken-json",[oldKey]:oldValue});
+assert.equal(corrupt.state.index,0);
+assert.equal(corrupt.entries.get(oldKey),oldValue);
+const capped=load({[progressKey]:'{"index":999,"done":{}}'});
+assert.equal(capped.state.index,8);
+console.log("PASS: navigation script syntax, mission guards, save/reload, corrupted progress, old-key preservation");
