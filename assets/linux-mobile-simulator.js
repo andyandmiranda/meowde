@@ -13,12 +13,13 @@ function create(){
   if(!input)return {ok:false,output:"명령어를 입력해 봐."};
   if(input.length>180||/[;&|><`$\\\n\r]/.test(input))return {ok:false,output:"이 학습 터미널에서는 연결·리디렉션·치환 명령을 지원하지 않아."};
   const a=tokenize(input),cmd=a.shift(),args=a.filter(x=>x!=="");
+ const within=p=>p==="/home/student"||p.startsWith("/home/student/");
   const invalid=()=>({ok:false,output:"지원하지 않는 형식이야. 이 터미널은 제한된 학습용 시뮬레이터야."});
   if(["ls","cd","mkdir","touch","cat","cp","mv"].includes(cmd)&&args.some(x=>!within(pathOf(x))))return {ok:false,output:"학습 공간 밖에는 접근할 수 없어."};
   const ok=output=>({ok:true,output:output||"(완료)",cwd});
   const err=output=>({ok:false,output});
   const read=p=>fs[p];
- const within=p=>p==="/home/student"||p.startsWith("/home/student/");
+
   if(cmd==="pwd")return args.length?invalid():ok(cwd);
   if(cmd==="ls"){if(args.length>1)return invalid();const p=pathOf(args[0]||".");if(!read(p))return err("해당 경로가 없어.");if(read(p).type==="file")return ok(name(p));return ok(Object.keys(fs).filter(k=>parent(k)===p&&k!==p).map(name).sort().join("  ")||"(비어 있음)")}
   if(cmd==="cd"){if(args.length>1)return invalid();const p=pathOf(args[0]||"/home/student");if(!read(p)||read(p).type!=="dir")return err("이동할 폴더가 없어.");cwd=p;return ok(cwd)}
