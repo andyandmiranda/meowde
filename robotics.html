@@ -23,5 +23,5 @@ function verifyDrill(){const key=state.unit+"-"+state.task, d=COMMAND_DRILLS[key
 function safeExercises(){const u=state.unit,task=state.task, a=EXACT_EXERCISES[u]?.[task],key=u+"-"+task;if(!a)return;const drill=COMMAND_DRILLS[key],feedback=drillFeedback[key];const panel=document.createElement("section");panel.className="card";panel.id="source-exercise";panel.innerHTML='<span class="pill">ZIP README 기반 문제 요약</span><h2>'+esc(a[0])+'</h2><ol style="padding-left:20px;line-height:1.8">'+a.slice(1).map(v=>'<li>'+esc(v)+'</li>').join('')+'</ol><p class="sub">정확한 원문과 실습 파일은 ZIP의 '+String(task+1).padStart(2,"0")+'/README.txt에서 확인하세요.</p>'+(drill?'<div id="drill"><h2>명령어 입력 연습</h2><p>'+esc(drill[0])+'</p><input id="cmd-input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="명령어 입력"><button style="margin-top:9px" class="btn" onclick="verifyDrill()">명령어 확인</button>'+(feedback?'<p class="sub">'+(feedback.ok?'✅ 맞았어. ':'다시 시도해 봐. ')+esc(feedback.ok?drill[3]:'문법과 공백, 옵션을 확인해 봐.')+'</p>':'')+'</div>':'<p class="sub">이 문제는 실제 파일·시스템 상태를 확인해야 하므로 정답을 고정하지 않았어.</p>');
 document.getElementById("viewer").appendChild(panel);
 }
-const baseRender=render;render=function(){baseRender();safeExercises()};
+const baseRender=render;render=function(){baseRender();safeExercises()};render();
 </script></body></html>
