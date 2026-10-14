@@ -1,0 +1,41 @@
+const {test,expect}=require("@playwright/test");
+const base=process.env.MEOWDE_BASE_URL||"http://127.0.0.1:4173";
+test.use({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+test("mobile Linux concept -> mission -> feedback -> reload",async({page})=>{
+ await page.goto(base+"/linux-crash-course.html");
+ await expect(page.locator("#lesson")).toBeVisible();
+ await page.locator("#lesson .answers button").first().click();
+ await page.getByRole("button",{name:"이 단원 실습으로 이동"}).click();
+ await expect(page.locator("#sim-goal")).toContainText("training");
+ await expect(page.locator("#sim-next")).toBeHidden();
+ const cmd=page.locator("#sim-input");
+ await cmd.fill("mkdir training");await page.locator("#sim-run").click();
+ await cmd.fill("touch training/hello.txt");await page.locator("#sim-run").click();
+ await page.locator("#sim-check").click();
+ await expect(page.locator("#sim-feedback")).toContainText("미션 성공");
+ await expect(page.locator("#sim-next")).toBeVisible();
+ await page.reload();
+ await expect(page.locator("#progress")).toContainText("1 / 9");
+ await expect(page.locator("#sim-next")).toBeHidden();
+ await page.locator("#sim-check").click();
+ await expect(page.locator("#sim-feedback")).toContainText("아직 목표 상태가 아니야");
+});
+test("existing Linux progress survives separate mobile course",async({page})=>{
+ await page.goto(base+"/linux-crash-course.html");
+ await page.evaluate(()=>localStorage.setItem("meowde-linux-robotics-v1",'{"done":{"0-0":true}}'));
+ await page.reload();
+ await page.locator("#lesson .answers button").first().click();
+ expect(await page.evaluate(()=>localStorage.getItem("meowde-linux-robotics-v1"))).toBe('{"done":{"0-0":true}}');
+});
+test("incorrect search cannot unlock next practice",async({page})=>{
+ await page.goto(base+"/linux-crash-course.html");
+ await page.locator("#sim-missions button").nth(3).click();
+ await page.locator("#sim-input").fill("grep INFO app.log");
+ await page.locator("#sim-run").click();
+ await page.locator("#sim-check").click();
+ await expect(page.locator("#sim-next")).toBeHidden();
+ await page.locator("#sim-input").fill("grep -n ERROR app.log");
+ await page.locator("#sim-run").click();
+ await page.locator("#sim-check").click();
+ await expect(page.locator("#sim-next")).toBeVisible();
+});
