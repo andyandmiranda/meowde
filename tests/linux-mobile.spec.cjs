@@ -56,7 +56,7 @@ test("Linux subject home stays focused and fits a narrow phone",async({page})=>{
  await page.setViewportSize({width:375,height:812});
  await page.goto(base+"/linux-home.html");
  await expect(page.getByRole("heading",{name:"Linux, 하나씩 배워요"})).toBeVisible();
- await expect(page.locator("#meowde-mascot svg")).toBeVisible();
+ await expect(page.locator("#meowde-mascot svg")).toHaveCount(0);
  await expect(page.getByRole("link",{name:/학습 시작하기/})).toBeVisible();
  await expect(page.getByRole("link",{name:/전체 단원/})).toBeVisible();
  const size=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:window.innerWidth}));
