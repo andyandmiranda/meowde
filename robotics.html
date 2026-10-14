@@ -19,9 +19,36 @@ const EXACT_EXERCISES={"4":[["서버 파일 권한 점검","server 폴더 안 �
 const COMMAND_DRILLS={"4-1":[["run.sh 권한을 설정해 봐","chmod 755 deploy/run.sh","chmod 755 deploy/run.sh","755 = rwxr-xr-x"],["비밀번호 파일 잠그기","chmod 600 deploy/db_password.txt","chmod 600 deploy/db_password.txt","600 = rw-------"]],"4-3":[["신규 파일 권한을 소유자 전용으로 제한","umask 077","umask 077","새 일반 파일은 통상 600, 폴더는 700으로 생성돼"]],"4-7":[["기존 그룹 유지하고 interns에 webmaster 추가","sudo usermod -aG interns webmaster","sudo usermod -aG interns webmaster","-aG는 기존 추가 그룹을 유지해"]],"4-8":[["팀 폴더의 그룹을 하위까지 변경","sudo chgrp -R devteam team_drive","sudo chgrp -R devteam team_drive","-R = Recursive"]],"5-0":[["프로세스 목록에서 백업 작업 찾기","ps aux | grep backup_job.sh","ps aux | grep backup_job.sh","결과에 나타난 실제 PID를 직접 확인해. grep 자체 결과는 제외"]],"5-1":[["부모 프로세스 정보 확인","ps -ef","ps -ef","PPID 열을 확인하고 실제 숫자를 기록해"]],"5-5":[["로컬 주소에 4번 ping 보내기","ping -c 4 127.0.0.1","ping -c 4 127.0.0.1","-c = count"]],"5-7":[["PID 1234에 일반 종료 신호 보내기 (연습용 가상 PID)","kill 1234","kill 1234","기본 신호는 SIGTERM"]],"6-0":[["패키지를 검색해 봐","apt search figlet","apt search figlet","figlet은 큰 ASCII 글자를 출력해"]],"6-2":[["설치된 tree의 버전 확인","dpkg-query -W tree","dpkg-query -W tree","실제 버전은 Ubuntu 설치 상태에 따라 달라져"]]};
 let drillFeedback={};
 function normCmd(s){return String(s||'').trim().replace(/\s+/g,' ')}
-function verifyDrill(){const key=state.unit+"-"+state.task, d=COMMAND_DRILLS[key];if(!d)return;const input=document.getElementById("cmd-input");const typed=normCmd(input.value);const ok=typed===normCmd(d[1]);drillFeedback[key]={ok,typed};render();document.getElementById("drill")?.scrollIntoView({block:"nearest"})}
-function safeExercises(){const u=state.unit,task=state.task, a=EXACT_EXERCISES[u]?.[task],key=u+"-"+task;if(!a)return;const drill=COMMAND_DRILLS[key],feedback=drillFeedback[key];const panel=document.createElement("section");panel.className="card";panel.id="source-exercise";panel.innerHTML='<span class="pill">ZIP README 기반 문제 요약</span><h2>'+esc(a[0])+'</h2><ol style="padding-left:20px;line-height:1.8">'+a.slice(1).map(v=>'<li>'+esc(v)+'</li>').join('')+'</ol><p class="sub">정확한 원문과 실습 파일은 ZIP의 '+String(task+1).padStart(2,"0")+'/README.txt에서 확인하세요.</p>'+(drill?'<div id="drill"><h2>명령어 입력 연습</h2><p>'+esc(drill[0])+'</p><input id="cmd-input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="명령어 입력"><button style="margin-top:9px" class="btn" onclick="verifyDrill()">명령어 확인</button>'+(feedback?'<p class="sub">'+(feedback.ok?'✅ 맞았어. ':'다시 시도해 봐. ')+esc(feedback.ok?drill[3]:'문법과 공백, 옵션을 확인해 봐.')+'</p>':'')+'</div>':'<p class="sub">이 문제는 실제 파일·시스템 상태를 확인해야 하므로 정답을 고정하지 않았어.</p>');
-document.getElementById("viewer").appendChild(panel);
+function verifyDrill(index){
+  const key=state.unit+"-"+state.task;
+  const drill=COMMAND_DRILLS[key]?.[index];
+  const input=document.getElementById("cmd-input-"+index);
+  if(!drill||!input)return;
+  const typed=normCmd(input.value);
+  const ok=typed.length>0&&typed===normCmd(drill[2]);
+  const results=drillFeedback[key]||{};
+  results[index]={ok,typed};
+  drillFeedback[key]=results;
+  render();
+  if(!ok)document.getElementById("cmd-input-"+index)?.focus();
+}
+function safeExercises(){
+  const u=state.unit,task=state.task,a=EXACT_EXERCISES[u]?.[task],key=u+"-"+task;
+  if(!a)return;
+  const drills=Array.isArray(COMMAND_DRILLS[key])?COMMAND_DRILLS[key]:[];
+  const results=drillFeedback[key]||{};
+  const panel=document.createElement("section");
+  panel.className="card";
+  panel.id="source-exercise";
+  const instructions='<span class="pill">ZIP README 기반 문제 요약</span><h2>'+esc(a[0])+'</h2><ol style="padding-left:20px;line-height:1.8">'+a.slice(1).map(v=>'<li>'+esc(v)+'</li>').join('')+'</ol><p class="sub">정확한 원문과 실습 파일은 ZIP의 '+String(task+1).padStart(2,"0")+'/README.txt에서 확인하세요.</p>';
+  const exercises=drills.length
+    ?'<div id="drill"><h2>명령어 입력 연습</h2>'+drills.map((drill,index)=>{
+      const feedback=results[index];
+      return '<div id="drill-'+index+'" style="margin-top:14px"><label for="cmd-input-'+index+'"><b>'+(index+1)+'. '+esc(drill[0])+'</b></label><p class="sub"><code>'+esc(drill[1])+'</code></p><input id="cmd-input-'+index+'" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="'+esc(drill[0])+'" value="'+esc(feedback?.typed||'')+'" placeholder="명령어 입력"><button style="margin-top:9px" class="btn" onclick="verifyDrill('+index+')">명령어 확인</button>'+(feedback?'<p class="sub" role="status">'+(feedback.ok?'✅ 맞았어. ':'다시 시도해 봐. ')+esc(feedback.ok?drill[3]:'문법과 공백, 옵션을 확인해 봐.')+'</p>':'')+'</div>';
+    }).join('')+'</div>'
+    :'<p class="sub">이 문제는 실제 파일·시스템 상태를 확인해야 하므로 정답을 고정하지 않았어.</p>';
+  panel.innerHTML=instructions+exercises;
+  document.getElementById("viewer").appendChild(panel);
 }
 const baseRender=render;render=function(){baseRender();safeExercises()};render();
 </script><script src="/assets/linux-lab-v2.js?v=2"></script></body></html>
