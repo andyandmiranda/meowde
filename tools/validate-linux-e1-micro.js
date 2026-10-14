@@ -11,6 +11,6 @@ assert.match(html,/next\.hidden=!successful/);
 assert.match(html,/sim\.reset\(\);hints=0/);
 assert.match(html,/hints===1/);
 const scripts=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).filter(Boolean);
-assert.equal(scripts.length,5);
+assert.equal(scripts.length,6);
 scripts.forEach((s,i)=>new vm.Script(s,{filename:"inline-"+i}));
 console.log("PASS: E1 guided concept, example, practice, transfer and syntax");
