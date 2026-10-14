@@ -63,6 +63,18 @@ run("verifyDrill(0)");
 assert.equal(run("drillFeedback['4-1'][0].ok"), true, "First valid drill must pass");
 assert.equal(run("drillFeedback['4-1'][1]"), undefined, "The other drill remains independent");
 
+setCommand(0, "chmod u=rwx,go=rx deploy/run.sh");
+run("verifyDrill(0)");
+assert.equal(run("drillFeedback['4-1'][0].ok"), true, "Vetted symbolic chmod alternative must pass");
+
+for(const wrong of ["chmod u=rwx,go=rwx deploy/run.sh", "chmod u=rwx,go=rx other/run.sh", "chmod u=rwx,go=rx deploy/run.sh; echo unsafe"]) {
+  setCommand(0, wrong);
+  run("verifyDrill(0)");
+  assert.equal(run("drillFeedback['4-1'][0].ok"), false, "Unapproved alternative must fail: " + wrong);
+}
+setCommand(0, "chmod 755 deploy/run.sh");
+run("verifyDrill(0)");
+
 setCommand(1, "chmod 600 deploy/db_password.txt");
 run("verifyDrill(1)");
 assert.equal(run("drillFeedback['4-1'][1].ok"), true, "Second valid drill must pass");
