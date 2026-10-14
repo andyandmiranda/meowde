@@ -44,7 +44,7 @@ function safeExercises(){
   const exercises=drills.length
     ?'<div id="drill"><h2>명령어 입력 연습</h2>'+drills.map((drill,index)=>{
       const feedback=results[index];
-      return '<div id="drill-'+index+'" style="margin-top:14px"><label for="cmd-input-'+index+'"><b>'+(index+1)+'. '+esc(drill[0])+'</b></label><p class="sub"><code>'+esc(drill[1])+'</code></p><input id="cmd-input-'+index+'" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="'+esc(drill[0])+'" value="'+esc(feedback?.typed||'')+'" placeholder="명령어 입력"><button style="margin-top:9px" class="btn" onclick="verifyDrill('+index+')">명령어 확인</button>'+(feedback?'<p class="sub" role="status">'+(feedback.ok?'✅ 맞았어. ':'다시 시도해 봐. ')+esc(feedback.ok?drill[3]:'문법과 공백, 옵션을 확인해 봐.')+'</p>':'')+'</div>';
+      return '<div id="drill-'+index+'" style="margin-top:14px"><label for="cmd-input-'+index+'"><b>'+(index+1)+'. '+esc(drill[0])+'</b></label><input id="cmd-input-'+index+'" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="'+esc(drill[0])+'" value="'+esc(feedback?.typed||'')+'" placeholder="명령어 입력"><details class="sub" style="margin-top:8px"><summary>명령어 예시 보기</summary><code>'+esc(drill[1])+'</code></details><button style="margin-top:9px" class="btn" onclick="verifyDrill('+index+')">명령어 확인</button>'+(feedback?'<p class="sub" role="status">'+(feedback.ok?'✅ 맞았어. ':'다시 시도해 봐. ')+esc(feedback.ok?drill[3]:'문법과 공백, 옵션을 확인해 봐.')+'</p>':'')+'</div>';
     }).join('')+'</div>'
     :'<p class="sub">이 문제는 실제 파일·시스템 상태를 확인해야 하므로 정답을 고정하지 않았어.</p>';
   panel.innerHTML=instructions+exercises;
