@@ -60,4 +60,14 @@ assert.match(cmd("grep ERROR app.log"),/ERROR timeout/);
 assert.match(cmd("grep -n ERROR app.log"),/^2:ERROR network/);
 assert.match(cmd("find . -name '*.txt'"),/notes\.txt/);
 for(const input of ["grep ERROR /etc/passwd","find / -name '*.txt'","tail -n 2 ../../etc/passwd","head -n 1000 app.log","find . -exec rm -rf {}"]){cmd(input,false)}
+
+// E3 mission requires an actual matching search output, not filesystem existence.
+sim.reset();
+function e3(last){return last?.ok===true&&last.command==="grep"&&last.output==="2:ERROR network\n4:ERROR timeout"}
+assert.equal(e3(null),false);
+const wrong=sim.run("grep INFO app.log");assert.equal(e3({ok:wrong.ok,command:"grep",output:wrong.output}),false);
+const result=sim.run("grep -n ERROR app.log");
+assert.equal(e3({ok:result.ok,command:"grep",output:result.output}),true);
+sim.reset();
+assert.match(html,/E3 오류 줄 찾기/);
 console.log("PASS: mobile Linux simulator state, path boundaries, unsupported commands and reset");
