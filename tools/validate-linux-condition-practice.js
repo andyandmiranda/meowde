@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+"use strict";
+const assert=require("node:assert/strict");
+const fs=require("node:fs"),vm=require("node:vm"),path=require("node:path");
+const js=fs.readFileSync(path.join(__dirname,"../assets/linux-condition-practice.js"),"utf8");
+const html=fs.readFileSync(path.join(__dirname,"../linux-crash-course.html"),"utf8");
+const sandbox=vm.createContext({});
+vm.runInContext(js,sandbox,{timeout:2000});
+const c=sandbox.MeowdeConditions;
+assert.equal(c.run("minor",17).output,"미성년자입니다");
+assert.equal(c.run("minor",18).matched,true);
+assert.equal(c.run("minor",19).output,"성인입니다");
+assert.equal(c.run("pass",79).output,"RETRY");
+assert.equal(c.run("pass",80).output,"PASS");
+assert.equal(c.run("pass",81).matched,true);
+for(const value of ["","hello","1;rm -rf /","19.5","1e3","9999999999"])assert.equal(c.run("minor",value).ok,false);
+assert.equal(c.run("unknown",17).ok,false);
+assert.match(html,/src="\/assets\/linux-condition-practice\.js"/);
+assert.match(html,/id="cond-run"/);
+console.log("PASS: E8-E9 trace semantics, boundaries and invalid inputs");
