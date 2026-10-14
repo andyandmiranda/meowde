@@ -3,7 +3,7 @@
 const assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm");
 const html=fs.readFileSync("linux-crash-course.html","utf8");
 const scripts=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(Boolean);
-assert.equal(scripts.length,4,"Expected lesson, simulator, condition trace and Bash grading scripts");
+assert.equal(scripts.length,5,"Expected lesson, simulator, condition trace, Bash grading and E1 micro-lesson scripts");
 scripts.forEach((script,i)=>new vm.Script(script,{filename:"inline-"+i+".js"}));
 assert.match(html,/\[hidden\]\{display:none!important\}/);
 assert.match(html,/id="sim-next" hidden/);
