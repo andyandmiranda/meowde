@@ -3,6 +3,7 @@ const base=process.env.MEOWDE_BASE_URL||"http://127.0.0.1:4173";
 test.use({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
 test("mobile Linux concept -> mission -> feedback -> reload",async({page})=>{
  await page.goto(base+"/linux-crash-course.html");
+ await page.locator("#more-learning > summary").click();
  await expect(page.locator("#lesson")).toBeVisible();
  await page.locator("#lesson .answers button").first().click();
  await page.getByRole("button",{name:"이 단원 실습으로 이동"}).click();
@@ -22,6 +23,7 @@ test("mobile Linux concept -> mission -> feedback -> reload",async({page})=>{
 });
 test("existing Linux progress survives separate mobile course",async({page})=>{
  await page.goto(base+"/linux-crash-course.html");
+ await page.locator("#more-learning > summary").click();
  await page.evaluate(()=>localStorage.setItem("meowde-linux-robotics-v1",'{"done":{"0-0":true}}'));
  await page.reload();
  await page.locator("#lesson .answers button").first().click();
@@ -29,6 +31,7 @@ test("existing Linux progress survives separate mobile course",async({page})=>{
 });
 test("incorrect search cannot unlock next practice",async({page})=>{
  await page.goto(base+"/linux-crash-course.html");
+ await page.locator("#more-learning > summary").click();
  await page.locator("#sim-missions button").nth(3).click();
  await page.locator("#sim-input").fill("grep INFO app.log");
  await page.locator("#sim-run").click();
@@ -38,4 +41,13 @@ test("incorrect search cannot unlock next practice",async({page})=>{
  await page.locator("#sim-run").click();
  await page.locator("#sim-check").click();
  await expect(page.locator("#sim-next")).toBeVisible();
+});
+
+test("focused micro lesson reveals optional tools on demand",async({page})=>{
+ await page.goto(base+"/linux-crash-course.html");
+ await expect(page.locator("#micro-e1")).toBeVisible();
+ await expect(page.locator("#lesson")).toBeHidden();
+ await expect(page.locator("#more-learning")).not.toHaveAttribute("open",/./);
+ await page.locator("#more-learning > summary").click();
+ await expect(page.locator("#lesson")).toBeVisible();
 });
