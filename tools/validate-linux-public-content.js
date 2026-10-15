@@ -1,0 +1,38 @@
+#!/usr/bin/env node
+"use strict";
+const assert=require("node:assert/strict");
+const fs=require("node:fs");
+const read=p=>fs.readFileSync(p,"utf8");
+const publicFiles=["linux-home.html","linux-start.html","linux-crash-course.html","robotics.html","content-notice.html","assets/linux-guided-lesson.js","assets/linux-condition-practice.js","assets/linux-bash-practice.js"];
+for(const path of publicFiles){
+ const contents=read(path);
+ assert.doesNotMatch(contents,/NVIDIA\s*AI\s*Campus|NVDIA|미성년자입니다|성인입니다/i,path+" contains unreviewed course-derived reference");
+}
+const home=read("linux-home.html"),lesson=read("linux-start.html"),legacy=read("robotics.html");
+assert.match(home,/href="\/linux-start\.html"/);
+assert.match(lesson,/href="\/linux-home\.html"/);
+assert.match(legacy,/meowde-linux-robotics-v1/);
+assert.doesNotMatch(legacy,/localStorage\.(?:clear|removeItem)\s*\(/);
+assert.match(read("content-notice.html"),/공식 강의·인증 과정이 아닌 독립적인 학습 경험/);
+// Keep the public URL clean while retaining the canonical ordered Python bootstrap.
+// A rewrite serves the bootstrap internally; a redirect exposes the versioned URL.
+const config=JSON.parse(read("vercel.json"));
+assert.ok(!config.redirects?.some(rule=>rule.source==="/"),"root must not redirect to the versioned URL");
+const root=config.routes?.findIndex(rule=>rule.src==="^/$"&&rule.dest==="/v412.html");
+const filesystem=config.routes?.findIndex(rule=>rule.handle==="filesystem");
+assert.ok(root>=0&&filesystem>root,"root must retain the complete ordered bootstrap before static index matching");
+// Resolve local HTML navigation and static assets without making network requests.
+const pathModule=require("node:path");
+const pages=["linux-home.html","linux-start.html","linux-crash-course.html","robotics.html","content-notice.html"];
+const routes=new Map([["/","v412.html"]]);
+for(const page of pages){
+ const html=read(page);
+ for(const m of html.matchAll(/(?:href|src)="(\/[^"]+)"/g)){
+  const localPath=m[1].split(/[?#]/)[0];
+  if(!localPath||localPath==="/")continue;
+  const resolved=pathModule.posix.normalize(localPath).slice(1);
+  assert.ok(!resolved.startsWith("../")&&fs.existsSync(resolved),page+" has broken local reference "+m[1]);
+ }
+}
+assert.ok(fs.existsSync(routes.get("/")),"canonical root bootstrap is missing");
+console.log("PASS: Linux public-route provenance safeguards (not a copyright clearance)");

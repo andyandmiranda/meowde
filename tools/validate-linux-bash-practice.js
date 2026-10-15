@@ -1,0 +1,30 @@
+#!/usr/bin/env node
+"use strict";
+const assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm");
+const ctx=vm.createContext({});
+vm.runInContext(fs.readFileSync("assets/linux-bash-practice.js","utf8"),ctx,{timeout:2000});
+const grade=ctx.MeowdeBashPractice.grade;
+const battery='if [ "$battery" -lt 30 ]; then\n echo "충전이 필요해요"\nelse\n echo "계속 사용할 수 있어요"\nfi';
+const pass='if [ "$score" -ge 80 ]; then\n echo "PASS"\nelse\n echo "RETRY"\nfi';
+assert.equal(grade("battery",battery).ok,true);
+assert.equal(grade("pass",pass).ok,true);
+assert.equal(grade("battery",battery.replace("-lt","-gt")).ok,false);
+assert.equal(grade("battery",battery.replace("계속 사용할 수 있어요","충전이 필요해요")).ok,false);
+for(const input of ["rm -rf /","if true; then echo pass; fi",battery+"\nrm -rf /"]){assert.equal(grade("battery",input).ok,false)}
+assert.equal(grade("missing",battery).ok,false);
+const html=fs.readFileSync("linux-crash-course.html","utf8");
+assert.match(html,/href="#lesson"/);
+assert.match(html,/href="#sim-missions"/);
+assert.match(html,/href="#bash-task"/);
+assert.match(html,/safe-area-inset-bottom/);
+assert.match(html,/id="sim-hint" hidden/);
+assert.match(html,/id="bash-feedback" role="status"/);
+assert.match(html,/meowde-linux-cram-v1/);
+assert.doesNotMatch(html,/localStorage\.clear\s*\(/);
+assert.match(html,/window\.MeowdeChooseMission=choose/);
+assert.match(html,/id="sim-next" hidden/);
+assert.match(html,/const passed=missions\[current\]\.test\(terminal\.snapshot\(\),lastResult\)/);
+assert.match(html,/next\.hidden=false/);
+assert.match(html,/document\.getElementById\("sim-next"\)\.hidden=true/);
+assert.match(html,/guide\.onclick=/);
+console.log("PASS: limited Bash condition parser and multi-input semantic grading");

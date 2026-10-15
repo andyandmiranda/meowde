@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v462-unit6";
+const CACHE_NAME = "meowde-v463-learning-resume";
 
 const REQUIRED_ASSETS = [
   "/",
@@ -90,7 +90,21 @@ const REQUIRED_ASSETS = [
   "/v459-unit5-integration.css",
   "/v461-unit6-oop.js",
   "/v461-unit6-en.js",
-  "/v462-unit6-integration.js"
+  "/v462-unit6-integration.js",
+  "/linux-home.html",
+  "/linux-start.html",
+  "/linux-crash-course.html",
+  "/robotics.html",
+  "/content-notice.html",
+  "/assets/linux-guided.css",
+  "/assets/linux-mobile-simulator.js",
+  "/assets/linux-guided-progress.js",
+  "/assets/linux-guided-lesson.js",
+  "/assets/linux-home-progress.js",
+  "/assets/linux-library-view.js",
+  "/assets/linux-condition-practice.js",
+  "/assets/linux-bash-practice.js",
+  "/assets/subject-navigation.js"
 ];
 
 self.addEventListener("install", event => {

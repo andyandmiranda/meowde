@@ -1,0 +1,10 @@
+"use strict";
+const assert=require("node:assert/strict"),fs=require("node:fs");
+const config=JSON.parse(fs.readFileSync("vercel.json","utf8"));
+const rootRoute=config.routes?.findIndex(x=>x.src==="^/$"&&x.dest==="/v412.html");
+const filesystem=config.routes?.findIndex(x=>x.handle==="filesystem");
+assert.ok(rootRoute>=0&&filesystem>rootRoute,"root override must run before the index.html filesystem match");
+for(const key of ["rewrites","redirects","cleanUrls","trailingSlash"])assert.equal(config[key],undefined,"advanced routes must not mix with "+key);
+assert.ok(!config.redirects?.some(x=>x.source==="/"));
+assert.match(fs.readFileSync("v412.html","utf8"),/fetch\("\/index.html\?v=443"/);
+console.log("PASS: clean root precedes static index and preserves the ordered bootstrap and old entry URL");
