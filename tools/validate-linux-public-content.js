@@ -21,4 +21,18 @@ assert.ok(!config.redirects?.some(rule=>rule.source==="/"),"root must not redire
 const root=config.routes?.findIndex(rule=>rule.src==="^/$"&&rule.dest==="/v412.html");
 const filesystem=config.routes?.findIndex(rule=>rule.handle==="filesystem");
 assert.ok(root>=0&&filesystem>root,"root must retain the complete ordered bootstrap before static index matching");
+// Resolve local HTML navigation and static assets without making network requests.
+const pathModule=require("node:path");
+const pages=["linux-home.html","linux-start.html","linux-crash-course.html","robotics.html","content-notice.html"];
+const routes=new Map([["/","v412.html"]]);
+for(const page of pages){
+ const html=read(page);
+ for(const m of html.matchAll(/(?:href|src)="(\/[^"]+)"/g)){
+  const localPath=m[1].split(/[?#]/)[0];
+  if(!localPath||localPath==="/")continue;
+  const resolved=pathModule.posix.normalize(localPath).slice(1);
+  assert.ok(!resolved.startsWith("../")&&fs.existsSync(resolved),page+" has broken local reference "+m[1]);
+ }
+}
+assert.ok(fs.existsSync(routes.get("/")),"canonical root bootstrap is missing");
 console.log("PASS: Linux public-route provenance safeguards (not a copyright clearance)");
