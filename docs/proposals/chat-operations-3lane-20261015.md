@@ -2,6 +2,8 @@
 
 Status: **Review — operational documentation only**, 2026-10-15 KST. This file is on Draft PR #84, **not a main/Production policy**. It supersedes the earlier *proposed* five-chat navigation plan only as a recommended ChatGPT conversation layout. It does **not** activate unattended coding, low-risk automerge or deployment. Existing CEO approval and safety gates still govern. Actual ChatGPT chats must be created by the user; a GitHub file cannot create or connect them.
 
+Reconciled by HQ/PM under the CEO's 2026-10-15 continuation instruction: the three chats are optional role entry points, #78 is the single priority ledger, and prior explicit approval gates apply. No product or CI changes are included in this reconciliation.
+
 ## Intent and non-goals
 
 The CEO has at most **60 minutes/day**. Avoid multiple conflicting instructions, duplicate agent roles and brittle chat-history-as-database practices. Three conversations are simply entry points; **GitHub Issues and PRs are the cross-chat record**, not a shared live ChatGPT memory. Do not imply chat-to-chat message delivery, automated orchestration, independent peer review or continuous work.
@@ -23,13 +25,13 @@ The CEO has at most **60 minutes/day**. Avoid multiple conflicting instructions,
 - Pick up exactly one **approved/ready** task linked from GitHub; reconcile base/head and other writers before working.
 - Use a reviewable existing branch/PR where appropriate; preserve old learner keys, URLs, course IDs, brand and content rights.
 - Add a failing/reproduction test when possible, make minimum in-scope change, prove what passed or was NOT RUN. Return Issue/PR links, exact SHA and 1 next action.
-- Never merge to `main`, deploy Production, change protected settings/credentials/billing or delete stored data without the applicable **fresh explicit CEO approval**.
+- Never merge to `main`, deploy Production, change protected settings/credentials/billing or delete stored data without the applicable **explicit prior CEO approval**.
 
 Specialist design, UX, pedagogy, security and growth are **checklists/consulted perspectives**, not extra autonomous bots or additional chat threads by default.
 
 ## Single issue queue & conflict avoidance
 
-- Canonical queue: [Issue #78](https://github.com/andyandmiranda/meowde/issues/78) for **operating protocol only**, and individual GitHub Issues for actionable defects/tasks. Do **not** stuff every bug inside Issue #78.
+- Canonical priority ledger: [Issue #78](https://github.com/andyandmiranda/meowde/issues/78) holds the single current item, next action, owner and links. Individual GitHub Issues hold actionable defect/task details; `docs/OPERATIONS.md` holds procedures. Do not maintain competing priority queues or copy every bug into #78.
 - GitHub PRs are the immutable-by-SHA implementation/review evidence; actual Production commit/deployment must be checked separately. A Draft PR is not a release.
 - Separate status and priority: `INBOX / NEEDS_REPRO / PROPOSED / APPROVED / IN_PROGRESS / REVIEW / BLOCKED / DONE`; `P0 / P1 / P2 / P3`. Do not call a report DONE if not deployed when Production impact is claimed.
 - Single active autonomous code item, don't create a new automation-generated PR when two remain unmerged. Check **all** currently open PRs for overlap, and don't treat historical #75/#76 as current automatically.
@@ -98,4 +100,4 @@ Escalate new serious errors; don't disrupt the queue for each low-severity cosme
 
 ## Release / policy boundary
 
-This document and updates to the Issue queue implement a **documentation and triage workflow only**. The current approved repository policy, including its CEO authorization boundaries, remains in effect. The PR #84 branch also contains separately proposed expanded-autonomy policy/workflow changes; **do not interpret this playbook as approval or activation of those changes**. No changes to Python/Linux app code, schedules, branch protection, production environment, credentials or stored learner data are authorized by adding this file.
+This document and updates to the Issue queue implement a **documentation and triage workflow only**. The current approved repository policy, including its CEO authorization boundaries, remains in effect. The latest CEO instruction requires explicit prior approval for main merges, Production deployment and high-risk changes; it supersedes older expanded-autonomy proposals. PR #84 still includes a separately proposed CI workflow; this playbook neither approves nor activates it. No changes to Python/Linux app code, schedules, branch protection, production environment, credentials or stored learner data are authorized by adding this file.
