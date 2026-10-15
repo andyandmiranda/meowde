@@ -1,7 +1,7 @@
 /* E8/E9 instructional condition evaluator; never evaluates user code. */
 (function(root){"use strict";
 const cases=[
-{id:"minor",label:"미성년자 구분",limit:19,operator:"-lt",yes:"미성년자입니다",no:"성인입니다"},
+{id:"battery",label:"배터리 충전 판단",limit:30,operator:"-lt",yes:"충전이 필요해요",no:"계속 사용할 수 있어요"},
 {id:"pass",label:"점수 통과",limit:80,operator:"-ge",yes:"PASS",no:"RETRY"}
 ];
 function run(id,value){
