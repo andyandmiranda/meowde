@@ -18,5 +18,7 @@ assert.match(read("content-notice.html"),/공식 강의·인증 과정이 아닌
 // A rewrite serves the bootstrap internally; a redirect exposes the versioned URL.
 const config=JSON.parse(read("vercel.json"));
 assert.ok(!config.redirects?.some(rule=>rule.source==="/"),"root must not redirect to the versioned URL");
-assert.ok(config.rewrites?.some(rule=>rule.source==="/"&&rule.destination==="/v412.html"),"root must retain the complete ordered bootstrap");
+const root=config.routes?.findIndex(rule=>rule.src==="^/$"&&rule.dest==="/v412.html");
+const filesystem=config.routes?.findIndex(rule=>rule.handle==="filesystem");
+assert.ok(root>=0&&filesystem>root,"root must retain the complete ordered bootstrap before static index matching");
 console.log("PASS: Linux public-route provenance safeguards (not a copyright clearance)");
