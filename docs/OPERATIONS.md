@@ -1,79 +1,120 @@
-# MEOWDE — Shared Operations Ledger
-Updated: 2026-10-14 KST
-Status: ACTIVE only when this file exists on `main`; branch and PR copies are proposals. Changes to this policy require CEO approval.
+# MEOWDE — 운영 정책과 실행 절차
 
-## System of record
-- Live code and release: `main`, GitHub PRs/checks, and Vercel **production** deployment (not a READY preview).
-- Work backlog: GitHub Issues when adopted. Never infer approval from an old chat, a PR, or this proposed ledger.
-- Decisions and approvals: explicit CEO approval recorded in an issue/PR with scope and timestamp. No approval is implied by silence.
-- When the ledger is stale or inaccessible, STOP new code work; verify current state first.
+갱신: 2026-10-15 15:14 KST. 이번 CEO 지시의 범위는 현황 확인 및 문서·운영 절차 정비다. 이 브랜치는 PR #84 검토안이며 main 문서를 대체하지 않는다. 이 채팅에서 받은 최신 CEO 지시를 실행 기준으로 삼되, 저장소 정책 반영에는 별도 병합 승인이 필요하다.
 
-## Expanded autonomy authorization — 2026-10-15 KST (owner instruction)
+## 목표와 권한
 
-The product owner authorized implementation of an automated development, validation, low-risk merge and deployment system, with stop-and-ask for high-risk actions, costs and security changes. This authorizes building the system and its guardrails; it does **not** mean an untested workflow may immediately merge or deploy. The earlier per-change approval requirement is superseded **only** for changes that pass the policy and technical gates below. A proposal branch is not an active production policy until merged.
+초보자가 개념을 설명하고, 처음 보는 Python 문제를 풀고, 힌트 없이 실제 프로그램을 만드는 학습 환경을 검증 가능한 방식으로 개선한다. 레슨 완료·XP·CI 성공만으로 학습 효과를 주장하지 않는다.
 
-### Eligibility and risk
+- CEO: 비전, 우선순위·정책, 실제 사용 테스트, PR 병합 및 Production 배포 최종 승인.
+- AI 수석비서/PM: 단일 원장, 제보 접수, 중복 확인, 승인 범위 확인, 실행 조율 및 증거 점검.
+- Engineering / QA·Learning Review / Product·UX / Growth는 역할이다. 별도 GPT·채팅·자동화가 필수는 아니다. 같은 AI의 검토는 독립 제3자 검증이 아니다.
+- 버그 제보는 조사·재현의 근거이며 새 기능·병합·배포 승인이 아니다. 재현된 결함의 수정도 해당 Issue에 기록된 승인 범위 안에서만 수행한다.
+- 과거의 자동 병합·배포 허용 제안은 이번 CEO 지시와 충돌하므로 실행 근거로 사용하지 않는다.
 
-- **Low risk:** documentation, non-executable copy, and tightly scoped UI or learning-content changes only after automated tests and content QA demonstrate no impact on user data, navigation, progress, cache or security. A code change is never low risk merely because it is small.
-- **Always high risk / human approval:** dependencies and lockfiles, GitHub Actions and other CI definitions, permissions and credentials, authentication, network behavior, arbitrary code execution/Pyodide sandbox, user data/localStorage schemas, service worker and offline cache, routing/bootstrap, payments, third-party content rights, destructive changes, paid resources and production configuration.
-- Existing draft PRs (#83/#84), older PRs (#55/#52), or unreviewed changes are **not** automatically eligible for merge.
-- Product owner approval of expanded autonomy is **not** approval to disable branch protection, add tokens, incur API costs, or publish any particular unvalidated release.
+## 단일 원장과 동시 작업
 
-### Mandatory gates for unattended progression
+공식 우선순위 원장은 [Issue #78](https://github.com/andyandmiranda/meowde/issues/78)이다. 개별 문제는 기존 Issue에 연결하고, 코드·검증 증거는 PR에 기록한다. 이 문서에는 절차를, #78에는 현재 순서를 둔다. 과거 문서·채팅의 큐를 별도 실행 지시로 사용하지 않는다.
 
-1. Use a single queued task, isolated branch, least-privilege agent identity, and a concurrency lock. No overlapping automation-generated PRs; stop if two remain unmerged.
-2. Independently validate changed-file allowlist and risk classification, exact base/head SHA, required GitHub status checks, unit tests, browser E2E, progress persistence, learning correctness and (when applicable) preview smoke tests. Unknown/NOT RUN is not PASS.
-3. Merge only via a narrowly scoped trusted workflow after all checks and branch protection pass. Never give an untrusted PR workflow write credentials or deployment secrets.
-4. Production release requires an independently verified deployment gate, an exact commit and target project/environment, a working rollback target, and post-deploy smoke tests. Automatic release is **disabled** until these gates are implemented, exercised in a non-production rehearsal and recorded as PASS. Existing Vercel Git integration may deploy automatically on main; therefore no automated main merges before production gates are verified.
-5. At most three **meaningfully different** repair attempts per failure; then stop the affected task. Do not mask failures by skipping tests, weakening checks or deleting stored progress.
-6. Fail closed on missing permission, stale SHA, unavailable agent, missing CI or preview evidence, budget uncertainty, conflicting active work, unexpected files, security alerts, or missing rollback proof. Alert with issue/PR link, exact SHA, failure evidence and one recommended next action. Do not repeatedly notify for an unchanged state.
-7. No agent is claimed to run continuously unless an actual scheduler, credentials, execution logs and notifications are verified. Maintain audit records of each action and the specific owner authorization.
+1. 시작할 때 최신 main, 열린 Issue·PR, #78의 단일 현재 작업, 승인 범위와 직전 인계를 조회한다.
+2. 동시에 자율 개발하는 작업은 최대 1개. 담당·Issue·브랜치·기준 SHA·착수/종료 시각·다음 행동을 기록한다.
+3. 다른 실행자의 진행 여부가 불명확하거나 같은 브랜치가 변경되면 쓰기를 멈추고 재대조한다. Issue 상태와 역할표는 기술적 분산 잠금이 아니다.
+4. 기존 PR을 우선 활용한다. 자동 생성 미병합 PR이 2개 이상이면 새 PR을 만들지 않는다. 작성 주체가 불명확한 PR도 보수적으로 포함한다. 현재 #84·#85가 있으므로 신규 PR 생성은 보류한다.
+5. 읽기·문서·조사와 코드 구현을 구분한다. 승인·재현·도구가 없으면 그 상태를 기록하며 수행한 척하지 않는다.
 
-### Activation stages
+상태: PROPOSED → APPROVED → IN_PROGRESS → REVIEW → DONE.
+재현 대기: NEEDS_REPRODUCTION, 차단: BLOCKED(이유·해소 담당·다음 행동).
+APPROVED에는 CEO의 구체적인 허용 범위와 근거가 필요하다.
+DONE은 해당 작업의 완료 기준을 뜻하며 병합·배포 완료를 자동으로 뜻하지 않는다. 구현/검증/병합/배포 상태를 각각 기록한다.
 
-- **Stage 0 (current):** policy proposal and read-only audit checks; no automatic code authoring, merge or deploy.
-- **Stage 1:** connected coding agent and issue queue, PR creation, protected CI, independent QA and exception alerts; require proof of working execution.
-- **Stage 2:** guarded low-risk auto-merge, only after branch protections, Vercel deployment behavior and end-to-end release gates have been verified.
-- **Stage 3:** guarded low-risk auto-deploy with verified rollback and post-release monitoring; high-risk work always stops for approval.
+## 우선순위와 심각도
 
-## Operating roles and cadence
-- CEO: product direction, budget, high-impact decisions, production deployment approval.
-- Engineering Lead (weekdays 09/11/13/15/17 KST): inspect state, continue one approved work item, isolated branch + reviewable PR and evidence, no production action.
-- Chief of Staff (weekdays 09/12/15/18 KST): independently inspect records and report meaningful changes, risks, one recommendation, and CEO decisions; **report-only**.
-- Product & UX / Learning & Game / Market & Growth / Funding & Business / Quality & Security: specialist review domains, NOT independent running workers unless separate execution evidence exists.
+Python 학습 품질을 기능 확장보다 우선한다.
 
-## Hard operational limits
-1. One active autonomous development item at a time.
-2. If two or more **automation-generated** unmerged PRs exist, do not create another. Focus on validation/consolidation.
-3. Main write, merge and production deployment are allowed without per-change approval only after the expanded-autonomy gates above are activated and pass for an eligible low-risk change. Destructive storage changes, credential/permissions alteration, paid commitments and contracts still require explicit owner approval.
-4. Preserve Linux/Python progress and localStorage keys, PWA cache behavior, brand assets; validate educational correctness and content rights.
-5. CI / browser E2E / storage preservation / content QA are separate gates. Mark each PASS / FAIL / NOT RUN; never treat READY preview as passed.
-6. Each work item has owner, reviewer, validator, decision owner, scope, risk, rollback and acceptance criteria; AI role labels do not constitute independent review.
-7. Record outcomes in issue/PR, not only in transient chats. Never claim that report automation itself created or tested code.
+1. 정답·채점·실행 결과 정확성
+2. 개념·힌트·난이도·선행 개념
+3. 어려운 문제 표시와 집중 복습
+4. 단원·목차·타임라인
+5. 힌트 없는 응용과 실제 프로젝트
+6. Python·Linux UX 일관성, 모바일·오프라인 안정성
 
-## Initial reconciliation queue (NOT blanket approval to merge or extend scope)
-| Priority | Link | Status at last verification | Next action |
-|---|---|---|---|
-| P0 | PR #76 | Draft, Linux command drills | CI, blank/wrong/correct/multistep E5-E7, storage, preview E2E |
-| P0 | PR #75 | Draft, wrong-answer quiz retry | wrong→right and locked-correct checks; reconcile with #76 |
-| P1 | PR #73 | Draft, subject switch/Python resume | existing progress, refresh and subject switching |
-| P1 | PR #74 | Draft, clean root path | URL/bootstrap/PWA/service-worker verification |
-| P2 | PR #55 | Open, real input practice | compare with current main and check potential conflicts |
-| Hold | PR #52 | Temporary validation PR | DO NOT MERGE; archive/close only after confirming purpose |
+위 순서는 구현 승인이 아니다. 우선 현재 런타임의 결함과 검증 공백을 확인한다.
 
-Last checked: 2026-10-14, production main commit `424ab1cb1c6a514b1edbab3c2758f6f88ff2d727`. All facts may change.
+| 심각도 | 기준 | 대응 |
+|---|---|---|
+| P0 | 광범위한 진도 손실, 심각한 보안·서비스 장애 | 기존 개발보다 우선 조사하고 즉시 CEO에게 신규 사실·영향·안전한 선택지 보고. 고위험 조치는 승인 대기 |
+| P1 | 정상 답안 오답 처리, 핵심 학습 흐름 차단 | 최우선 재현·원인 판별. 현재 작업의 인계 후 승인된 결함 1개로 전환 |
+| P2 | 불명확한 설명, 부분 UX 문제 | 학습 영향 근거와 함께 순서 조정 |
+| P3 | 사소한 시각적 문제 | 정확성·학습 흐름 이후 처리 |
 
-## Per-run handoff template
-- Timestamp (KST):
-- Source commit / production deployment:
-- Approved issue and approval link (or **NONE**):
-- Active work item, owner, reviewer, validator:
-- Change since last run, evidence (PR/commit/check URLs):
-- Tests: unit / CI / browser E2E / storage / content / security (PASS, FAIL, NOT RUN):
-- Production changed? (default NO):
-- Risk/blocker:
-- Next single action:
-- CEO decision needed? (YES/NO, with options if YES):
+심각도는 관찰된 영향으로 정한다. 단순 출시 준비나 검증 공백을 P0 장애로 부르지 않는다. 미재현 제보는 잠정 심각도와 불확실성을 함께 기록한다.
 
-## CEO briefing policy
-Report only verified differences since last briefing; say “no verified changes” when appropriate. Separate reviewed / implemented / tested / merged / deployed. Escalate only time-sensitive/high-impact items, and recommend one high-value next step.
+## CEO 제보 → 재현 → 수정 → 재검증
+
+CEO는 이 채팅에 자연어나 스크린샷으로 제보하면 된다. 필수 양식을 작성하거나 개발 환경을 관리할 필요가 없다.
+
+1. PM이 과목·레슨·문항·입력·실제 반응을 파악한다. 부족한 정보는 먼저 앱·스크린샷·기존 기록으로 확인하고, 재현에 꼭 필요한 내용만 한 번에 묻는다.
+2. 열린/닫힌 Issue를 레슨 ID·증상·입력으로 검색한다. 중복이면 기존 Issue를 갱신하고 #78에서 연결한다. 재발이면 이전 수정 버전과 비교한다.
+3. Issue에 URL, Production/Preview 구분, 시각(KST), commit/deployment(모르면 UNKNOWN), 기기·브라우저, 재현 단계, 정확한 입력, 기대/실제, 빈도, 영향, 잠정 P0–P3를 기록한다. 개인정보·실제 진도 원문·토큰은 올리지 않는다.
+4. 사용자의 실제 저장 데이터를 지우지 않고 격리 브라우저와 합성 진도로 재현한다. 캐시/SW·언어·실행 패치 순서·입력 조건을 기록한다.
+5. 미재현이면 NEEDS_REPRODUCTION으로 남기고 다음 판별 검사 1개를 정한다. 추측성 코드 변경 금지.
+6. 재현되면 원인과 최소 수정 범위, 완료 기준, 위험, 롤백, CEO 승인 근거를 확정한다. 현재 승인 밖의 기능·설정 변경은 실행하지 않는다.
+7. 승인된 수정은 기존 관련 PR에서 진행한다. 의미 있는 회귀 검사(동일 정답, 다른 정상 풀이, 오답·빈입력·경계값)와 실제 브라우저 재검증을 수행한다. 정답만 모두 통과시키는 채점 완화는 금지한다.
+8. Preview는 정확한 SHA·배포별 URL에 묶어 기록한다. CEO 확인이 필요하면 5–10분 이내 단계·입력·기대 결과를 제공한다. Preview와 Production의 브라우저 저장소는 별개이므로 실제 진도 이동을 요구하지 않는다.
+9. 결과와 미검증 항목을 Issue·PR에 기록하고 #78의 현재 작업·다음 행동을 갱신한다. 같은 결과를 반복 댓글로 남기지 않는다.
+10. 병합·배포는 최종 범위·SHA·검증표·위험·롤백을 갖춘 별도 CEO 승인 후에만 가능하다. 배포 후 운영 확인 전에는 Production 해결로 보고하지 않는다.
+
+## 검증 기준
+
+각 결과는 PASS / FAIL / NOT RUN과 환경·시각·SHA·증거 링크를 가진다. 접근 실패는 제품 FAIL이 아니며 관련 게이트는 NOT RUN, 차단 사유는 별도로 적는다.
+
+| 게이트 | 요구 근거 |
+|---|---|
+| CI | 정확한 PR head의 필수 검사 전체 결과·run 링크. 일부 검사나 과거 SHA 성공을 전체 통과로 확대 금지 |
+| 실제 브라우저 E2E | 로컬/CI/고정 Hosted Preview/Production을 구분하고 시나리오·입력·기대/실제·로그 기록 |
+| 저장 데이터 | 기존 Python·Linux 키, 레슨 ID·index, 저장 값/진도·중간입력·완료·재방문·손상 데이터 처리 확인. 실제 사용자 데이터 삭제 금지 |
+| 교육 정확성 | 원본 30개만 보지 않고 bootstrap 패치와 확장 모듈 적용 후 유효 KO/EN 레슨을 확인. 실제 개수·패치 순서·ID·출력·대안 정답·힌트·선행 개념 기록. 정적 필드 검사는 의미 정확성 판정 아님 |
+| Production 상태 | 실제 운영 대상 deployment/SHA와 사용자 흐름을 구분. READY, main 병합, HTTP 200만으로 제품 통과 판정 금지 |
+| 초보자 학습 | CEO 사용과 실제 초보자 관찰을 구분. 개념 설명·힌트 없는 낯선 문제·독립 프로그램 결과. Issue #81은 실제 참가자 관찰 전까지 NOT RUN |
+
+흰색·핑크 브랜드, 기존 레슨 ID·저장 키·진도를 보존한다. 어려운 문제 표시·프로젝트·측정 기능은 제안 상태이며 이번 요청에서 새로 구현하지 않는다.
+
+## 예약 운영
+
+| 기존 작업 | CEO가 지정한 주기(KST) | 역할 |
+|---|---|---|
+| MEOWDE Engineering 실행·검증 | 평일 09:00 / 15:00 | 승인된 단일 작업의 가장 가치 높은 실행·검증 1단계와 인계 |
+| MEOWDE CEO 일일 브리핑 | 평일 18:00 | 중요한 문제 → 수행·근거 → 위험·미검증 → 필요 결정 → 다음 단일 행동 |
+| 먀오드 중대 장애 감시 | 매시간 | 읽기 중심 감시, 신규 P0/P1·의미 있는 상태 변화·실행 불가만 알림 |
+
+이는 요청된 운영 기준이며 현재 스케줄러 조회 성공을 뜻하지 않는다. 설정 존재, 활성 상태, 실제 마지막 실행, 결과, 알림 전달은 별개로 확인한다. 예약 사이에 AI가 계속 일한다고 가정하지 않는다. 무변경·비행동 상태에는 반복 보고·댓글을 만들지 않는다.
+
+2026-10-15 점검: #78의 2026-10-14 승인 댓글은 Engineering 09/15와 브리핑 18시 저장 이력이다. 현재 ChatGPT 예약 3개의 설정·실행·알림은 사용 가능한 도구로 재확인하지 못했다. 로컬 Codex 파일에는 별개 'MEOWDE 7일 자동 작업 파일럿'(meowde-7) PAUSED가 존재한다. 이 파일은 위 3개 예약의 중지·실행 증거가 아니다. 예약 생성·복제·재개·설정 변경을 수행하지 않았다.
+
+PR #84의 기존 autonomy-audit.yml은 6시간 간격 저장소 읽기 감사 제안이다. 매시간 Production 장애 감시를 대체하지 않으며 실행자·잠금·병합/배포 차단 장치도 아니다. CI 정의 변경의 별도 승인 전에는 PR #84 전체를 병합 승인 대상으로 제시하지 않는다. 이번 정비는 그 파일을 수정하지 않았다.
+
+## 작업·인계 최소 양식
+
+- 목표 / 문제·사용자 영향 / 심각도와 근거:
+- 범위 / 제외 / 허용 행동 / CEO 승인 근거(없으면 NONE):
+- PM / 구현 / 검토 / 검증 / 결정 담당(동일 AI 여부):
+- 완료 기준 / 위험 / 롤백:
+- 상태 / 단일 현재 작업 / 브랜치·main·PR head SHA / 시각(KST):
+- 재현 URL·단계·입력·기대·실제 / 관련 Issue:
+- 구현 / 검증 / 병합 / 배포(각각):
+- CI / 브라우저 / 저장 / 교육 / Production: PASS·FAIL·NOT RUN + 증거:
+- 차단 사유 / 다음 단일 행동 / CEO 결정(필요할 때만):
+
+롤백 계획을 기록하는 것은 실행 승인이 아니다. 문서 정비는 해당 변경 커밋을 되돌려 복구할 수 있다. 코드·배포 롤백은 검증된 대상과 별도 권한 범위를 확인한다.
+
+## 이번 대조와 CEO의 60분
+
+- main: 11feed313b5048b743d9ac56889b748c8d9cdd6f. PR #83은 2026-10-15 13:50 KST 병합. 과거 Draft/ebdb63c Production 기록은 현재 사실로 사용하지 않는다.
+- #84: 운영 정비, Draft 유지. #85: UX·Python 품질 제안, Draft 유지, head fd4e150bf9ddb7f7a154740c153005ee27f581a1 조회.
+- #85 해당 head의 Actions 3개 success는 조회했다. Hosted 브라우저·저장·교육·현재 Production PASS는 확보하지 않았다.
+- 현재 Production 접근은 이 환경의 DNS 오류로 확인하지 못했다. 제품 장애 판정 근거가 아니다.
+- main 브랜치 API는 protected=false를 반환했다. 전체 ruleset 실효성은 미검증이며 권한·보호 설정 변경은 별도 승인 대상이다.
+- 로컬 checkout에는 다수 기존 수정이 있다. 기존 파일을 초기화·일괄 커밋하지 않고 원격 #84의 문서만 정비한다.
+- 이 정비의 목표: 충돌하는 정책과 큐 제거, 제보 절차·게이트·승인 경계 명확화. 완료 기준: #84 문서와 #78에서 같은 원장·권한·다음 행동을 읽을 수 있음. 위험: main 반영 전 정책 불일치, 접근 불가 예약, 숨은 동시 작업. 롤백: 이번 문서 커밋 및 Issue 편집 이력 복구. 제품 테스트는 이번 문서 정비에서 NOT RUN.
+
+CEO는 10분 결과 확인 → 30분 실제 Python 학습 → 10분 필요한 우선순위·승인 → 10분 목표 확인으로 사용한다. 문제는 이 채팅에 '어느 문제에서 무엇을 입력했는데 어떻게 됐다'만 남기면 된다. PM이 공식 기록과 재현·검증을 관리한다. 주간에는 검증된 개선·미해결 P0/P1·전이 과제 관찰·CEO 소요 시간을 요약하며 결과가 없으면 그대로 기록한다.
