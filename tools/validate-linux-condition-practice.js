@@ -7,13 +7,13 @@ const html=fs.readFileSync(path.join(__dirname,"../linux-crash-course.html"),"ut
 const sandbox=vm.createContext({});
 vm.runInContext(js,sandbox,{timeout:2000});
 const c=sandbox.MeowdeConditions;
-assert.equal(c.run("minor",17).output,"미성년자입니다");
-assert.equal(c.run("minor",18).matched,true);
-assert.equal(c.run("minor",19).output,"성인입니다");
+assert.equal(c.run("battery",15).output,"충전이 필요해요");
+assert.equal(c.run("battery",29).matched,true);
+assert.equal(c.run("battery",30).output,"계속 사용할 수 있어요");
 assert.equal(c.run("pass",79).output,"RETRY");
 assert.equal(c.run("pass",80).output,"PASS");
 assert.equal(c.run("pass",81).matched,true);
-for(const value of ["","hello","1;rm -rf /","19.5","1e3","9999999999"])assert.equal(c.run("minor",value).ok,false);
+for(const value of ["","hello","1;rm -rf /","19.5","1e3","9999999999"])assert.equal(c.run("battery",value).ok,false);
 assert.equal(c.run("unknown",17).ok,false);
 assert.match(html,/src="\/assets\/linux-condition-practice\.js"/);
 assert.match(html,/id="cond-run"/);
