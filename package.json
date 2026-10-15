@@ -24,7 +24,8 @@
     "validate:unit5": "node tools/validate-unit5-v458.js",
     "validate:unit6": "node tools/validate-unit6-v461.js",
     "preview:local": "node tools/serve-preview.cjs",
-    "test:browser": "playwright test"
+    "test:browser": "playwright test",
+    "validate:lesson-quality": "node tools/validate-lesson-quality.js"
   },
   "engines": {
     "node": ">=20"
