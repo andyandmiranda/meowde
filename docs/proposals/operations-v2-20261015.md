@@ -1,3 +1,5 @@
+> **2026-10-15 CEO 운영 지시로 대체된 과거 제안입니다.** 현재 역할·주기·승인·버그 절차는 [../OPERATIONS.md](../OPERATIONS.md), 단일 우선순위는 [Issue #78](https://github.com/andyandmiranda/meowde/issues/78)을 따릅니다. 아래 00–04 별도 채팅 구조와 예약 주기는 실행 지시가 아닙니다. #83은 이미 병합됐으며 아래 SHA·Preview·Production·QA는 당시 관찰입니다. 최신 상태로 확대하지 않습니다. 본문은 추적을 위한 과거 근거로 보존합니다.
+
 # MEOWDE 대화 체계 v2 — 작업 대기열·전환 규칙 제안
 
 상태: **Review / 제안**. 기준 관찰: 2026-10-15 12:24–12:31 KST.
