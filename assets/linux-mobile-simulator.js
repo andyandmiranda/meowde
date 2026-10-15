@@ -23,7 +23,22 @@ function create(){
   if(cmd==="pwd")return args.length?invalid():ok(cwd);
   if(cmd==="ls"){if(args.length>1)return invalid();const p=pathOf(args[0]||".");if(!read(p))return err("해당 경로가 없어.");if(read(p).type==="file")return ok(name(p));return ok(Object.keys(fs).filter(k=>parent(k)===p&&k!==p).map(name).sort().join("  ")||"(비어 있음)")}
   if(cmd==="cd"){if(args.length>1)return invalid();const p=pathOf(args[0]||"/home/student");if(!read(p)||read(p).type!=="dir")return err("이동할 폴더가 없어.");cwd=p;return ok(cwd)}
-  if(["mkdir","touch"].includes(cmd)){if(args.length!==1)return invalid();const p=pathOf(args[0]);if(read(p))return err("이미 존재해.");if(!read(parent(p))||read(parent(p)).type!=="dir")return err("상위 폴더가 없어.");fs[p]=cmd==="mkdir"?{type:"dir"}:{type:"file",text:""};return ok(name(p)+" 생성됨")}
+  if(["mkdir","touch"].includes(cmd)){
+   let parents=false,paths=args;
+   if(cmd==="mkdir"&&paths[0]==="-p"){parents=true;paths=paths.slice(1);}
+   if(paths[0]==="--")paths=paths.slice(1);
+   if(paths.length!==1||(!args.includes("--")&&paths[0].startsWith("-")))return invalid();
+   const p=pathOf(paths[0]);
+   if(read(p))return parents&&read(p).type==="dir"?ok(name(p)+" 폴더 확인됨"):err("이미 존재해.");
+   if(parents){
+    const pieces=p.split("/").filter(Boolean);let current="";
+    for(const piece of pieces){current+="/"+piece;if(read(current)&&read(current).type!=="dir")return err("경로에 파일이 있어.");}
+    current="";for(const piece of pieces){current+="/"+piece;if(!read(current))fs[current]={type:"dir"};}
+    return ok(name(p)+" 생성됨");
+   }
+   if(!read(parent(p))||read(parent(p)).type!=="dir")return err("상위 폴더가 없어.");
+   fs[p]=cmd==="mkdir"?{type:"dir"}:{type:"file",text:""};return ok(name(p)+" 생성됨");
+  }
   if(cmd==="cat"){if(args.length!==1)return invalid();const p=pathOf(args[0]);return read(p)?.type==="file"?ok(read(p).text||"(빈 파일)"):err("읽을 파일이 없어.")}
   if(cmd==="head"||cmd==="tail"){
    if(args.length!==3||args[0]!=="-n"||!/^[1-9][0-9]?$/.test(args[1]))return invalid();

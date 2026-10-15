@@ -1,4 +1,4 @@
-const {test,expect}=require("@playwright/test");
+const {test,expect}=require("playwright/test");
 const base=process.env.MEOWDE_BASE_URL||"http://127.0.0.1:4173";
 test.use({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
 test("focused lesson from home to independent transfer and completion",async({page})=>{

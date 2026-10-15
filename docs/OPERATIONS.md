@@ -1,11 +1,12 @@
 # MEOWDE — Shared Operations Ledger
-Updated: 2026-10-14 KST
+Updated: 2026-10-15 KST (release-candidate reconciliation; this update is not yet on main)
 Status: ACTIVE only when this file exists on `main`; branch and PR copies are proposals. Changes to this policy require CEO approval.
 
 ## System of record
 - Live code and release: `main`, GitHub PRs/checks, and Vercel **production** deployment (not a READY preview).
 - Work backlog: GitHub Issues when adopted. Never infer approval from an old chat, a PR, or this proposed ledger.
-- Decisions and approvals: explicit CEO approval recorded in an issue/PR with scope and timestamp. No approval is implied by silence.
+- Decisions and approvals: the user's Product Owner role and current project instructions govern approvals. Record the scope and date in [project-decisions.md](project-decisions.md) and the related PR. Existing CEO references denote the same user decision authority, not an additional approver. No approval is implied by silence.
+- Current implementation and verification: [project-status.md](project-status.md). Brand baseline and unresolved provenance: [brand-assets.md](brand-assets.md). These supplement this ledger rather than duplicate its operating policy.
 - When the ledger is stale or inaccessible, STOP new code work; verify current state first.
 
 ## Operating roles and cadence
@@ -23,17 +24,18 @@ Status: ACTIVE only when this file exists on `main`; branch and PR copies are pr
 6. Each work item has owner, reviewer, validator, decision owner, scope, risk, rollback and acceptance criteria; AI role labels do not constitute independent review.
 7. Record outcomes in issue/PR, not only in transient chats. Never claim that report automation itself created or tested code.
 
-## Initial reconciliation queue (NOT blanket approval to merge or extend scope)
+## Current reconciliation queue (NOT production approval)
 | Priority | Link | Status at last verification | Next action |
 |---|---|---|---|
-| P0 | PR #76 | Draft, Linux command drills | CI, blank/wrong/correct/multistep E5-E7, storage, preview E2E |
-| P0 | PR #75 | Draft, wrong-answer quiz retry | wrong→right and locked-correct checks; reconcile with #76 |
-| P1 | PR #73 | Draft, subject switch/Python resume | existing progress, refresh and subject switching |
-| P1 | PR #74 | Draft, clean root path | URL/bootstrap/PWA/service-worker verification |
-| P2 | PR #55 | Open, real input practice | compare with current main and check potential conflicts |
+| P0 | PR #83 | Active release candidate | Complete local/CI/hosted Preview checks, preserve records, then present exact scope for PO release approval |
+| Superseded implementation | PR #76 | Targets retired external exercise page | Keep original page retired; new guided task tests cover blank/wrong/valid inputs and actual simulated result. Do not import old corpus |
+| Superseded implementation | PR #75 | Targets retired quiz implementation | Current optional quiz permits retries; browser regression checks correct result and reload. Do not restore old page |
+| Consolidated intent | PR #73 | Python↔Linux navigation and resume incorporated in #83 | No unapproved expansion courses or second Linux curriculum imported |
+| Consolidated change | PR #74 | Root rewrite incorporated in #83 | Root URL, legacy bootstrap and offline resume checked locally; hosted Preview remains a separate gate |
+| Needs separate reconciliation | PR #55 | Older real-input proposal; differs from present `v454` implementation | Current validation confirms stdin plumbing; do not merge conflicting older branch wholesale or claim all of its curriculum intent was delivered |
 | Hold | PR #52 | Temporary validation PR | DO NOT MERGE; archive/close only after confirming purpose |
 
-Last checked: 2026-10-14, production main commit `424ab1cb1c6a514b1edbab3c2758f6f88ff2d727`. All facts may change.
+Last checked: 2026-10-15 KST. Main and latest listed Production deployment point to `ebdb63cc70a1525366ee12573def4b2296119543`. PR #83 preparation started from `3e92cdc88f4df21d58bf0105095e8024567a1a52`. This work does not merge main or deploy Production. Exact final validation belongs in the PR and project-status.md. All facts may change.
 
 ## Per-run handoff template
 - Timestamp (KST):

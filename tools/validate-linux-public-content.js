@@ -14,5 +14,9 @@ assert.match(lesson,/href="\/linux-home\.html"/);
 assert.match(legacy,/meowde-linux-robotics-v1/);
 assert.doesNotMatch(legacy,/localStorage\.(?:clear|removeItem)\s*\(/);
 assert.match(read("content-notice.html"),/공식 강의·인증 과정이 아닌 독립적인 학습 경험/);
-assert.doesNotMatch(read("vercel.json"),/"source"\s*:\s*"\/"\s*,\s*"destination"\s*:\s*"\/v412\.html"/);
+// Keep the public URL clean while retaining the canonical ordered Python bootstrap.
+// A rewrite serves the bootstrap internally; a redirect exposes the versioned URL.
+const config=JSON.parse(read("vercel.json"));
+assert.ok(!config.redirects?.some(rule=>rule.source==="/"),"root must not redirect to the versioned URL");
+assert.ok(config.rewrites?.some(rule=>rule.source==="/"&&rule.destination==="/v412.html"),"root must retain the complete ordered bootstrap");
 console.log("PASS: Linux public-route provenance safeguards (not a copyright clearance)");
