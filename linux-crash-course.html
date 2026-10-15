@@ -88,7 +88,7 @@ function render(){
   area.append(input,execute,hint,result);
  }
 }
-next.onclick=()=>{if(step===3)return;if(step>=2&&!successful)return;step++;render()};
+next.onclick=()=>{if(step>=2&&!successful)return;if(step===3){const more=document.getElementById("more-learning");more.open=true;const summary=more.querySelector("summary");summary.focus();summary.scrollIntoView({behavior:"smooth",block:"start"});return}step++;render()};
 prev.onclick=()=>{if(step>0){step--;render()}};
 render();
 })();
