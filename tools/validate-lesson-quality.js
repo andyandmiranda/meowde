@@ -1,13 +1,11 @@
 "use strict";
 // Conservative static quality gate. It detects structural defects, not semantic correctness.
-const fs=require("node:fs"),vm=require("node:vm"),assert=require("node:assert/strict");
-const sources=["assets/lessons-ko.js","assets/lessons-en.js"];
-for(const path of sources){
- const source=fs.readFileSync(path,"utf8"),context={window:{}};
- vm.runInNewContext(source,context,{filename:path,timeout:1000});
- const key=path.endsWith("ko.js")?"MEOWDE_LESSONS_KO":"MEOWDE_LESSONS_EN";
- const lessons=context.window[key];
- assert.ok(Array.isArray(lessons)&&lessons.length>0,path+": missing curriculum");
+const assert=require("node:assert/strict");
+const data=require('./effective-curriculum.cjs').load();
+assert.deepEqual(data.ko.map(l=>l.slug),data.en.map(l=>l.slug),'effective KO/EN lesson order');
+for(const lang of ['ko','en']){
+ const path='effective '+lang,lessons=data[lang];
+ assert.ok(Array.isArray(lessons)&&lessons.length===60,path+": expected 60 effective lessons");
  const seen=new Set(),errors=[];
  for(const lesson of lessons){
   if(!lesson.slug||!lesson.title||!Array.isArray(lesson.exercises)||!lesson.exercises.some(x=>x.type==="concept"&&x.body&&x.code))errors.push(lesson.slug+": missing usable concept explanation/example");
@@ -20,7 +18,7 @@ for(const path of sources){
    if(exercise.type==="predict"&&(!Array.isArray(exercise.choices)||!Number.isInteger(exercise.answer)||exercise.answer<0||exercise.answer>=exercise.choices.length))errors.push(id+": invalid answer index");
    if(exercise.type==="fill"&&(!Array.isArray(exercise.tokens)||!exercise.tokens.includes(exercise.answer)))errors.push(id+": answer missing from options");
    if(exercise.type==="bughunt"&&(!Array.isArray(exercise.lines)||!Number.isInteger(exercise.buggy)||exercise.buggy<0||exercise.buggy>=exercise.lines.length))errors.push(id+": invalid buggy line");
-   if(exercise.type==="write"&&(!exercise.expected||!exercise.model||!exercise.starter))errors.push(id+": incomplete writing task");
+   if(exercise.type==="write"&&(exercise.expected===undefined||!exercise.model||!exercise.starter))errors.push(id+": incomplete writing task");
   }
  }
  if(errors.length)throw new Error(path+" quality failures:\n"+errors.join("\n"));

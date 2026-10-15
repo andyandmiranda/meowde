@@ -113,6 +113,7 @@
   // v4.13 remains the canonical Lesson DOM owner and reads auxiliaryLabel().
   const baseCheckQ=window.checkQ;
   if(typeof baseCheckQ==="function")window.checkQ=async function(){
+    if(S.checked||S.loading)return;
     const exercise=typeof window.cur==="function"?cur():null;
     const first=exercise&&!S.checked&&!exercise.retry;
     await baseCheckQ.apply(this,arguments);

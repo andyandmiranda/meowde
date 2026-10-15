@@ -1,10 +1,14 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v463-learning-resume";
+const CACHE_NAME = "meowde-v464-learning-readiness";
 
 const REQUIRED_ASSETS = [
   "/",
   "/v412.html",
   "/index.html",
+  "/learning-path.html",
+  "/assets/learning-path.js",
+  "/assets/learning-readiness.json",
+  "/assets/tester-report.js",
   "/assets/lessons-ko.js",
   "/assets/lessons-en.js",
   "/assets/meowde-approved-base.svg",
