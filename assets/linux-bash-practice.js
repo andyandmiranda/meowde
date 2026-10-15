@@ -1,5 +1,5 @@
 (function(root){"use strict";
-const tasks=[{id:"minor",variable:"age",operator:"-lt",limit:19,yes:"미성년자입니다",no:"성인입니다",samples:[17,19,25]},{id:"pass",variable:"score",operator:"-ge",limit:80,yes:"PASS",no:"RETRY",samples:[60,79,80,95]}];
+const tasks=[{id:"battery",variable:"battery",operator:"-lt",limit:30,yes:"충전이 필요해요",no:"계속 사용할 수 있어요",samples:[15,29,30,75]},{id:"pass",variable:"score",operator:"-ge",limit:80,yes:"PASS",no:"RETRY",samples:[60,79,80,95]}];
 function grade(id,source){
  const t=tasks.find(x=>x.id===id);if(!t)return {ok:false,error:"미지원 과제"};
  if(typeof source!=="string"||source.length>700)return {ok:false,error:"입력 길이를 확인해 줘."};
