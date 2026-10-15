@@ -40,7 +40,7 @@ assert.match(subjectHome,/src="\/assets\/meowde-approved-headphones\.svg\?v=450"
 assert.ok(fs.existsSync("assets/meowde-approved-headphones.svg"));
 assert.doesNotMatch(subjectHome,/function catSVG\(/);
 assert.match(subjectHome,/href="\/linux-start.html"/);
-assert.match(subjectHome,/href="\\/robotics.html"/);
+assert.ok(subjectHome.includes('href="/robotics.html"'),"Linux home should link to saved records");
 assert.doesNotMatch(subjectHome,/localStorage\.setItem\s*\(/);
 const archive=fs.readFileSync("robotics.html","utf8");
 assert.doesNotMatch(archive,/localStorage\.(setItem|removeItem|clear)\s*\(/);
