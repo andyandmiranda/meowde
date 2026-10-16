@@ -1,0 +1,994 @@
+{
+  "version": 1,
+  "reviewDate": "2026-10-15",
+  "baselineCommit": "11feed313b5048b743d9ac56889b748c8d9cdd6f",
+  "definitions": {
+    "보강": "해당 핵심 목표에 설명·실행 예제·예측·직접 작성·다단계 힌트·복수 테스트·해설을 추가. 자료 전체 범위 완료를 의미하지 않음.",
+    "부분": "일부 목표에는 위 흐름이 있으나 세부 기능이나 전이 연습이 남음.",
+    "설명만": "설명이 있지만 해당 기능의 직접 적용 과제를 갖추지 못함. 완료 아님.",
+    "미구현": "이번 구현에 해당 목표의 학습·평가 경로를 추가하지 않음."
+  },
+  "rows": [
+    {
+      "source": "[python] 01. 파이썬 기초.pdf",
+      "location": "3–27",
+      "objective": "파이썬 실행 환경과 편집기 역할을 구별한다.",
+      "legacy": "start-field",
+      "unit": "values",
+      "status": "부분",
+      "gap": "앱 내 실행기는 제공. 로컬 설치·PATH·편집기 설정 실습은 별도 보강 필요.",
+      "evidence": {
+        "explanation": "values.concept",
+        "prediction": "values.quiz",
+        "practice": "values.task",
+        "feedback": "values.task.hints / tests.feedback / steps",
+        "criteria": [
+          "일반 입력",
+          "빈 수량",
+          "정확히 나누어짐",
+          "다른 용량"
+        ]
+      }
+    },
+    {
+      "source": "[python] 01. 파이썬 기초.pdf",
+      "location": "28–45",
+      "objective": "입출력·자료형·대입·변환·출력 형식을 적용한다.",
+      "legacy": "print-camp, input-window, concat-bridge, debug-missing-quote",
+      "unit": "values",
+      "status": "보강",
+      "gap": "input 대기 실습은 기존 input-window에서 수행. 새 실험실은 함수 인자 기반.",
+      "evidence": {
+        "explanation": "values.concept",
+        "prediction": "values.quiz",
+        "practice": "values.task",
+        "feedback": "values.task.hints / tests.feedback / steps",
+        "criteria": [
+          "일반 입력",
+          "빈 수량",
+          "정확히 나누어짐",
+          "다른 용량"
+        ]
+      }
+    },
+    {
+      "source": "[python] 01. 파이썬 기초.pdf",
+      "location": "46–51",
+      "objective": "산술·비교·논리·포함 연산을 선택한다.",
+      "legacy": "math-stone, compare-gate, logic-lantern, membership-gate",
+      "unit": "branches",
+      "status": "부분",
+      "gap": "새 실험실 몫·나머지·or 경계 검증 포함. 모든 연산자별 독립 심화 문제는 없음.",
+      "evidence": {
+        "explanation": "branches.concept",
+        "prediction": "branches.quiz",
+        "practice": "branches.task",
+        "feedback": "branches.task.hints / tests.feedback / steps",
+        "criteria": [
+          "경계 직전",
+          "경계 포함",
+          "회원 조건",
+          "두 조건 모두 참"
+        ]
+      }
+    },
+    {
+      "source": "[python] 01. 파이썬 기초.pdf",
+      "location": "52–63",
+      "objective": "분기 순서·등호 경계·들여쓰기를 판단한다.",
+      "legacy": "if-gate, else-cabin, elif-mushroom, indent-valley",
+      "unit": "branches",
+      "status": "보강",
+      "gap": "",
+      "evidence": {
+        "explanation": "branches.concept",
+        "prediction": "branches.quiz",
+        "practice": "branches.task",
+        "feedback": "branches.task.hints / tests.feedback / steps",
+        "criteria": [
+          "경계 직전",
+          "경계 포함",
+          "회원 조건",
+          "두 조건 모두 참"
+        ]
+      }
+    },
+    {
+      "source": "[python] 01. 파이썬 기초.pdf",
+      "location": "64–72",
+      "objective": "반복 상태·range 끝 제외·종료·건너뛰기를 구별한다.",
+      "legacy": "loop-hill, range-rail, while-cave",
+      "unit": "loops",
+      "status": "보강",
+      "gap": "새 문제는 for 중심. while 직접 작성은 기존 레슨에 있음.",
+      "evidence": {
+        "explanation": "loops.concept",
+        "prediction": "loops.quiz",
+        "practice": "loops.task",
+        "feedback": "loops.task.hints / tests.feedback / steps",
+        "criteria": [
+          "종료 후 값 제외",
+          "빈 목록",
+          "음수만 존재",
+          "종료값 없음"
+        ]
+      }
+    },
+    {
+      "source": "[python] 02. iterables.pdf",
+      "location": "4–9,17–29",
+      "objective": "리스트 인덱스·슬라이스·수정·순회·집계를 적용한다.",
+      "legacy": "list-garden, index-tower, append-dock",
+      "unit": "collections",
+      "status": "부분",
+      "gap": "여러 list 메서드의 독립 작성 문제는 후속 과제.",
+      "evidence": {
+        "explanation": "collections.concept",
+        "prediction": "collections.quiz",
+        "practice": "collections.task",
+        "feedback": "collections.task.hints / tests.feedback / steps",
+        "criteria": [
+          "정규화와 합산",
+          "공백 제외",
+          "빈 목록",
+          "원본 보존"
+        ]
+      }
+    },
+    {
+      "source": "[python] 02. iterables.pdf",
+      "location": "10–16",
+      "objective": "참조 공유·얕은 복사·중첩 복사를 판단한다.",
+      "legacy": "list-garden",
+      "unit": "copy",
+      "status": "보강",
+      "gap": "2차원 정수 행까지 검증. 임의 객체 그래프의 deepcopy 직접 작성은 미포함.",
+      "evidence": {
+        "explanation": "copy.concept",
+        "prediction": "copy.quiz",
+        "practice": "copy.task",
+        "feedback": "copy.task.hints / tests.feedback / steps",
+        "criteria": [
+          "값 변환",
+          "빈 격자",
+          "음수와 불균등 행",
+          "참조 독립성"
+        ]
+      }
+    },
+    {
+      "source": "[python] 02. iterables.pdf",
+      "location": "31–39",
+      "objective": "컴프리헨션과 중첩 반복의 실행 순서를 해석한다.",
+      "legacy": "loop-hill",
+      "unit": "copy",
+      "status": "부분",
+      "gap": "일반 반복과 대안 컴프리헨션 제공. 조건부 컴프리헨션 별도 과제는 없음.",
+      "evidence": {
+        "explanation": "copy.concept",
+        "prediction": "copy.quiz",
+        "practice": "copy.task",
+        "feedback": "copy.task.hints / tests.feedback / steps",
+        "criteria": [
+          "값 변환",
+          "빈 격자",
+          "음수와 불균등 행",
+          "참조 독립성"
+        ]
+      }
+    },
+    {
+      "source": "[python] 02. iterables.pdf",
+      "location": "40–49",
+      "objective": "문자열 불변성과 정규화·나누기·합치기를 적용한다.",
+      "legacy": "string-methods, string-slice",
+      "unit": "collections",
+      "status": "부분",
+      "gap": "strip/lower 직접 평가. split/join은 설명 및 기존 기초 중심.",
+      "evidence": {
+        "explanation": "collections.concept",
+        "prediction": "collections.quiz",
+        "practice": "collections.task",
+        "feedback": "collections.task.hints / tests.feedback / steps",
+        "criteria": [
+          "정규화와 합산",
+          "공백 제외",
+          "빈 목록",
+          "원본 보존"
+        ]
+      }
+    },
+    {
+      "source": "[python] 02. iterables.pdf",
+      "location": "50–51",
+      "objective": "문자와 코드 포인트를 상호 변환한다.",
+      "legacy": "없음",
+      "unit": null,
+      "status": "미구현",
+      "gap": "ord/chr 및 ASCII와 유니코드 차이 학습 필요."
+    },
+    {
+      "source": "[python] 02. iterables.pdf",
+      "location": "54",
+      "objective": "튜플의 역할과 언패킹을 이해한다.",
+      "legacy": "tuple-unpack",
+      "unit": "values",
+      "status": "부분",
+      "gap": "반환 튜플은 평가. 튜플 불변성과 포함 객체의 변경 가능성은 심화 미포함.",
+      "evidence": {
+        "explanation": "values.concept",
+        "prediction": "values.quiz",
+        "practice": "values.task",
+        "feedback": "values.task.hints / tests.feedback / steps",
+        "criteria": [
+          "일반 입력",
+          "빈 수량",
+          "정확히 나누어짐",
+          "다른 용량"
+        ]
+      }
+    },
+    {
+      "source": "[python] 02. iterables.pdf",
+      "location": "55–65",
+      "objective": "키 조회·갱신·빈도 집계에 딕셔너리를 사용한다.",
+      "legacy": "dict-seed, dict-update, dict-get, dict-loop",
+      "unit": "collections",
+      "status": "보강",
+      "gap": "",
+      "evidence": {
+        "explanation": "collections.concept",
+        "prediction": "collections.quiz",
+        "practice": "collections.task",
+        "feedback": "collections.task.hints / tests.feedback / steps",
+        "criteria": [
+          "정규화와 합산",
+          "공백 제외",
+          "빈 목록",
+          "원본 보존"
+        ]
+      }
+    },
+    {
+      "source": "[python] 02. iterables.pdf",
+      "location": "66–71",
+      "objective": "중복 제거와 집합 연산을 적용한다.",
+      "legacy": "set-garden",
+      "unit": "collections",
+      "status": "부분",
+      "gap": "중복 제거 결과 예측과 집합 연산 설명. 교집합·차집합 직접 작성은 미포함.",
+      "evidence": {
+        "explanation": "collections.concept",
+        "prediction": "collections.quiz",
+        "practice": "collections.task",
+        "feedback": "collections.task.hints / tests.feedback / steps",
+        "criteria": [
+          "정규화와 합산",
+          "공백 제외",
+          "빈 목록",
+          "원본 보존"
+        ]
+      }
+    },
+    {
+      "source": "[python] 03. Function, Module & File IO.pdf",
+      "location": "4–10",
+      "objective": "함수 입력·반환·타입 힌트를 구별한다.",
+      "legacy": "function-house, parameter-mail, return-spring",
+      "unit": "functions",
+      "status": "부분",
+      "gap": "반환·지역 상태 작성 검증. 타입 힌트 작성·검사기 실습은 미포함.",
+      "evidence": {
+        "explanation": "functions.concept",
+        "prediction": "functions.quiz",
+        "practice": "functions.task",
+        "feedback": "functions.task.hints / tests.feedback / steps",
+        "criteria": [
+          "목록 확장",
+          "기본 호출 독립성",
+          "원본 보존",
+          "빈 목록"
+        ]
+      }
+    },
+    {
+      "source": "[python] 03. Function, Module & File IO.pdf",
+      "location": "11–15",
+      "objective": "기본값·키워드·가변 인자를 설계한다.",
+      "legacy": "parameter-mail",
+      "unit": "functions",
+      "status": "부분",
+      "gap": "기본값 공유 오류는 직접 검증. *args/**kwargs는 용어 설명 수준.",
+      "evidence": {
+        "explanation": "functions.concept",
+        "prediction": "functions.quiz",
+        "practice": "functions.task",
+        "feedback": "functions.task.hints / tests.feedback / steps",
+        "criteria": [
+          "목록 확장",
+          "기본 호출 독립성",
+          "원본 보존",
+          "빈 목록"
+        ]
+      }
+    },
+    {
+      "source": "[python] 03. Function, Module & File IO.pdf",
+      "location": "16–20",
+      "objective": "지역 범위와 호출 사이 상태를 설명한다.",
+      "legacy": "function-house",
+      "unit": "functions",
+      "status": "보강",
+      "gap": "global/nonlocal 직접 사용 과제는 없음.",
+      "evidence": {
+        "explanation": "functions.concept",
+        "prediction": "functions.quiz",
+        "practice": "functions.task",
+        "feedback": "functions.task.hints / tests.feedback / steps",
+        "criteria": [
+          "목록 확장",
+          "기본 호출 독립성",
+          "원본 보존",
+          "빈 목록"
+        ]
+      }
+    },
+    {
+      "source": "[python] 03. Function, Module & File IO.pdf",
+      "location": "22–29",
+      "objective": "모듈·패키지·라이브러리와 import를 구별한다.",
+      "legacy": "math-module, statistics-module",
+      "unit": "files",
+      "status": "부분",
+      "gap": "새 모듈 파일 제작과 패키지 구조 실습은 미포함.",
+      "evidence": {
+        "explanation": "files.concept",
+        "prediction": "files.quiz",
+        "practice": "files.task",
+        "feedback": "files.task.hints / tests.feedback / steps",
+        "criteria": [
+          "오류 줄 제외",
+          "공백 처리",
+          "빈 파일",
+          "없는 파일 오류 보존"
+        ]
+      }
+    },
+    {
+      "source": "[python] 03. Function, Module & File IO.pdf",
+      "location": "30–42",
+      "objective": "난수·날짜·시간 기능으로 응용을 구성한다.",
+      "legacy": "math-module, statistics-module",
+      "unit": null,
+      "status": "미구현",
+      "gap": "random/datetime/time의 전용 학습·심화 문제 필요. 원문 게임은 복제하지 않음."
+    },
+    {
+      "source": "[python] 03. Function, Module & File IO.pdf",
+      "location": "44–50",
+      "objective": "파일 모드·인코딩·문맥 관리·줄 처리를 수행한다.",
+      "legacy": "file-write, file-read, file-lines, json-bridge",
+      "unit": "files",
+      "status": "보강",
+      "gap": "실험실 파일은 임시 브라우저 파일. 로컬 다운로드·영구 파일 저장은 미포함.",
+      "evidence": {
+        "explanation": "files.concept",
+        "prediction": "files.quiz",
+        "practice": "files.task",
+        "feedback": "files.task.hints / tests.feedback / steps",
+        "criteria": [
+          "오류 줄 제외",
+          "공백 처리",
+          "빈 파일",
+          "없는 파일 오류 보존"
+        ]
+      }
+    },
+    {
+      "source": "[python] 03. Function, Module & File IO.pdf",
+      "location": "51–53",
+      "objective": "데이터를 저장하고 복원하는 프로그램을 구성한다.",
+      "legacy": "persistence-project, pet-tracker-project",
+      "unit": "files",
+      "status": "부분",
+      "gap": "새 오류 줄 집계 작성 포함. 원문의 프로젝트를 재현하지 않음.",
+      "evidence": {
+        "explanation": "files.concept",
+        "prediction": "files.quiz",
+        "practice": "files.task",
+        "feedback": "files.task.hints / tests.feedback / steps",
+        "criteria": [
+          "오류 줄 제외",
+          "공백 처리",
+          "빈 파일",
+          "없는 파일 오류 보존"
+        ]
+      }
+    },
+    {
+      "source": "[python] 04. OOP.pdf",
+      "location": "4–19",
+      "objective": "클래스·인스턴스·self·초기 상태·메서드를 설계한다.",
+      "legacy": "class-blueprint, init-self, instance-method, state-change",
+      "unit": "objects",
+      "status": "보강",
+      "gap": "",
+      "evidence": {
+        "explanation": "objects.concept",
+        "prediction": "objects.quiz",
+        "practice": "objects.task",
+        "feedback": "objects.task.hints / tests.feedback / steps",
+        "criteria": [
+          "정상 차감",
+          "초과 요청 무변경",
+          "0·음수 요청",
+          "경계와 인스턴스 독립성"
+        ]
+      }
+    },
+    {
+      "source": "[python] 04. OOP.pdf",
+      "location": "17",
+      "objective": "클래스 공유값과 인스턴스 상태를 구별한다.",
+      "legacy": "state-change",
+      "unit": "objects",
+      "status": "부분",
+      "gap": "설명 및 인스턴스 독립성 검증. 클래스 변수 수정 비교 과제는 없음.",
+      "evidence": {
+        "explanation": "objects.concept",
+        "prediction": "objects.quiz",
+        "practice": "objects.task",
+        "feedback": "objects.task.hints / tests.feedback / steps",
+        "criteria": [
+          "정상 차감",
+          "초과 요청 무변경",
+          "0·음수 요청",
+          "경계와 인스턴스 독립성"
+        ]
+      }
+    },
+    {
+      "source": "[python] 04. OOP.pdf",
+      "location": "26–34",
+      "objective": "상속·오버라이딩·super·추상화를 적용한다.",
+      "legacy": "inheritance-basics",
+      "unit": "objects",
+      "status": "부분",
+      "gap": "오버라이딩 예측 추가. super·추상 인터페이스 구현 및 다형성 설계는 심화 미포함.",
+      "evidence": {
+        "explanation": "objects.concept",
+        "prediction": "objects.quiz",
+        "practice": "objects.task",
+        "feedback": "objects.task.hints / tests.feedback / steps",
+        "criteria": [
+          "정상 차감",
+          "초과 요청 무변경",
+          "0·음수 요청",
+          "경계와 인스턴스 독립성"
+        ]
+      }
+    },
+    {
+      "source": "[python] 04. OOP.pdf",
+      "location": "35–43",
+      "objective": "캡슐화·접근 규약·프로퍼티를 설계한다.",
+      "legacy": "instance-method",
+      "unit": "objects",
+      "status": "부분",
+      "gap": "상태 불변 조건을 직접 평가. name mangling, property/getter/setter/decorator는 미구현.",
+      "evidence": {
+        "explanation": "objects.concept",
+        "prediction": "objects.quiz",
+        "practice": "objects.task",
+        "feedback": "objects.task.hints / tests.feedback / steps",
+        "criteria": [
+          "정상 차감",
+          "초과 요청 무변경",
+          "0·음수 요청",
+          "경계와 인스턴스 독립성"
+        ]
+      }
+    },
+    {
+      "source": "[python] 04. OOP.pdf",
+      "location": "44–64",
+      "objective": "다중 객체와 상태를 가진 프로젝트를 설계한다.",
+      "legacy": "object-collection, pet-tracker-project",
+      "unit": "objects",
+      "status": "부분",
+      "gap": "새 할당량 객체 설계 과제 추가. 대규모 객체 협력 프로젝트·원문 게임은 미포함.",
+      "evidence": {
+        "explanation": "objects.concept",
+        "prediction": "objects.quiz",
+        "practice": "objects.task",
+        "feedback": "objects.task.hints / tests.feedback / steps",
+        "criteria": [
+          "정상 차감",
+          "초과 요청 무변경",
+          "0·음수 요청",
+          "경계와 인스턴스 독립성"
+        ]
+      }
+    },
+    {
+      "source": "[python] 05. Numpy.pdf",
+      "location": "3–15",
+      "objective": "노트북의 셀·재실행·휘발성·문서화를 이해한다.",
+      "legacy": "없음",
+      "unit": "files",
+      "status": "부분",
+      "gap": "임시 환경 설명 포함. Colab·마크다운·셀 순서 의존 실습은 미구현.",
+      "evidence": {
+        "explanation": "files.concept",
+        "prediction": "files.quiz",
+        "practice": "files.task",
+        "feedback": "files.task.hints / tests.feedback / steps",
+        "criteria": [
+          "오류 줄 제외",
+          "공백 처리",
+          "빈 파일",
+          "없는 파일 오류 보존"
+        ]
+      }
+    },
+    {
+      "source": "[python] 05. Numpy.pdf",
+      "location": "17–29,35–46",
+      "objective": "배열 차원·shape·dtype·생성·속성을 해석한다.",
+      "legacy": "없음",
+      "unit": "numpy-shape",
+      "status": "부분",
+      "gap": "array/arange/reshape 직접 평가. linspace/zeros/ones/full은 설명 수준.",
+      "evidence": {
+        "explanation": "numpy-shape.concept",
+        "prediction": "numpy-shape.quiz",
+        "practice": "numpy-shape.task",
+        "feedback": "numpy-shape.task.hints / tests.feedback / steps",
+        "criteria": [
+          "형태와 값",
+          "빈 배열의 모양",
+          "다른 폭",
+          "원본 보존"
+        ]
+      }
+    },
+    {
+      "source": "[python] 05. Numpy.pdf",
+      "location": "47–54",
+      "objective": "다차원 인덱싱·뷰·조건 선택·브로드캐스팅을 적용한다.",
+      "legacy": "없음",
+      "unit": "numpy-shape",
+      "status": "부분",
+      "gap": "브로드캐스팅 직접 평가. fancy indexing·다양한 슬라이싱 직접 과제는 미포함.",
+      "evidence": {
+        "explanation": "numpy-shape.concept",
+        "prediction": "numpy-shape.quiz",
+        "practice": "numpy-shape.task",
+        "feedback": "numpy-shape.task.hints / tests.feedback / steps",
+        "criteria": [
+          "형태와 값",
+          "빈 배열의 모양",
+          "다른 폭",
+          "원본 보존"
+        ]
+      }
+    },
+    {
+      "source": "[python] 05. Numpy.pdf",
+      "location": "30–34,55–56",
+      "objective": "행렬곱 모양과 원소별 곱의 차이를 판단한다.",
+      "legacy": "없음",
+      "unit": "numpy-axis",
+      "status": "보강",
+      "gap": "원문과 달리 행렬곱을 합성곱과 구별해 설명.",
+      "evidence": {
+        "explanation": "numpy-axis.concept",
+        "prediction": "numpy-axis.quiz",
+        "practice": "numpy-axis.task",
+        "feedback": "numpy-axis.task.hints / tests.feedback / steps",
+        "criteria": [
+          "마스크와 가중 합",
+          "0과 음수",
+          "빈 행",
+          "원본 보존"
+        ]
+      }
+    },
+    {
+      "source": "[python] 05. Numpy.pdf",
+      "location": "57–60",
+      "objective": "축별 합계·평균·산포·극값 위치를 해석한다.",
+      "legacy": "없음",
+      "unit": "numpy-axis",
+      "status": "부분",
+      "gap": "축 예측과 가중 합 평가. std/var/ddof·argmin/argmax 직접 과제는 미포함.",
+      "evidence": {
+        "explanation": "numpy-axis.concept",
+        "prediction": "numpy-axis.quiz",
+        "practice": "numpy-axis.task",
+        "feedback": "numpy-axis.task.hints / tests.feedback / steps",
+        "criteria": [
+          "마스크와 가중 합",
+          "0과 음수",
+          "빈 행",
+          "원본 보존"
+        ]
+      }
+    },
+    {
+      "source": "[python] 05. Numpy.pdf",
+      "location": "61–66",
+      "objective": "재배열·전치·평탄화·정렬을 적용한다.",
+      "legacy": "없음",
+      "unit": "numpy-shape",
+      "status": "부분",
+      "gap": "reshape 평가. transpose/flatten/sort/argsort는 후속 단원 필요.",
+      "evidence": {
+        "explanation": "numpy-shape.concept",
+        "prediction": "numpy-shape.quiz",
+        "practice": "numpy-shape.task",
+        "feedback": "numpy-shape.task.hints / tests.feedback / steps",
+        "criteria": [
+          "형태와 값",
+          "빈 배열의 모양",
+          "다른 폭",
+          "원본 보존"
+        ]
+      }
+    },
+    {
+      "source": "[학습] numpy.ipynb",
+      "location": "섹션 1–5",
+      "objective": "생성·속성·선택·변형·브로드캐스팅을 연결한다.",
+      "legacy": "없음",
+      "unit": "numpy-shape",
+      "status": "부분",
+      "gap": "생성 함수 전체와 전치·평탄화의 독립 연습은 미포함.",
+      "evidence": {
+        "explanation": "numpy-shape.concept",
+        "prediction": "numpy-shape.quiz",
+        "practice": "numpy-shape.task",
+        "feedback": "numpy-shape.task.hints / tests.feedback / steps",
+        "criteria": [
+          "형태와 값",
+          "빈 배열의 모양",
+          "다른 폭",
+          "원본 보존"
+        ]
+      }
+    },
+    {
+      "source": "[학습] numpy.ipynb",
+      "location": "섹션 6–7,10",
+      "objective": "축 집계·마스크·행렬곱을 연결한다.",
+      "legacy": "없음",
+      "unit": "numpy-axis",
+      "status": "보강",
+      "gap": "원본 문제·숫자·해설을 사용하지 않음.",
+      "evidence": {
+        "explanation": "numpy-axis.concept",
+        "prediction": "numpy-axis.quiz",
+        "practice": "numpy-axis.task",
+        "feedback": "numpy-axis.task.hints / tests.feedback / steps",
+        "criteria": [
+          "마스크와 가중 합",
+          "0과 음수",
+          "빈 행",
+          "원본 보존"
+        ]
+      }
+    },
+    {
+      "source": "[학습] numpy.ipynb",
+      "location": "섹션 8–9",
+      "objective": "배열 결합·분할·난수 재현성을 적용한다.",
+      "legacy": "없음",
+      "unit": null,
+      "status": "미구현",
+      "gap": "stack/concatenate/split 및 난수 생성기·seed 학습 필요."
+    },
+    {
+      "source": "[python] 06. pandas.pdf",
+      "location": "4–20",
+      "objective": "Series/DataFrame·데이터 입출력·구조를 점검한다.",
+      "legacy": "없음",
+      "unit": "pandas-select",
+      "status": "부분",
+      "gap": "구조 설명과 직접 표 생성 포함. CSV 읽기/저장·info/describe 독립 과제는 없음.",
+      "evidence": {
+        "explanation": "pandas-select.concept",
+        "prediction": "pandas-select.quiz",
+        "practice": "pandas-select.task",
+        "feedback": "pandas-select.task.hints / tests.feedback / steps",
+        "criteria": [
+          "필터와 동점 순서",
+          "열 계약",
+          "일치 없음",
+          "반환값 독립성"
+        ]
+      }
+    },
+    {
+      "source": "[python] 06. pandas.pdf",
+      "location": "21–42",
+      "objective": "라벨·위치·복합 조건·정렬·열 변경을 적용한다.",
+      "legacy": "없음",
+      "unit": "pandas-select",
+      "status": "부분",
+      "gap": "선택·정렬·원본 보존 평가. 행 추가/삭제/concat·astype 별도 과제는 미포함.",
+      "evidence": {
+        "explanation": "pandas-select.concept",
+        "prediction": "pandas-select.quiz",
+        "practice": "pandas-select.task",
+        "feedback": "pandas-select.task.hints / tests.feedback / steps",
+        "criteria": [
+          "필터와 동점 순서",
+          "열 계약",
+          "일치 없음",
+          "반환값 독립성"
+        ]
+      }
+    },
+    {
+      "source": "[python] 06. pandas.pdf",
+      "location": "46–58",
+      "objective": "누락·중복·자료형 정제 정책을 설계한다.",
+      "legacy": "없음",
+      "unit": "pandas-clean",
+      "status": "보강",
+      "gap": "누락 대체 정책과 숫자 문자열 변환 직접 과제는 후속 필요.",
+      "evidence": {
+        "explanation": "pandas-clean.concept",
+        "prediction": "pandas-clean.quiz",
+        "practice": "pandas-clean.task",
+        "feedback": "pandas-clean.task.hints / tests.feedback / steps",
+        "criteria": [
+          "중복 후 합계",
+          "최신 누락의 의미",
+          "빈 입력",
+          "원본 보존"
+        ]
+      }
+    },
+    {
+      "source": "[python] 06. pandas.pdf",
+      "location": "59–69",
+      "objective": "그룹·집계·적용을 구별하고 요약한다.",
+      "legacy": "없음",
+      "unit": "pandas-clean",
+      "status": "부분",
+      "gap": "groupby/agg/sum/count 직접 평가. 사용자 정의 apply·다중 집계 선택 심화는 미포함.",
+      "evidence": {
+        "explanation": "pandas-clean.concept",
+        "prediction": "pandas-clean.quiz",
+        "practice": "pandas-clean.task",
+        "feedback": "pandas-clean.task.hints / tests.feedback / steps",
+        "criteria": [
+          "중복 후 합계",
+          "최신 누락의 의미",
+          "빈 입력",
+          "원본 보존"
+        ]
+      }
+    },
+    {
+      "source": "[실습 1] pandas_athletes.ipynb",
+      "location": "전체 학습 목표",
+      "objective": "필터·극값·평균·정렬·복합 집계를 수행한다.",
+      "legacy": "없음",
+      "unit": "pandas-select",
+      "status": "부분",
+      "gap": "새 작업 목록으로 필터·동점 정렬 평가. 원자료·질문은 미사용. 극값 행 선택·순위 세부 실습 필요.",
+      "evidence": {
+        "explanation": "pandas-select.concept",
+        "prediction": "pandas-select.quiz",
+        "practice": "pandas-select.task",
+        "feedback": "pandas-select.task.hints / tests.feedback / steps",
+        "criteria": [
+          "필터와 동점 순서",
+          "열 계약",
+          "일치 없음",
+          "반환값 독립성"
+        ]
+      }
+    },
+    {
+      "source": "[실습 2] pandas_students.ipynb",
+      "location": "전체 학습 목표",
+      "objective": "표의 조건 선택·파생 수치·요약을 수행한다.",
+      "legacy": "없음",
+      "unit": "pandas-clean",
+      "status": "부분",
+      "gap": "새 관측 자료로 유효값·그룹 집계 평가. 파생 열 생성·전체 기초 집계 독립 과제 필요.",
+      "evidence": {
+        "explanation": "pandas-clean.concept",
+        "prediction": "pandas-clean.quiz",
+        "practice": "pandas-clean.task",
+        "feedback": "pandas-clean.task.hints / tests.feedback / steps",
+        "criteria": [
+          "중복 후 합계",
+          "최신 누락의 의미",
+          "빈 입력",
+          "원본 보존"
+        ]
+      }
+    },
+    {
+      "source": "[실습 5] pandas_books.ipynb",
+      "location": "전체 학습 목표",
+      "objective": "문자열 조건·범위·그룹 요약을 수행한다.",
+      "legacy": "없음",
+      "unit": "collections",
+      "status": "부분",
+      "gap": "문자열 정규화와 빈도 집계는 평가. Series.str 패턴·연도 범위·극값 연결 과제 필요.",
+      "evidence": {
+        "explanation": "collections.concept",
+        "prediction": "collections.quiz",
+        "practice": "collections.task",
+        "feedback": "collections.task.hints / tests.feedback / steps",
+        "criteria": [
+          "정규화와 합산",
+          "공백 제외",
+          "빈 목록",
+          "원본 보존"
+        ]
+      }
+    },
+    {
+      "source": "[python] 07. Data Visualization.pdf",
+      "location": "4–33",
+      "objective": "질문에 맞는 기본 차트와 축·범례를 구성한다.",
+      "legacy": "없음",
+      "unit": "charts",
+      "status": "부분",
+      "gap": "막대 작성·축·제목·순서 평가. 선 예제 실행. 산점도·원형·범례·폰트 직접 과제는 미포함.",
+      "evidence": {
+        "explanation": "charts.concept",
+        "prediction": "charts.quiz",
+        "practice": "charts.task",
+        "feedback": "charts.task.hints / tests.feedback / steps",
+        "criteria": [
+          "막대 데이터",
+          "축과 제목",
+          "범주 순서",
+          "빈 데이터"
+        ]
+      }
+    },
+    {
+      "source": "[python] 07. Data Visualization.pdf",
+      "location": "36–47",
+      "objective": "분포·이상 후보·행렬값을 시각화한다.",
+      "legacy": "없음",
+      "unit": "charts",
+      "status": "부분",
+      "gap": "상자그림 선택 예측. histogram/box/heatmap 직접 작성과 해석 과제 필요.",
+      "evidence": {
+        "explanation": "charts.concept",
+        "prediction": "charts.quiz",
+        "practice": "charts.task",
+        "feedback": "charts.task.hints / tests.feedback / steps",
+        "criteria": [
+          "막대 데이터",
+          "축과 제목",
+          "범주 순서",
+          "빈 데이터"
+        ]
+      }
+    },
+    {
+      "source": "[python] 07. Data Visualization.pdf",
+      "location": "49–66",
+      "objective": "seaborn의 통계 요약과 그룹 비교를 해석한다.",
+      "legacy": "없음",
+      "unit": "charts",
+      "status": "설명만",
+      "gap": "seaborn API 실행·hue·집계/오차막대·pairplot 직접 과제 미구현.",
+      "evidence": {
+        "explanation": "charts.concept",
+        "prediction": "charts.quiz",
+        "practice": "charts.task",
+        "feedback": "charts.task.hints / tests.feedback / steps",
+        "criteria": [
+          "막대 데이터",
+          "축과 제목",
+          "범주 순서",
+          "빈 데이터"
+        ]
+      }
+    },
+    {
+      "source": "[python] 07. Data Visualization.pdf",
+      "location": "68–77",
+      "objective": "pandas plot과 장형·광형 변환을 적용한다.",
+      "legacy": "없음",
+      "unit": "charts",
+      "status": "설명만",
+      "gap": "melt/pivot 및 pandas.plot 직접 실행 문제 미구현.",
+      "evidence": {
+        "explanation": "charts.concept",
+        "prediction": "charts.quiz",
+        "practice": "charts.task",
+        "feedback": "charts.task.hints / tests.feedback / steps",
+        "criteria": [
+          "막대 데이터",
+          "축과 제목",
+          "범주 순서",
+          "빈 데이터"
+        ]
+      }
+    },
+    {
+      "source": "EDA실습_01 (Seoul Bike Data).ipynb",
+      "location": "전체 학습 목표",
+      "objective": "시간·날씨·운영 조건을 통제해 관측 자료를 비교한다.",
+      "legacy": "없음",
+      "unit": "eda-project",
+      "status": "부분",
+      "gap": "새 공간 관측 자료로 분모·유효 관측·정렬·비인과 판단 평가. 날짜/시간/계절 처리와 다중 비교 차트 필요.",
+      "evidence": {
+        "explanation": "eda-project.concept",
+        "prediction": "eda-project.quiz",
+        "practice": "eda-project.task",
+        "feedback": "eda-project.task.hints / tests.feedback / steps",
+        "criteria": [
+          "최소 관측 수",
+          "최신 값과 무효 관측",
+          "동점 정렬",
+          "빈 결과와 원본 보존"
+        ]
+      }
+    },
+    {
+      "source": "EDA실습_02 (online shop).ipynb",
+      "location": "전체 학습 목표",
+      "objective": "시계열·비율·집계 수준·순위의 의미를 판단한다.",
+      "legacy": "없음",
+      "unit": "eda-project",
+      "status": "부분",
+      "gap": "관측 수준과 집계 함정 판단 포함. 성장률·전체 대비 비중·중복 합계 제거·시계열 차트 직접 과제 필요.",
+      "evidence": {
+        "explanation": "eda-project.concept",
+        "prediction": "eda-project.quiz",
+        "practice": "eda-project.task",
+        "feedback": "eda-project.task.hints / tests.feedback / steps",
+        "criteria": [
+          "최소 관측 수",
+          "최신 값과 무효 관측",
+          "동점 정렬",
+          "빈 결과와 원본 보존"
+        ]
+      }
+    },
+    {
+      "source": "EDA실습_03 (Video Game Sales).ipynb",
+      "location": "전체 학습 목표",
+      "objective": "집단별 합계·평균·순위·연도 추세를 비교한다.",
+      "legacy": "없음",
+      "unit": "eda-project",
+      "status": "부분",
+      "gap": "그룹 평균·관측 수·동점 정렬 평가. 지역 비율/출시 연도/표본 편향 차트 분석은 미포함.",
+      "evidence": {
+        "explanation": "eda-project.concept",
+        "prediction": "eda-project.quiz",
+        "practice": "eda-project.task",
+        "feedback": "eda-project.task.hints / tests.feedback / steps",
+        "criteria": [
+          "최소 관측 수",
+          "최신 값과 무효 관측",
+          "동점 정렬",
+          "빈 결과와 원본 보존"
+        ]
+      }
+    },
+    {
+      "source": "E10.zip",
+      "location": "10개 실습 README 및 루트 README; 스크립트는 읽기만 함",
+      "objective": "셸의 인자·반복·표준입력·파일·조건을 조합한다.",
+      "legacy": "Linux 별도 과정",
+      "unit": null,
+      "status": "미구현",
+      "gap": "파이썬 우선으로 Linux 콘텐츠는 이번에 변경하지 않음. 문제·스크립트 미복제·미실행."
+    }
+  ]
+}
