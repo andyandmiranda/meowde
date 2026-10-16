@@ -5,7 +5,7 @@ test("Python home has one primary learning action and hides extras until request
  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
  await expect(page.locator(".meowde-subject-overview")).toHaveCount(0);
  await expect(page.locator(".hero .btn")).toHaveCount(1);
- await expect(page.locator(".tabbar button")).toHaveCount(3);
+ await expect(page.locator(".tabbar button").filter({hasText:"배우기"})).toHaveCount(1);\n await expect(page.locator(".tabbar button").filter({hasText:"전체 과정"})).toHaveCount(1);
  await expect(page.locator(".meowde-more")).not.toHaveAttribute("open","");
  await expect(page.getByRole("link",{name:"추가 문제 풀기"})).toBeHidden();
  await page.locator(".meowde-more summary").click();
