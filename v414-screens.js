@@ -26,6 +26,18 @@
     const ko=S.lang==='ko',unit=currentUnit(),percent=unit.total?Math.round(unit.done/unit.total*100):0;
     return `<section class="card phase1-unit-card"><button class="phase1-unit-button" onclick="S.unit=${unit.unit};save();renderMap()"><span class="phase1-unit-copy"><span class="section-kicker">${ko?'현재 과정':'Current unit'}</span><b>${esc(unit.name)}</b><small>${unit.done} / ${unit.total}</small></span><span class="phase1-mini-progress" aria-label="${percent}%"><i style="width:${percent}%"></i></span><strong>→</strong></button></section>`;
   }
+  function homeLearningJourney(){
+    const ko=S.lang==='ko',all=lessons(),done=new Set(Array.isArray(S.done)?S.done:[]);
+    const completed=all.reduce((sum,_,i)=>sum+(done.has(i)?1:0),0);
+    const percent=all.length?Math.round(completed/all.length*100):0;
+    const current=Math.max(0,Math.min(hasLessonProgress()?S.lessonIndex:S.next,all.length-1));
+    const indexes=[current-1,current,current+1].filter(i=>i>=0&&i<all.length);
+    const rows=indexes.map(i=>{
+      const state=done.has(i)?(ko?'완료':'Done'):i===current?(ko?'진행 중':'Current'):(ko?'다음':'Next');
+      return `<div class="journey-step ${i===current?'is-current':''}"><span class="journey-step-index">${done.has(i)?'✓':String(i+1).padStart(2,'0')}</span><span class="journey-step-title">${esc(all[i].title)}</span><span class="journey-step-state">${state}</span></div>`;
+    }).join('');
+    return `<section class="card meowde-home-journey" aria-label="${ko?'학습 진도와 과정':'Learning progress and path'}"><div class="section-title"><h3>${ko?'내 학습 진도':'My learning progress'}</h3><strong>${completed} / ${all.length}</strong></div><div class="journey-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${percent}" aria-label="${ko?'전체 진도':'Overall progress'}"><i style="width:${percent}%"></i></div><p class="muted">${ko?'현재 과정':'Current unit'} · ${esc(currentUnit().name)}</p><div class="journey-steps">${rows}</div><button class="journey-path-link" onclick="S.unit=${Math.floor(current/10)};save();renderMap()">${ko?'전체 학습 과정 보기':'See full learning path'} →</button></section>`;
+  }
   function homeBrand(){
     const ko=S.lang==='ko';
     const tagline=typeof t==='function'?t('tagline'):'Learn to code playfully.';
@@ -68,7 +80,7 @@
     const sub=hasProgress?(ko?`문제 ${Math.min(S.idx+1,S.queue.length)} / ${S.queue.length}에서 이어집니다.`:`Resume at step ${Math.min(S.idx+1,S.queue.length)} of ${S.queue.length}.`):L.description;
     const unit=currentUnit();
     const streak=Math.max(0,Number(S.streak)||0);
-    app.innerHTML=`<div class="screen phase1-home">${homeBrand()}<div class="phase1-home-meta"><span>${ko?'오늘의 학습':'Today'}</span>${streak?`<span>🔥 ${streak}${ko?'일':'d'}</span>`:''}</div><div class="scroll"><section class="card hero phase1-hero"><div class="hero-main">${homeHeroCharacter()}<div class="hero-copy"><div class="section-kicker">Lesson ${String(lessonIndex+1).padStart(2,'0')} · ${esc(unit.name)}</div><h2>${esc(L.title)}</h2><p>${esc(sub)}</p></div></div><button class="btn" onclick="${action}">${icon('play')}${actionLabel}</button><div class="home-secondary"><button class="text-link" onclick="S.unit=${unit.unit};save();renderMap()">${ko?'전체 학습 경로 보기':'See learning path'} →</button></div></section>${dailyCard()}${unitCard()}${contactMarkup()}</div>${canonicalTabs('home')}</div>`;
+    app.innerHTML=`<div class="screen phase1-home">${homeBrand()}<div class="phase1-home-meta"><span>${ko?'오늘의 학습':'Today'}</span>${streak?`<span>🔥 ${streak}${ko?'일':'d'}</span>`:''}</div><div class="scroll"><section class="card hero phase1-hero"><div class="hero-main">${homeHeroCharacter()}<div class="hero-copy"><div class="section-kicker">Lesson ${String(lessonIndex+1).padStart(2,'0')} · ${esc(unit.name)}</div><h2>${esc(L.title)}</h2><p>${esc(sub)}</p></div></div><button class="btn" onclick="${action}">${icon('play')}${actionLabel}</button></section>${homeLearningJourney()}${dailyCard()}${contactMarkup()}</div>${canonicalTabs('home')}</div>`;
     document.documentElement.dataset.homeRenderer='canonical-v414';
     document.documentElement.dataset.navigation='phase1-four-tabs';
   };
