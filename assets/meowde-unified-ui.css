@@ -1,0 +1,14 @@
+/* Shared presentation only. Never modifies learning state or engine behavior. */
+:root{--meowde-font:"Pretendard Variable",Pretendard,Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--meowde-ink:#2D2A28;--meowde-muted:#7F7671;--meowde-cream:#FFF9EF;--meowde-mint:#53C7A0;--meowde-line:#E8DED0}
+html,body,button,input,select,textarea,summary{font-family:var(--meowde-font)}
+body{font-synthesis:none}
+pre,code,kbd,samp,.code,.terminal,.editor,.cm-editor,.monaco-editor{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+.meowde-more{margin:0 18px 18px;border:1px solid var(--meowde-line);border-radius:17px;background:#fff;color:var(--meowde-ink)}
+.meowde-more>summary{padding:15px 18px;font-size:14px;font-weight:750;cursor:pointer;min-height:48px}
+.meowde-more .more-links{display:grid;gap:10px;padding:0 16px 16px}
+.meowde-more .more-links .btn{min-height:44px}
+.meowde-more .more-links a{text-decoration:none}
+.meowde-more .more-links .muted{font-size:13px;color:var(--meowde-muted)}
+body .tabbar button{min-height:52px}
+body .tabbar button span{font-family:var(--meowde-font)}
+/* Keep existing learning engines and interaction affordances intact. */
