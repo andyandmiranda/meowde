@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#fff9ef">
+<title>호기심 실험실 · MEOWDE</title>
+<style>
+:root{font-family:system-ui,-apple-system,sans-serif;color:#2d2a28;background:#fff9ef}*{box-sizing:border-box}body{margin:0;padding:16px}main{max-width:560px;margin:auto}a{color:#704a5c}.panel{background:#fff;border:1px solid #e8ded0;border-radius:22px;padding:20px;margin:18px 0;box-shadow:0 6px 18px #4431240b}h1{font-size:1.65rem}h2{font-size:1.2rem}p{line-height:1.6}.muted{color:#655b56}.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}button{border:2px solid #e8ded0;border-radius:14px;padding:14px 10px;background:#fff;min-height:56px;font:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #a03f69;outline-offset:3px}button:disabled{opacity:.55;cursor:default}button[aria-pressed=true]{border-color:#a03f69;background:#fff0f6}.primary{background:#f46d82;border-color:#f46d82;color:#211c1c;font-weight:700;width:100%}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#29242b;color:white;padding:14px;border-radius:12px}#feedback{min-height:54px}#code[hidden],#next[hidden],#complete[hidden]{display:none}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style></head>
+<body><main>
+<p><a href="/learning-path.html?subject=python">← 전체 과정으로 돌아가기</a></p>
+<header><p class="muted">선택형 실습 파일럿 · 약 2분</p><h1>🐈 고양이의 위치를 찾아줘!</h1><p>먼저 직접 골라보고, 필요할 때 원리를 확인해 봐. 틀려도 학습 기록이나 보상에 영향이 없어.</p></header>
+<section class="panel" aria-labelledby="task-title">
+<h2 id="task-title"></h2><p id="prompt"></p><div id="choices" class="choices" role="group" aria-label="위치 선택"></div>
+<p id="feedback" role="status" aria-live="polite"></p>
+<button id="hint" type="button">힌트 보기</button>
+<pre id="code" hidden></pre>
+<button id="next" type="button" class="primary" hidden>새로운 상황에 적용하기 →</button>
+<p id="complete" hidden>두 상황을 해결했어! 이제 <a href="/">기존 Python 학습</a>에서 리스트와 인덱스를 더 연습해 봐.</p>
+</section><p class="muted">이 페이지는 별도의 체험 파일럿이야. 실제 Python 코드를 실행하지 않으며 기존 진도·XP·저장 데이터를 읽거나 변경하지 않아.</p>
+</main><script src="/assets/curiosity-pilot.js"></script><script>
+(function(){
+'use strict';
+const pilot=window.MeowdeCuriosityPilot;
+if(!pilot){document.getElementById('feedback').textContent='실습을 불러오지 못했어요. 기존 학습으로 돌아가 주세요.';return;}
+const el=id=>document.getElementById(id);let index=0,completed=false;
+function render(){
+ const task=pilot.tasks[index];completed=false;
+ el('task-title').textContent=index===0?'1. 고양이를 찾아볼까?':'2. 새로운 상황에 적용해 봐';
+ el('prompt').textContent=task.items.join(' · ')+' — '+task.target+'의 위치 번호는?';
+ el('feedback').textContent='';el('code').hidden=true;el('code').textContent='';
+ el('hint').hidden=false;el('next').hidden=true;el('complete').hidden=true;
+ el('choices').replaceChildren(...task.items.map((name,choice)=>{
+  const button=document.createElement('button');button.type='button';button.textContent=choice+' · '+name;button.setAttribute('aria-pressed','false');
+  button.addEventListener('click',()=>{
+   if(completed)return;
+   const result=pilot.grade(task.id,choice);
+   if(!result.valid)return;
+   [...el('choices').children].forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+   if(result.correct){completed=true;el('feedback').textContent='정답! '+task.concept;el('code').textContent=task.code;el('code').hidden=false;el('hint').hidden=true;
+    if(index===0)el('next').hidden=false;else el('complete').hidden=false;
+   }else{el('feedback').textContent='아직 아니야. 첫 번째 항목이 0번이라는 점을 떠올려 봐. 다시 골라도 괜찮아.';}
+  });return button;
+ }));
+}
+el('hint').addEventListener('click',()=>{el('feedback').textContent='힌트: 맨 왼쪽 항목부터 0, 1, 2…로 세어 봐.';});
+el('next').addEventListener('click',()=>{if(!completed||index!==0)return;index=1;render();el('task-title').focus?.();});
+render();
+})();
+</script></body></html>
