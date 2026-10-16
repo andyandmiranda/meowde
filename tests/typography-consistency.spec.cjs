@@ -4,10 +4,11 @@ const base=process.env.MEOWDE_BASE_URL||'http://127.0.0.1:4173';
 test('Python, Linux and course guide share text typography while code remains monospaced',async({page})=>{
   for(const path of ['/','/python-lab.html','/linux-home.html','/learning-path.html']){
     await page.goto(base+path);
-    const result=await page.evaluate(()=>({
-      font:getComputedStyle(document.body).fontFamily,
-      width:document.documentElement.scrollWidth,
-      viewport:innerWidth
+    await page.locator('body').waitFor({state:'attached'});
+    const result=await page.locator('body').evaluate(el=>({
+      font:getComputedStyle(el).fontFamily,
+      width:el.ownerDocument.documentElement.scrollWidth,
+      viewport:el.ownerDocument.defaultView.innerWidth
     }));
     expect(result.font,path+' must use Pretendard').toMatch(/Pretendard/);
     expect(result.width,path+' must not overflow horizontally').toBeLessThanOrEqual(result.viewport);
