@@ -88,3 +88,16 @@ body:has(>.lab-header){background:var(--meowde-cream);color:var(--meowde-ink)}
 .app .journey-step.is-current .journey-step-state{color:#247B61;font-weight:800}
 .app .journey-path-link{width:100%;text-align:left;font-size:14px;font-weight:750;color:#247B61;padding:14px 0 0;min-height:44px}
 @media(max-width:360px){.app .meowde-home-journey{padding:14px}.app .journey-step{gap:7px}}
+
+/* Practice-first Python lab: prioritize the actual coding task, not a textbook scroll. */
+#lab .practice-entry{background:#EAF8F1;border:1px solid #C9E9DC;border-radius:18px;padding:16px 18px;margin:16px 0 10px;color:#204D3C}
+#lab .practice-entry h3{margin:0 0 5px;font-size:18px;line-height:1.4}
+#lab .practice-entry p{margin:0 0 12px;font-size:14px;line-height:1.6}
+#lab .practice-entry-links{display:flex;flex-wrap:wrap;gap:8px}
+#lab .practice-entry-links a{min-height:40px;display:inline-flex;align-items:center;padding:8px 12px;border:1px solid #9AD7BD;background:#fff;border-radius:10px;color:#247B61;text-decoration:none;font-size:13px;font-weight:750}
+#lab .practice-primary{border-color:#9AD7BD;box-shadow:0 5px 20px rgba(33,119,84,.07);scroll-margin-top:16px}
+#lab #practice-concept,#lab #quiz{scroll-margin-top:16px}
+#lab .practice-primary>h3{color:#204D3C}
+#lab .practice-primary .actions .primary{background:#53C7A0;color:#173D31;border-color:#53C7A0}
+#lab .practice-primary .actions button{min-height:48px}
+@media(max-width:760px){#lab .hero{margin-bottom:12px;padding:14px}#lab .hero p.meta{font-size:12px}#lab .practice-entry{margin:10px 0 8px;padding:14px}#lab .practice-primary{margin-top:8px}#lab .practice-primary textarea.code{min-height:180px}}
