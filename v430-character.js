@@ -5,7 +5,7 @@
   const LEGACY_VIEWBOX="0 0 120 112";
   const ASSETS=Object.freeze({
     none:"/assets/meowde-approved-base.svg?v=4471",
-    glasses:"/assets/meowde-approved-glasses.svg?v=4471",
+    glasses:"/assets/meowde-approved-base.svg?v=4471",
     headphones:"/assets/meowde-approved-headphones.svg?v=4471",
     hero:"/assets/meowde-approved-hero.svg?v=4471"
   });
