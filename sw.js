@@ -1,7 +1,13 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v463-learning-resume";
+const CACHE_NAME = "meowde-v464-python-lab";
 
 const REQUIRED_ASSETS = [
+  "/python-lab.html",
+  "/assets/python-lab-content.json",
+  "/assets/python-lab.css",
+  "/assets/python-lab.js",
+  "/assets/python-lab-worker.js",
+  "/assets/python-lab-entry.js",
   "/",
   "/v412.html",
   "/index.html",

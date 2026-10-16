@@ -4,7 +4,7 @@
   "private": true,
   "description": "Static coding-learning app validation tooling",
   "scripts": {
-    "validate": "node tools/run-v423-validation.js && node tools/validate-v449-character-cutouts.js && node tools/validate-coach-mode-learning-styles.js && node tools/validate-curriculum-v452.js && node tools/validate-curriculum-v453.js && node tools/validate-input-practice-v454.js && node tools/validate-write-grading-v455.js && node tools/validate-unit4-v456.js && node tools/validate-diagnostic-feedback-v457.js && node tools/validate-unit5-v458.js && node tools/validate-unit6-v461.js && node tools/validate-linux-mobile-simulator.js && node tools/validate-linux-condition-practice.js && node tools/validate-linux-bash-practice.js && node tools/validate-linux-mobile-flow.js && node tools/validate-linux-e1-micro.js && node tools/validate-guided-progress.js && node tools/validate-root-entry.js && node tools/validate-linux-public-content.js",
+    "validate": "node tools/run-v423-validation.js && node tools/validate-v449-character-cutouts.js && node tools/validate-coach-mode-learning-styles.js && node tools/validate-curriculum-v452.js && node tools/validate-curriculum-v453.js && node tools/validate-input-practice-v454.js && node tools/validate-write-grading-v455.js && node tools/validate-unit4-v456.js && node tools/validate-diagnostic-feedback-v457.js && node tools/validate-unit5-v458.js && node tools/validate-unit6-v461.js && node tools/validate-linux-mobile-simulator.js && node tools/validate-linux-condition-practice.js && node tools/validate-linux-bash-practice.js && node tools/validate-linux-mobile-flow.js && node tools/validate-linux-e1-micro.js && node tools/validate-guided-progress.js && node tools/validate-root-entry.js && node tools/validate-linux-public-content.js && node tools/validate-python-lab.js",
     "validate:characters": "node tools/validate-v449-character-cutouts.js",
     "validate:coach-styles": "node tools/validate-coach-mode-learning-styles.js",
     "validate:curriculum": "node tools/validate-curriculum-v452.js",
@@ -24,7 +24,9 @@
     "validate:unit5": "node tools/validate-unit5-v458.js",
     "validate:unit6": "node tools/validate-unit6-v461.js",
     "preview:local": "node tools/serve-preview.cjs",
-    "test:browser": "playwright test"
+    "test:browser": "playwright test",
+    "validate:python-lab": "node tools/validate-python-lab.js",
+    "test:python-lab": "node tests/python-lab.browser.cjs"
   },
   "engines": {
     "node": ">=20"
