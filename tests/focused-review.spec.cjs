@@ -36,7 +36,7 @@ test('English focused review uses English copy and the same real Python grading'
  await page.addInitScript(()=>localStorage.setItem('meowde-v410-state',JSON.stringify({lang:'en',done:[],next:0,xp:0})));
  await page.goto(base+'/');await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
  await page.evaluate(()=>{MeowPythonFocusedReview.history.attempt({lessonId:'start-field',exerciseId:'start-field-w',lang:'en',correct:false});renderReview();});
- await expect(page.locator('[data-focused-review]')).toContainText('Extra review');await page.locator('[data-focused-review] button').click();
+ await expect(page.locator('[data-focused-review]')).toContainText('Extra review');await page.locator('[data-focused-review] summary').click();await page.locator('[data-focused-review] button').click();
  for(let i=0;i<5;i++){
   const ex=await page.evaluate(()=>({type:cur().type,model:cur().model,answer:cur().answer,tokens:cur().tokens,prompt:cur().prompt||cur().body}));
   expect(ex.prompt).not.toMatch(/[가-힣]/);
