@@ -7,7 +7,10 @@ test("Linux extra practice exposes the real course and terminal instead of an in
  await expect(more.locator("summary")).toBeVisible();
  await expect(page.locator("#nav")).toBeVisible();
  await expect(page.locator("#lesson")).toBeVisible();
+ await expect(page.locator("#library-mode")).toBeVisible();
+ await page.locator("#library-mode").selectOption("terminal");
  await expect(page.locator("#sim-input")).toBeVisible();
+ await page.locator("#library-mode").selectOption("bash");
  await expect(page.locator("#bash-source")).toBeVisible();
 });
 test("Python review keeps missed questions and recent completed lessons directly accessible",async({page})=>{
