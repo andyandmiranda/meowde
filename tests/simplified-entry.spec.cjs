@@ -36,7 +36,7 @@ test("both active subjects do not guess last subject",async({page})=>{
  await seed(page,{[py]:JSON.stringify({inProgress:{queue:[{}]}}),[li]:JSON.stringify({version:1,step:1,input:"",solutions:{},hints:{}})});
  await expect(page.locator("#resume-description")).toContainText("모두 학습 기록");
  await expect(page.locator("#resume-action")).toContainText("Python 학습 열기");
- await expect(page.getByRole("link",{name:"Linux 학습하기 →"})).toBeVisible();
+ await expect(page.getByRole("link",{name:"Linux 이어서 배우기 →"})).toBeVisible();
 });
 test("corrupt progress survives and narrow viewport does not overflow",async({page})=>{
  await page.setViewportSize({width:320,height:700});
@@ -55,4 +55,13 @@ test("simplified entry matches existing MEOWDE typography and mobile layout",asy
   expect(actual.width).toBeLessThanOrEqual(actual.viewport);
   expect(actual.buttonHeight).toBeGreaterThanOrEqual(48);
  }
+});
+
+test("one contextual alternative remains visible while optional routes are collapsed",async({page})=>{
+ await seed(page,{"meowde-linux-guided-v1":JSON.stringify({version:1,step:2,input:"",solutions:{},hints:{}})});
+ await expect(page.locator("#resume-action")).toHaveText("Linux 이어서 배우기 →");
+ await expect(page.locator("#alternate-action")).toHaveText("Python 학습하기 →");
+ await expect(page.getByRole("link",{name:"2분 선택형 실습 체험"})).toBeHidden();
+ await page.locator("summary").click();
+ await expect(page.getByRole("link",{name:"2분 선택형 실습 체험"})).toBeVisible();
 });
