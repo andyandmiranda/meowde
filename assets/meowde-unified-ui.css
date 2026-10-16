@@ -59,3 +59,14 @@ body:has(>.lab-header){background:var(--meowde-cream);color:var(--meowde-ink)}
 .learning-library button[aria-current=true]{outline-color:#247B61}
 .learning-library .card{border-color:var(--meowde-line)}
 .learning-library pre,.learning-library code,.learning-library textarea{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+
+/* Bottom navigation was still a five-column grid after reducing its labels. */
+.app .tabbar{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:8px 14px calc(8px + env(safe-area-inset-bottom))}
+.app .tabbar button{font-size:12px;font-weight:750;min-height:52px}
+.app .scroll>.card.hero{margin-top:12px}
+.app .meowde-more{margin-left:18px;margin-right:18px}
+.app .phase5-review .scroll .simple-head{margin-bottom:14px}
+.app .phase5-review .scroll [data-focused-review]{border:1px solid var(--meowde-line);box-shadow:none}
+.app .phase5-review .scroll [data-focused-review] details>summary{min-height:48px;display:flex;align-items:center;cursor:pointer;font-size:14px;font-weight:700}
+.app .phase5-review .scroll [data-focused-review] details>div{display:grid;gap:10px;padding:12px 0}
+.app .phase5-review .scroll [data-focused-review] button{min-height:48px}
