@@ -18,7 +18,7 @@ test('the course guide separates implementation from verification and preserves 
 });
 
 test('Bash boundary failure explains the input, expected result and actual result',async({page})=>{
- await page.goto(base+'/linux-crash-course.html');await expect(page.locator('#bash-task')).toBeVisible();await page.locator('#bash-task').selectOption('pass');
+ await page.goto(base+'/linux-crash-course.html');await expect(page.locator('#library-mode')).toBeVisible();await page.locator('#library-mode').selectOption('bash');await expect(page.locator('#bash-task')).toBeVisible();await page.locator('#bash-task').selectOption('pass');
  await page.locator('#bash-source').fill('if [ "$score" -gt 80 ]; then\n echo "PASS"\nelse\n echo "RETRY"\nfi');
  await page.locator('#bash-grade').click();await expect(page.locator('#bash-feedback')).toContainText('score=80');await expect(page.locator('#bash-feedback')).toContainText('기대 출력은 “PASS”');
  await page.locator('#bash-source').fill('if ["$score" -ge 80 ]; then\n echo "PASS"\nelse\n echo "RETRY"\nfi');
