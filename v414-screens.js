@@ -36,14 +36,9 @@
     return `<div class="v444-coding-scene v448-approved-hero v449-coding-scene"><img class="v449-character v449-pose-coding" src="/assets/meowde-approved-headphones.svg?v=450" alt="${esc(label)}" data-v449-pose="coding" data-character-version="4.50" decoding="async"></div>`;
   }
   function canonicalTabs(active){
-    const ko=S.lang==='ko';
-    return `<div class="tabbar" data-phase1-navigation="three-tabs"><button class="${active==='home'?'on':''}" onclick="renderHome()" aria-label="${ko?'배우기':'Learn'}">${icon('home')}<span>${ko?'배우기':'Learn'}</span></button><button class="${active==='review'?'on':''}" onclick="renderReview()" aria-label="${ko?'복습':'Review'}">${icon('spark')}<span>${ko?'복습':'Review'}</span></button><button class="${active==='more'?'on':''}" onclick="renderMore()" aria-label="${ko?'더 보기':'More'}">${icon('cat')}<span>${ko?'더 보기':'More'}</span></button></div>`;
+    const ko=S.lang==='ko',lab=ko?'실습':'Practice',my=ko?'마이':'My';
+    return `<div class="tabbar" data-phase1-navigation="five-tabs"><button class="${active==='home'?'on':''}" onclick="renderHome()" aria-label="${ko?'홈':'Home'}">${icon('home')}<span>${ko?'홈':'Home'}</span></button><button class="${active==='map'?'on':''}" onclick="renderMap()" aria-label="${ko?'학습':'Learn'}">${icon('map')}<span>${ko?'학습':'Learn'}</span></button><button class="${active==='review'?'on':''}" onclick="renderReview()" aria-label="${ko?'복습':'Review'}">${icon('spark')}<span>${ko?'복습':'Review'}</span></button><button onclick="location.href='/python-lab.html'" aria-label="${lab}">${icon('code')}<span>${lab}</span></button><button class="${active==='room'||active==='profile'?'on':''}" onclick="renderProfile()" aria-label="${my}">${icon('cat')}<span>${my}</span></button></div>`;
   }
-  function renderMore(){
-    S.screen='my';save();const ko=S.lang==='ko';
-    app.innerHTML=`<div class="screen phase1-more">${homeBrand()}<div class="scroll"><div class="simple-head"><h2>${ko?'더 보기':'More'}</h2></div><section class="card"><button class="btn ghost" onclick="renderMap()">${ko?'전체 과정':'Course map'}</button><a class="btn ghost" href="/python-lab.html" style="margin-top:10px;text-decoration:none">${ko?'추가 문제 풀기':'Extra challenges'}</a><button class="btn ghost" onclick="renderProfile()" style="margin-top:10px">${ko?'내 기록과 꾸미기':'My progress and cat'}</button></section><section class="card"><p class="muted">${ko?'다른 과목':'Other subject'}</p><a class="btn ghost" href="/linux-home.html" style="text-decoration:none">Linux →</a></section></div>${canonicalTabs('more')}</div>`;
-  }
-  window.renderMore=renderMore;
   function contactMarkup(){
     const label=S.lang==='ko'?'피드백 & 문의 ↗':'Feedback & Contact ↗';
     return `<div class="v451-contact"><a href="${FEEDBACK_URL}" target="_blank" rel="noopener noreferrer" aria-label="${esc(label.replace(' ↗',''))}">${label}</a></div>`;
@@ -64,12 +59,18 @@
 
   renderHome=function(){
     S.screen='home';save();
-    const hasProgress=hasLessonProgress(),lessonIndex=hasProgress?S.lessonIndex:S.next,L=lessons()[lessonIndex]||lessons()[0],ko=S.lang==='ko';
+    const hasProgress=hasLessonProgress();
+    const lessonIndex=hasProgress?S.lessonIndex:S.next;
+    const L=lessons()[lessonIndex]||lessons()[0];
     const action=hasProgress?'resumeLesson()':`startLesson(${lessonIndex})`;
-    const label=hasProgress?(ko?'이어서 배우기':'Continue learning'):(ko?'오늘 학습 시작':'Start learning');
-    app.innerHTML=`<div class="screen phase1-home">${homeBrand()}<div class="scroll"><section class="card hero phase1-hero"><div class="hero-main">${homeHeroCharacter()}<div class="hero-copy"><h2>${ko?'오늘도 하나씩 배워볼까?':'Ready to learn?'}</h2><p>${esc(L.title)}</p></div></div><button class="btn" onclick="${action}">${icon('play')}${label}</button></section><section class="card"><div class="section-title"><h3>${ko?'지금 배우는 내용':'Current lesson'}</h3><span class="pill">${String(lessonIndex+1).padStart(2,'0')}</span></div><p class="muted">${hasProgress?(ko?`문제 ${Math.min(S.idx+1,S.queue.length)} / ${S.queue.length}`:`Question ${Math.min(S.idx+1,S.queue.length)} / ${S.queue.length}`):esc(L.description)}</p></section><details class="meowde-more"><summary>${ko?'더 보기 · 전체 과정과 내 기록':'More · course and progress'}</summary><div class="more-links"><button class="btn ghost" onclick="renderMap()">${ko?'전체 과정':'Course map'}</button><button class="btn ghost" onclick="renderProfile()">${ko?'내 기록':'My progress'}</button></div></details></div>${canonicalTabs('home')}</div>`;
+    const ko=S.lang==='ko';
+    const actionLabel=hasProgress?(ko?'이어서 배우기':'Resume lesson'):(ko?'오늘 학습 시작':'Start learning');
+    const sub=hasProgress?(ko?`문제 ${Math.min(S.idx+1,S.queue.length)} / ${S.queue.length}에서 이어집니다.`:`Resume at step ${Math.min(S.idx+1,S.queue.length)} of ${S.queue.length}.`):L.description;
+    const unit=currentUnit();
+    const streak=Math.max(0,Number(S.streak)||0);
+    app.innerHTML=`<div class="screen phase1-home">${homeBrand()}<div class="phase1-home-meta"><span>${ko?'오늘의 학습':'Today'}</span>${streak?`<span>🔥 ${streak}${ko?'일':'d'}</span>`:''}</div><div class="scroll"><section class="card hero phase1-hero"><div class="hero-main">${homeHeroCharacter()}<div class="hero-copy"><div class="section-kicker">Lesson ${String(lessonIndex+1).padStart(2,'0')} · ${esc(unit.name)}</div><h2>${esc(L.title)}</h2><p>${esc(sub)}</p></div></div><button class="btn" onclick="${action}">${icon('play')}${actionLabel}</button><div class="home-secondary"><button class="text-link" onclick="S.unit=${unit.unit};save();renderMap()">${ko?'전체 학습 경로 보기':'See learning path'} →</button></div></section>${dailyCard()}${unitCard()}${contactMarkup()}</div>${canonicalTabs('home')}</div>`;
     document.documentElement.dataset.homeRenderer='canonical-v414';
-    document.documentElement.dataset.navigation='three-tabs';
+    document.documentElement.dataset.navigation='phase1-four-tabs';
   };
   window.__MEOWDE_CANONICAL_HOME_RENDERER__=renderHome;
 
@@ -91,7 +92,7 @@
     const empty=ko?'완료한 레슨이 아직 없습니다.<br>첫 레슨을 끝내면 여기서 다시 연습할 수 있어요.':'No completed lessons yet.<br>Finish your first lesson to review it here.';
     const smart=smartReviewCard();
     const quality=learningQualityCard();
-    app.innerHTML=`<div class="screen phase5-review"><div class="scroll"><div class="simple-head"><h2>${ko?'복습':'Review'}</h2><p>${ko?'헷갈렸던 문제부터 다시 풀어봐.':'Try the questions you missed.'}</p></div>${mistakeRows?`<div class="review-section-head"><h3>${ko?'다시 풀기':'Try again'}</h3><span>${mistakes.length}</span></div><div class="review-list">${mistakeRows}</div>`:`<div class="empty-state">${ko?'틀린 문제가 아직 없어.':'No missed questions yet.'}</div>`}<details class="meowde-more"><summary>${ko?'완료한 레슨 다시 풀기':'Replay completed lessons'} · ${S.done.length}</summary><div class="more-links">${completed?`<div class="review-list">${completed}</div>`:`<p class="muted">${empty}</p>`}</div></details><details class="meowde-more"><summary>${ko?'추가 복습':'More review'}</summary><div class="more-links">${smart}${quality}</div></details></div>${canonicalTabs('review')}</div>`;
+    app.innerHTML=`<div class="screen phase5-review"><div class="scroll"><div class="simple-head v449-review-head"><div><h2>${ko?'복습':'Review'}</h2><p>${ko?'틀린 문제를 먼저 정리하고 완료한 레슨을 다시 연습하세요.':'Clear mistakes first, then replay completed lessons.'}</p></div>${reviewPoseMarkup(mistakes)}</div>${smart}${mistakeRows?`<div class="review-section-head"><h3>${ko?'오답':'Mistakes'}</h3><span>${mistakes.length}</span></div><div class="review-list">${mistakeRows}</div>`:''}<div class="review-section-head"><h3>${ko?'완료한 레슨':'Completed lessons'}</h3><span>${S.done.length}</span></div>${completed?`<div class="review-list">${completed}</div>`:`<div class="empty-state">${empty}</div>`}${quality}</div>${canonicalTabs('review')}</div>`;
     document.documentElement.dataset.reviewRenderer='canonical-v414';
     document.documentElement.dataset.navigation='phase1-four-tabs';
   };
