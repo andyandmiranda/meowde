@@ -49,3 +49,13 @@ body:has(>.lab-header){background:var(--meowde-cream);color:var(--meowde-ink)}
 .shell #focus-list .focus-card button{margin-top:12px}
 .shell :focus-visible{outline-color:#247B61}
 @media(max-width:360px){.shell .focus-card{padding:16px}}
+
+/* The optional Linux library uses inline pink styles; this stylesheet loads last. */
+.learning-library{background:var(--meowde-cream);color:var(--meowde-ink)}
+.learning-library body,.learning-library .app{background:var(--meowde-cream);color:var(--meowde-ink)}
+.learning-library .pill{background:#E7F8F0;color:#247B61}
+.learning-library button,.learning-library a.btn{background:var(--meowde-mint);color:#fff}
+.learning-library button.outline,.learning-library .answers button{background:#fff;color:var(--meowde-ink);border:1px solid var(--meowde-line)}
+.learning-library button[aria-current=true]{outline-color:#247B61}
+.learning-library .card{border-color:var(--meowde-line)}
+.learning-library pre,.learning-library code,.learning-library textarea{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
