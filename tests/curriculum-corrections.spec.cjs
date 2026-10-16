@@ -52,7 +52,7 @@ for(const lang of ['ko','en']){
    },{lang,slug,id});
    await page.locator('[data-coach-hint]').click();
    const extra=page.locator('[data-hint-step]');
-   await expect(extra).toContainText(id.endsWith('-w')?'snacks = ["milk"]':lang==='ko'?'괄호':'parentheses');
+   await expect(extra).toContainText(id.endsWith('-w')?'snacks = []':lang==='ko'?'괄호':'parentheses');
    if(id.endsWith('-b'))await expect(page.locator('.hint')).toContainText(lang==='ko'?'여는 괄호':'opening');
    const after=await page.evaluate(()=>{
     const state=JSON.parse(localStorage.getItem('meowde-v410-state'));delete state.savedAt;
