@@ -98,13 +98,13 @@
       return `<button class="review-item" onclick="startLesson(${index},false,null,{mode:'review'})"><span class="lesson-badge">${String(index+1).padStart(2,'0')}</span><span class="lesson-info"><b>${esc(L.title)}</b><p>${esc(L.description)}</p></span><span class="pill">${ko?'다시':'Replay'}</span></button>`;
     });
     const completed=completedItems.slice(0,3).join('');
-    const completedMore=completedItems.length>3?`<details class="meowde-more review-more-completed"><summary>${ko?'완료한 레슨 모두 보기':'See all completed lessons'} · ${completedItems.length}</summary><div class="more-links review-list">${completedItems.slice(3).join('')}</div></details>`:'';
+    const completedMore=completedItems.length>3?`<details class="meowde-more review-more-completed"><summary>${ko?'이전 완료 레슨 더 보기':'See earlier completed lessons'} · ${completedItems.length}</summary><div class="more-links review-list">${completedItems.slice(3).join('')}</div></details>`:'';
     const empty=ko?'완료한 레슨이 아직 없습니다.<br>첫 레슨을 끝내면 여기서 다시 연습할 수 있어요.':'No completed lessons yet.<br>Finish your first lesson to review it here.';
     const smart=smartReviewCard();
     const quality=learningQualityCard();
     app.innerHTML=`<div class="screen phase5-review"><div class="scroll"><div class="simple-head v449-review-head"><div><h2>${ko?'복습':'Review'}</h2><p>${ko?'틀린 문제를 먼저 정리하고 완료한 레슨을 다시 연습하세요.':'Clear mistakes first, then replay completed lessons.'}</p></div>${reviewPoseMarkup(mistakes)}</div>${smart}${mistakeRows?`<div class="review-section-head"><h3>${ko?'오답':'Mistakes'}</h3><span>${mistakes.length}</span></div><div class="review-list">${mistakeRows}</div>`:''}<div class="review-section-head"><h3>${ko?'완료한 레슨':'Completed lessons'}</h3><span>${S.done.length}</span></div>${completed?`<div class="review-list">${completed}</div>${completedMore}`:`<div class="empty-state">${empty}</div>`}${quality?`<details class="meowde-more review-quality"><summary>${ko?'학습 분석 보기':'Learning insights'}</summary><div class="more-links">${quality}</div></details>`:''}</div>${canonicalTabs('review')}</div>`;
     document.documentElement.dataset.reviewRenderer='canonical-v414';
-    document.documentElement.dataset.navigation='phase1-four-tabs';
+    document.documentElement.dataset.navigation='five-tabs';
   };
   window.__MEOWDE_CANONICAL_REVIEW_RENDERER__=renderReview;
 
