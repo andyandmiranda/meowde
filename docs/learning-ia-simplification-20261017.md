@@ -36,3 +36,6 @@ Full migration of the Python extra-challenge engine into the main lesson would r
 - **복습**: missed problems first; completed lessons and optional experimental review collapsed.
 - **더 보기**: course map, optional advanced problems, records/customization, Linux switch.
 - The Linux subject currently uses a standalone page and has not been migrated to a single SPA. Cross-subject visual consistency is improved, but seamless one-shell routing remains deferred to avoid risky storage migration.
+
+## 2026-10-17 rollback after CEO feedback
+The reduction to three tabs and aggressive collapse of course/practice/progress was rejected because it buried necessary learning functions. Restored the previous canonical `v413-core.js` and `v414-screens.js` from commit `f802857` on the draft branch. The five-tab model is a temporary discoverability-preserving baseline, **not** approved final IA. Do not claim the simplified three-tab structure is shipped. Next design must preserve direct access to course path, learning, hands-on practice, review and records, while reducing clutter inside each screen; validate task paths with users before any further removal. Existing visual/typography changes remain under review.
