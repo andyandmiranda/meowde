@@ -26,3 +26,26 @@ body:has(>.lab-header){background:var(--meowde-cream);color:var(--meowde-ink)}
 #lab .card,#lab .hero{border-color:var(--meowde-line)}
 #lab .primary,#lab button.primary{background:var(--meowde-mint);color:#fff;border-color:var(--meowde-mint)}
 #lab .unit-nav a[aria-current=page]{background:#E7F8F0}
+
+/* Linux pages previously inherited an independent pink token. Re-map the actual
+   legacy token as well as its hardcoded components, after linux-guided.css. */
+:root{--pink:#53C7A0;--line:#E8DED0;--muted:#7F7671}
+.shell{color:var(--meowde-ink)}
+.shell .primary{background:var(--meowde-mint);color:#fff}
+.shell .progress span{background:var(--meowde-mint)}
+.shell .hint{color:#247B61}
+.shell .feedback{color:var(--meowde-ink)}
+.shell .focus-card{border-color:var(--meowde-line);background:#fff;border-radius:20px;padding:20px;margin:16px 0}
+.shell .focus-card button{background:var(--meowde-mint);color:#fff;border:1px solid var(--meowde-mint);font-weight:750;min-height:48px}
+.shell .focus-card button#focus-hint,.shell .focus-card button#focus-exit{background:#fff;color:var(--meowde-ink);border:1px solid var(--meowde-line)}
+.shell .focus-card #focus-hint{margin-top:12px}
+.shell .focus-card #focus-action{margin-top:18px}
+.shell .focus-card pre{background:#F3F8F4;color:var(--meowde-ink);font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+.shell .focus-card input{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;border-color:var(--meowde-line);background:#fff}
+.shell .focus-card p{font-size:15px;line-height:1.65}
+.shell .focus-card summary{min-height:44px;padding:12px 0;cursor:pointer}
+.shell #focus-list .focus-card h2{font-size:18px;line-height:1.4}
+.shell #focus-list .focus-card p{font-size:14px;color:var(--meowde-muted)}
+.shell #focus-list .focus-card button{margin-top:12px}
+.shell :focus-visible{outline-color:#247B61}
+@media(max-width:360px){.shell .focus-card{padding:16px}}
