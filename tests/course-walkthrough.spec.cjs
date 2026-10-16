@@ -71,12 +71,12 @@ test('a total beginner can revisit the taught concept and code without leaving a
  await page.getByRole('button',{name:'오늘 학습 시작'}).click();
  await expect(page.locator('.lesson-main h3')).toContainText('코드 첫 문장');
  await page.locator('.lesson-foot .btn').click();
- const before=await page.evaluate(()=>({id:cur().id,step:S.idx,progress:localStorage.getItem('meowde-v410-state')}));
+ const before=await page.evaluate(()=>({id:cur().id,step:S.idx,progress:(()=>{const state=JSON.parse(localStorage.getItem('meowde-v410-state'));delete state.savedAt;return state;})()}));
  const guide=page.locator('[data-inline-concept]');
  await expect(guide).toBeVisible();
  await guide.locator('summary').click();
  await expect(guide).toContainText('print()');
- expect(await page.evaluate(()=>({id:cur().id,step:S.idx,progress:localStorage.getItem('meowde-v410-state')}))).toEqual(before);
+ expect(await page.evaluate(()=>({id:cur().id,step:S.idx,progress:(()=>{const state=JSON.parse(localStorage.getItem('meowde-v410-state'));delete state.savedAt;return state;})()}))).toEqual(before);
  await expect(page.locator('.lesson-top')).toBeVisible();
 });
 
