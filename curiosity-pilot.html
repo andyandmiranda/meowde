@@ -24,11 +24,11 @@ const el=id=>document.getElementById(id);let index=0,completed=false;
 function render(){
  const task=pilot.tasks[index];completed=false;
  el('task-title').textContent=index===0?'1. 고양이를 찾아볼까?':'2. 새로운 상황에 적용해 봐';
- el('prompt').textContent=task.items.join(' · ')+' — '+task.target+'의 위치 번호는?';
+ el('prompt').textContent='순서: '+task.items.join(' → ')+'\n'+task.target+'를 가져오려면 몇 번 인덱스를 사용해야 할까?';
  el('feedback').textContent='';el('code').hidden=true;el('code').textContent='';
  el('hint').hidden=false;el('next').hidden=true;el('complete').hidden=true;
  el('choices').replaceChildren(...task.items.map((name,choice)=>{
-  const button=document.createElement('button');button.type='button';button.textContent=choice+' · '+name;button.setAttribute('aria-pressed','false');
+  const button=document.createElement('button');button.type='button';button.textContent=String(choice);button.setAttribute('aria-label',choice+'번 인덱스');button.setAttribute('aria-pressed','false');
   button.addEventListener('click',()=>{
    if(completed)return;
    const result=pilot.grade(task.id,choice);
@@ -41,7 +41,7 @@ function render(){
  }));
 }
 el('hint').addEventListener('click',()=>{el('feedback').textContent='힌트: 맨 왼쪽 항목부터 0, 1, 2…로 세어 봐.';});
-el('next').addEventListener('click',()=>{if(!completed||index!==0)return;index=1;render();el('task-title').focus?.();});
+el('next').addEventListener('click',()=>{if(!completed||index!==0)return;index=1;render();el('task-title').setAttribute('tabindex','-1');el('task-title').focus();});
 render();
 })();
 </script></body></html>
