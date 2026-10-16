@@ -146,8 +146,17 @@ if(requestedTab==='map'){renderMap()}
 else if(requestedTab==='my'){if(typeof renderProfile==='function')renderProfile();else renderRoom()}
 else if(requestedTab==='review'){
   // Canonical review renderer is loaded by the enhancement bootstrap.
-  S.screen='review';save();
-  if(typeof renderReview==='function')renderReview();else renderHome();
+  if(typeof renderReview==='function')renderReview();
+  else {
+    renderHome();
+    // Enhancement bootstrap may register canonical review after the first paint.
+    let attempts=0;
+    const openReview=()=>{
+      if(typeof renderReview==='function'){renderReview();return}
+      if(++attempts<40)setTimeout(openReview,100);
+    };
+    openReview();
+  }
 }
 else if(hasLessonProgress()&&requestedTab!=='home')renderLesson();
 else renderHome();if(!localStorage.getItem('meowde-v410-seen')){localStorage.setItem('meowde-v410-seen','1');setTimeout(()=>langSheet(),300)}
