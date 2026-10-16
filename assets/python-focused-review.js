@@ -26,23 +26,30 @@ checkQ=async function(){
 const baseNext=nextQ;
 nextQ=function(){const ex=cur();if(ex?.focusStage==='concept')history.viewed(ex.focusOrigin.lessonId,ex.focusOrigin.exerciseId,ex.focusOrigin.lang,'concept');return baseNext.apply(this,arguments);};
 const baseFinish=finish;
-finish=function(){const focused=typeof meowdeMode==='function'&&meowdeMode()==='focused-review';baseFinish.apply(this,arguments);if(focused){const reward=document.querySelector('.reward-screen');if(reward){const note=document.createElement('p');note.textContent=copy('복습을 마쳐도 최초 오답 기록은 남아요. 이번 확인은 출력 개념에 한정돼요.','The original miss remains. This check covers the output concept only.');note.className='reward-note';reward.append(note);}}};
+finish=function(){const focused=typeof meowdeMode==='function'&&meowdeMode()==='focused-review';baseFinish.apply(this,arguments);if(focused){const reward=document.querySelector('.reward-screen');if(reward){const note=document.createElement('p');note.textContent=copy('복습을 마쳤어. 기존 기록은 그대로야.','Review complete. Your previous record is preserved.');note.className='reward-note';reward.append(note);}}};
 function element(tag,text){const node=document.createElement(tag);node.textContent=text;return node;}
 function mount(){
  const scroll=document.querySelector('.phase5-review .scroll');
  if(scroll&&!scroll.querySelector('[data-focused-review]')){
   const section=element('section','');section.className='card';section.dataset.focusedReview='';
-  section.append(element('h3',copy('집중 복습 · 출력 첫걸음','Focused review · first output')));
-  section.append(element('p',copy('틀린 문제 → 개념 → 유사 문제 → 응용 → 이해도 확인. 첫 레슨의 앞으로 생기는 오답만 별도로 기록해요. 다른 단원은 아래 기존 복습을 이용하세요.','Missed task → concept → similar task → application → check. This pilot records future misses in Lesson 01 only. Use the existing review below for other lessons.')));
   const records=history.state.records.filter(r=>r.lang===language()&&source(r.exerciseId));
-  for(const record of records){const button=element('button',copy('최초 오답: ','Original miss: ')+(source(record.exerciseId).prompt||record.exerciseId).slice(0,75)+(record.retrySuccesses?copy(' · 재시도 성공 이력',' · retry success recorded'):''));button.className='btn ghost';button.style.marginTop='10px';button.type='button';button.onclick=()=>start(record);section.append(button);const status=element('p',record.stages.check?.passed?copy('출력 개념 확인 완료 · 최초 오답 유지','Output concept check complete · initial miss retained'):copy('이해도 확인 대기','Concept check pending'));status.style.fontSize='12px';section.append(status);}
-  if(!records.length)section.append(element('p',copy('아직 새 집중 복습 기록이 없어요. 과거 점수에서 오답을 추정하지 않아요.','No new focused review records. Past scores are not used to infer misses.')));
-  if(history.issue)section.append(element('p',history.issue));
+  const details=element('details','');
+  const summary=element('summary',copy('추가 복습 · 출력 문제','Extra review · output'));
+  details.append(summary);
+  const inner=element('div','');
+  for(const record of records){
+    const button=element('button',copy('다시 풀기 · ','Try again · ')+(source(record.exerciseId).prompt||record.exerciseId).slice(0,65));
+    button.className='btn ghost';button.type='button';button.onclick=()=>start(record);inner.append(button);
+    inner.append(element('p',record.stages.check?.passed?copy('복습 완료','Reviewed'):copy('다시 확인하기','Ready to retry')));
+  }
+  if(!records.length)inner.append(element('p',copy('복습할 출력 문제가 아직 없어.','No output questions to review yet.')));
+  if(history.issue)inner.append(element('p',history.issue));
+  details.append(inner);section.append(details);
   const header=scroll.querySelector('.simple-head');if(header)header.after(section);else scroll.prepend(section);
  }
  const ex=typeof cur==='function'?cur():null,feedback=document.querySelector('.feedback');
  const main=document.querySelector('.lesson-main');
- if(ex?.focusOrigin&&main&&!main.querySelector('[data-focus-stage]')){const names={missed:copy('틀린 문제 다시 풀기','Retry the missed task'),concept:copy('개념 다시 이해하기','Revisit the concept'),similar:copy('유사 문제','Similar task'),application:copy('응용 문제','Application'),check:copy('이해도 확인','Concept check')};const label=element('p',names[ex.focusStage]+' · '+copy('최초 오답 기록 유지','Initial miss retained'));label.dataset.focusStage='';label.className='meta';main.prepend(label);}
+ if(ex?.focusOrigin&&main&&!main.querySelector('[data-focus-stage]')){const names={missed:copy('틀린 문제 다시 풀기','Retry the missed task'),concept:copy('개념 다시 이해하기','Revisit the concept'),similar:copy('유사 문제','Similar task'),application:copy('응용 문제','Application'),check:copy('이해도 확인','Concept check')};const label=element('p',names[ex.focusStage]);label.dataset.focusStage='';label.className='meta';main.prepend(label);}
  if(history.issue&&main&&!main.querySelector('[data-focus-storage]')){const warning=element('p',copy(history.issue,'Focused review history cannot be saved. Existing records are preserved.'));warning.dataset.focusStorage='';warning.setAttribute('role','status');main.append(warning);}
  if(ex?.focusOrigin&&S.checked&&feedback&&!feedback.querySelector('[data-focus-answer]')){
   const details=element('details','');details.dataset.focusAnswer='';details.append(element('summary',copy('정답 예시와 이유','Answer example and rationale')),element('pre',ex.model||ex.fixed||ex.choices?.[ex.answer]||ex.answer||''),element('p',ex.explain||''));feedback.append(details);
