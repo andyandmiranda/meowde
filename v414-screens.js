@@ -43,6 +43,7 @@
     S.screen='my';save();const ko=S.lang==='ko';
     app.innerHTML=`<div class="screen phase1-more">${homeBrand()}<div class="scroll"><div class="simple-head"><h2>${ko?'더 보기':'More'}</h2></div><section class="card"><button class="btn ghost" onclick="renderMap()">${ko?'전체 과정':'Course map'}</button><a class="btn ghost" href="/python-lab.html" style="margin-top:10px;text-decoration:none">${ko?'추가 문제 풀기':'Extra challenges'}</a><button class="btn ghost" onclick="renderProfile()" style="margin-top:10px">${ko?'내 기록과 꾸미기':'My progress and cat'}</button></section><section class="card"><p class="muted">${ko?'다른 과목':'Other subject'}</p><a class="btn ghost" href="/linux-home.html" style="text-decoration:none">Linux →</a></section></div>${canonicalTabs('more')}</div>`;
   }
+  window.renderMore=renderMore;
   function contactMarkup(){
     const label=S.lang==='ko'?'피드백 & 문의 ↗':'Feedback & Contact ↗';
     return `<div class="v451-contact"><a href="${FEEDBACK_URL}" target="_blank" rel="noopener noreferrer" aria-label="${esc(label.replace(' ↗',''))}">${label}</a></div>`;
