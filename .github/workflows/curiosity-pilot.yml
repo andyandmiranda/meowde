@@ -1,0 +1,31 @@
+name: Curiosity Pilot Verification
+on:
+  push:
+    branches:
+      - feat/curiosity-pilot-20261016
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: node --test tests/curiosity-pilot.test.cjs
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm exec playwright test tests/curiosity-pilot.spec.cjs
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: curiosity-pilot-diagnostics
+          path: artifacts/
+          retention-days: 7
