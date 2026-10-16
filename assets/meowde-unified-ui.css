@@ -12,3 +12,17 @@ pre,code,kbd,samp,.code,.terminal,.editor,.cm-editor,.monaco-editor{font-family:
 body .tabbar button{min-height:52px}
 body .tabbar button span{font-family:var(--meowde-font)}
 /* Keep existing learning engines and interaction affordances intact. */
+
+/* One brand palette across the opt-in learning surfaces. */
+body:has(>.shell){background:var(--meowde-cream);color:var(--meowde-ink)}
+body .shell{background:var(--meowde-cream)}
+.shell .primary{background:var(--meowde-mint);color:#fff}
+.shell .secondary{color:var(--meowde-ink)}
+.shell .eyebrow{color:#247B61}
+.shell .meowde-more{margin:14px 0}
+body:has(>.lab-header){background:var(--meowde-cream);color:var(--meowde-ink)}
+.lab-header a,.lab-header a:visited{color:var(--meowde-ink)}
+.lab-header span{color:var(--meowde-muted)}
+#lab .card,#lab .hero{border-color:var(--meowde-line)}
+#lab .primary,#lab button.primary{background:var(--meowde-mint);color:#fff;border-color:var(--meowde-mint)}
+#lab .unit-nav a[aria-current=page]{background:#E7F8F0}
