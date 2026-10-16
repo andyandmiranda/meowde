@@ -65,3 +65,17 @@ for(const lang of ['ko','en'])test('all 60 '+lang+' lessons can be completed thr
  expect(await page.evaluate(()=>S.done.length)).toBe(60);
  require('node:fs').writeFileSync(testInfo.outputPath('course-walkthrough.json'),JSON.stringify({language:lang,method:'model-guided browser controls; no independent mastery claim',lessons:record},null,2));
 });
+
+test('a total beginner can revisit the taught concept and code without leaving a question',async({page})=>{
+ await page.goto(base+'/');await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+ await page.getByRole('button',{name:'오늘 학습 시작'}).click();
+ await expect(page.locator('.lesson-main h3')).toContainText('코드 첫 문장');
+ await page.locator('.lesson-foot .btn').click();
+ const before=await page.evaluate(()=>({id:cur().id,step:S.idx,progress:localStorage.getItem('meowde-v410-state')}));
+ const guide=page.locator('[data-inline-concept]');
+ await expect(guide).toBeVisible();
+ await guide.locator('summary').click();
+ await expect(guide).toContainText('print()');
+ expect(await page.evaluate(()=>({id:cur().id,step:S.idx,progress:localStorage.getItem('meowde-v410-state')}))).toEqual(before);
+ await expect(page.locator('.lesson-top')).toBeVisible();
+});
