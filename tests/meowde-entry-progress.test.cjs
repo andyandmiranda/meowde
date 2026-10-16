@@ -1,0 +1,10 @@
+const test=require("node:test"),assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm");
+const code=fs.readFileSync("assets/meowde-entry-progress.js","utf8");
+function run(data={},throws=false){const writes=[];const storage={getItem(k){if(throws)throw Error("denied");return Object.prototype.hasOwnProperty.call(data,k)?data[k]:null},setItem(k,v){writes.push([k,v])}};const root={};vm.runInNewContext(code,{window:root});return {result:root.MeowdeEntryProgress.inspect(storage),writes,api:root.MeowdeEntryProgress,storage};}
+test("new user remains neutral and read-only",()=>{const x=run();assert.equal(x.result.subject,null);assert.equal(x.writes.length,0)});
+test("Python in progress points to Python",()=>{const x=run({"meowde-v410-state":JSON.stringify({inProgress:{queue:[{id:"a"}]}})});assert.equal(x.result.subject,"python");assert.equal(x.writes.length,0)});
+test("Linux in progress points to Linux",()=>{const x=run({"meowde-linux-guided-v1":JSON.stringify({version:1,step:2,input:"",solutions:{},hints:{}})});assert.equal(x.result.subject,"linux");assert.equal(x.writes.length,0)});
+test("both subjects stay ambiguous without preference",()=>{const x=run({"meowde-v410-state":JSON.stringify({inProgress:{queue:[{}]}}),"meowde-linux-guided-v1":JSON.stringify({version:1,step:1,input:"",solutions:{},hints:{}})});assert.equal(x.result.subject,null);assert.equal(x.result.ambiguous,true)});
+test("both subjects honor explicitly saved preference",()=>{const x=run({"meowde-v410-state":JSON.stringify({inProgress:{queue:[{}]}}),"meowde-linux-guided-v1":JSON.stringify({version:1,step:1,input:"",solutions:{},hints:{}}),"meowde-entry-preference-v1":JSON.stringify({version:1,subject:"linux"})});assert.equal(x.result.subject,"linux")});
+test("corrupt progress never overwritten",()=>{const x=run({"meowde-v410-state":"{broken"});assert.equal(x.result.invalid,true);assert.equal(x.writes.length,0)});
+test("blocked storage degrades without writing",()=>{const x=run({},true);assert.equal(x.result.subject,null);assert.equal(x.result.storageUnavailable,true);assert.equal(x.writes.length,0)});
