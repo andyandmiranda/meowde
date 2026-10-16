@@ -70,3 +70,21 @@ body:has(>.lab-header){background:var(--meowde-cream);color:var(--meowde-ink)}
 .app .phase5-review .scroll [data-focused-review] details>summary{min-height:48px;display:flex;align-items:center;cursor:pointer;font-size:14px;font-weight:700}
 .app .phase5-review .scroll [data-focused-review] details>div{display:grid;gap:10px;padding:12px 0}
 .app .phase5-review .scroll [data-focused-review] button{min-height:48px}
+
+/* Visible learning journey: progress and next steps are essential, not hidden. */
+.app .meowde-home-journey{margin:12px 18px 14px;padding:18px;border-radius:20px}
+.app .meowde-home-journey .section-title{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.app .meowde-home-journey .section-title h3{font-size:17px;line-height:1.35}
+.app .meowde-home-journey .section-title strong{font-size:14px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.app .journey-progress{height:9px;background:#E7F8F0;border-radius:99px;overflow:hidden;margin:12px 0 10px}
+.app .journey-progress i{display:block;height:100%;background:#53C7A0;border-radius:99px}
+.app .meowde-home-journey>.muted{font-size:13px;margin:0 0 12px;color:var(--meowde-muted)}
+.app .journey-steps{display:grid;gap:0}
+.app .journey-step{display:flex;align-items:center;gap:10px;min-height:46px;padding:9px 0;border-bottom:1px solid var(--meowde-line)}
+.app .journey-step-index{flex:0 0 32px;font-size:12px;font-weight:800;color:#247B61}
+.app .journey-step-title{flex:1;min-width:0;font-size:14px;line-height:1.4;overflow-wrap:anywhere}
+.app .journey-step-state{flex:0 0 auto;font-size:12px;color:var(--meowde-muted)}
+.app .journey-step.is-current .journey-step-title{font-weight:800}
+.app .journey-step.is-current .journey-step-state{color:#247B61;font-weight:800}
+.app .journey-path-link{width:100%;text-align:left;font-size:14px;font-weight:750;color:#247B61;padding:14px 0 0;min-height:44px}
+@media(max-width:360px){.app .meowde-home-journey{padding:14px}.app .journey-step{gap:7px}}
