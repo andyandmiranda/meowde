@@ -101,3 +101,12 @@ body:has(>.lab-header){background:var(--meowde-cream);color:var(--meowde-ink)}
 #lab .practice-primary .actions .primary{background:#53C7A0;color:#173D31;border-color:#53C7A0}
 #lab .practice-primary .actions button{min-height:48px}
 @media(max-width:760px){#lab .hero{margin-bottom:12px;padding:14px}#lab .hero p.meta{font-size:12px}#lab .practice-entry{margin:10px 0 8px;padding:14px}#lab .practice-primary{margin-top:8px}#lab .practice-primary textarea.code{min-height:180px}}
+
+#lab .practice-mode-switch{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 16px}
+#lab .practice-mode-switch>div{border:1px solid var(--meowde-line);background:#fff;border-radius:15px;padding:12px 14px;display:grid;align-content:start;gap:5px;min-width:0}
+#lab .practice-mode-switch>div.is-active{border-color:#9AD7BD;background:#EAF8F1}
+#lab .practice-mode-switch strong{font-size:14px}
+#lab .practice-mode-switch span{font-size:12px;color:var(--meowde-muted);line-height:1.5}
+#lab .practice-mode-switch a{font-size:13px;font-weight:750;color:#247B61;min-height:36px;display:inline-flex;align-items:center}
+#lab .practice-mode-switch .mode-current{font-weight:750;color:#247B61}
+@media(max-width:380px){#lab .practice-mode-switch>div{padding:10px}#lab .practice-mode-switch strong{font-size:13px}}
