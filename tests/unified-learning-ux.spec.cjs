@@ -5,6 +5,7 @@ test("Python home has one primary learning action and hides extras until request
  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
  await expect(page.locator(".meowde-subject-overview")).toHaveCount(0);
  await expect(page.locator(".hero .btn")).toHaveCount(1);
+ await expect(page.locator(".tabbar[data-phase1-navigation=three-tabs] button")).toHaveCount(3);
  await expect(page.locator(".tabbar button").filter({hasText:"배우기"})).toHaveCount(1);
  await expect(page.locator(".tabbar button").filter({hasText:"복습"})).toHaveCount(1);
  await expect(page.locator(".meowde-more")).not.toHaveAttribute("open","");
@@ -27,4 +28,17 @@ test("Python extra challenges share typography and retain accessible code font",
  await expect(page).toHaveTitle(/Python 추가 문제/);
  const f=await page.evaluate(()=>({body:getComputedStyle(document.body).fontFamily,code:getComputedStyle(document.querySelector("pre")||document.createElement("pre")).fontFamily}));
  expect(f.body).toMatch(/Pretendard/);
+});
+
+test("review has three destinations, mistakes first and optional content collapsed",async({page})=>{
+ await page.goto(base+"/");
+ await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+ await page.getByRole("button",{name:"복습",exact:true}).click();
+ await expect(page.locator(".phase5-review")).toBeVisible();
+ await expect(page.locator(".tabbar[data-phase1-navigation=three-tabs] button")).toHaveCount(3);
+ await expect(page.locator(".phase5-review .meowde-more").first()).not.toHaveAttribute("open","");
+ await expect(page.locator(".phase5-review .meowde-more").nth(1)).not.toHaveAttribute("open","");
+ await expect(page.locator(".phase5-review .simple-head")).toContainText("복습");
+ await page.getByRole("button",{name:"더 보기",exact:true}).click();
+ await expect(page.getByRole("button",{name:"전체 과정"})).toBeVisible();
 });
