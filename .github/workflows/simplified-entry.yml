@@ -21,4 +21,4 @@ jobs:
       - name: Chromium browser regression
         run: |
           pnpm exec playwright install --with-deps chromium
-          pnpm test:browser
+          pnpm exec playwright test
