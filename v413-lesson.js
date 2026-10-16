@@ -124,6 +124,14 @@
     const conceptHelp=ex.type!=='concept'&&concept
       ?`<details class="card" data-inline-concept><summary>${S.lang==='ko'?'개념·예제 다시 보기':'Review concept and example'}</summary><h3>${esc(concept.title||L.title)}</h3><p>${esc(concept.body)}</p><div class="code">${esc(concept.code)}</div></details>`
       :'';
+    // Explain wrong answers on demand without erasing the original miss or overriding grading.
+    const correctExample=ex.type==='predict'&&Array.isArray(ex.choices)?ex.choices[ex.answer]
+      :ex.type==='fill'?ex.code.replace('____',String(ex.answer))
+      :ex.type==='bughunt'?ex.fixed
+      :ex.type==='write'?ex.model:'';
+    const answerReview=S.checked&&!S.correct&&correctExample
+      ?`<details class="card" data-answer-review><summary>${S.lang==='ko'?'정답 예시와 이유 확인':'See a correct example and why'}</summary><pre class="code">${esc(correctExample)}</pre><p>${esc(ex.explain||'')}</p></details>`
+      :'';
     const can=ex.type==='concept'||S.checked||S.loading?true:(ex.type==='predict'||ex.type==='bughunt'?S.sel!==null:ex.type==='fill'?Boolean(S.fill):true);
     const foot=ex.type==='concept'
       ?`<div class="lesson-foot"><button class="btn" onclick="nextQ()">${t('got')}</button></div>`
@@ -131,7 +139,7 @@
         ?`<div class="feedback ${S.correct?'ok':'no'}"><h3>${S.correct?t('correct'):t('wrong')}</h3>${reactionMarkup()}${S.correct?`<p>${feedbackExplanation(ex)}</p>`:diagnosticMarkup(ex)}<button class="btn" onclick="nextQ()">${t('continue')}</button></div>`
         :`<div class="lesson-foot"><button class="btn" ${!can||S.loading?'disabled':''} onclick="checkQ()">${ex.type==='write'?(S.loading?t('pyLoading'):(S.lang==='ko'?'코드 실행':'Run code')):t('check')}</button></div>`;
     const modeLabel=typeof meowdeMode==='function'&&meowdeMode()==='smart-review'?(S.lang==='ko'?'Smart Review':'Smart Review'):'';
-    app.innerHTML=`<div class="screen"><div class="lesson-bg"></div><div class="lesson-top"><button class="close" aria-label="${S.lang==='ko'?'나가기':'Exit'}" onclick="renderHome()"></button><div class="lesson-title"><b>${modeLabel?`${esc(modeLabel)} · `:''}${esc(L.title)}</b><div class="progress"><span style="width:${pct}%"></span></div></div><div class="lesson-meta"><span class="autosave">${S.lang==='ko'?'자동 저장':'Saved'}</span><span class="pill">${step}/${S.queue.length}</span></div></div><div class="scroll"><main class="lesson-main">${qhead}${conceptHelp}${body}</main></div>${foot}</div>`;
+    app.innerHTML=`<div class="screen"><div class="lesson-bg"></div><div class="lesson-top"><button class="close" aria-label="${S.lang==='ko'?'나가기':'Exit'}" onclick="renderHome()"></button><div class="lesson-title"><b>${modeLabel?`${esc(modeLabel)} · `:''}${esc(L.title)}</b><div class="progress"><span style="width:${pct}%"></span></div></div><div class="lesson-meta"><span class="autosave">${S.lang==='ko'?'자동 저장':'Saved'}</span><span class="pill">${step}/${S.queue.length}</span></div></div><div class="scroll"><main class="lesson-main">${qhead}${conceptHelp}${body}${answerReview}</main></div>${foot}</div>`;
     document.documentElement.dataset.lessonRenderer='canonical-v413';
     document.documentElement.dataset.lessonCoachStyle=coachStyle.id;
   };

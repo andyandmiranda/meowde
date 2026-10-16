@@ -79,3 +79,18 @@ test('a total beginner can revisit the taught concept and code without leaving a
  expect(await page.evaluate(()=>({id:cur().id,step:S.idx,progress:localStorage.getItem('meowde-v410-state')}))).toEqual(before);
  await expect(page.locator('.lesson-top')).toBeVisible();
 });
+
+test('a wrong answer can reveal the expected solution and explanation without changing retry state',async({page})=>{
+ await page.goto(base+'/');await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+ await page.getByRole('button',{name:'오늘 학습 시작'}).click();
+ await page.locator('.lesson-foot .btn').click();
+ const correct=await page.evaluate(()=>cur().answer);
+ await page.locator('.choice').nth(correct===0?1:0).click();
+ await page.locator('.lesson-foot .btn').click();
+ await expect(page.locator('.feedback.no')).toBeVisible();
+ const before=await page.evaluate(()=>({idx:S.idx,correct:S.correct,checked:S.checked,storage:localStorage.getItem('meowde-v410-state')}));
+ const answer=page.locator('[data-answer-review]');
+ await expect(answer).toBeVisible();await answer.locator('summary').click();
+ await expect(answer).toContainText('안녕');
+ expect(await page.evaluate(()=>({idx:S.idx,correct:S.correct,checked:S.checked,storage:localStorage.getItem('meowde-v410-state')}))).toEqual(before);
+});
