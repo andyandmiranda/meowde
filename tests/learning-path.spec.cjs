@@ -13,7 +13,8 @@ test('the course guide separates implementation from verification and preserves 
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  expect(await page.evaluate(records=>Object.fromEntries(Object.keys(records).map(k=>[k,localStorage.getItem(k)])),records)).toEqual(records);
  await page.goto(base+'/');await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
- await expect(page.getByRole('link',{name:'전체 과정·준비 현황',exact:true})).toBeVisible();
+ await expect(page.locator('.tabbar button')).toHaveCount(3);
+ await expect(page.getByRole('button',{name:'전체 과정',exact:true})).toBeVisible();
 });
 
 test('Bash boundary failure explains the input, expected result and actual result',async({page})=>{
