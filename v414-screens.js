@@ -66,7 +66,7 @@
     S.screen='home';save();
     const hasProgress=hasLessonProgress(),lessonIndex=hasProgress?S.lessonIndex:S.next,L=lessons()[lessonIndex]||lessons()[0],ko=S.lang==='ko';
     const action=hasProgress?'resumeLesson()':`startLesson(${lessonIndex})`;
-    const label=hasProgress?(ko?'이어서 배우기':'Continue learning'):(ko?'배우기 시작':'Start learning');
+    const label=hasProgress?(ko?'이어서 배우기':'Continue learning'):(ko?'오늘 학습 시작':'Start learning');
     app.innerHTML=`<div class="screen phase1-home">${homeBrand()}<div class="scroll"><section class="card hero phase1-hero"><div class="hero-main">${homeHeroCharacter()}<div class="hero-copy"><h2>${ko?'오늘도 하나씩 배워볼까?':'Ready to learn?'}</h2><p>${esc(L.title)}</p></div></div><button class="btn" onclick="${action}">${icon('play')}${label}</button></section><section class="card"><div class="section-title"><h3>${ko?'지금 배우는 내용':'Current lesson'}</h3><span class="pill">${String(lessonIndex+1).padStart(2,'0')}</span></div><p class="muted">${hasProgress?(ko?`문제 ${Math.min(S.idx+1,S.queue.length)} / ${S.queue.length}`:`Question ${Math.min(S.idx+1,S.queue.length)} / ${S.queue.length}`):esc(L.description)}</p></section><details class="meowde-more"><summary>${ko?'더 보기 · 전체 과정과 내 기록':'More · course and progress'}</summary><div class="more-links"><button class="btn ghost" onclick="renderMap()">${ko?'전체 과정':'Course map'}</button><button class="btn ghost" onclick="renderProfile()">${ko?'내 기록':'My progress'}</button></div></details></div>${canonicalTabs('home')}</div>`;
     document.documentElement.dataset.homeRenderer='canonical-v414';
     document.documentElement.dataset.navigation='three-tabs';
