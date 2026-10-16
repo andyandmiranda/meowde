@@ -102,33 +102,6 @@
     }
   };
 
-  // Additive concept guidance for absolute beginners; retain lesson order, IDs and exercise shapes.
-  const CONCEPT_GUIDES={
-  "ko": {
-    "if-gate": "if는 '만약 ~라면'이라는 질문이에요. 조건이 True일 때만 아래 줄이 실행돼요. 조건 끝에는 : 를 쓰고, 실행할 줄 앞에는 공백 4개를 넣어 들여써요. 들여쓰기는 모양이 아니라 파이썬 문법이에요. False이고 else가 없으면 해당 줄은 실행하지 않아요.",
-    "list-garden": "리스트는 관련된 값 여러 개를 [ ] 안에 쉼표로 나눠 순서대로 보관해요. items = [\"키보드\", \"마우스\", \"노트북\"]라면 위치 0은 키보드, 1은 마우스, 2는 노트북이에요. items[0]처럼 대괄호 안의 위치 번호(인덱스)로 값을 꺼내요. 값이 세 개면 유효한 위치는 0부터 2까지이고 items[3]은 IndexError예요.",
-    "index-tower": "리스트의 인덱스는 값 자체가 아니라 값이 놓인 위치 번호예요. pets = [\"cat\", \"dog\", \"bird\"]라면 pets[0]은 cat, pets[1]은 dog, pets[2]는 bird예요. 세 개의 값에 대해 pets[3]을 요청하면 존재하지 않는 위치라 IndexError가 발생해요.",
-    "append-dock": "append(값)는 기존 리스트의 맨 끝에 값 하나를 추가해요. 예를 들어 snacks = []는 빈 리스트이고, snacks.append(\"milk\") 실행 후 snacks는 [\"milk\"]가 돼요. 이어서 snacks.append(\"cat\") 하면 [\"milk\", \"cat\"]이 돼요. append()는 리스트 자체를 바꾸므로 다시 대입하지 않아도 돼요."
-  },
-  "en": {
-    "if-gate": "if means 'only when this condition holds.' A True condition runs the next indented block; False skips it when there is no else. End the condition with a colon (:), then indent the body by four spaces. Indentation is Python syntax, not decoration.",
-    "list-garden": "A list stores ordered values between [ ] separated by commas. For items = [\"keyboard\", \"mouse\", \"laptop\"], index 0 is keyboard, index 1 is mouse, and index 2 is laptop. Use items[0] to retrieve a value. With three elements, valid indices are 0 through 2; items[3] raises IndexError.",
-    "index-tower": "An index is a position, not the element itself. For pets = [\"cat\", \"dog\", \"bird\"], pets[0] returns cat, pets[1] returns dog, and pets[2] returns bird. pets[3] raises IndexError because a fourth element does not exist.",
-    "append-dock": "append(value) adds one item to the end of the existing list. For example, snacks = [] starts empty; after snacks.append(\"milk\"), snacks is [\"milk\"]. After snacks.append(\"cat\"), it is [\"milk\", \"cat\"]. append() changes the list in place; you do not need to assign its result."
-  }
-};
-  function improveConcepts(data){
-    for(const lang of ['ko','en']){
-      for(const [slug,body] of Object.entries(CONCEPT_GUIDES[lang])){
-        const lesson=data[lang].find(item=>item.slug===slug);
-        if(!lesson)throw new Error('Missing concept lesson: '+lang+'/'+slug);
-        const concept=lesson.exercises.find(item=>item.type==='concept');
-        if(!concept)throw new Error('Missing concept exercise: '+lang+'/'+slug);
-        concept.body=body;
-      }
-    }
-  }
-
   function runtimeState(){try{return typeof S!=="undefined"&&S&&typeof S==="object"?S:null}catch(error){return null}}
   function arrays(){return {ko:window.MEOWDE_LESSONS_KO,en:window.MEOWDE_LESSONS_EN}}
   function shape(lesson){return {slug:lesson.slug,ids:(lesson.exercises||[]).map(item=>item.id),types:(lesson.exercises||[]).map(item=>item.type)}}
@@ -150,7 +123,6 @@
     ["ko","en"].forEach(lang=>{
       Object.entries(PATCHES[lang]).forEach(([slug,patch])=>changed.push({lang,slug,index:applyPatch(data[lang],slug,patch)}));
     });
-    improveConcepts(data);
     document.documentElement.dataset.curriculum=VERSION;
     return changed;
   }

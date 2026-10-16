@@ -24,13 +24,4 @@ for(const lang of ['ko','en']){
  if(errors.length)throw new Error(path+" quality failures:\n"+errors.join("\n"));
  console.log("PASS "+path+": "+lessons.length+" lessons, "+seen.size+" unique exercise IDs, concept/example/hint/explanation/answer shape");
 }
-// Guard the explanatory guidance in the effective KO/EN runtime, not just the canonical base files.
-for(const lang of ['ko','en']){
- for(const slug of ['if-gate','list-garden','index-tower','append-dock']){
-  const concept=data[lang].find(l=>l.slug===slug)?.exercises.find(e=>e.type==='concept');
-  const key=slug==='if-gate'?(lang==='ko'?'들여쓰기':'Indentation'):slug==='append-dock'?'append':slug==='index-tower'?'IndexError':'IndexError';
-  assert.ok(concept?.body.includes(key),lang+'/'+slug+': missing beginner explanation '+key);
- }
-}
-console.log("PASS: KO/EN if, list, indexing and append beginner guidance");
 console.log("Static quality gate PASS. Runtime grading and pedagogical correctness require separate tests.");

@@ -89,6 +89,25 @@
     return `<div class="v457-diagnostic" data-diagnostic-kind="${esc(diagnosis.kind||'general')}">${row(labels.cause,diagnosis.cause)}${row(labels.reason,diagnosis.reason)}${row(labels.action,diagnosis.action)}</div>`;
   }
 
+  // Presentation-only prerequisite coaching: preserve the effective curriculum and saved exercise snapshots.
+  const beginnerGuides={
+  "ko": {
+    "if-gate": "if는 '만약 ~라면'이라는 질문이에요. 조건이 True일 때만 아래 줄이 실행돼요. 조건 끝에는 : 를 쓰고, 실행할 줄 앞에는 공백 4개를 넣어 들여써요. 들여쓰기는 모양이 아니라 파이썬 문법이에요. False이고 else가 없으면 해당 줄은 실행하지 않아요.",
+    "list-garden": "리스트는 관련된 값 여러 개를 [ ] 안에 쉼표로 나눠 순서대로 보관해요. items = [\"키보드\", \"마우스\", \"노트북\"]라면 위치 0은 키보드, 1은 마우스, 2는 노트북이에요. items[0]처럼 대괄호 안의 위치 번호(인덱스)로 값을 꺼내요. 값이 세 개면 유효한 위치는 0부터 2까지이고 items[3]은 IndexError예요.",
+    "index-tower": "리스트의 인덱스는 값 자체가 아니라 값이 놓인 위치 번호예요. pets = [\"cat\", \"dog\", \"bird\"]라면 pets[0]은 cat, pets[1]은 dog, pets[2]는 bird예요. 세 개의 값에 대해 pets[3]을 요청하면 존재하지 않는 위치라 IndexError가 발생해요.",
+    "append-dock": "append(값)는 기존 리스트의 맨 끝에 값 하나를 추가해요. 예를 들어 snacks = []는 빈 리스트이고, snacks.append(\"milk\") 실행 후 snacks는 [\"milk\"]가 돼요. 이어서 snacks.append(\"cat\") 하면 [\"milk\", \"cat\"]이 돼요. append()는 리스트 자체를 바꾸므로 다시 대입하지 않아도 돼요."
+  },
+  "en": {
+    "if-gate": "if means 'only when this condition holds.' A True condition runs the next indented block; False skips it when there is no else. End the condition with a colon (:), then indent the body by four spaces. Indentation is Python syntax, not decoration.",
+    "list-garden": "A list stores ordered values between [ ] separated by commas. For items = [\"keyboard\", \"mouse\", \"laptop\"], index 0 is keyboard, index 1 is mouse, and index 2 is laptop. Use items[0] to retrieve a value. With three elements, valid indices are 0 through 2; items[3] raises IndexError.",
+    "index-tower": "An index is a position, not the element itself. For pets = [\"cat\", \"dog\", \"bird\"], pets[0] returns cat, pets[1] returns dog, and pets[2] returns bird. pets[3] raises IndexError because a fourth element does not exist.",
+    "append-dock": "append(value) adds one item to the end of the existing list. For example, snacks = [] starts empty; after snacks.append(\"milk\"), snacks is [\"milk\"]. After snacks.append(\"cat\"), it is [\"milk\", \"cat\"]. append() changes the list in place; you do not need to assign its result."
+  }
+};
+  function beginnerExplanation(lesson,concept){
+    return beginnerGuides[S.lang==='en'?'en':'ko'][lesson.slug]||concept.body;
+  }
+
   renderLesson=function(){
     if(!hasLessonProgress())return renderHome();
     S.screen='lesson';
@@ -108,7 +127,7 @@
     }
     if(ex.type==='concept'){
       qhead=`<div class="coach" data-lesson-outcome="idle" data-coach-style="${esc(coachStyle.id)}">${catSVG(S.cat,'idle',62)}<div class="bubble"><div class="prompt">${esc(coachStyle.concept||t('conceptCoach'))}</div></div></div>`;
-      body=`<div class="card"><div class="pill" style="display:inline-flex;margin-bottom:10px">Q ${esc(qcode)}</div><h3>${esc(ex.title)}</h3><p style="font-size:14px;color:var(--muted);line-height:1.6;margin:8px 0 12px">${esc(ex.body)}</p><div class="code">${esc(ex.code)}</div></div>`;
+      body=`<div class="card"><div class="pill" style="display:inline-flex;margin-bottom:10px">Q ${esc(qcode)}</div><h3>${esc(ex.title)}</h3><p style="font-size:14px;color:var(--muted);line-height:1.6;margin:8px 0 12px">${esc(beginnerExplanation(L,ex))}</p><div class="code">${esc(ex.code)}</div></div>`;
     }else if(ex.type==='predict'){
       body=`<div class="code">${esc(ex.code)}</div><div class="choices">${ex.choices.map((choice,index)=>`<button class="choice ${S.sel===index?'sel':''} ${S.checked&&index===ex.answer?'right':''} ${S.checked&&S.sel===index&&index!==ex.answer?'wrong':''}" onclick="S.sel=${index};save();renderLesson()">${esc(choice)}</button>`).join('')}</div>${S.checked&&S.correct?`<div class="console">${esc(ex.output)}</div>`:''}`;
     }else if(ex.type==='fill'){
@@ -122,7 +141,7 @@
     // Keep prerequisite teaching within the active lesson instead of sending beginners to another page.
     const concept=L.exercises&&L.exercises.find(item=>item.type==='concept'&&item.body&&item.code);
     const conceptHelp=ex.type!=='concept'&&concept
-      ?`<details class="card" data-inline-concept><summary>${S.lang==='ko'?'개념·예제 다시 보기':'Review concept and example'}</summary><h3>${esc(concept.title||L.title)}</h3><p>${esc(concept.body)}</p><div class="code">${esc(concept.code)}</div></details>`
+      ?`<details class="card" data-inline-concept><summary>${S.lang==='ko'?'개념·예제 다시 보기':'Review concept and example'}</summary><h3>${esc(concept.title||L.title)}</h3><p>${esc(beginnerExplanation(L,concept))}</p><div class="code">${esc(concept.code)}</div></details>`
       :'';
     // Explain wrong answers on demand without erasing the original miss or overriding grading.
     const correctExample=ex.type==='predict'&&Array.isArray(ex.choices)?ex.choices[ex.answer]
