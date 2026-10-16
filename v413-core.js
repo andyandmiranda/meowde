@@ -9,15 +9,9 @@
   };
 
   tabs=function(active){
-    const labels=S.lang==='ko'
-      ?{home:'홈',study:'학습',review:'복습',my:'마이'}
-      :{home:'Home',study:'Learn',review:'Review',my:'My'};
-    return `<div class="tabbar">
-      <button class="${active==='home'?'on':''}" onclick="renderHome()">${icon('home')}<span>${labels.home}</span></button>
-      <button class="${active==='study'?'on':''}" onclick="renderMap()">${icon('map')}<span>${labels.study}</span></button>
-      <button class="${active==='review'?'on':''}" onclick="renderReview()">${icon('code')}<span>${labels.review}</span></button>
-      <button class="${active==='my'?'on':''}" onclick="renderMy()">${icon('room')}<span>${labels.my}</span></button>
-    </div>`;
+    const ko=S.lang==='ko';
+    const item=(name,activeKey,handler,iconName,label)=>`<button class="${active===activeKey?'on':''}" onclick="${handler}" aria-label="${label}">${icon(iconName)}<span>${label}</span></button>`;
+    return `<div class="tabbar" data-phase1-navigation="five-tabs">${item('home','home','renderHome()','home',ko?'홈':'Home')}${item('study','study','renderMap()','map',ko?'학습':'Learn')}${item('review','review','renderReview()','spark',ko?'복습':'Review')}${item('lab','lab',"location.href='/python-lab.html'",'code',ko?'실습':'Practice')}${item('my','my','renderProfile()','cat',ko?'마이':'My')}</div>`;
   };
 
   function learnBrand(){
@@ -25,10 +19,7 @@
     const tagline=typeof t==='function'?t('tagline'):'Learn to code playfully.';
     return `<div class="top"><div class="brand"><span class="brand-mark"><img class="v449-character v449-pose-base v448-brand-cat" src="/assets/meowde-approved-base.svg?v=450" alt="" width="42" height="42" data-v449-pose="base" data-character-version="4.50" decoding="async"></span><div><h1 class="v444-brand-wordmark">Meowde</h1><p>${esc(tagline)}</p></div></div><button class="lang" onclick="langSheet()">${ko?'KO':'EN'}</button></div>`;
   }
-  function learnTabs(){
-    const ko=S.lang==='ko';
-    return `<div class="tabbar" data-phase1-navigation="four-tabs"><button onclick="renderHome()" aria-label="${ko?'홈':'Home'}">${icon('home')}<span>${ko?'홈':'Home'}</span></button><button class="on" onclick="renderMap()" aria-label="${ko?'학습':'Learn'}">${icon('map')}<span>${ko?'학습':'Learn'}</span></button><button onclick="renderReview()" aria-label="${ko?'복습':'Review'}">${icon('code')}<span>${ko?'복습':'Review'}</span></button><button onclick="renderRoom()" aria-label="Meowde">${icon('cat')}<span>Meowde</span></button></div>`;
-  }
+  function learnTabs(){return tabs('study');}
 
   renderHome=function(){
     S.screen='home';
