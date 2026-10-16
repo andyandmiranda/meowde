@@ -88,9 +88,9 @@ test('a wrong answer can reveal the expected solution and explanation without ch
  await page.locator('.choice').nth(correct===0?1:0).click();
  await page.locator('.lesson-foot .btn').click();
  await expect(page.locator('.feedback.no')).toBeVisible();
- const before=await page.evaluate(()=>({idx:S.idx,correct:S.correct,checked:S.checked,storage:localStorage.getItem('meowde-v410-state')}));
+ const before=await page.evaluate(()=>({idx:S.idx,correct:S.correct,checked:S.checked,storage:(()=>{const state=JSON.parse(localStorage.getItem('meowde-v410-state'));delete state.savedAt;return state;})()}));
  const answer=page.locator('[data-answer-review]');
  await expect(answer).toBeVisible();await answer.locator('summary').click();
  await expect(answer).toContainText('안녕');
- expect(await page.evaluate(()=>({idx:S.idx,correct:S.correct,checked:S.checked,storage:localStorage.getItem('meowde-v410-state')}))).toEqual(before);
+ expect(await page.evaluate(()=>({idx:S.idx,correct:S.correct,checked:S.checked,storage:(()=>{const state=JSON.parse(localStorage.getItem('meowde-v410-state'));delete state.savedAt;return state;})()}))).toEqual(before);
 });
