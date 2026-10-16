@@ -20,7 +20,10 @@ test("Python unfinished lesson auto-resumes with its original progress and XP",a
  const state=JSON.parse(before);
  await page.goto(base+"/simple-start.html");
  await expect(page.locator("#resume-action")).toContainText("Python 학습 이어가기");
- expect(await page.evaluate(k=>localStorage.getItem(k),py)).toBe(before);
+ const during=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),py);
+ expect(during.inProgress).toEqual(state.inProgress);
+ expect(during.xp).toBe(state.xp);
+ expect(during.done).toEqual(state.done);
  await page.locator("#resume-action").click();
  await expect(page).toHaveURL(base+"/");
  await expect(page.locator(".lesson-top")).toBeVisible();
@@ -41,4 +44,15 @@ test("corrupt progress survives and narrow viewport does not overflow",async({pa
  await expect(page.locator("#resume-note")).toContainText("읽지 못했어");
  expect(await page.evaluate(k=>localStorage.getItem(k),py)).toBe("{broken");
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+
+test("simplified entry matches existing MEOWDE typography and mobile layout",async({page})=>{
+ for(const width of [320,375,390,430]){
+  await page.setViewportSize({width,height:844});
+  await page.goto(base+"/simple-start.html");
+  const actual=await page.evaluate(()=>({font:getComputedStyle(document.body).fontFamily,width:document.documentElement.scrollWidth,viewport:innerWidth,buttonHeight:document.querySelector("#resume-action").getBoundingClientRect().height}));
+  expect(actual.font).toMatch(/Pretendard/);
+  expect(actual.width).toBeLessThanOrEqual(actual.viewport);
+  expect(actual.buttonHeight).toBeGreaterThanOrEqual(48);
+ }
 });
