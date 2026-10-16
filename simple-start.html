@@ -2,7 +2,15 @@
 :root{font-family:system-ui,-apple-system,sans-serif;color:#29242b;background:#fff9f6}*{box-sizing:border-box}body{margin:0;padding:20px}main{max-width:520px;margin:auto}header{display:flex;align-items:center;justify-content:space-between}h1{font-size:1.4rem}h2{font-size:1.1rem;margin:0 0 12px}p{line-height:1.55}.card{background:white;border:1px solid #eedfe7;border-radius:20px;padding:20px;margin:16px 0}.primary{display:block;background:#f46d98;color:#211d21;text-align:center;padding:18px;border-radius:14px;font-weight:800;text-decoration:none;min-height:56px}.secondary{display:block;color:#603c4d;text-decoration:none;padding:12px;border:1px solid #ead7df;border-radius:12px;text-align:center;margin:8px 0;min-height:48px}.muted{color:#655a61;font-size:.9rem}.small{font-size:.8rem}a:focus-visible{outline:3px solid #923253;outline-offset:3px}details{margin:16px 0}summary{cursor:pointer;padding:12px}ul{padding-left:22px;line-height:2}
 </style></head><body><main><header><strong>🐈 MEOWDE</strong><a href="/" class="muted">기존 홈</a></header>
 <h1>무엇부터 할지 고민하지 마.</h1><p class="muted">한 번 누르면 바로 학습을 시작할 수 있어.</p>
-<section class="card" aria-labelledby="today"><h2 id="today">오늘의 학습</h2><p>Python으로 직접 문제를 풀면서 배워봐.</p><a class="primary" href="/">Python 학습 열기 →</a><p class="muted small">기존 Python 홈으로 이동해. 저장된 학습이 있다면 기존 앱의 이어하기를 이용할 수 있어.</p></section>
+<section class="card" aria-labelledby="today"><h2 id="today">오늘의 학습</h2><p id="resume-description">기존 학습을 안전하게 이어가거나 새로 시작해 봐.</p><a class="primary" id="resume-action" href="/">Python 학습 열기 →</a><p class="muted small" id="resume-note">기존 학습 기록은 변경되지 않아.</p></section>
 <section class="card" aria-labelledby="another"><h2 id="another">다른 걸 배우고 싶어?</h2><a class="secondary" href="/linux-home.html">Linux 학습하기 →</a><a class="secondary" href="/curiosity-pilot.html">2분 선택형 실습 체험 →</a></section>
 <details><summary>전체 학습 과정과 기존 기능</summary><ul><li><a href="/learning-path.html?subject=python">Python 전체 과정</a></li><li><a href="/learning-path.html?subject=linux">Linux 전체 과정</a></li><li><a href="/">기존 학습 홈과 복습 기능</a></li></ul></details>
-<p class="muted small">간소화 화면은 선택형 파일럿이야. 기존 화면·XP·진도·저장 데이터는 변경하지 않아.</p></main></body></html>
+<p class="muted small">간소화 화면은 선택형 파일럿이야. 기존 화면·XP·진도·저장 데이터는 변경하지 않아.</p></main><script src="/assets/meowde-entry-progress.js"></script><script>
+(function(){let storage;try{storage=window.localStorage}catch(e){return}
+const result=window.MeowdeEntryProgress.inspect(storage),action=document.getElementById("resume-action"),desc=document.getElementById("resume-description"),note=document.getElementById("resume-note");
+if(result.subject==="linux"){action.href="/linux-start.html";action.textContent="Linux 이어서 배우기 →";desc.textContent="저장된 Linux 폴더 만들기 단계로 돌아가.";note.textContent="학습 기록을 읽기만 했어. 기존 데이터는 그대로야."}
+else if(result.subject==="python"){action.href="/";action.textContent="Python 학습 이어가기 →";desc.textContent="Python 홈에서 저장된 문제를 이어서 풀 수 있어.";note.textContent="기존 Python 홈에서 이어하기를 눌러줘."}
+else if(result.ambiguous){action.textContent="Python 학습 열기 →";desc.textContent="Python과 Linux 모두 학습 기록이 있어. 아래에서 이어갈 과목을 선택해 줘.";note.textContent="마지막 학습 과목은 아직 확인할 수 없어. 임의로 선택하지 않았어."}
+else if(result.invalid){note.textContent="일부 저장 기록을 읽지 못했어. 기록은 변경하거나 삭제하지 않았어."}
+})();
+</script></body></html>
