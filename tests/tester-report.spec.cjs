@@ -15,7 +15,7 @@ test('reporting is opt-in; snapshot excludes answers and preserves Python state'
  });
  const before=await page.evaluate(()=>localStorage.getItem('meowde-v410-state'));
  const requests=[];page.on('request',r=>{if(r.method()!=='GET')requests.push(r.url());});
- await page.locator('[data-tester-report]').click();
+ await page.locator('.tester-report-details').click();
  await expect(page.getByRole('dialog')).toBeVisible();
  await page.locator('#tester-report-category').selectOption('grading');
  await page.locator('#tester-report-note').fill('테스트 메모');
@@ -39,7 +39,7 @@ test('Linux snapshots use the current question and clipboard denial leaves a usa
  await page.locator('#lesson-input').fill('PRIVATE_COMMAND');
  const before=await page.evaluate(()=>localStorage.getItem('meowde-linux-guided-v1'));
  await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async()=>{throw Error('denied');}},configurable:true}));
- await page.locator('[data-tester-report]').click();
+ await page.locator('.tester-report-details').click();
  const raw=await page.locator('#tester-report-preview').inputValue(),draft=JSON.parse(raw);
  expect(draft.exerciseId).toBe('mkdir-intro-step-2');expect(raw).not.toContain('PRIVATE_COMMAND');
  await page.getByRole('button',{name:'초안 복사',exact:true}).click();await expect(page.getByRole('dialog')).toContainText('직접 복사');
@@ -47,6 +47,6 @@ test('Linux snapshots use the current question and clipboard denial leaves a usa
  await page.keyboard.press('Escape');
  expect(await page.evaluate(()=>localStorage.getItem('meowde-linux-guided-v1'))).toBe(before);
  await page.goto(base+'/linux-crash-course.html?tester=1');
- await page.locator('#nav button').nth(2).click();await page.locator('[data-tester-report]').click();
+ await page.locator('#nav button').nth(2).click();await page.locator('.tester-report-details').click();
  expect(JSON.parse(await page.locator('#tester-report-preview').inputValue()).exerciseId).toBe('linux-e3-quiz');
 });

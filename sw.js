@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v469-tester-markers";
+const CACHE_NAME = "meowde-v470-one-tap-markers";
 
 const REQUIRED_ASSETS = [
   "/python-lab.html",

@@ -20,7 +20,8 @@ test('problem markers survive reload without learner input or progress changes',
  expect(JSON.parse(rawAfterDetails)).toHaveLength(1);expect(rawAfterDetails).not.toContain('PRIVATE_COMMAND');
  expect(JSON.parse(rawAfterDetails)[0].category).toBe('hint');
  await page.keyboard.press('Escape');await page.reload();
- await page.locator('[data-tester-report]').click();
+ await expect(page.locator('[data-tester-report]')).toHaveText(/표시됨/);
+ await page.locator('.tester-report-details').click();
  await page.getByRole('button',{name:'저장된 표시 보기',exact:true}).click();
  await expect(page.getByLabel('저장된 문제 표시 · 선택해 복사할 수 있어요')).toHaveValue(JSON.stringify(JSON.parse(rawAfterDetails),null,2));
  expect(await page.evaluate(()=>localStorage.getItem('meowde-linux-guided-v1'))).toBe(before);
