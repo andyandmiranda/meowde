@@ -13,7 +13,7 @@ test('the course guide separates implementation from verification and preserves 
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  expect(await page.evaluate(records=>Object.fromEntries(Object.keys(records).map(k=>[k,localStorage.getItem(k)])),records)).toEqual(records);
  await page.goto(base+'/');await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
- await expect(page.locator('.tabbar button')).toHaveCount(3);
+ await expect(page.locator('.tabbar[data-phase1-navigation=five-tabs] button')).toHaveCount(5);
  await expect(page.getByRole('button',{name:'복습',exact:true})).toBeVisible();
 });
 
