@@ -1,0 +1,30 @@
+const {test,expect}=require('playwright/test');
+const base=process.env.MEOWDE_BASE_URL||'http://127.0.0.1:4173';
+const key='meowde-tester-reports-v1';
+test('problem markers survive reload without learner input or progress changes',async({page})=>{
+ await page.goto(base+'/linux-start.html?tester=1');
+ await page.locator('#lesson-action').click();await page.locator('#lesson-action').click();
+ await page.locator('#lesson-input').fill('PRIVATE_COMMAND');
+ const before=await page.evaluate(()=>localStorage.getItem('meowde-linux-guided-v1'));
+ await page.locator('[data-tester-report]').click();
+ await page.locator('#tester-report-category').selectOption('hint');
+ await page.getByRole('button',{name:'이 문제 표시해 두기',exact:true}).click();
+ await page.getByRole('button',{name:'이 문제 표시해 두기',exact:true}).click();
+ const raw=await page.evaluate(k=>localStorage.getItem(k),key);
+ expect(JSON.parse(raw)).toHaveLength(1);expect(raw).not.toContain('PRIVATE_COMMAND');
+ expect(JSON.parse(raw)[0].category).toBe('hint');
+ await page.keyboard.press('Escape');await page.reload();
+ await page.locator('[data-tester-report]').click();
+ await page.getByRole('button',{name:'저장된 표시 보기',exact:true}).click();
+ await expect(page.getByLabel('저장된 문제 표시 · 선택해 복사할 수 있어요')).toHaveValue(JSON.stringify(JSON.parse(raw),null,2));
+ expect(await page.evaluate(()=>localStorage.getItem('meowde-linux-guided-v1'))).toBe(before);
+});
+test('corrupt marker storage is preserved and copy remains available',async({page})=>{
+ await page.goto(base+'/linux-start.html?tester=1');
+ await page.evaluate(k=>localStorage.setItem(k,'CORRUPT'),key);
+ await page.locator('[data-tester-report]').click();
+ await page.getByRole('button',{name:'이 문제 표시해 두기',exact:true}).click();
+ await expect(page.getByRole('dialog')).toContainText('저장하지 못했어요');
+ expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe('CORRUPT');
+ await expect(page.getByRole('button',{name:'초안 복사',exact:true})).toBeEnabled();
+});

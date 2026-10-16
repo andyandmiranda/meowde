@@ -17,6 +17,18 @@ function snapshot(){
  }
  return null;
 }
+const REPORT_KEY='meowde-tester-reports-v1';
+function readReports(){
+ const raw=localStorage.getItem(REPORT_KEY);if(raw===null)return [];
+ const rows=JSON.parse(raw);if(!Array.isArray(rows)||rows.some(r=>!r||typeof r.reportId!=='string'||!Number.isFinite(Date.parse(r.createdAt))))throw Error('invalid reports');
+ return rows.filter(r=>Date.now()-Date.parse(r.createdAt)<7*24*60*60*1000);
+}
+function saveReport(report){
+ if(new TextEncoder().encode(JSON.stringify(report)).length>16384)throw Error('report too large');
+ const rows=readReports().filter(r=>r.reportId!==report.reportId);rows.push(report);
+ if(rows.length>10)throw Error('report limit');
+ localStorage.setItem(REPORT_KEY,JSON.stringify(rows));return rows.length;
+}
 function element(tag,content){const node=document.createElement(tag);if(content)node.textContent=content;return node;}
 function open(button){
  const context=snapshot();if(!context)return;
@@ -32,14 +44,19 @@ function open(button){
  const previewLabel=element('label',text('복사할 초안 미리보기','Draft preview'));previewLabel.htmlFor='tester-report-preview';
  const preview=element('textarea');preview.id=previewLabel.htmlFor;preview.readOnly=true;preview.rows=10;
  const status=element('p');status.setAttribute('role','status');
+ const mark=element('button',text('이 문제 표시해 두기','Save problem marker'));mark.type='button';
+ const saved=element('button',text('저장된 표시 보기','View saved markers'));saved.type='button';
+ const savedPreview=element('textarea');savedPreview.readOnly=true;savedPreview.rows=10;savedPreview.hidden=true;savedPreview.setAttribute('aria-label',text('저장된 문제 표시 · 선택해 복사할 수 있어요','Saved problem markers · select to copy'));
  const copy=element('button',text('초안 복사','Copy draft'));copy.type='button';
+ mark.onclick=()=>{try{const count=saveReport(JSON.parse(preview.value));status.textContent=text('이 브라우저에 표시했어요 ('+count+'/10). 7일간 보관되며 외부 접수는 되지 않았어요.','Saved in this browser ('+count+'/10) for 7 days. Not submitted.');}catch(_){status.textContent=text('저장하지 못했어요. 용량·저장 권한·기존 표시를 확인하고 초안을 복사해 주세요. 기존 기록은 바꾸지 않았어요.','Could not save. Check storage or existing markers and copy the draft. Existing records were not changed.');}};
+ saved.onclick=()=>{try{savedPreview.value=JSON.stringify(readReports(),null,2);savedPreview.hidden=false;savedPreview.focus();savedPreview.select();status.textContent=text('저장된 표시예요. 선택된 내용을 복사할 수 있어요. 다른 기기로 동기화되거나 자동 접수되지 않아요.','Saved markers. Copy the selected text. No device sync or automatic submission.');}catch(_){status.textContent=text('기존 표시를 읽지 못했어요. 원본은 보존했어요.','Cannot read saved markers. Original data preserved.');}};
  const close=element('button',text('닫기','Close'));close.type='button';
  const createdAt=new Date().toISOString(),reportId=crypto.randomUUID();
- function update(){preview.value=JSON.stringify({schemaVersion:1,reportId,createdAt,url:location.origin+location.pathname,appVersion:window.__MEOWDE_VERSION__||'UNKNOWN',buildSHA:'UNKNOWN',...context,category:select.value,note:memo.value},null,2);status.textContent=text('미전송 · 이 화면에서만 보관되는 초안이에요.','Not sent · this draft exists only in this dialog.');}
+ function update(){preview.value=JSON.stringify({schemaVersion:1,reportId,createdAt,url:location.origin+location.pathname,appVersion:window.__MEOWDE_VERSION__||'UNKNOWN',buildSHA:'UNKNOWN',...context,category:select.value,note:memo.value},null,2);status.textContent=text('미전송 · 표시해 두면 이 브라우저에 보관돼요.','Not sent · save a marker to keep it in this browser.');}
  select.onchange=update;memo.oninput=update;update();
  copy.onclick=async()=>{try{await navigator.clipboard.writeText(preview.value);status.textContent=text('복사했어요. 외부 접수는 되지 않았어요.','Copied. This has not been submitted.');}catch(_){preview.focus();preview.select();status.textContent=text('자동 복사가 안 돼요. 선택된 초안을 직접 복사해 주세요.','Automatic copy is unavailable. Copy the selected draft manually.');}};
  close.onclick=()=>dialog.close();dialog.addEventListener('close',()=>{dialog.remove();if(button.isConnected)button.focus();});
- dialog.append(title,note,label,select,memoLabel,memo,previewLabel,preview,status,copy,close);document.body.append(dialog);dialog.showModal();
+ dialog.append(title,note,label,select,memoLabel,memo,previewLabel,preview,status,mark,saved,savedPreview,copy,close);document.body.append(dialog);dialog.showModal();
 }
 function mount(){
  const target=document.querySelector('.lesson-top')||document.querySelector('#lesson-title')?.parentElement||document.querySelector('#lesson');
