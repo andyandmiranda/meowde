@@ -18,6 +18,8 @@
     {id:"meowde-v461-unit6-data",script:"v461-unit6-oop.js",version:"461",readyGlobal:"MeowCurriculumUnit6",warning:"Unit 06 curriculum expansion could not be loaded."},
     {id:"meowde-v461-unit6-english",script:"v461-unit6-en.js",version:"461",readyGlobal:"MeowCurriculumUnit6English",warning:"Unit 06 English copy could not be loaded."},
     {id:"meowde-v462-unit6-integration",script:"v462-unit6-integration.js",version:"462",readyGlobal:"MeowUnit6Integration",warning:"Unit 06 integration could not be loaded."},
+    {id:"meowde-focused-review-store",script:"assets/focused-review-store.js",version:"1",readyGlobal:"MeowFocusedReviewStore",warning:"Focused review history could not be loaded."},
+    {id:"meowde-python-focused-review",script:"assets/python-focused-review.js",version:"1",readyGlobal:"MeowPythonFocusedReview",warning:"Focused review pilot could not be loaded."},
     {id:"meowde-v442-map-touch",css:"v442-map-touch.css",script:"v442-map-touch.js",version:"442",readyGlobal:"MeowMapTouch",warning:"Map touch enhancement could not be loaded."},
     {id:"meowde-v444-visual-cohesion",css:"v444-visual-cohesion.css",script:"v444-visual-cohesion.js",version:"448",readyGlobal:"MeowVisualCohesion",warning:"Visual cohesion enhancement could not be loaded."},
     {id:"meowde-v446-update-recovery",css:"v446-update-recovery.css",script:"v446-update-recovery.js",version:"446",readyGlobal:"MeowUpdateRecovery",warning:"Update recovery enhancement could not be loaded."},

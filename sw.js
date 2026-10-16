@@ -1,11 +1,15 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v464-learning-readiness";
+const CACHE_NAME = "meowde-v465-focused-review";
 
 const REQUIRED_ASSETS = [
   "/",
   "/v412.html",
   "/index.html",
   "/learning-path.html",
+  "/linux-review.html",
+  "/assets/focused-review-store.js",
+  "/assets/python-focused-review.js",
+  "/assets/linux-focused-review.js",
   "/assets/learning-path.js",
   "/assets/learning-readiness.json",
   "/assets/tester-report.js",

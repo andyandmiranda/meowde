@@ -56,7 +56,8 @@
       lesson:ko?'레슨 완료':'Lesson complete',
       daily:ko?'오늘의 연습 완료':'Daily practice complete',
       review:ko?'재학습 완료':'Review complete',
-      mistake:ko?'오답 복습 완료':'Mistake review complete'
+      mistake:ko?'오답 복습 완료':'Mistake review complete',
+      'focused-review':ko?'집중 복습 완료':'Focused review complete'
     };
     const labels={
       daily:ko?'오늘의 1문제':'Today’s practice',
@@ -68,7 +69,7 @@
     let note='';
     if(currentMode==='daily'&&!firstDailyCompletion)note=ko?'오늘의 연습 보상은 이미 받았어요. 이번 기록은 연습으로만 저장됩니다.':'Today’s practice reward was already earned. This run is saved as practice only.';
     else if(currentMode==='daily')note=ko?'오늘의 연습 보상은 하루 한 번만 지급돼요.':'Daily Practice rewards are granted once per day.';
-    else if(currentMode==='review'||currentMode==='mistake')note=ko?'재학습은 진도와 보상을 중복 지급하지 않아요.':'Review practice does not duplicate progress or rewards.';
+    else if(currentMode==='review'||currentMode==='mistake'||currentMode==='focused-review')note=ko?'재학습은 진도와 보상을 중복 지급하지 않아요.':'Review practice does not duplicate progress or rewards.';
     else note=ko?'츄르는 학습을 막는 재화가 아니라 완료 보상이에요.':'Churu is a completion reward, not an energy gate.';
 
     app.innerHTML=`<div class="screen"><div class="reward-screen">${catSVG(S.cat,'happy',116)}<h2>${titles[currentMode]||titles.lesson}</h2><p class="pill">${esc(doneLabel)}</p><div class="stats3"><div class="stat3"><b>+${earned}</b><p>XP</p></div><div class="stat3"><b>+${churuEarned}</b><p>${treatLabel}</p></div><div class="stat3"><b>${accuracy}%</b><p>${t('accuracy')}</p></div></div><p class="reward-note">${esc(note)}</p></div><div class="lesson-foot"><button class="btn" onclick="${nextAction}">${nextLabel}</button></div></div>`;

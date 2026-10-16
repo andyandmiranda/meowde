@@ -188,6 +188,7 @@
     const mode=normalizeMode();
     await baseCheckQ();
     if(!exercise||exercise.type==='concept'||!S.checked)return;
+    if(mode==='focused-review'){save();return;}
     if(!S.correct)addMistake(context.lang,context.lessonIndex,exercise);
     else if(mode==='mistake'&&S.v414MistakeId)removeMistake(S.v414MistakeId);
     save();

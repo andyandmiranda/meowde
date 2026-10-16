@@ -148,9 +148,11 @@
 
   const baseCheckQ=checkQ;
   checkQ=async function(){
+    const focused=typeof meowdeMode==='function'&&meowdeMode()==='focused-review';
     const ex=typeof cur==="function"?cur():null,first=!S.checked;
     const noHint=first&&ex&&ex.type!=="concept"&&!S.hint&&mentorStage(ex)===0;
     await baseCheckQ();
+    if(focused)return;
     if(first&&ex&&ex.type!=="concept"){
       A.totalAttempts++;
       if(S.correct){
@@ -164,8 +166,10 @@
   };
   const baseFinish=finish;
   finish=function(){
+    const focused=typeof meowdeMode==='function'&&meowdeMode()==='focused-review';
     const before=unlockedCount();
     baseFinish();
+    if(focused)return;
     const newly=evaluate(true);
     if(newly.length&&unlockedCount()>before){
       const reward=document.querySelector(".reward-screen");

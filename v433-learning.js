@@ -106,7 +106,7 @@
 
   const baseStartLesson=window.startLesson;
   if(typeof baseStartLesson==="function")window.startLesson=function(index,daily=false,queueOverride=null,options={}){
-    const queue=Array.isArray(queueOverride)?dedupeQueue(queueOverride):queueOverride;
+    const queue=Array.isArray(queueOverride)&&options.mode!=='focused-review'?dedupeQueue(queueOverride):queueOverride;
     return baseStartLesson.call(this,index,daily,queue,options);
   };
 
