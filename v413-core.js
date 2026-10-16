@@ -10,7 +10,8 @@
 
   tabs=function(active){
     const ko=S.lang==='ko';
-    return `<div class="tabbar" data-phase1-navigation="three-tabs"><button class="${active==='home'?'on':''}" onclick="renderHome()" aria-label="${ko?'배우기':'Learn'}">${icon('home')}<span>${ko?'배우기':'Learn'}</span></button><button class="${active==='review'?'on':''}" onclick="renderReview()" aria-label="${ko?'복습':'Review'}">${icon('spark')}<span>${ko?'복습':'Review'}</span></button><button class="${active==='my'?'on':''}" onclick="renderMore()" aria-label="${ko?'더 보기':'More'}">${icon('cat')}<span>${ko?'더 보기':'More'}</span></button></div>`;
+    const item=(name,activeKey,handler,iconName,label)=>`<button class="${active===activeKey?'on':''}" onclick="${handler}" aria-label="${label}">${icon(iconName)}<span>${label}</span></button>`;
+    return `<div class="tabbar" data-phase1-navigation="five-tabs">${item('home','home','renderHome()','home',ko?'홈':'Home')}${item('study','study','renderMap()','map',ko?'학습':'Learn')}${item('review','review','renderReview()','spark',ko?'복습':'Review')}${item('lab','lab',"location.href='/python-lab.html'",'code',ko?'실습':'Practice')}${item('my','my','renderProfile()','cat',ko?'마이':'My')}</div>`;
   };
 
   function learnBrand(){
