@@ -23,7 +23,7 @@ test("Linux review is mint, readable, and its extra storage explanation is colla
 });
 test("Linux optional practice uses shared mint buttons",async({page})=>{
  await page.goto(base+"/linux-crash-course.html");
- const css=await page.evaluate(()=>({font:getComputedStyle(document.body).fontFamily,button:getComputedStyle(document.querySelector("button")).backgroundColor}));
+ const css=await page.evaluate(()=>({font:getComputedStyle(document.body).fontFamily,button:getComputedStyle(document.querySelector(".lessons button")).backgroundColor}));
  expect(css.font).toMatch(/Pretendard/);
  expect(css.button).toBe("rgb(83, 199, 160)");
 });
