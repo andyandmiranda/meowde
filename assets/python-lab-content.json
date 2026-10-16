@@ -939,6 +939,328 @@
       }
     },
     {
+      "id": "numpy-index",
+      "title": "배열 선택과 원본의 경계",
+      "prerequisites": [
+        "numpy-axis"
+      ],
+      "goals": [
+        "위치 쌍과 모든 행·열 조합을 구별한다.",
+        "중복·빈 선택·메모리 독립성을 보장한다."
+      ],
+      "concept": "a[행, 열]은 한 위치를 고릅니다. a[[0,2], [1,0]]은 (0,1), (2,0)을 짝지어 고릅니다. 사각 영역처럼 모든 행·열 조합이 필요하면 np.ix_(행목록, 열목록)을 사용합니다. 불리언 배열은 조건에 맞는 위치를, 정수 목록은 지정 순서의 위치를 고릅니다. 단순 슬라이스는 원본을 공유하는 뷰일 수 있지만 고급 인덱싱은 복사본을 만듭니다. 반환값이 독립적으로 수정된다는 계약을 명확히 하기 위해 copy()도 명시할 수 있습니다.",
+      "glossary": {
+        "고급 인덱싱": "정수 배열·불리언 배열로 위치를 선택하는 방식입니다. 단순 슬라이스와 복사 동작이 다릅니다.",
+        "np.ix_": "1차원 위치 목록에서 모든 조합을 선택하는 인덱스 배열들을 만듭니다.",
+        "shape 계약": "값뿐 아니라 차원의 크기도 정한 약속입니다. 빈 행 선택도 (0, 선택 열 수)를 유지합니다."
+      },
+      "example": "import numpy as np\na = np.array([[3,6,9],[12,15,18],[21,24,27]])\nprint(a[[0,2],[1,0]].tolist())\nprint(a[np.ix_([0,2],[1,0])].tolist())",
+      "output": "[6, 21]\n[[6, 3], [24, 21]]",
+      "flow": [
+        "첫 선택은 같은 순서의 행·열 위치끼리 짝짓습니다.",
+        "두 번째 선택은 모든 조합이므로 (2,2) 배열입니다.",
+        "열 목록이 [1,0]이므로 두 번째 열이 먼저 나옵니다."
+      ],
+      "pitfalls": [
+        "정수 목록 두 개를 넣으면 자동으로 사각 영역이 된다고 생각하지 마세요.",
+        "집합으로 바꾸면 중복과 요청 순서를 잃습니다.",
+        "a[1:]가 독립 복사본이라고 단정하지 마세요."
+      ],
+      "quiz": {
+        "type": "predict",
+        "difficulty": "기초 → 이해",
+        "code": "import numpy as np\na = np.array([[4,7],[10,13]])\nprint(a[[1,0],[0,1]].tolist())",
+        "choices": [
+          "[[10,13],[4,7]]",
+          "[10, 7]",
+          "[4, 13]"
+        ],
+        "answer": 1,
+        "reasons": [
+          "두 행 전체가 아니라 행·열 목록의 같은 위치끼리 짝짓습니다.",
+          "(1,0)의 10과 (0,1)의 7을 선택합니다.",
+          "첫 행 위치는 1입니다. 두 위치 쌍을 써보세요."
+        ],
+        "goal": "실행 순서와 값의 변화를 근거로 결과를 예측한다.",
+        "criteria": "선택한 결과와 실행 흐름을 대조한다."
+      },
+      "task": {
+        "type": "요구사항 응용",
+        "difficulty": "심화",
+        "prompt": "select_panel(a, rows, columns)를 작성하세요. a는 유한 수를 담은 2차원 ndarray, rows·columns는 유효한 0 이상 위치의 정수 리스트입니다. 모든 행·열 조합을 요청 순서대로 선택한 독립 ndarray를 반환하세요. 중복도 유지합니다. shape은 (len(rows), len(columns))이며 빈 선택도 2차원을 유지합니다. 예: [[3,6],[9,12]], rows=[1,0], columns=[1] → [[12],[6]]. 원본·결과를 서로 변경해도 다른 쪽은 그대로여야 합니다.",
+        "starter": "import numpy as np\n\ndef select_panel(a, rows, columns):\n    pass",
+        "model": "import numpy as np\ndef select_panel(a, rows, columns):\n    return a[np.ix_(rows, columns)].copy()",
+        "tests": [
+          {
+            "label": "모든 조합과 순서",
+            "code": "a=np.array([[3,6,9],[12,15,18]]); r=select_panel(a,[1,0],[2,0]); assert isinstance(r,np.ndarray); assert r.shape==(2,2) and r.tolist()==[[18,12],[9,3]]",
+            "feedback": "두 목록을 직접 함께 넣으면 위치 쌍만 고를 수 있습니다. 조합 선택을 사용하세요."
+          },
+          {
+            "label": "중복 위치 보존",
+            "code": "a=np.array([[2,5],[8,11]]); assert select_panel(a,[1,1,0],[1,0,1]).tolist()==[[11,8,11],[11,8,11],[5,2,5]]",
+            "feedback": "위치 목록을 정렬하거나 중복 제거하지 마세요."
+          },
+          {
+            "label": "빈 행의 차원",
+            "code": "assert select_panel(np.arange(6).reshape(2,3),[],[2,0]).shape==(0,2)",
+            "feedback": "선택한 열 개수는 빈 결과에도 남아야 합니다."
+          },
+          {
+            "label": "빈 열과 양쪽 빈 선택",
+            "code": "a=np.arange(6).reshape(2,3); assert select_panel(a,[0,1],[]).shape==(2,0); assert select_panel(a,[],[]).shape==(0,0)",
+            "feedback": "빈 리스트를 1차원 배열로 반환하지 마세요."
+          },
+          {
+            "label": "결과 변경 독립성",
+            "code": "a=np.array([[1.,4.]]); r=select_panel(a,[0],[1]); r[0,0]=99; assert a.tolist()==[[1.,4.]]",
+            "feedback": "원본과 메모리를 공유하는 뷰를 반환하지 마세요."
+          },
+          {
+            "label": "원본 변경 독립성",
+            "code": "a=np.array([[1.,4.]]); r=select_panel(a,[0],[1]); a[0,1]=77; assert r.tolist()==[[4.]]",
+            "feedback": "독립성은 양방향으로 확인하세요."
+          }
+        ],
+        "hints": [
+          "결과의 행 수·열 수를 먼저 적으세요.",
+          "np.ix_(rows, columns)는 모든 조합의 인덱스를 만듭니다.",
+          "a[np.ix_(rows, columns)].copy()를 빈 목록에서도 확인하세요."
+        ],
+        "steps": [
+          "쌍과 조합 선택을 구별합니다.",
+          "목록의 순서·중복을 보존합니다.",
+          "양방향 변경과 빈 shape을 확인합니다."
+        ],
+        "mistake": "a[rows, columns]는 다른 길이의 목록에서 오류가 나거나 의도와 다른 쌍 선택을 합니다.",
+        "alternative": "a[rows][:, columns]도 가능합니다. np.ix_는 조합 선택이라는 의도가 분명하고 중간 행 복사를 줄일 수 있습니다.",
+        "criteria": [
+          "모든 조합과 순서",
+          "중복 위치 보존",
+          "빈 행의 차원",
+          "빈 열과 양쪽 빈 선택",
+          "결과 변경 독립성",
+          "원본 변경 독립성"
+        ]
+      }
+    },
+    {
+      "id": "numpy-batches",
+      "title": "결합·정렬·분할의 순서",
+      "prerequisites": [
+        "numpy-index"
+      ],
+      "goals": [
+        "결합 축과 새로운 축을 구별한다.",
+        "동점 순서·불균등 분할·독립 복사를 연결한다."
+      ],
+      "concept": "concatenate(parts, axis=0)는 기존 행 축을 이어 붙이고 axis=1은 열 축을 잇습니다. 결합하지 않는 축들의 크기는 같아야 합니다. stack은 새 축을 만들므로 입력 모양이 같아야 합니다. 2차원 배열의 .T는 행·열을 바꾸며 flatten()은 1차원 복사본을 만듭니다. np.sort는 정렬된 배열을 반환하지만 a.sort()는 원본을 바꾸고 None을 반환합니다. 행 전체를 특정 열 순서로 옮길 때는 argsort로 위치 순서를 구합니다. kind=\"stable\"은 동점의 원래 상대 순서를 유지합니다. array_split은 나머지를 앞 묶음부터 한 행씩 배분하고 split의 정수 등분은 나누어떨어져야 합니다.",
+      "glossary": {
+        "결합 축": "기존 차원의 길이를 이어 붙일 방향입니다.",
+        "argsort": "정렬했을 때의 원래 위치들을 반환합니다. 이 위치로 행 전체를 선택해야 열 사이 관계가 유지됩니다.",
+        "안정 정렬": "동점인 항목의 기존 상대 순서를 보존하는 정렬입니다.",
+        "array_split(a,k,axis=0)": "행을 k개 묶음으로 가능한 한 균등 분할합니다. k가 행 수보다 많으면 빈 묶음도 생깁니다."
+      },
+      "example": "import numpy as np\na = np.array([[2,90],[1,50]])\nb = np.array([[2,10]])\njoined = np.concatenate([a,b],axis=0)\norder = np.argsort(joined[:,0],kind=\"stable\")\nprint(joined[order].tolist())\nprint([len(x) for x in np.array_split(joined,2)])",
+      "output": "[[1, 50], [2, 90], [2, 10]]\n[2, 1]",
+      "flow": [
+        "행을 이어 (3,2) 표를 만듭니다.",
+        "동점 키 2의 두 행은 입력 순서를 유지합니다.",
+        "3행을 두 묶음으로 나눠 나머지를 앞 묶음에 배분합니다."
+      ],
+      "pitfalls": [
+        "각 열을 따로 sort하면 행의 식별자·측정값 관계가 깨집니다.",
+        "a = a.sort()는 a에 None을 대입합니다.",
+        "분할 결과가 원본을 공유할 수 있으므로 독립 수정 계약에는 복사가 필요합니다."
+      ],
+      "quiz": {
+        "type": "predict",
+        "difficulty": "기초 → 이해",
+        "code": "import numpy as np\na = np.array([5,2,8])\nresult = a.sort()\nprint(a.tolist(), result)",
+        "choices": [
+          "[5, 2, 8] [2, 5, 8]",
+          "[2, 5, 8] [2, 5, 8]",
+          "[2, 5, 8] None"
+        ],
+        "answer": 2,
+        "reasons": [
+          "sort 메서드는 원본을 바꿉니다.",
+          "원본은 정렬됐지만 반환값은 None입니다.",
+          "ndarray.sort는 제자리 정렬이며 반환값이 None입니다."
+        ],
+        "goal": "실행 순서와 값의 변화를 근거로 결과를 예측한다.",
+        "criteria": "선택한 결과와 실행 흐름을 대조한다."
+      },
+      "task": {
+        "type": "설계 · 코드 작성",
+        "difficulty": "심화",
+        "prompt": "make_batches(parts, k)를 작성하세요. parts는 하나 이상의 2차원 유한 실수 ndarray이며 열 수 n>=1은 같습니다. 입력 순서대로 행을 결합하고 첫 열 오름차순으로 행 전체를 안정 정렬한 뒤 k개 묶음의 리스트를 반환하세요. k는 양의 정수입니다. 나머지는 앞 묶음부터 한 행씩 더 배분합니다. 전체가 비면 shape (0,n)의 배열 k개를 반환합니다. 원본과 각 결과 묶음은 독립적으로 변경할 수 있어야 합니다. 예: 행 키 [3,1,2,4,0], k=2 → 정렬 후 묶음 길이 [3,2].",
+        "starter": "import numpy as np\n\ndef make_batches(parts, k):\n    pass",
+        "model": "import numpy as np\ndef make_batches(parts, k):\n    joined = np.concatenate(parts,axis=0)\n    order = np.argsort(joined[:,0],kind=\"stable\")\n    ordered = joined[order]\n    return [part.copy() for part in np.array_split(ordered,k,axis=0)]",
+        "tests": [
+          {
+            "label": "행 전체 결합·정렬",
+            "code": "p=[np.array([[3.,30.],[1.,10.]]),np.array([[2.,20.]])]; r=make_batches(p,2); assert isinstance(r,list) and len(r)==2; assert all(isinstance(x,np.ndarray) for x in r); assert np.concatenate(r).tolist()==[[1.,10.],[2.,20.],[3.,30.]]",
+            "feedback": "첫 열의 정렬 위치로 행 전체를 옮기세요."
+          },
+          {
+            "label": "동점의 기존 순서",
+            "code": "r=make_batches([np.array([[2.,9.],[1.,3.],[2.,8.]]),np.array([[2.,7.]])],1); assert r[0][:,1].tolist()==[3.,9.,8.,7.]",
+            "feedback": "안정 정렬로 같은 키의 입력 순서를 보존하세요."
+          },
+          {
+            "label": "나머지 앞쪽 배분",
+            "code": "r=make_batches([np.arange(7.).reshape(7,1)],3); assert [len(x) for x in r]==[3,2,2]",
+            "feedback": "array_split과 split의 정수 등분 차이를 확인하세요."
+          },
+          {
+            "label": "행보다 많은 묶음",
+            "code": "r=make_batches([np.array([[2.,9.],[1.,4.]])],4); assert [x.shape for x in r]==[(1,2),(1,2),(0,2),(0,2)]",
+            "feedback": "묶음 개수와 빈 묶음의 열 차원을 유지하세요."
+          },
+          {
+            "label": "전체 빈 입력",
+            "code": "r=make_batches([np.empty((0,3)),np.empty((0,3))],2); assert len(r)==2 and all(x.shape==(0,3) for x in r)",
+            "feedback": "원소가 없어도 열 개수와 묶음 수를 보존하세요."
+          },
+          {
+            "label": "입력·결과 독립성",
+            "code": "a=np.array([[1.,4.],[2.,5.]]); r=make_batches([a],2); r[0][0,1]=99; assert a.tolist()==[[1.,4.],[2.,5.]]; a[1,1]=77; assert r[1].tolist()==[[2.,5.]]; assert not np.shares_memory(r[0],r[1])",
+            "feedback": "입력과 반환 묶음 각각의 메모리 공유를 확인하세요."
+          }
+        ],
+        "hints": [
+          "결합 → 행 정렬 → 분할 → 복사로 나누세요.",
+          "첫 열의 argsort(kind=\"stable\")로 행 전체를 선택하세요.",
+          "np.array_split 결과의 각 part.copy()를 리스트로 반환하세요."
+        ],
+        "steps": [
+          "열 구조를 지켜 결합합니다.",
+          "동점을 보존하는 위치 순서를 구합니다.",
+          "불균등 분할 후 독립 복사합니다."
+        ],
+        "mistake": "np.sort(joined,axis=0)는 열을 각각 정렬하므로 행 관계가 깨집니다.",
+        "alternative": "일반 리스트의 sorted도 가능하지만 ndarray 자료형·빈 결과 shape·독립 복사를 직접 맞춰야 합니다.",
+        "criteria": [
+          "행 전체 결합·정렬",
+          "동점의 기존 순서",
+          "나머지 앞쪽 배분",
+          "행보다 많은 묶음",
+          "전체 빈 입력",
+          "입력·결과 독립성"
+        ]
+      }
+    },
+    {
+      "id": "numpy-random",
+      "title": "다시 확인할 수 있는 무작위 추출",
+      "prerequisites": [
+        "numpy-batches"
+      ],
+      "goals": [
+        "시드와 난수 생성기 상태를 구별한다.",
+        "중복 없는 표본을 재현하면서 다른 코드의 상태를 보존한다."
+      ],
+      "concept": "난수 생성기는 내부 상태를 바꾸며 값의 흐름을 만듭니다. seed는 시작 상태를 정합니다. 같은 환경·생성기·시드·호출 순서에서는 재현할 수 있지만 모든 라이브러리 버전의 동일 결과까지 보장하는 것은 아닙니다. default_rng(seed)는 지역 생성기를 만듭니다. rng.random(size)는 0 이상 1 미만의 수, rng.integers(low,high,size)는 high를 제외한 정수를 만듭니다. rng.choice(ids,size=k,replace=False)는 같은 위치를 다시 뽑지 않는 추출입니다. 모집단 값이 중복되면 위치를 달리 뽑아도 값이 같을 수 있어 입력 조건도 필요합니다.",
+      "glossary": {
+        "시드": "생성 흐름의 시작을 재현하는 설정입니다. 함수 안에서 같은 시드로 새 생성기를 만들면 다른 호출의 영향을 피할 수 있습니다.",
+        "비복원 추출": "같은 위치를 다시 뽑지 않는 추출입니다. replace=False로 지정합니다.",
+        "전역 상태": "여러 코드가 공유하는 상태입니다. np.random.seed는 기존 전역 난수 API 상태를 바꿉니다.",
+        "np.unique": "서로 다른 값만 남긴 배열을 만듭니다. 예제에서는 표본의 고유값 수를 확인합니다.",
+        "raise ValueError(...)": "현재 요청이 유효하지 않음을 예외로 알리고 정상 반환을 중단합니다. 호출자는 앞서 배운 try/except로 처리할 수 있습니다.",
+        "재현성과 보안": "재현 가능한 의사난수는 실험용입니다. 보안 토큰 생성용으로 취급하지 않습니다."
+      },
+      "example": "import numpy as np\na = np.random.default_rng(37).choice([10,20,30,40],size=3,replace=False)\nb = np.random.default_rng(37).choice([10,20,30,40],size=3,replace=False)\nprint(np.array_equal(a,b))\nprint(len(np.unique(a)))",
+      "output": "True\n3",
+      "flow": [
+        "같은 시드로 별도 생성기를 만듭니다.",
+        "같은 첫 추출 호출이므로 두 결과가 같습니다.",
+        "고유 값 모집단의 비복원 표본은 서로 다른 값 세 개입니다."
+      ],
+      "pitfalls": [
+        "같은 생성기에서 연속 호출하면 상태가 진행합니다.",
+        "비복원 추출 수가 모집단보다 크면 불가능합니다.",
+        "다른 시드가 반드시 다른 표본을 보장하지는 않습니다."
+      ],
+      "quiz": {
+        "type": "predict",
+        "difficulty": "기초 → 이해",
+        "code": "import numpy as np\na = np.random.default_rng(61).integers(0,100,size=6)\nb = np.random.default_rng(61).integers(0,100,size=6)\nprint(np.array_equal(a,b))",
+        "choices": [
+          "True",
+          "반드시 False",
+          "상한 100을 포함하므로 비교 불가"
+        ],
+        "answer": 0,
+        "reasons": [
+          "같은 시드의 새 생성기로 같은 첫 호출을 했습니다.",
+          "시드와 호출 순서를 고정하면 재현할 수 있습니다.",
+          "정수 상한은 제외되며 배열 비교와는 별개입니다."
+        ],
+        "goal": "실행 순서와 값의 변화를 근거로 결과를 예측한다.",
+        "criteria": "선택한 결과와 실행 흐름을 대조한다."
+      },
+      "task": {
+        "type": "설계 · 코드 작성",
+        "difficulty": "심화",
+        "prompt": "sample_ids(ids,k,seed)를 작성하세요. ids는 고유 정수의 1차원 ndarray, k·seed는 정수이며 seed>=0입니다. default_rng(seed)의 choice(ids,size=k,replace=False)를 한 번 호출하고 값을 오름차순 정렬한 ndarray를 반환하세요. 0<=k<=len(ids)만 허용하고 그 밖에는 ValueError를 내세요. k=0은 빈 표본이며 빈 모집단에서는 k=0만 허용합니다. 원본과 np.random 전역 상태를 변경하지 마세요. 예: ids=[11,22,33], k=3 → [11,22,33]. 난수열 암기 대신 지정 생성 절차를 검증합니다.",
+        "starter": "import numpy as np\n\ndef sample_ids(ids, k, seed):\n    pass",
+        "model": "import numpy as np\ndef sample_ids(ids, k, seed):\n    if k < 0 or k > len(ids):\n        raise ValueError(\"invalid sample size\")\n    rng = np.random.default_rng(seed)\n    return np.sort(rng.choice(ids,size=k,replace=False))",
+        "tests": [
+          {
+            "label": "시드와 지정 생성 절차",
+            "code": "ids=np.arange(12)*7+3\nfor seed in [5,31,63]:\n    expected=np.sort(np.random.default_rng(seed).choice(ids,size=4,replace=False))\n    actual=sample_ids(ids,4,seed)\n    assert isinstance(actual,np.ndarray) and actual.shape==(4,) and np.array_equal(actual,expected)",
+            "feedback": "인자의 seed로 새 생성기를 만들고 지정된 choice를 한 번 호출하세요."
+          },
+          {
+            "label": "호출 간 재현성",
+            "code": "ids=np.arange(15); a=sample_ids(ids,5,21); np.random.default_rng(9).random(200); b=sample_ids(ids,5,21); assert np.array_equal(a,b)",
+            "feedback": "공유 생성기나 다른 코드의 호출 순서에 의존하지 마세요."
+          },
+          {
+            "label": "중복 없이 전체 추출",
+            "code": "assert sample_ids(np.array([42,14,28,7]),4,8).tolist()==[7,14,28,42]",
+            "feedback": "비복원 추출 후 결과만 정렬하세요."
+          },
+          {
+            "label": "빈 표본과 모집단",
+            "code": "r=sample_ids(np.array([3,7]),0,4); assert isinstance(r,np.ndarray) and r.shape==(0,); assert sample_ids(np.array([],dtype=int),0,4).shape==(0,)",
+            "feedback": "유효한 빈 표본을 오류나 None으로 처리하지 마세요."
+          },
+          {
+            "label": "불가능한 표본 수",
+            "code": "for k in [-1,4]:\n    try:\n        sample_ids(np.array([3,7,9]),k,4)\n    except ValueError:\n        pass\n    else:\n        raise AssertionError(\"ValueError required\")",
+            "feedback": "음수·모집단 초과 크기는 ValueError로 거절하세요."
+          },
+          {
+            "label": "원본·전역 상태 보존",
+            "code": "ids=np.array([8,2,6,4]); before=ids.copy(); np.random.seed(114); expected=np.random.random(5); np.random.seed(114); sample_ids(ids,2,9); observed=np.random.random(5); assert np.array_equal(observed,expected) and np.array_equal(ids,before)",
+            "feedback": "np.random.seed나 전역 choice 대신 지역 생성기를 사용하고 원본을 정렬하지 마세요."
+          }
+        ],
+        "hints": [
+          "표본 수를 먼저 검증하세요.",
+          "함수 안에서 default_rng(seed)를 만들고 replace=False로 뽑으세요.",
+          "np.sort는 복사본을 반환합니다. ids.sort()로 원본을 바꾸지 마세요."
+        ],
+        "steps": [
+          "불가능한 크기를 거절합니다.",
+          "지역 생성기로 한 번 추출합니다.",
+          "결과만 정렬하고 상태 보존을 확인합니다."
+        ],
+        "mistake": "전역 np.random.seed를 재설정하면 다른 코드의 난수열도 바뀝니다.",
+        "alternative": "호출자가 Generator를 전달하는 설계는 연속 추출에 유용하지만 같은 시드의 독립 호출이라는 이번 계약과는 다릅니다.",
+        "criteria": [
+          "시드와 지정 생성 절차",
+          "호출 간 재현성",
+          "중복 없이 전체 추출",
+          "빈 표본과 모집단",
+          "불가능한 표본 수",
+          "원본·전역 상태 보존"
+        ]
+      }
+    },
+    {
       "id": "pandas-select",
       "title": "행 선택과 라벨의 의미",
       "prerequisites": [
@@ -1123,6 +1445,117 @@
           "최신 누락의 의미",
           "빈 입력",
           "원본 보존"
+        ]
+      }
+    },
+    {
+      "id": "pandas-time",
+      "title": "날짜·문자열·증감률을 잇는 분석",
+      "prerequisites": [
+        "pandas-clean"
+      ],
+      "goals": [
+        "문자열 조건·날짜 변환·월 집계를 연결한다.",
+        "누락 월과 0인 분모의 정책을 명시한다."
+      ],
+      "concept": "pd.to_datetime(...,format=\"%Y-%m-%d\",errors=\"coerce\")는 연·월·일 형식을 해석하고 실패를 NaT로 표시합니다. 날짜 열의 .dt.strftime(\"%Y-%m\")은 월별 그룹 키를 만듭니다. 문자열 열의 .str.strip().str.lower()는 양끝 공백·대소문자를 정리하고 .str.contains(needle,regex=False,na=False)는 누락을 거짓으로 처리하며 글자를 그대로 검색합니다. +나 .을 정규식 특수문자로 해석하는 것과 다릅니다. pd.to_numeric(...,errors=\"coerce\")로 수량도 변환합니다. 증감률은 (현재-이전)/이전×100입니다. 분모가 0이면 이 비율을 정의할 수 없어 별도 표기해야 합니다.",
+      "glossary": {
+        "NaT": "날짜·시간의 누락·변환 실패 값입니다. notna()로 유효 여부를 확인합니다.",
+        "날짜 형식": "%Y는 네 자리 연도, %m은 월, %d는 일입니다. strftime은 날짜를 지정한 형식의 문자열로 바꿉니다.",
+        "errors=\"coerce\"": "변환 실패를 누락값으로 바꿉니다. 이후 제외·대체 정책도 명시해야 합니다.",
+        "regex=False": "검색어를 정규식 패턴 대신 문자 그대로 찾습니다.",
+        "이전 관측 월": "자료에 실제 나타나는 월 중 직전 월입니다. 바로 전 달과 다를 수 있으며 없는 달을 자동으로 0으로 만들지 않습니다.",
+        "Series.items() / sort_index()": "라벨·값을 순회하는 메서드 / 인덱스 라벨을 정렬하는 메서드입니다. YYYY-MM 라벨은 연·월 순서로 정렬됩니다.",
+        "조건 표현식": "a if 조건 else b는 조건이 참이면 a, 거짓이면 b를 선택하는 식입니다. 일반 if/else로 풀어 써도 됩니다."
+      },
+      "example": "import pandas as pd\ndf = pd.DataFrame({\"date\":[\"2026-02-04\",\"broken\",\"2026-04-09\"],\"amount\":[8,99,12]})\ndates = pd.to_datetime(df[\"date\"],format=\"%Y-%m-%d\",errors=\"coerce\")\nvalid = df.loc[dates.notna()].copy()\nvalid[\"month\"] = dates.loc[dates.notna()].dt.strftime(\"%Y-%m\")\nprint(valid.groupby(\"month\")[\"amount\"].sum().to_dict())\nprint((12-8)/8*100)",
+      "output": "{'2026-02': 8, '2026-04': 12}\n50.0",
+      "flow": [
+        "broken은 NaT이므로 제외합니다.",
+        "실제 관측이 있는 월만 합산합니다.",
+        "2월 8에서 4월 12로 50% 증가했습니다. 3월이 0이라는 뜻은 아닙니다."
+      ],
+      "pitfalls": [
+        "원래 행 순서가 날짜 순서라는 보장은 없습니다.",
+        "0에서 증가했다고 임의로 100%라 쓰지 마세요.",
+        "수량이 문자열이면 sum이 잘못된 의미가 될 수 있어 먼저 변환해야 합니다."
+      ],
+      "quiz": {
+        "type": "predict",
+        "difficulty": "기초 → 이해",
+        "code": "# 이전 관측 월 합계 0, 현재 합계 9\n# (현재-이전)/이전*100을 적용하려 합니다.\n# 정직한 보고는?",
+        "choices": [
+          "9%",
+          "항상 100%",
+          "정의되지 않아 별도 표기"
+        ],
+        "answer": 2,
+        "reasons": [
+          "증가량과 증감률은 다릅니다.",
+          "분모 0에서는 100%라고 결론낼 수 없습니다.",
+          "분모 0 정책을 적용하고 실제 합계를 함께 보고합니다."
+        ],
+        "goal": "실행 순서와 값의 변화를 근거로 결과를 예측한다.",
+        "criteria": "선택한 결과와 실행 흐름을 대조한다."
+      },
+      "task": {
+        "type": "프로젝트",
+        "difficulty": "프로젝트",
+        "prompt": "monthly_change(df,needle)를 작성하세요. 열은 date(YYYY-MM-DD 문자열 또는 잘못된 날짜/누락), name(문자열 또는 누락), amount(유한 수·숫자 문자열 또는 변환 불가/누락)입니다. needle은 정리 후 비어 있지 않은 문자열입니다. name·needle의 양끝 공백·대소문자를 정리해 needle을 문자 그대로 포함한 행을 고르세요. 날짜·수 변환 실패와 음수 amount는 제외합니다. 실제 관측 월별 합계를 오름차순 정렬해 {\"month\": YYYY-MM, \"total\": 합계, \"growth_pct\": 증감률} 리스트를 반환하세요. 첫 월 또는 이전 관측 월 합계 0이면 growth_pct는 None, 나머지는 반올림 없이 (현재-이전)/이전*100입니다. 없는 달은 추가하지 않고 원본도 변경하지 않습니다. 예: 2월=8, 4월=12 → 첫 월 None, 4월 50.0.",
+        "starter": "import pandas as pd\n\ndef monthly_change(df, needle):\n    pass",
+        "model": "import pandas as pd\ndef monthly_change(df, needle):\n    names = df[\"name\"].str.strip().str.lower()\n    dates = pd.to_datetime(df[\"date\"],format=\"%Y-%m-%d\",errors=\"coerce\")\n    amounts = pd.to_numeric(df[\"amount\"],errors=\"coerce\")\n    mask = names.str.contains(needle.strip().lower(),regex=False,na=False) & dates.notna() & amounts.notna() & (amounts >= 0)\n    valid = df.loc[mask].copy()\n    valid[\"month\"] = dates.loc[mask].dt.strftime(\"%Y-%m\")\n    valid[\"amount\"] = amounts.loc[mask]\n    totals = valid.groupby(\"month\")[\"amount\"].sum().sort_index()\n    result = []\n    previous = None\n    for month, total in totals.items():\n        growth = None if previous is None or previous == 0 else (total-previous)/previous*100\n        result.append({\"month\":month,\"total\":float(total),\"growth_pct\":growth})\n        previous = total\n    return result",
+        "tests": [
+          {
+            "label": "월 집계·정렬·비율",
+            "code": "d=pd.DataFrame({\"date\":[\"2026-04-02\",\"2026-02-01\",\"2026-02-04\"],\"name\":[\"lab\",\" LAB \",\"lab\"],\"amount\":[12,\"3\",5]}); r=monthly_change(d,\" Lab \"); assert [x[\"month\"] for x in r]==[\"2026-02\",\"2026-04\"]; assert [x[\"total\"] for x in r]==[8,12]; assert r[0][\"growth_pct\"] is None and abs(r[1][\"growth_pct\"]-50)<1e-9",
+            "feedback": "정리·변환 후 월별 합계를 정렬해 이전 관측과 비교하세요."
+          },
+          {
+            "label": "검색어 문자 그대로",
+            "code": "d=pd.DataFrame({\"date\":[\"2026-01-01\"]*3,\"name\":[\"A+ site\",\"aaa\",None],\"amount\":[4,80,90]}); assert monthly_change(d,\"a+\")==[{\"month\":\"2026-01\",\"total\":4,\"growth_pct\":None}]",
+            "feedback": "regex=False·na=False로 +의 패턴 해석과 누락 선택을 피하세요."
+          },
+          {
+            "label": "날짜·수량 유효성",
+            "code": "d=pd.DataFrame({\"date\":[\"2024-02-29\",\"2025-02-29\",\"broken\",\"2024-03-01\",\"2024-03-02\",\"2024-03-03\"],\"name\":[\"x\"]*6,\"amount\":[4,99,99,\"wrong\",-2,8]}); r=monthly_change(d,\"x\"); assert [x[\"total\"] for x in r]==[4,8] and r[1][\"growth_pct\"]==100",
+            "feedback": "유효한 윤년 날짜는 유지하고 변환 실패·음수는 제외하세요."
+          },
+          {
+            "label": "0 분모와 감소",
+            "code": "d=pd.DataFrame({\"date\":[\"2026-01-01\",\"2026-02-01\",\"2026-03-01\"],\"name\":[\"x\"]*3,\"amount\":[0,8,2]}); r=monthly_change(d,\"x\"); assert r[0][\"growth_pct\"] is None and r[1][\"growth_pct\"] is None and r[2][\"growth_pct\"]==-75",
+            "feedback": "이전 합계 0은 None, 감소는 음수 비율로 보고하세요."
+          },
+          {
+            "label": "빈 자료·일치 없음",
+            "code": "d=pd.DataFrame(columns=[\"date\",\"name\",\"amount\"]); assert monthly_change(d,\"x\")==[]; d=pd.DataFrame({\"date\":[\"2026-01-01\"],\"name\":[None],\"amount\":[4]}); assert monthly_change(d,\"x\")==[]",
+            "feedback": "유효 관측이 없으면 빈 리스트를 반환하세요."
+          },
+          {
+            "label": "원본·반올림 계약",
+            "code": "d=pd.DataFrame({\"date\":[\"2026-01-01\",\"2026-02-01\"],\"name\":[\" x \",\"x\"],\"amount\":[3,4]}); before=d.copy(deep=True); r=monthly_change(d,\"x\"); assert abs(r[1][\"growth_pct\"]-100/3)<1e-9 and d.equals(before)",
+            "feedback": "반올림하지 말고 원본에 정리한 열을 덮어쓰지 마세요."
+          }
+        ],
+        "hints": [
+          "문자열·날짜·수량을 각각 정리해 유효 행 마스크를 만드세요.",
+          "월 키를 만들고 groupby(\"month\")[\"amount\"].sum().sort_index()로 집계하세요.",
+          "previous=None으로 시작해 첫 관측·분모 0을 나눈 뒤 나머지만 비율을 계산하세요."
+        ],
+        "steps": [
+          "문자 그대로 검색하고 변환 실패를 제외합니다.",
+          "유효 관측의 월 합계를 정렬합니다.",
+          "이전 관측 기준으로 비율을 계산합니다.",
+          "0 분모·누락 월·원본 보존을 확인합니다."
+        ],
+        "mistake": "없는 달을 임의의 0으로 채우면 이전 관측 월 비교라는 계약이 달라집니다.",
+        "alternative": "shift로 이전 합계 Series를 만들어 벡터 연산할 수도 있습니다. 간결하지만 첫 관측·분모 0·최종 None 변환 정책을 빠뜨리지 않아야 합니다.",
+        "criteria": [
+          "월 집계·정렬·비율",
+          "검색어 문자 그대로",
+          "날짜·수량 유효성",
+          "0 분모와 감소",
+          "빈 자료·일치 없음",
+          "원본·반올림 계약"
         ]
       }
     },
