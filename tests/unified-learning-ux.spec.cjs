@@ -1,17 +1,15 @@
 const {test,expect}=require("playwright/test");
 const base=process.env.MEOWDE_BASE_URL||"http://127.0.0.1:4173";
-test("Python home has one primary learning action and hides extras until requested",async({page})=>{
+test("Python home shows the learning journey and preserves direct navigation",async({page})=>{
+ await page.addInitScript(()=>localStorage.setItem("meowde-v410-seen","1"));
  await page.goto(base+"/");
- await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+ await page.waitForFunction(()=>document.documentElement.dataset.homeRenderer==="canonical-v414");
  await expect(page.locator(".meowde-subject-overview")).toHaveCount(0);
  await expect(page.locator(".hero .btn")).toHaveCount(1);
+ await expect(page.locator(".meowde-home-journey")).toBeVisible();
  await expect(page.locator(".tabbar[data-phase1-navigation=five-tabs] button")).toHaveCount(5);
- await expect(page.locator(".tabbar button").filter({hasText:"학습"})).toHaveCount(1);
- await expect(page.locator(".tabbar button").filter({hasText:"복습"})).toHaveCount(1);
- await expect(page.locator(".meowde-more")).not.toHaveAttribute("open","");
- await expect(page.getByRole("link",{name:"추가 문제 풀기"})).toBeHidden();
- await page.locator(".meowde-more summary").click();
- await expect(page.getByRole("link",{name:"추가 문제 풀기"})).toBeVisible();
+ await expect(page.getByRole("button",{name:"학습",exact:true})).toBeVisible();
+ await expect(page.getByRole("button",{name:"실습",exact:true})).toBeVisible();
  await page.locator(".hero .btn").click();
  await expect(page.locator(".lesson-top")).toBeVisible();
 });
