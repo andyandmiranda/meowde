@@ -23,7 +23,8 @@
   function render(){
     stop();
     const r=record(),u=unit,t=u.task;
-    root.innerHTML=`<section class="hero"><img src="/assets/meowde-approved-headphones.svg?v=450" alt=""><div><h1>${escape(data.title)}</h1><p>원리를 이해하고, 다른 입력에도 적용해보세요.</p><p class="meta">${escape(data.notice)}</p></div></section>
+    root.innerHTML=`<section class="hero"><img src="/assets/meowde-approved-headphones.svg?v=450" alt=""><div><h1>Python 실습</h1><p>학습한 개념을 직접 적용해 봐요.</p><p class="meta">${escape(data.notice)}</p></div></section>
+      <div class="practice-mode-switch" aria-label="실습 방식 안내"><div><strong>기본 문제</strong><span>레슨 속 짧은 문제부터</span><a href="/?view=map">학습 경로에서 풀기 →</a></div><div class="is-active"><strong>추가 코드 실습</strong><span>18개 응용 단원 · 현재: ${escape(u.title)}</span><span class="mode-current">지금 이 화면</span></div></div>
       <p id="storage-status" class="storage-warning" role="status"></p>
       <button class="nav-toggle" id="nav-toggle" aria-controls="unit-nav" aria-expanded="false">단원 목록 열기</button>
       <div class="layout"><nav id="unit-nav" class="unit-nav" data-collapsed="true" aria-label="학습 단원">${navigation()}</nav>
