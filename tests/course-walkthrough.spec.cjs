@@ -94,3 +94,11 @@ test('a wrong answer can reveal the expected solution and explanation without ch
  await expect(answer).toContainText('안녕');
  expect(await page.evaluate(()=>({idx:S.idx,correct:S.correct,checked:S.checked,storage:(()=>{const state=JSON.parse(localStorage.getItem('meowde-v410-state'));delete state.savedAt;return state;})()}))).toEqual(before);
 });
+
+test('list hint teaches index bounds without completing the problem',async({page})=>{
+ await page.goto(base+'/');await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+ await page.getByRole('button',{name:'오늘 학습 시작'}).click();
+ await page.evaluate(()=>{const index=lessons().findIndex(l=>l.slug==='list-garden');S.queue=[{...lessons()[index].exercises.find(e=>e.id==='list-garden-b'),__meowdeLessonIndex:index}];S.lessonIndex=index;S.idx=0;S.hint=false;S.checked=false;S.sel=null;renderLesson();});
+ await page.locator('[data-coach-hint]').click();await expect(page.locator('[data-hint-step]')).toContainText('0과 1');
+ expect(await page.evaluate(()=>({checked:S.checked,idx:S.idx}))).toEqual({checked:false,idx:0});
+});
