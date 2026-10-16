@@ -1,6 +1,71 @@
 const {test,expect}=require('playwright/test');
 const base=process.env.MEOWDE_BASE_URL||'http://127.0.0.1:4173';
 
+for(const lang of ['ko','en']){
+ test(`comparison fill has exactly one True-producing choice (${lang})`,async({page})=>{
+  test.setTimeout(120000);
+  await page.goto(base+'/');
+  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+  const result=await page.evaluate(async lang=>{
+   S.lang=lang;
+   const ex=lessons().find(l=>l.slug==='compare-gate').exercises.find(e=>e.id==='compare-gate-f');
+   S.queue=[ex];S.idx=0;S.checked=false;S.fill='';
+   const outputs=[];
+   for(const token of ex.tokens)outputs.push({token,output:(await runPython(ex.code.replace('____',token))).trim()});
+   renderLesson();
+   return {answer:ex.answer,outputs};
+  },lang);
+  expect(result.outputs.filter(r=>r.output==='True').map(r=>r.token)).toEqual([result.answer]);
+  await page.getByRole('button',{name:result.answer,exact:true}).click();
+  await page.locator('.lesson-foot .btn').click();
+  await expect(page.locator('.feedback.ok')).toBeVisible();
+ });
+
+ test(`elif task states all three grade ranges and model handles boundaries (${lang})`,async({page})=>{
+  test.setTimeout(120000);
+  await page.goto(base+'/');
+  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+  const result=await page.evaluate(async lang=>{
+   S.lang=lang;
+   const ex=lessons().find(l=>l.slug==='elif-mushroom').exercises.find(e=>e.id==='elif-mushroom-w');
+   S.queue=[ex];S.idx=0;
+   const outputs=[];
+   for(const score of [69,70,89,90,95])outputs.push((await runPython(ex.model.replace('score = 75','score = '+score))).trim());
+   renderLesson();
+   return {prompt:ex.prompt,outputs};
+  },lang);
+  for(const text of ['90','70','A','B','C'])expect(result.prompt).toContain(text);
+  expect(result.outputs).toEqual(['C','B','B','A','A']);
+ });
+
+ test(`list syntax hints and quoted starter remain accurate without awarding credit (${lang})`,async({page})=>{
+  await page.goto(base+'/');
+  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+  for(const [slug,id] of [['index-tower','index-tower-b'],['append-dock','append-dock-b'],['append-dock','append-dock-w']]){
+   const before=await page.evaluate(({lang,slug,id})=>{
+    S.lang=lang;
+    const index=lessons().findIndex(l=>l.slug===slug);
+    S.queue=[{...lessons()[index].exercises.find(e=>e.id===id),__meowdeLessonIndex:index}];
+    S.lessonIndex=index;S.idx=0;S.hint=false;S.checked=false;S.sel=null;S.loading=false;renderLesson();save();
+    const state=JSON.parse(localStorage.getItem('meowde-v410-state'));delete state.savedAt;
+    return state;
+   },{lang,slug,id});
+   await page.locator('[data-coach-hint]').click();
+   const extra=page.locator('[data-hint-step]');
+   await expect(extra).toContainText(id.endsWith('-w')?'snacks = ["milk"]':lang==='ko'?'괄호':'parentheses');
+   if(id.endsWith('-b'))await expect(page.locator('.hint')).toContainText(lang==='ko'?'여는 괄호':'opening');
+   const after=await page.evaluate(()=>{
+    const state=JSON.parse(localStorage.getItem('meowde-v410-state'));delete state.savedAt;
+    return {state,checked:S.checked};
+   });
+   expect(after.checked).toBe(false);
+   // Requesting a hint is persisted; every other saved progress/reward field must stay intact.
+   before.inProgress.hint=true;
+   expect(after.state).toEqual(before);
+  }
+ });
+}
+
 test('corrected file-lines solution counts each non-empty line once in both languages',async({page})=>{
  test.setTimeout(120000);
  await page.goto(base+'/');

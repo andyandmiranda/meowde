@@ -1258,16 +1258,16 @@ window.MEOWDE_LESSONS_EN = [
         "id": "compare-gate-f",
         "type": "fill",
         "prompt": "Which operator makes True?",
-        "code": "print(10 ____ 4)",
+        "code": "print(10 ____ 10)",
         "tokens": [
           ">",
           "<",
           "==",
           "!="
         ],
-        "answer": ">",
-        "hint": "10 is greater than 4.",
-        "explain": "10 > 4 is True."
+        "answer": "==",
+        "hint": "Choose the comparison operator that asks whether the values are equal.",
+        "explain": "10 equals 10, so 10 == 10 is True. >, <, and != are all False."
       },
       {
         "id": "compare-gate-b",
@@ -1567,7 +1567,7 @@ window.MEOWDE_LESSONS_EN = [
       {
         "id": "elif-mushroom-w",
         "type": "write",
-        "prompt": "Print B if score is at least 70, otherwise C.",
+        "prompt": "Use if/elif/else to print A for score >= 90, B for 70 <= score < 90, and C otherwise.",
         "starter": "score = 75\n# Use if/elif/else\n",
         "expected": "B",
         "testcase": "Expected output: B",
@@ -1917,8 +1917,8 @@ window.MEOWDE_LESSONS_EN = [
         ],
         "buggy": 1,
         "fixed": "print(pets[1])",
-        "hint": "Indexes start at 0, so [1] is the second item.",
-        "explain": "This code finally prints 'dog'."
+        "hint": "Check that print has matching opening and closing parentheses.",
+        "explain": "The opening ( after print is missing. Correcting it to print(pets[1]) prints dog."
       },
       {
         "id": "index-tower-w",
@@ -1994,8 +1994,8 @@ window.MEOWDE_LESSONS_EN = [
         ],
         "buggy": 2,
         "fixed": "print(snacks[0])",
-        "hint": "append() adds a value to the end of the list.",
-        "explain": "This code finally prints 'milk'."
+        "hint": "Check that print has matching opening and closing parentheses.",
+        "explain": "The opening ( after print is missing. Correcting it to print(snacks[0]) prints milk."
       },
       {
         "id": "append-dock-w",
