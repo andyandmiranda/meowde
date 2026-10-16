@@ -36,8 +36,8 @@
     return `<div class="v444-coding-scene v448-approved-hero v449-coding-scene"><img class="v449-character v449-pose-coding" src="/assets/meowde-approved-headphones.svg?v=450" alt="${esc(label)}" data-v449-pose="coding" data-character-version="4.50" decoding="async"></div>`;
   }
   function canonicalTabs(active){
-    const ko=S.lang==='ko';
-    return `<div class="tabbar" data-phase1-navigation="four-tabs"><button class="${active==='home'?'on':''}" onclick="renderHome()" aria-label="${ko?'홈':'Home'}">${icon('home')}<span>${ko?'홈':'Home'}</span></button><button class="${active==='map'?'on':''}" onclick="renderMap()" aria-label="${ko?'학습':'Learn'}">${icon('map')}<span>${ko?'학습':'Learn'}</span></button><button class="${active==='review'?'on':''}" onclick="renderReview()" aria-label="${ko?'복습':'Review'}">${icon('code')}<span>${ko?'복습':'Review'}</span></button><button class="${active==='room'?'on':''}" onclick="renderRoom()" aria-label="Meowde">${icon('cat')}<span>Meowde</span></button></div>`;
+    const ko=S.lang==='ko',lab=ko?'실습':'Practice',my=ko?'마이':'My';
+    return `<div class="tabbar" data-phase1-navigation="five-tabs"><button class="${active==='home'?'on':''}" onclick="renderHome()" aria-label="${ko?'홈':'Home'}">${icon('home')}<span>${ko?'홈':'Home'}</span></button><button class="${active==='map'?'on':''}" onclick="renderMap()" aria-label="${ko?'학습':'Learn'}">${icon('map')}<span>${ko?'학습':'Learn'}</span></button><button class="${active==='review'?'on':''}" onclick="renderReview()" aria-label="${ko?'복습':'Review'}">${icon('spark')}<span>${ko?'복습':'Review'}</span></button><button onclick="location.href='/python-lab.html'" aria-label="${lab}">${icon('code')}<span>${lab}</span></button><button class="${active==='room'||active==='profile'?'on':''}" onclick="renderProfile()" aria-label="${my}">${icon('cat')}<span>${my}</span></button></div>`;
   }
   function contactMarkup(){
     const label=S.lang==='ko'?'피드백 & 문의 ↗':'Feedback & Contact ↗';
