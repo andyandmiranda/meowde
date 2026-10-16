@@ -39,3 +39,10 @@ Full migration of the Python extra-challenge engine into the main lesson would r
 
 ## 2026-10-17 rollback after CEO feedback
 The reduction to three tabs and aggressive collapse of course/practice/progress was rejected because it buried necessary learning functions. Restored the previous canonical `v413-core.js` and `v414-screens.js` from commit `f802857` on the draft branch. The five-tab model is a temporary discoverability-preserving baseline, **not** approved final IA. Do not claim the simplified three-tab structure is shipped. Next design must preserve direct access to course path, learning, hands-on practice, review and records, while reducing clutter inside each screen; validate task paths with users before any further removal. Existing visual/typography changes remain under review.
+
+## Follow-up UX audit: preserve discoverability (2026-10-17)
+- Keep the home learning journey, overall completion, current course, previous/current/next lesson, one resume CTA, and daily practice.
+- Linux extra practice was **inaccessible**: `#more-learning` was closed by default and its `summary` was hidden by a `.learning-library` CSS rule. Restore the summary and default-open course/practice sections; retain all terminal, lesson, and Bash tools.
+- Python review retains smart review and missed exercises first, displays the three most recently completed lessons immediately, offers older completed lessons via a labeled disclosure, and moves optional learning analytics into a labeled disclosure.
+- Remove only the dead `unitCard()` helper; the visible `homeLearningJourney()` is the sole source of the home progress/course card. Do not delete core learning/practice/review tools or XP and localStorage.
+- Browser regression is required before merging: `tests/ux-discoverability.spec.cjs`, `tests/home-learning-journey.spec.cjs`, `tests/focused-review.spec.cjs`, `tests/linux-design-unification.spec.cjs`. Preview READY alone is not release approval.
