@@ -13,7 +13,7 @@ test("home always shows real overall progress, course and next lesson without ex
  await expect(home.locator(".journey-step")).toHaveCount(2);
  await expect(home.getByRole("button",{name:/전체 학습 과정 보기/})).toBeVisible();
  await home.getByRole("button",{name:/전체 학습 과정 보기/}).click();
- await expect(page.locator(".phase1-map")).toBeVisible();
+ await expect(page.locator("[data-learn-path=canonical]")).toBeVisible();
 });
 test("home progress uses completed lessons and preserves XP and current lesson",async({page})=>{
  const result=await page.evaluate(()=>{
