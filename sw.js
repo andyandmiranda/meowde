@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v466-integrated-learning";
+const CACHE_NAME = "meowde-v467-integrated-data-transfer";
 
 const REQUIRED_ASSETS = [
   "/python-lab.html",

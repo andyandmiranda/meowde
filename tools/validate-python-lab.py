@@ -1,11 +1,17 @@
 """Execute only repository-authored examples/models and regression mutations, never submissions."""
-import contextlib, copy, io, json, os, tempfile
+import contextlib, copy, io, json, os, tempfile, hashlib
 from pathlib import Path
 
 root=Path(__file__).resolve().parents[1]
 temporary_root=root.parent/'python-lab-test-tmp'
 temporary_root.mkdir(exist_ok=True)
 data=json.loads((root/'assets/python-lab-content.json').read_text(encoding='utf-8'))
+baseline=json.loads((root/'tests/fixtures/python-lab-v1-unit-hashes.json').read_text(encoding='utf-8'))
+for unit in data['units']:
+    if unit['id'] in baseline:
+        actual=hashlib.sha256(json.dumps(unit,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()
+        assert actual==baseline[unit['id']], f"Existing unit changed: {unit['id']}"
+assert set(baseline) <= {u['id'] for u in data['units']}
 seen=set(); checks=0
 os.environ['MPLBACKEND']='Agg'
 for unit in data['units']:
@@ -57,4 +63,11 @@ rejected('functions','def append_tag(tag,tags=[]):\n    tags.append(tag)\n    re
 rejected('copy','def shift(grid,delta):\n    return grid[:]','참조 독립성')
 rejected('pandas-clean','import pandas as pd\ndef summarize(df):\n    return df.dropna(subset=["value"]).drop_duplicates("id",keep="last").groupby("zone")["value"].sum().to_dict()','최신 누락의 의미')
 rejected('branches','def shipping(total,member):\n    return 0 if total > 30000 or member else 2500','경계 포함')
-print(json.dumps({'units':len(seen),'reference_model_checks':checks,'mutation_rejections':4,'examples':len(seen)},ensure_ascii=False))
+rejected('numpy-index','import numpy as np\ndef select_panel(a,rows,columns):\n    return a[rows,columns]','모든 조합과 순서')
+rejected('numpy-batches','import numpy as np\ndef make_batches(parts,k):\n    return np.array_split(np.sort(np.concatenate(parts),axis=0),k)','동점의 기존 순서')
+random_model=next(u['task']['model'] for u in data['units'] if u['id']=='numpy-random')
+rejected('numpy-random',random_model.replace('    rng =', '    np.random.seed(seed)\n    rng ='),'원본·전역 상태 보존')
+time_model=next(u['task']['model'] for u in data['units'] if u['id']=='pandas-time')
+rejected('pandas-time',time_model.replace('regex=False','regex=True'),'검색어 문자 그대로')
+rejected('pandas-time',time_model.replace('previous == 0','False'),'0 분모와 감소')
+print(json.dumps({'units':len(seen),'reference_model_checks':checks,'mutation_rejections':9,'examples':len(seen),'existing_contracts_preserved':len(baseline)},ensure_ascii=False))

@@ -62,19 +62,39 @@ row('EDA실습_02 (online shop).ipynb','전체 학습 목표','시계열·비율
 row('EDA실습_03 (Video Game Sales).ipynb','전체 학습 목표','집단별 합계·평균·순위·연도 추세를 비교한다.','없음','eda-project','부분','그룹 평균·관측 수·동점 정렬 평가. 지역 비율/출시 연도/표본 편향 차트 분석은 미포함.')
 row('E10.zip','10개 실습 README 및 루트 README; 스크립트는 읽기만 함','셸의 인자·반복·표준입력·파일·조건을 조합한다.','Linux 별도 과정',None,'미구현','파이썬 우선으로 Linux 콘텐츠는 이번에 변경하지 않음. 문제·스크립트 미복제·미실행.')
 
+# Reassess only the objectives added in the second release. Keep unimplemented scope explicit.
+for r in rows:
+    if r['source']==s5 and r['location']=='47–54':
+        r.update(unit='numpy-index',status='보강',gap='',relatedUnits=['numpy-shape','numpy-axis'])
+    if r['source']==s5 and r['location']=='61–66':
+        r.update(location='61–63',unit='numpy-batches',gap='reshape 및 결합·분할·정렬은 직접 평가. transpose/flatten은 설명 수준으로 별도 적용 과제가 필요.',relatedUnits=['numpy-shape'])
+    if r['source']=='[학습] numpy.ipynb' and r['location']=='섹션 8–9':
+        r.update(location='섹션 8',objective='배열 결합·분할 정책을 적용한다.',unit='numpy-batches',status='보강',gap='')
+    if r['source']=='[실습 5] pandas_books.ipynb':
+        r.update(unit='pandas-time',gap='Series.str의 문자 그대로 포함·누락 처리 직접 평가 추가. startswith/문자열 길이/연도 범위/극값 연결은 남음.',relatedUnits=['collections','pandas-select'])
+    if r['source']=='EDA실습_01 (Seoul Bike Data).ipynb':
+        r.update(unit='pandas-time',gap='날짜 해석·누락·윤년·월 집계 직접 평가 추가. 시간·계절별 통제와 다중 비교 차트는 남음.',relatedUnits=['eda-project'])
+    if r['source']=='EDA실습_02 (online shop).ipynb':
+        r.update(unit='pandas-time',gap='문자열 조건·날짜 순서·증감률·0 분모 직접 평가 추가. 전체 대비 비중·중복 합계 제거·시계열 차트는 남음.',relatedUnits=['eda-project'])
+    if r['source']=='EDA실습_03 (Video Game Sales).ipynb':
+        r.update(relatedUnits=['pandas-time'],gap='그룹 평균·관측 수·동점 정렬과 별도 월별 증감률 과제 연결. 지역 비율·연도 추세 차트·실제 표본 편향 분석은 남음.')
+row(s5,'64–66','값 정렬·제자리 정렬·행 위치 정렬·동점 정책을 구별한다.','없음','numpy-batches','보강','원문과 달리 ndarray.sort()의 반환값이 None임을 명확히 설명하고 결과 예측으로 검증.')
+row('[학습] numpy.ipynb','섹션 9','지역 생성기로 비복원 표본을 재현하고 다른 코드의 난수 상태를 보존한다.','없음','numpy-random','보강','NumPy 지역 Generator로 독립 작성. stdlib random, 분포 적합·시뮬레이션 설계는 별도 범위.')
+
 content=json.loads((root/'assets/python-lab-content.json').read_text(encoding='utf-8'))
 byid={u['id']:u for u in content['units']}
 for r in rows:
     if r['unit']:
         u=byid[r['unit']]
-        r['evidence']={'explanation':u['id']+'.concept','prediction':u['id']+'.quiz', 'practice':u['id']+'.task', 'feedback':u['id']+'.task.hints / tests.feedback / steps', 'criteria':u['task']['criteria']}
-result={'version':1,'reviewDate':'2026-10-15','baselineCommit':'11feed313b5048b743d9ac56889b748c8d9cdd6f','definitions':{'보강':'해당 핵심 목표에 설명·실행 예제·예측·직접 작성·다단계 힌트·복수 테스트·해설을 추가. 자료 전체 범위 완료를 의미하지 않음.','부분':'일부 목표에는 위 흐름이 있으나 세부 기능이나 전이 연습이 남음.','설명만':'설명이 있지만 해당 기능의 직접 적용 과제를 갖추지 못함. 완료 아님.','미구현':'이번 구현에 해당 목표의 학습·평가 경로를 추가하지 않음.'},'rows':rows}
+        r['evidence']={'explanation':u['id']+'.concept','prediction':u['id']+'.quiz', 'practice':u['id']+'.task', 'feedback':u['id']+'.task.hints / tests.feedback / steps', 'criteria':u['task']['criteria'], 'relatedUnits':r.get('relatedUnits',[])}
+result={'version':1,'reviewDate':'2026-10-16','baselineCommit':'a2f68d55ceac297867ba0a9a0ed0c50bb0b731a6','definitions':{'보강':'해당 핵심 목표에 설명·실행 예제·예측·직접 작성·다단계 힌트·복수 테스트·해설을 추가. 자료 전체 범위 완료를 의미하지 않음.','부분':'일부 목표에는 위 흐름이 있으나 세부 기능이나 전이 연습이 남음.','설명만':'설명이 있지만 해당 기능의 직접 적용 과제를 갖추지 못함. 완료 아님.','미구현':'이번 구현에 해당 목표의 학습·평가 경로를 추가하지 않음.'},'rows':rows}
 docs=root/'docs';docs.mkdir(exist_ok=True)
 (docs/'python-learning-coverage.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 lines=['# 파이썬 참고 범위와 구현 대응표','', '기준: 2026-10-15, main `11feed313b5048b743d9ac56889b748c8d9cdd6f`. 신규 경로 `/python-lab.html`. 기존 60개 레슨은 보존.','', '**이 표는 전체 완성 선언이 아니다.** 보강은 해당 행의 핵심 목표에 대한 학습·연습·피드백을 갖췄다는 뜻이다. 부분/설명만/미구현은 후속 작업이다. 정답 예제의 테스트 통과만으로 사람의 학습 효과를 입증하지 않는다.','', '| 참고 범위 | 학습 목표 | 기존 연결 | 새 단원·검증 | 상태 | 남은 범위 |','|---|---|---|---|---|---|']
+lines[2]='기준: 2026-10-16, main a2f68d55ceac297867ba0a9a0ed0c50bb0b731a6 이후 2차 보강. 신규 경로 /python-lab.html. 기존 60개 레슨과 1차 실험실 14개 단원의 내용·ID는 보존.'
 for r in rows:
-    evidence=(r['unit']+' · 예측+작성+4개 기준+3단계 힌트') if r['unit'] else '없음'
+    evidence=(r['unit']+' · 예측+작성+'+str(len(byid[r['unit']]['task']['tests']))+'개 기준+3단계 힌트'+(' · 연결: '+', '.join(r['relatedUnits']) if r.get('relatedUnits') else '')) if r['unit'] else '없음'
     lines.append('| '+' | '.join([r['source']+' '+r['location'],r['objective'],r['legacy'],evidence,r['status'],r['gap'] or '해당 핵심 목표 보강'])+' |')
-lines+=['','## 확인 방법','','`python tools/validate-python-lab.py`는 독립 작성 예제 14개 출력, 모범 구현 56개 기준, 오답 변형 4개 거절을 검사한다. `tests/python-lab.browser.cjs`는 실제 Pyodide 실행·진도 보존·홈 연결·차트·중지·모바일·실행기 장애를 검사한다. 개별 세부 목표가 단원 설명에 언급된 것만으로 완료 처리하지 않는다.','','## 자료 이용과 한계','','제공된 PDF 7개(473쪽), ipynb 7개, E10.zip을 로컬에서 텍스트·메타데이터·셀·ZIP 항목 중심으로 읽었다. PDF의 시각적 전 페이지 검수는 하지 않았다. 노트북의 셸 명령, 제출 지시, ZIP의 실행 스크립트는 작업 지시로 취급하지 않았고 실행하지 않았다. 자료 텍스트와 확인한 메타데이터·ZIP 목록에서 콘텐츠 재배포를 허용하는 명시적 라이선스를 확인하지 못했다. 이미지 속 별도 이용 조건까지 확인한 것은 아니다. 출처 표기는 허가로 간주하지 않는다.','','원문의 문장·비유·예제·문제·해설·데이터·페이지 배치를 제품에 넣지 않았다. 새 설명과 합성 자료, 새 API 계약·경계 조건·코드·문제를 독립 작성했다. 추출 자료는 작업 폴더에만 두고 저장소·배포 패키지에 포함하지 않는다. 파일 이름·쪽수와 일반 개념 범위만 이 대응표에 기록했다.','','## 다음 우선순위','','1. 초보자 관찰로 선수 용어와 설명 길이·힌트 단계를 보정한다.','2. 부분/설명만 행을 목표별 소단원으로 나누어 직접 작성·오류 수정·추가 입력 검증을 붙인다. 특히 상속/프로퍼티, NumPy 선택·결합·난수, pandas 문자열·날짜·비율, 통계 차트가 우선이다.','3. seaborn/표 변형·실제 데이터 EDA를 원문과 다른 자료와 질문으로 추가한다. 외부 데이터는 출처와 이용 조건을 별도로 확인한다.','4. Linux E10은 이번 범위에서 미구현이며 셸 실행·채점 지원 범위를 먼저 정한다.']
+lines+=['','## 확인 방법','','`python tools/validate-python-lab.py`는 독립 작성 예제 18개 출력, 모범 구현 80개 기준, 오답 변형 9개 거절과 기존 14개 단원의 내용 불변성을 검사한다. `tests/python-lab.browser.cjs`는 실제 Pyodide 실행·진도 보존·홈 연결·차트·중지·모바일·실행기 장애를 검사한다. 개별 세부 목표가 단원 설명에 언급된 것만으로 완료 처리하지 않는다.','','## 자료 이용과 한계','','제공된 PDF 7개(473쪽), ipynb 7개, E10.zip을 로컬에서 텍스트·메타데이터·셀·ZIP 항목 중심으로 읽었다. PDF의 시각적 전 페이지 검수는 하지 않았다. 노트북의 셸 명령, 제출 지시, ZIP의 실행 스크립트는 작업 지시로 취급하지 않았고 실행하지 않았다. 자료 텍스트와 확인한 메타데이터·ZIP 목록에서 콘텐츠 재배포를 허용하는 명시적 라이선스를 확인하지 못했다. 이미지 속 별도 이용 조건까지 확인한 것은 아니다. 출처 표기는 허가로 간주하지 않는다.','','원문의 문장·비유·예제·문제·해설·데이터·페이지 배치를 제품에 넣지 않았다. 새 설명과 합성 자료, 새 API 계약·경계 조건·코드·문제를 독립 작성했다. 추출 자료는 작업 폴더에만 두고 저장소·배포 패키지에 포함하지 않는다. 파일 이름·쪽수와 일반 개념 범위만 이 대응표에 기록했다.','','## 다음 우선순위','','1. 초보자 관찰로 선수 용어와 설명 길이·힌트 단계를 보정한다.','2. 부분/설명만 행을 목표별 소단원으로 나누어 직접 작성·오류 수정·추가 입력 검증을 붙인다. 특히 상속/프로퍼티, NumPy 통계·전치·평탄화, pandas 문자열 확장·비중, 통계 차트가 우선이다.','3. seaborn/표 변형·실제 데이터 EDA를 원문과 다른 자료와 질문으로 추가한다. 외부 데이터는 출처와 이용 조건을 별도로 확인한다.','4. Linux E10은 이번 범위에서 미구현이며 셸 실행·채점 지원 범위를 먼저 정한다.']
 (docs/'python-learning-coverage.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 print(len(rows),'scope mappings')

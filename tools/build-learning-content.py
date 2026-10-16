@@ -209,6 +209,11 @@ task('report(df, minimum=2)를 작성하세요. 열은 slot(고유 관측 식별
 
 units[-1]['reflection']={'prompt':'평균이 가장 높은 공간에 예산을 모두 배정해도 될까요? 관측 구간 선택, 공간 크기, 최소 관측 수 기준의 한계를 설명하고 추가로 필요한 자료를 두 가지 적으세요.', 'criteria':['평균과 관측 수를 함께 해석한다.','관찰 비교를 인과로 단정하지 않는다.','서로 다른 대안 설명 두 가지와 추가 자료를 연결한다.'], 'guidance':'예: 공간 크기와 운영 시간대가 방문 수에 영향을 줄 수 있습니다. 시간대가 비슷한 구간끼리 비교하고 수용 인원 대비 방문 비율도 확인할 수 있습니다. 최소 2개라는 기준은 통계적 신뢰성을 보장하지 않습니다. 이 서술은 자동 정답 판정하지 않으며 자기 점검으로 저장합니다.'}
 
+from python_data_units import extend
+extend(add, q, task, test)
+order = ['values','branches','loops','collections','copy','functions','files','objects','numpy-shape','numpy-axis','numpy-index','numpy-batches','numpy-random','pandas-select','pandas-clean','pandas-time','charts','eda-project']
+units.sort(key=lambda unit: order.index(unit['id']))
+
 data={'version':1,'language':'ko','title':'파이썬 개념·응용 실험실','units':units,
       'notice':'새로 작성한 설명과 합성 데이터로 학습합니다. 기존 60개 레슨 진도와 별도로 기록됩니다.',
       'runtime':'Pyodide 0.28.0 / 브라우저 Worker. 첫 실행에는 인터넷과 초기 로딩 시간이 필요합니다.'}
