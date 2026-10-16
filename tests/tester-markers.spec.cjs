@@ -10,8 +10,12 @@ test('problem markers survive reload without learner input or progress changes',
  await expect(page.locator('[data-tester-report]')).toHaveText(/표시됨/);
  const raw=await page.evaluate(k=>localStorage.getItem(k),key);
  expect(JSON.parse(raw)).toHaveLength(1);expect(raw).not.toContain('PRIVATE_COMMAND');
+ await page.reload();
+ await expect(page.locator('[data-tester-report]')).toHaveText(/표시됨/);
  await page.locator('[data-tester-report]').click();
+ expect(JSON.parse(await page.evaluate(k=>localStorage.getItem(k),key))).toHaveLength(0);
  await expect(page.locator('[data-tester-report]')).toHaveText(/문제 표시/);
+ await page.locator('[data-tester-report]').click();
  await page.locator('.tester-report-details').click();
  await page.locator('#tester-report-category').selectOption('hint');
  await page.getByRole('button',{name:'이 문제 표시해 두기',exact:true}).click();
@@ -30,7 +34,7 @@ test('corrupt marker storage is preserved and copy remains available',async({pag
  await page.goto(base+'/linux-start.html?tester=1');
  await page.evaluate(k=>localStorage.setItem(k,'CORRUPT'),key);
  await page.locator('[data-tester-report]').click();
- await expect(page.locator('[role="status"]')).toContainText('표시하지 못했어요');
+ await expect(page.locator('.tester-report-status')).toContainText('표시하지 못했어요');
  expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe('CORRUPT');
  await page.locator('.tester-report-details').click();
  await expect(page.getByRole('button',{name:'초안 복사',exact:true})).toBeEnabled();
