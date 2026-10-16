@@ -25,7 +25,9 @@ assert(learning.includes('dataset.lessonMetadata="canonical-v413"'),'canonical l
 assert(!learning.includes('onclick="MeowLearning.retryCurrent()"'),'wrong-answer UI no longer forks into immediate retry actions');
 assert(!learning.includes('style.display="none"'),'canonical Continue button is not hidden');
 assert(lesson.includes('function hintControl(exercise)'),'canonical Lesson owns the hint control');
-assert(lesson.includes('if(S.hint)return `<div class="hint">'),'revealed canonical hint remains available');
+assert(lesson.includes("if(S.hint){const extra=beginnerHintSteps[S.lang==='en'?'en':'ko'][exercise.id]"),'revealed canonical hint is gated by hint state and exercise ID');
+assert(lesson.includes("'<div class=\"hint\">'+esc(exercise.hint)"),'revealed hint retains escaped canonical exercise explanation');
+assert(lesson.includes("extra?'<p data-hint-step>'+esc(extra)+'</p>':''"),'optional staged hint is additive and escaped');
 assert(lesson.includes('onclick="S.hint=true;save();renderLesson()"'),'hint remains a one-tap reveal without changing answer flow');
 assert(lesson.includes('onclick="nextQ()"'),'canonical Continue flow remains available');
 assert(!playfulCss.includes('@keyframes'),'playful CSS has no idle/outcome animation keyframes');
