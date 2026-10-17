@@ -14,7 +14,7 @@ test("Mobile practice supports problem, editor, hint, solution and retry without
  await expect(page.locator("#hints .feedback")).toHaveCount(1);
  await page.locator("#solution summary").click();
  await expect(page.locator("#solution")).toHaveAttribute("open","");
- await page.getByRole("link",{name:"개념 보기"}).click();
+ await page.getByRole("button",{name:"개념 보기"}).click();
  await expect(page.locator(".practice-learning-support")).toHaveAttribute("open","");
  await expect(page.locator("#practice-concept")).toBeVisible();
  await page.locator("#independent-retry").click();
