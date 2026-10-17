@@ -25,8 +25,7 @@
     {id:"meowde-v446-update-recovery",css:"v446-update-recovery.css",script:"v446-update-recovery.js",version:"446",readyGlobal:"MeowUpdateRecovery",warning:"Update recovery enhancement could not be loaded."},
     {id:"meowde-v450-character-images",css:"v449-character-cutouts.css",script:"v449-character-cutouts.js",version:"450",readyGlobal:"MeowCharacterCutouts",warning:"Character image enhancement could not be loaded."},
     {id:"meowde-subject-navigation",script:"assets/subject-navigation.js",version:"1",readyGlobal:"MeowSubjects",warning:"Subject navigation could not be loaded."},
-    {id:"meowde-v451-contact",css:"v451-contact.css",script:"v451-contact.js",version:"451",readyGlobal:"MeowContact",warning:"Contact link could not be loaded."},
-    {id:"meowde-python-lab",script:"assets/python-lab-entry.js",version:"2",readyGlobal:"MeowPythonLab",warning:"Python application lab link could not be loaded."}
+    {id:"meowde-v451-contact",css:"v451-contact.css",script:"v451-contact.js",version:"451",readyGlobal:"MeowContact",warning:"Contact link could not be loaded."}
   ];
   const report={version:VERSION,checkedAt:new Date().toISOString(),errors:[],warnings:[],checks:{},enhancementOrder:ENHANCEMENTS.map(item=>item.id)};
 
