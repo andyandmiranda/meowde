@@ -59,6 +59,27 @@
       }
       const actions=practice.querySelector(".actions"),status=practice.querySelector("#run-status"),results=practice.querySelector("#run-results");
       if(actions&&status&&results){actions.after(status);status.after(results);}
+      // Secondary grading criteria and long runtime help remain available on demand.
+      // Never collapse the problem prompt, editor, run action, hint, or live results.
+      const criteria=practice.querySelector("h4");
+      if(criteria&&criteria.textContent==="평가 기준"){
+        const group=document.createElement("details");
+        group.className="practice-criteria";
+        const title=document.createElement("summary");
+        title.textContent="채점 기준 · 도움말";
+        group.append(title);
+        const criteriaList=criteria.nextElementSibling;
+        const description=practice.querySelector(":scope > p.meta");
+        if(description)group.append(description);
+        group.append(criteria);
+        if(criteriaList?.tagName==="UL"||criteriaList?.tagName==="OL")group.append(criteriaList);
+        const info=practice.querySelector("#code-info");
+        if(info)group.append(info);
+        const runtime=practice.querySelector("#run-results + p.meta");
+        if(runtime)group.append(runtime);
+        const prompt=practice.querySelector(":scope > p:not(.meta)");
+        if(prompt)prompt.after(group);else practice.prepend(group);
+      }
       practice.classList.add("practice-primary");
     }
     if(storageProblem)showStorageProblem();
