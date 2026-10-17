@@ -89,6 +89,58 @@
         if(prompt)prompt.after(group);else practice.prepend(group);
       }
       practice.classList.add("practice-primary");
+      // Focus mode: keep just ONE task visible. All educational material remains
+      // intact in a separate accessible dialog, not another long scrolling page.
+      const sheet=document.createElement("dialog");
+      sheet.id="practice-tools";
+      sheet.className="practice-tools-sheet";
+      sheet.setAttribute("aria-label","학습 도구");
+      const sheetHeading=document.createElement("div");
+      sheetHeading.className="practice-tools-heading";
+      const sheetTitle=document.createElement("h2");
+      sheetTitle.textContent="학습 도구";
+      const close=document.createElement("button");
+      close.type="button";
+      close.className="practice-tools-close";
+      close.textContent="닫기";
+      close.addEventListener("click",()=>sheet.close());
+      sheetHeading.append(sheetTitle,close);
+      sheet.append(sheetHeading);
+      const tools=document.createElement("div");
+      tools.className="practice-tools-content";
+      sheet.append(tools);
+      const move=(node,label)=>{
+        if(!node)return;
+        const detail=document.createElement("details");
+        detail.className="practice-tools-group";
+        const title=document.createElement("summary");
+        title.textContent=label;
+        detail.append(title,node);
+        tools.append(detail);
+      };
+      // Existing DOM handlers still bind by ID after the move.
+      move(article.querySelector(".practice-support"),"개념과 예제");
+      move(article.querySelector("#quiz"),"이해 확인 문제");
+      move(article.querySelector(".card:has(#reflection)"),"생각 정리");
+      move(article.querySelector("#recommendation")?.closest(".card"),"복습과 다음 학습");
+      const criteriaPanel=practice.querySelector(".practice-criteria");
+      move(criteriaPanel,"채점 기준");
+      move(practice.querySelector("#solution"),"해설과 풀이");
+      article.append(sheet);
+      const toolsButton=document.createElement("button");
+      toolsButton.id="practice-tools-open";
+      toolsButton.type="button";
+      toolsButton.textContent="도움 · 해설";
+      toolsButton.setAttribute("aria-haspopup","dialog");
+      toolsButton.addEventListener("click",()=>sheet.showModal());
+      // The hint button remains one-tap, with inline feedback shown only when requested.
+      const row=practice.querySelector(".actions");
+      if(row)row.append(toolsButton);
+      sheet.addEventListener("click",event=>{
+        if(event.target===sheet)sheet.close();
+      });
+      document.body.classList.add("meowde-practice-focus");
+
     }
     if(storageProblem)showStorageProblem();
     bind();
