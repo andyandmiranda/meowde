@@ -30,7 +30,8 @@ expect(!renderer.includes("__MEOWDE_V449_SPRITE__"),"legacy sprite dependency re
 expect(renderer.includes("decorateHero"),"hero helper is missing");
 expect(renderer.includes("decorateCoach"),"lesson decorator is missing");
 expect(!renderer.includes("function decorateRoom"),"character layer must not replace the canonical Room renderer");
-expect(renderer.includes('window.__MEOWDE_CANONICAL_HOME_RENDERER__'),"character layer does not defer to canonical Home");
+expect(renderer.includes('["home","map","review","profile","achievements","room","my"]'),"character layer must defer to canonical screens");
+expect(!renderer.includes('window.renderHome=window.__MEOWDE_CANONICAL_HOME_RENDERER__'),"character layer must not replace canonical renderers");
 
 const css=read("v449-character-cutouts.css");
 expect(css.includes("object-fit:contain"),"character images are not constrained with object-fit");
