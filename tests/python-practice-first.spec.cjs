@@ -8,10 +8,12 @@ test("Practice tab shows task before textbook sections and distinguishes basic a
  await expect(page.locator(".practice-mode-switch")).toContainText("기본 문제");
  await expect(page.locator(".practice-mode-switch")).toContainText("추가 코드 실습");
  await expect(page.locator(".practice-mode-switch a")).toHaveAttribute("href","/learning-path.html?subject=python");
- const positions=await page.evaluate(()=>({practice:[...document.querySelector(".lesson").children].indexOf(document.querySelector("#practice")),concept:[...document.querySelector(".lesson").children].indexOf(document.querySelector("#practice-concept")),quiz:[...document.querySelector(".lesson").children].indexOf(document.querySelector("#quiz")),width:document.documentElement.scrollWidth,viewport:innerWidth}));
+ const positions=await page.evaluate(()=>({practice:[...document.querySelector(".lesson").children].indexOf(document.querySelector("#practice")),concept:[...document.querySelector(".lesson").children].indexOf(document.querySelector(".practice-learning-support")),quiz:[...document.querySelector(".lesson").children].indexOf(document.querySelector("#quiz")),width:document.documentElement.scrollWidth,viewport:innerWidth}));
  expect(positions.practice).toBeLessThan(positions.concept);
  expect(positions.practice).toBeLessThan(positions.quiz);
  expect(positions.width).toBeLessThanOrEqual(positions.viewport);
+ await expect(page.locator(".practice-learning-support")).not.toHaveAttribute("open",/./);
+ await expect(page.locator("#practice-concept")).toBeAttached();
  await expect(page.locator("#solution")).toBeAttached();
  await expect(page.locator("#hint-button")).toBeVisible();
  await expect(page.locator("#quiz")).toBeAttached();
