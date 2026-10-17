@@ -9,5 +9,6 @@
       "handle": "filesystem"
     }
   ],
-  "buildCommand": "node tools/stamp-tester-build.cjs"
+  "buildCommand": "node tools/stamp-tester-build.cjs",
+  "outputDirectory": "."
 }
