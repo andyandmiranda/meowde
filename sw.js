@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v465-data-transfer";
+const CACHE_NAME = "meowde-v471-tester-build-identity";
 
 const REQUIRED_ASSETS = [
   "/python-lab.html",
@@ -11,6 +11,14 @@ const REQUIRED_ASSETS = [
   "/",
   "/v412.html",
   "/index.html",
+  "/learning-path.html",
+  "/linux-review.html",
+  "/assets/focused-review-store.js",
+  "/assets/python-focused-review.js",
+  "/assets/linux-focused-review.js",
+  "/assets/learning-path.js",
+  "/assets/learning-readiness.json",
+  "/assets/tester-report.js",
   "/assets/lessons-ko.js",
   "/assets/lessons-en.js",
   "/assets/meowde-approved-base.svg",

@@ -13,7 +13,7 @@ const files=[profile,achievements,companion,visual,cutouts];
 assert(profile.includes("const KEY='meowde-v420-profile'"),'Profile persistence key is preserved');
 assert(profile.includes("dataset.profileRenderer='canonical-v420'"),'v420 declares canonical Profile ownership');
 assert(profile.includes('window.__MEOWDE_CANONICAL_PROFILE_RENDERER__=window.renderProfile'),'canonical Profile reference is retained');
-assert(profile.includes('data-phase1-navigation="four-tabs"'),'Profile renders the four-tab navigation directly');
+assert(profile.includes('data-phase1-navigation="five-tabs"'),'Profile renders the five-tab navigation directly');
 assert(profile.includes('v449-pose-music'),'Profile renders its final Meowde avatar directly');
 assert(profile.includes('🐱 Meowde'),'Profile owns the final Meowde action label');
 assert(!profile.includes('tabs=function'),'Profile no longer replaces the global navigation renderer');
@@ -22,7 +22,7 @@ assert(!profile.includes('renderLeague()'),'Profile no longer reintroduces Leagu
 assert(achievements.includes('const KEY="meowde-v419-achievements"'),'Achievement persistence key is preserved');
 assert(achievements.includes('dataset.achievementsRenderer="canonical-v419"'),'v419 declares canonical Achievements ownership');
 assert(achievements.includes('window.__MEOWDE_CANONICAL_ACHIEVEMENTS_RENDERER__=window.renderAchievements'),'canonical Achievements reference is retained');
-assert(achievements.includes('data-phase1-navigation="four-tabs"'),'Achievements renders the four-tab navigation directly');
+assert(achievements.includes('data-phase1-navigation="five-tabs"'),'Achievements renders the five-tab navigation directly');
 assert(achievements.includes('v448-brand-cat'),'Achievements renders the final brand mark directly');
 assert(!achievements.includes('baseRenderRoom'),'Achievements no longer wraps Room');
 assert(achievements.includes('const baseCheckQ=checkQ'),'achievement answer tracking is preserved');

@@ -88,3 +88,26 @@ test("Python first lesson reaches actual browser Python execution",async({page})
  }
  await expect(page.locator("#code-editor")).toBeVisible();await page.locator("#code-editor").fill('print("야옹")');await page.getByRole("button",{name:"코드 실행",exact:true}).click();await expect(page.locator(".feedback.ok")).toBeVisible({timeout:60000});await expect(page.locator(".console")).toContainText("야옹");
 });
+
+test("Python retry completion renders 80% and keeps Linux storage across reload",async({page})=>{
+ await page.goto(base+"/");
+ await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+ await page.evaluate(()=>localStorage.setItem("meowde-linux-guided-v1",'{"version":1,"step":0,"input":"","solutions":{},"hints":{"training":0,"travel":0}}'));
+ const linuxBefore=await page.evaluate(()=>localStorage.getItem("meowde-linux-guided-v1"));
+ await page.getByRole("button",{name:/오늘 학습 시작|이어서 배우기|Start today|Resume lesson/}).first().click();
+ await page.evaluate(()=>{
+  // Controlled persisted fixture: four first-attempt successes out of five,
+  // with only the retry left. The browser still uses the shipped grader/UI.
+  S.queue=[{id:"qa-first-accuracy",type:"predict",prompt:"What prints?",code:"print(1)",choices:["1","2"],answer:0,explain:"1",retry:true}];
+  S.idx=0;S.firstTotal=5;S.firstCorrect=4;S.checked=false;S.correct=false;S.sel=null;
+  save();
+ });
+ await page.reload();
+ await expect(page.locator(".lesson-top")).toBeVisible();
+ await page.locator(".choice").first().click();
+ await page.locator(".lesson-foot .btn").click();
+ await expect(page.locator(".feedback.ok")).toBeVisible();
+ await page.locator(".feedback .btn").click();
+ await expect(page.locator(".reward-screen")).toContainText("80%");
+ expect(await page.evaluate(()=>localStorage.getItem("meowde-linux-guided-v1"))).toBe(linuxBefore);
+});

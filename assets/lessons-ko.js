@@ -1258,16 +1258,16 @@ window.MEOWDE_LESSONS_KO = [
         "id": "compare-gate-f",
         "type": "fill",
         "prompt": "True를 만들려면 빈칸에 어떤 비교 연산자가 들어가야 할까요?",
-        "code": "print(10 ____ 4)",
+        "code": "print(10 ____ 10)",
         "tokens": [
           ">",
           "<",
           "==",
           "!="
         ],
-        "answer": ">",
-        "hint": "10은 4보다 커요.",
-        "explain": "10 > 4는 True예요."
+        "answer": "==",
+        "hint": "두 값이 같은지 묻는 비교 연산자를 고르세요.",
+        "explain": "10과 10은 같으므로 10 == 10은 True예요. >, <, !=는 모두 False예요."
       },
       {
         "id": "compare-gate-b",
@@ -1567,7 +1567,7 @@ window.MEOWDE_LESSONS_KO = [
       {
         "id": "elif-mushroom-w",
         "type": "write",
-        "prompt": "직접 작성: score가 70 이상이면 B, 아니면 C를 출력하세요.",
+        "prompt": "직접 작성: if/elif/else로 score가 90 이상이면 A, 70 이상 90 미만이면 B, 나머지는 C를 출력하세요.",
         "starter": "score = 75\n# if/elif/else를 써보세요\n",
         "expected": "B",
         "testcase": "기대 출력: B",
@@ -1917,8 +1917,8 @@ window.MEOWDE_LESSONS_KO = [
         ],
         "buggy": 1,
         "fixed": "print(pets[1])",
-        "hint": "인덱스는 0부터 시작해요. [1]은 두 번째 값이에요.",
-        "explain": "이 코드는 최종적으로 'dog' 값을 출력해요."
+        "hint": "print 다음의 여는 괄호와 닫는 괄호가 짝을 이루는지 확인하세요.",
+        "explain": "print 다음 여는 괄호 (가 빠져 있어요. print(pets[1])로 고치면 dog가 출력돼요."
       },
       {
         "id": "index-tower-w",
@@ -1994,8 +1994,8 @@ window.MEOWDE_LESSONS_KO = [
         ],
         "buggy": 2,
         "fixed": "print(snacks[0])",
-        "hint": "append()는 리스트 맨 뒤에 값을 추가해요.",
-        "explain": "이 코드는 최종적으로 'milk' 값을 출력해요."
+        "hint": "print 다음의 여는 괄호와 닫는 괄호가 짝을 이루는지 확인하세요.",
+        "explain": "print 다음 여는 괄호 (가 빠져 있어요. print(snacks[0])로 고치면 milk가 출력돼요."
       },
       {
         "id": "append-dock-w",
