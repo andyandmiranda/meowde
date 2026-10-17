@@ -53,8 +53,11 @@
   }
 
   function decorate(){
-    if(!isCanonicalStaticSurface()){refineHero();refineBrand()}
-    refineGrowth();
+    if(isCanonicalStaticSurface()){
+      document.documentElement.dataset.visualCohesion=VERSION;
+      return;
+    }
+    refineHero();refineBrand();refineGrowth();
     document.documentElement.dataset.visualCohesion=VERSION;
   }
   function queue(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;decorate()})}
