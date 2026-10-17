@@ -73,8 +73,16 @@
       supporting.forEach(card=>group.append(card));
       const quiz=lesson.querySelector("#quiz");
       if(quiz)lesson.insertBefore(group,quiz);else lesson.append(group);
-      const conceptLink=links.querySelector('a[href="#practice-concept"]');
-      if(conceptLink)conceptLink.addEventListener("click",()=>{group.open=true});
+      const help=document.createElement("button");
+      help.type="button";
+      help.className="practice-concept-help";
+      help.textContent="개념 보기";
+      help.addEventListener("click",()=>{
+        group.open=true;
+        group.scrollIntoView({block:"start",behavior:"smooth"});
+      });
+      const actionRow=practice.querySelector(".actions");
+      if(actionRow)actionRow.append(help);
       // The same route switch is still available for users who need the distinction,
       // but it no longer competes with the primary practice task.
       const mode=root.querySelector(".practice-mode-switch");
