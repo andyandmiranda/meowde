@@ -80,8 +80,8 @@ test("Practice keeps the task, editor and main action visible without expanding 
   await page.goto(base+"/python-lab.html");
   await expect(page.locator("#learner-code")).toBeVisible();
   await expect(page.locator("#practice [data-run=grade]")).toBeVisible();
-  await expect(page.locator(".practice-criteria")).not.toHaveAttribute("open","");
-  await expect(page.locator(".practice-criteria summary")).toBeVisible();
+  await expect(page.locator(".practice-criteria")).not.toBeVisible();
+  await expect(page.locator("#practice-tools-open")).toBeVisible();
   const positions=await page.evaluate(()=>({
     editor:document.querySelector("#learner-code").getBoundingClientRect().top,
     action:document.querySelector("#practice [data-run=grade]").getBoundingClientRect().top,
@@ -89,8 +89,9 @@ test("Practice keeps the task, editor and main action visible without expanding 
   }));
   expect(positions.editor).toBeLessThan(positions.nav);
   expect(positions.action).toBeLessThan(positions.nav);
-  await page.locator(".practice-criteria summary").click();
-  await expect(page.locator(".practice-criteria")).toHaveAttribute("open","");
+  await page.locator("#practice-tools-open").click();
+  await page.locator(".practice-tools-group").filter({hasText:"채점 기준"}).locator("summary").first().click();
+  await expect(page.locator(".practice-criteria")).toBeVisible();
 });
 
 test("Compact practice remains usable at large text and reduced visible height",async({page})=>{
