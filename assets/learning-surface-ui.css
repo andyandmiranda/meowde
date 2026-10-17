@@ -50,3 +50,37 @@ body:has(#lab) .meowde-lab-tabbar{border-top-color:var(--surface-line)}
 .phase5-review .review-disclosure .review-list{margin:0;padding:0 0 12px}
 .phase5-review .review-disclosure .review-extra{padding:0 0 14px}
 @media(max-width:359px){body:has(#lab) main#lab{padding-inline:12px}body:has(#lab) .card{padding:14px}.phase5-review .review-disclosure{margin-inline:12px}}
+
+/* Compact above-the-fold practice; preserve standard readable 14–16px text. */
+body:has(#lab) .lab-header{padding-top:8px;padding-bottom:4px}
+body:has(#lab) main#lab{padding-top:0}
+body:has(#lab) .hero{padding:8px 12px;margin-bottom:7px;border-radius:14px}
+body:has(#lab) .hero img{width:38px;height:38px}
+body:has(#lab) .hero h1{font-size:17px}
+body:has(#lab) .hero>div>p:not(.meta){display:none}
+body:has(#lab) .hero p.meta{display:none}
+body:has(#lab) .nav-toggle{font-size:13px;min-height:40px;margin-bottom:7px}
+body:has(#lab) .lesson h2{font-size:18px;margin:0 0 3px}
+body:has(#lab) .lesson>.badge{display:inline-block;font-size:11px;padding:2px 7px}
+body:has(#lab) .practice-primary{padding:12px;margin-top:8px}
+body:has(#lab) .practice-primary>h3{font-size:16px;margin:0 0 5px}
+body:has(#lab) .practice-primary>p:not(.meta){font-size:14px;margin:3px 0 8px}
+body:has(#lab) .practice-primary>label{font-size:13px;font-weight:700}
+body:has(#lab) textarea.code{min-height:124px;height:clamp(124px,19dvh,190px);padding:10px 12px;font-size:14px}
+body:has(#lab) .practice-primary .actions{gap:7px;margin:9px 0}
+body:has(#lab) .practice-primary .actions button{min-height:44px;font-size:13px;padding:8px 12px}
+body:has(#lab) .practice-primary .actions [data-run="grade"]{flex:1}
+body:has(#lab) .practice-criteria{margin:5px 0 8px;padding:0 10px;border:1px solid var(--surface-line);border-radius:11px}
+body:has(#lab) .practice-criteria>summary{font-size:12px;font-weight:700;min-height:36px;padding:6px 0}
+body:has(#lab) .practice-criteria>h4{margin-top:8px}
+body:has(#lab) .practice-primary #solution{margin-top:6px;padding:5px 0}
+body:has(#lab) .practice-primary #solution>summary{font-size:12px;font-weight:700}
+body:has(#lab) .practice-support>summary{font-size:13px;min-height:40px;padding:9px 2px}
+.phase5-review .simple-head{padding-top:7px;padding-bottom:7px}
+.phase5-review .simple-head h2{font-size:21px}
+.phase5-review .simple-head p{font-size:12px}
+.phase5-review .review-section-head{margin-top:9px;margin-bottom:7px}
+.phase5-review .review-item{min-height:48px;padding-top:8px;padding-bottom:8px}
+.phase5-review [data-focused-review]{padding:11px 13px;margin-top:8px;margin-bottom:8px}
+.phase5-review [data-focused-review] h3{font-size:14px}
+.phase5-review [data-focused-review] p{font-size:12px;margin-top:4px}
