@@ -32,3 +32,17 @@ test("Canonical Home, Learn and Review do not inject duplicate Python lab CTA",a
     await expect(page.locator(".tabbar button[aria-label='실습']")).toHaveCount(1);
   }
 });
+
+test("Five global tabs keep the same physical order on every screen",async({page})=>{
+  const expected=["홈","학습","실습","복습","마이"];
+  await page.goto(base+"/");
+  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+  for(const tab of ["홈","학습","복습"]){
+    await page.getByRole("button",{name:tab,exact:true}).last().click();
+    const labels=await page.locator(".tabbar[data-phase1-navigation='five-tabs'] button").evaluateAll(nodes=>nodes.map(el=>el.getAttribute("aria-label")));
+    expect(labels).toEqual(expected);
+  }
+  await page.goto(base+"/python-lab.html");
+  const labels=await page.locator(".meowde-lab-tabbar a").evaluateAll(nodes=>nodes.map(el=>el.getAttribute("aria-label")));
+  expect(labels).toEqual(expected);
+});
