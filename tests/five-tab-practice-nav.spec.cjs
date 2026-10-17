@@ -46,3 +46,31 @@ test("Five global tabs keep the same physical order on every screen",async({page
   const labels=await page.locator(".meowde-lab-tabbar a").evaluateAll(nodes=>nodes.map(el=>el.getAttribute("aria-label")));
   expect(labels).toEqual(expected);
 });
+
+test("Practice uses the same cream and mint palette as the main app",async({page})=>{
+  await page.goto(base+"/python-lab.html");
+  await expect(page.locator("#learner-code")).toBeVisible();
+  const info=await page.evaluate(()=>{
+    const body=getComputedStyle(document.body),button=getComputedStyle(document.querySelector("#practice button.primary"));
+    return {background:body.backgroundColor,button:button.backgroundColor,
+      font:body.fontFamily,practiceFirst:document.querySelector(".lesson > section.card")?.id==="practice",
+      support:!!document.querySelector(".practice-support")};
+  });
+  expect(info.background).toBe("rgb(255, 249, 239)");
+  expect(info.button).toBe("rgb(83, 199, 160)");
+  expect(info.practiceFirst).toBe(true);
+  expect(info.support).toBe(true);
+});
+test("Review exposes recent lessons first and preserves older completed items",async({page})=>{
+  await page.goto(base+"/");
+  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+  await page.evaluate(()=>{S.done=[0,1,2,3,4];save();renderReview()});
+  await expect(page.locator(".phase5-review")).toBeVisible();
+  const recent=page.locator(".phase5-review > .scroll > .review-list .review-item");
+  await expect(recent).toHaveCount(3);
+  const older=page.locator(".phase5-review .review-disclosure").filter({hasText:"이전 완료 레슨 보기"});
+  await expect(older).toBeVisible();
+  await older.locator("summary").click();
+  await expect(older.locator(".review-item")).toHaveCount(2);
+  await expect(page.locator(".phase5-review .review-disclosure").filter({hasText:"학습 분석 보기"})).toBeVisible();
+});
