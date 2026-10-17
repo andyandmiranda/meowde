@@ -151,3 +151,20 @@ test('Valid practice records retain other units while drafts persist',async({pag
   await expect(page.locator('#learner-code')).toHaveValue('print("saved")');
   expect(await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).units.other,key)).toEqual(other);
 });
+
+test("Practice starts with one task; learning details are in an optional tool sheet",async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(base+"/python-lab.html");
+  await expect(page.locator("#learner-code")).toBeVisible();
+  await expect(page.locator(".practice-tools-sheet")).not.toBeVisible();
+  await expect(page.locator("#practice-tools-open")).toBeVisible();
+  await expect(page.locator("#practice [data-run=grade]")).toBeVisible();
+  const other=page.locator("#quiz");
+  await expect(other).not.toBeVisible();
+  await page.locator("#practice-tools-open").click();
+  await expect(page.locator(".practice-tools-sheet")).toBeVisible();
+  await page.locator(".practice-tools-group").filter({hasText:"이해 확인 문제"}).locator("summary").first().click();
+  await expect(other).toBeVisible();
+  await page.locator(".practice-tools-close").click();
+  await expect(page.locator("#learner-code")).toBeVisible();
+});
