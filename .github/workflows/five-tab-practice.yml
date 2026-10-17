@@ -5,6 +5,11 @@ on:
     branches:
       - codex/unified-subject-hub-20261015
     paths:
+      - 'linux-*.html'
+      - 'assets/linux-*.js'
+      - 'assets/linux-*.css'
+      - 'tests/linux-*.spec.cjs'
+      - 'tests/curriculum-corrections.spec.cjs'
       - 'python-lab.html'
       - 'assets/five-tab-practice-nav.css'
       - 'assets/python-lab-entry.js'
@@ -36,7 +41,7 @@ jobs:
       - run: pnpm install --frozen-lockfile --ignore-scripts
       - run: pnpm exec playwright install --with-deps chromium webkit
       - name: Run isolated five-tab regression
-        run: pnpm exec playwright test tests/five-tab-practice-nav.spec.cjs tests/focused-review.spec.cjs
+        run: pnpm exec playwright test tests/five-tab-practice-nav.spec.cjs tests/focused-review.spec.cjs tests/linux-mobile.spec.cjs tests/linux-course-coverage.spec.cjs tests/curriculum-corrections.spec.cjs
       - name: Run Safari-engine targeted UX checks
         run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/five-tab-practice-nav.spec.cjs
       - name: Run existing validation suite

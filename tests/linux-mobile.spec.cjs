@@ -37,7 +37,7 @@ test("library shows one tool at a time and grades search results",async({page})=
 });
 test("quiz progress survives reload and opens the selected practice tool",async({page})=>{
  await page.goto(base+"/linux-crash-course.html");await page.locator("#lesson .answers button").first().click();await page.reload();await expect(page.locator("#progress")).toContainText("1 / 9");
- await page.locator("#lesson .answers button").first().click();await page.getByRole("button",{name:"이 단원 실습으로 이동"}).click();await expect(page.locator("#sim-input")).toBeVisible();await expect(page.locator("#lesson")).toBeHidden();
+ await page.locator("#lesson .answers button").first().click();await page.getByRole("navigation",{name:"메인 메뉴"}).getByRole("link",{name:"실습",exact:true}).click();await expect(page.locator("#sim-input")).toBeVisible();await expect(page.locator("#lesson")).toBeHidden();
 });
 for(const width of [320,375,390,768])test("screens fit viewport "+width,async({page})=>{
  await page.setViewportSize({width,height:844});for(const route of ["linux-home.html","linux-start.html","robotics.html","content-notice.html"]){await page.goto(base+"/"+route);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await expect(page.getByText(/NVIDIA AI Campus/)).toHaveCount(0);}
