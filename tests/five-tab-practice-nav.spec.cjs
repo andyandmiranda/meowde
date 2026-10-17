@@ -92,3 +92,27 @@ test("Practice keeps the task, editor and main action visible without expanding 
   await page.locator(".practice-criteria summary").click();
   await expect(page.locator(".practice-criteria")).toHaveAttribute("open","");
 });
+
+test("Compact practice remains usable at large text and reduced visible height",async({page})=>{
+  await page.setViewportSize({width:375,height:560});
+  await page.goto(base+"/python-lab.html");
+  await page.addStyleTag({content:"html{font-size:20px!important} body:has(#lab){font-size:19px!important}"});
+  const editor=page.locator("#learner-code"),action=page.locator("#practice [data-run=grade]");
+  await expect(editor).toBeVisible();
+  await editor.focus();
+  await expect(editor).toBeFocused();
+  await editor.fill("print('accessible')");
+  await action.scrollIntoViewIfNeeded();
+  await expect(action).toBeVisible();
+  const geometry=await page.evaluate(()=>({
+    width:innerWidth,scrollWidth:document.documentElement.scrollWidth,
+    navBottom:document.querySelector(".meowde-lab-tabbar").getBoundingClientRect().bottom,
+    height:innerHeight,
+    button:document.querySelector("#practice [data-run=grade]").getBoundingClientRect()
+  }));
+  expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.width);
+  expect(Math.abs(geometry.navBottom-geometry.height)).toBeLessThan(2);
+  expect(geometry.button.top).toBeLessThan(geometry.height);
+  expect(geometry.button.bottom).toBeGreaterThan(0);
+  await expect(editor).toHaveValue("print('accessible')");
+});
