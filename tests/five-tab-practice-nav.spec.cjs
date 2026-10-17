@@ -116,3 +116,38 @@ test("Compact practice remains usable at large text and reduced visible height",
   expect(geometry.button.bottom).toBeGreaterThan(0);
   await expect(editor).toHaveValue("print('accessible')");
 });
+
+// Preserve practice records through input and reload.
+const key='meowde-python-lab-v1';
+
+for(const [label,raw] of [
+  ['broken JSON','{"version":1,"units":'],
+  ['unknown version',JSON.stringify({version:2,units:{values:{draft:'old work'}}})],
+  ['invalid units',JSON.stringify({version:1,units:[]})],
+  ['invalid unit record',JSON.stringify({version:1,units:{values:null}})],
+]){
+  test(`Practice preserves ${label} after input, hint and reload`,async({page})=>{
+    await page.goto(base+'/python-lab.html');
+    await page.evaluate(({key,raw})=>localStorage.setItem(key,raw),{key,raw});
+    await page.reload();
+    await expect(page.locator('#learner-code')).toBeVisible();
+    await page.locator('#learner-code').fill('print("session only")');
+    await page.locator('#hint-button').click();
+    expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(raw);
+    await expect(page.locator('#storage-status')).toContainText('기존 기록');
+    await page.reload();
+    await expect(page.locator('#learner-code')).toBeVisible();
+    expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(raw);
+  });
+}
+
+test('Valid practice records retain other units while drafts persist',async({page})=>{
+  await page.goto(base+'/python-lab.html');
+  const other={draft:'preserve other unit',passed:true,attempts:3};
+  await page.evaluate(({key,other})=>localStorage.setItem(key,JSON.stringify({version:1,units:{other}})),{key,other});
+  await page.reload();
+  await page.locator('#learner-code').fill('print("saved")');
+  await page.reload();
+  await expect(page.locator('#learner-code')).toHaveValue('print("saved")');
+  expect(await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).units.other,key)).toEqual(other);
+});
