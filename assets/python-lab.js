@@ -194,7 +194,7 @@
       newline.type="button";
       newline.textContent="줄바꿈";
       newline.addEventListener("click",()=>{
-        editorArea.setRangeText("\\n",editorArea.selectionStart,editorArea.selectionEnd,"end");
+        editorArea.setRangeText("\n",editorArea.selectionStart,editorArea.selectionEnd,"end");
         editorArea.dispatchEvent(new Event("input",{bubbles:true}));
       });
       buttons.append(newline);
