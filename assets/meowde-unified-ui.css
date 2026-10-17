@@ -120,3 +120,13 @@ body:has(.meowde-lab-tabbar){padding-bottom:calc(68px + env(safe-area-inset-bott
 .meowde-lab-tabbar a:focus-visible{outline:3px solid #247B61;outline-offset:-2px}
 @media(min-width:480px){.meowde-lab-tabbar{max-width:430px;margin-inline:auto;border-radius:16px 16px 0 0}}
 @media(max-width:360px){.meowde-lab-tabbar{padding-left:3px;padding-right:3px}.meowde-lab-tabbar a{font-size:10px}}
+
+/* Practice-first: one primary task, with optional learning references. */
+#lab .practice-route-details{margin:0 0 12px;padding:0 12px;border:1px solid var(--meowde-line);border-radius:14px;background:#fff}
+#lab .practice-route-details>summary{font-size:13px;color:var(--meowde-muted);padding:9px 2px}
+#lab .practice-route-details .practice-mode-switch{margin:0 0 12px}
+#lab .practice-learning-support{border:1px solid var(--meowde-line);border-radius:16px;background:#fff;margin:12px 0;padding:0 16px}
+#lab .practice-learning-support>summary{padding:12px 0;font-size:14px;font-weight:750}
+#lab .practice-learning-support>.card{border:0;border-top:1px solid var(--meowde-line);border-radius:0;margin:0;padding:16px 0}
+#lab .practice-primary{margin-top:10px}
+@media(max-width:760px){#lab .practice-entry{padding:12px 14px}#lab .practice-entry-links{gap:6px}#lab .practice-entry-links a{min-height:38px}#lab .practice-primary{padding:16px}}
