@@ -75,6 +75,8 @@
       supporting.forEach(card=>group.append(card));
       const quiz=lesson.querySelector("#quiz");
       if(quiz)lesson.insertBefore(group,quiz);else lesson.append(group);
+      const conceptLink=links.querySelector('a[href="#practice-concept"]');
+      if(conceptLink)conceptLink.addEventListener("click",()=>{group.open=true});
       // The same route switch is still available for users who need the distinction,
       // but it no longer competes with the primary practice task.
       const mode=root.querySelector(".practice-mode-switch");
