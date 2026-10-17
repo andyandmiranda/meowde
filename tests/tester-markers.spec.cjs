@@ -9,7 +9,7 @@ test('problem markers survive reload without learner input or progress changes',
  await page.locator('[data-tester-report]').click();
  await expect(page.locator('[data-tester-report]')).toHaveText(/표시됨/);
  const raw=await page.evaluate(k=>localStorage.getItem(k),key);
- expect(JSON.parse(raw)).toHaveLength(1);expect(raw).not.toContain('PRIVATE_COMMAND');
+ expect(JSON.parse(raw)).toHaveLength(1);expect(JSON.parse(raw)[0].appVersion).toBe(require('../package.json').version);expect(JSON.parse(raw)[0].buildSHA).toMatch(/^(LOCAL|[a-f0-9]{40})$/);expect(raw).not.toContain('PRIVATE_COMMAND');
  await page.reload();
  await expect(page.locator('[data-tester-report]')).toHaveText(/표시됨/);
  await page.locator('[data-tester-report]').click();

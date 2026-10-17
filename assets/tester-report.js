@@ -2,6 +2,8 @@
 (function(){
 'use strict';
 if(new URLSearchParams(location.search).get('tester')!=='1')return;
+// Replaced at deployment build time; LOCAL is intentional for unbuilt previews.
+const BUILD_INFO=/* MEOWDE_BUILD_START */{"appVersion":"4.57.0","buildSHA":"LOCAL"}/* MEOWDE_BUILD_END */;
 const english=()=>typeof S!=='undefined'&&S.lang==='en';
 const text=(ko,en)=>english()?en:ko;
 const clip=value=>String(value||'').slice(0,6000);
@@ -38,7 +40,7 @@ function removeReport(key){
 function quickReport(context){
  const key=markerKey(context),existing=readReports().find(r=>markerKey(r)===key);
  if(existing){removeReport(key);return {marked:false,count:readReports().length};}
- const report={schemaVersion:1,reportId:crypto.randomUUID(),markerKey:key,createdAt:new Date().toISOString(),url:location.origin+location.pathname,appVersion:window.__MEOWDE_VERSION__||'UNKNOWN',buildSHA:'UNKNOWN',...context,category:'quick',note:''};
+ const report={schemaVersion:1,reportId:crypto.randomUUID(),markerKey:key,createdAt:new Date().toISOString(),url:location.origin+location.pathname,...BUILD_INFO,...context,category:'quick',note:''};
  return {marked:true,count:saveReport(report)};
 }
 function element(tag,content){const node=document.createElement(tag);if(content)node.textContent=content;return node;}
@@ -66,7 +68,7 @@ function open(button){
  let existing;try{existing=readReports().find(r=>markerKey(r)===markerKey(context));}catch(_){}
  const createdAt=existing?.createdAt||new Date().toISOString(),reportId=existing?.reportId||crypto.randomUUID(),key=markerKey(context);
  if(existing){select.value=existing.category==='quick'?'other':existing.category;memo.value=existing.note||'';}
- function update(){preview.value=JSON.stringify({schemaVersion:1,reportId,markerKey:key,createdAt,url:location.origin+location.pathname,appVersion:window.__MEOWDE_VERSION__||'UNKNOWN',buildSHA:'UNKNOWN',...context,category:select.value,note:memo.value},null,2);status.textContent=text('미전송 · 표시해 두면 이 브라우저에 보관돼요.','Not sent · save a marker to keep it in this browser.');}
+ function update(){preview.value=JSON.stringify({schemaVersion:1,reportId,markerKey:key,createdAt,url:location.origin+location.pathname,...BUILD_INFO,...(existing?{appVersion:existing.appVersion||'UNKNOWN',buildSHA:existing.buildSHA||'UNKNOWN'}:{}),...context,category:select.value,note:memo.value},null,2);status.textContent=text('미전송 · 표시해 두면 이 브라우저에 보관돼요.','Not sent · save a marker to keep it in this browser.');}
  select.onchange=update;memo.oninput=update;update();
  copy.onclick=async()=>{try{await navigator.clipboard.writeText(preview.value);status.textContent=text('복사했어요. 외부 접수는 되지 않았어요.','Copied. This has not been submitted.');}catch(_){preview.focus();preview.select();status.textContent=text('자동 복사가 안 돼요. 선택된 초안을 직접 복사해 주세요.','Automatic copy is unavailable. Copy the selected draft manually.');}};
  close.onclick=()=>dialog.close();dialog.addEventListener('close',()=>{dialog.remove();mount();if(button.isConnected)button.focus();});

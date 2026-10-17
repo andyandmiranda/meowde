@@ -8,5 +8,6 @@
     {
       "handle": "filesystem"
     }
-  ]
+  ],
+  "buildCommand": "node tools/stamp-tester-build.cjs"
 }
