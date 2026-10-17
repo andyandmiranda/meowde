@@ -74,3 +74,21 @@ test("Review exposes recent lessons first and preserves older completed items",a
   await expect(older.locator(".review-item")).toHaveCount(2);
   await expect(page.locator(".phase5-review .review-disclosure").filter({hasText:"학습 분석 보기"})).toBeVisible();
 });
+
+test("Practice keeps the task, editor and main action visible without expanding help",async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(base+"/python-lab.html");
+  await expect(page.locator("#learner-code")).toBeVisible();
+  await expect(page.locator("#practice [data-run=grade]")).toBeVisible();
+  await expect(page.locator(".practice-criteria")).not.toHaveAttribute("open","");
+  await expect(page.locator(".practice-criteria summary")).toBeVisible();
+  const positions=await page.evaluate(()=>({
+    editor:document.querySelector("#learner-code").getBoundingClientRect().top,
+    action:document.querySelector("#practice [data-run=grade]").getBoundingClientRect().top,
+    nav:document.querySelector(".meowde-lab-tabbar").getBoundingClientRect().top
+  }));
+  expect(positions.editor).toBeLessThan(positions.nav);
+  expect(positions.action).toBeLessThan(positions.nav);
+  await page.locator(".practice-criteria summary").click();
+  await expect(page.locator(".practice-criteria")).toHaveAttribute("open","");
+});
