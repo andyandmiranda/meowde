@@ -47,19 +47,17 @@
     const practice=root.querySelector("#practice");
     const intro=lesson?.querySelector("#unit-title");
     if(lesson&&practice&&intro){
-      const start=document.createElement("section");
-      start.className="practice-entry";
-      start.setAttribute("aria-label","실습 바로 시작");
-      const title=document.createElement("h3");title.textContent="바로 풀어보기";
-      const explanation=document.createElement("p");explanation.textContent="먼저 직접 풀고, 막히면 아래의 개념·예제·힌트를 확인해요.";
-      const links=document.createElement("div");links.className="practice-entry-links";
-      for(const [href,label] of [["#practice","문제 풀기"],["#practice-concept","개념 보기"],["#quiz","결과 예측"]]){
-        const a=document.createElement("a");a.href=href;a.textContent=label;links.append(a);
-      }
-      start.append(title,explanation,links);
+      // The problem is already visible; do not add a second row of jump buttons.
       const firstCard=lesson.querySelector(".card");
-      if(firstCard)lesson.insertBefore(start,firstCard);
-      lesson.insertBefore(practice,start.nextSibling);
+      if(firstCard)lesson.insertBefore(practice,firstCard);
+      // Feedback belongs immediately after Run, before optional hints and solutions.
+      const actions=practice.querySelector(".actions");
+      const status=practice.querySelector("#run-status");
+      const results=practice.querySelector("#run-results");
+      if(actions&&status&&results){
+        actions.after(status);
+        status.after(results);
+      }
       const conceptCards=[...lesson.querySelectorAll(".card")];
       const concept=conceptCards.find(el=>el.querySelector("h3")?.textContent?.includes("왜 필요하고"));
       if(concept)concept.id="practice-concept";
