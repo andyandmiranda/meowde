@@ -8,6 +8,12 @@ on:
       - 'python-lab.html'
       - 'assets/five-tab-practice-nav.css'
       - 'assets/python-lab-entry.js'
+      - 'assets/python-lab.js'
+      - 'assets/learning-surface-ui.css'
+      - 'v413-core.js'
+      - 'v414-screens.js'
+      - 'index.html'
+      - 'tests/focused-review.spec.cjs'
       - 'tests/five-tab-practice-nav.spec.cjs'
       - '.github/workflows/five-tab-practice.yml'
   workflow_dispatch:
@@ -30,6 +36,6 @@ jobs:
       - run: pnpm install --frozen-lockfile --ignore-scripts
       - run: pnpm exec playwright install --with-deps chromium
       - name: Run isolated five-tab regression
-        run: pnpm exec playwright test tests/five-tab-practice-nav.spec.cjs
+        run: pnpm exec playwright test tests/five-tab-practice-nav.spec.cjs tests/focused-review.spec.cjs
       - name: Run existing validation suite
         run: pnpm validate
