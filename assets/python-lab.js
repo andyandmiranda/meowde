@@ -64,6 +64,23 @@
       const concept=conceptCards.find(el=>el.querySelector("h3")?.textContent?.includes("왜 필요하고"));
       if(concept)concept.id="practice-concept";
       practice.classList.add("practice-primary");
+      // Keep the full curriculum available, but make the editor the first task.
+      // Supplementary reading stays one tap away instead of crowding the exercise.
+      const supporting=[...lesson.querySelectorAll(":scope > section.card")].filter(card=>card!==practice&&card.id!=="quiz");
+      const group=document.createElement("details");
+      group.className="practice-learning-support";
+      const summary=document.createElement("summary");
+      summary.textContent="개념 · 예제 · 학습 목표 펼쳐보기";
+      group.append(summary);
+      supporting.forEach(card=>group.append(card));
+      const quiz=lesson.querySelector("#quiz");
+      if(quiz)lesson.insertBefore(group,quiz);else lesson.append(group);
+      // The same route switch is still available for users who need the distinction,
+      // but it no longer competes with the primary practice task.
+      const mode=root.querySelector(".practice-mode-switch");
+      if(mode){const modes=document.createElement("details");modes.className="practice-route-details";
+        const label=document.createElement("summary");label.textContent="다른 학습 방식 보기";modes.append(label,mode);mode.replaceWith(modes);root.querySelector(".hero")?.after(modes);}
+
     }
     if(storageProblem)showStorageProblem();
     bind();
