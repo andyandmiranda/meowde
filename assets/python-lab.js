@@ -40,6 +40,27 @@
       ${u.reflection?`<section class="card"><h3>분석 판단 · 자기 점검</h3><p>${escape(u.reflection.prompt)}</p>${list(u.reflection.criteria)}<label for="reflection">내 판단과 추가 자료</label><textarea class="reflection" id="reflection">${escape(r.reflection||"")}</textarea><button id="reflection-save">자기 점검 메모 저장</button><p id="reflection-status" role="status"></p><details><summary>판단 비교하기 · 자동 채점 없음</summary><p>${escape(u.reflection.guidance)}</p></details></section>`:""}
       <section class="card"><h3>복습과 다음 학습</h3><div id="recommendation">${recommendation()}</div><button id="independent-retry">도움 없이 다시 작성하기</button><p class="meta">저장한 코드를 비우고 힌트를 접습니다. 기존 통과 이력은 유지하며 다음 제출은 독립 적용으로 다시 확인합니다.</p></section>
       </article></div>`;
+    // Keep all existing learning aids but place the hands-on task first.
+    // This is a presentation-only move: IDs, inputs, grading and storage are unchanged.
+    const article=root.querySelector(".lesson"),practice=root.querySelector("#practice");
+    if(article&&practice){
+      const firstSection=article.querySelector(":scope > section.card");
+      if(firstSection)article.insertBefore(practice,firstSection);
+      const support=[...article.querySelectorAll(":scope > section.card")].filter(card=>card!==practice&&card.id!=="quiz"&&
+        ["준비와 학습 목표","왜 필요하고, 어떻게 동작할까?","실행 흐름 따라가기"].some(title=>card.querySelector("h3")?.textContent?.includes(title)));
+      if(support.length){
+        const details=document.createElement("details");
+        details.className="practice-support";
+        const summary=document.createElement("summary");
+        summary.textContent="개념 · 예제 · 학습 목표 보기";
+        details.append(summary);
+        support.forEach(card=>details.append(card));
+        practice.after(details);
+      }
+      const actions=practice.querySelector(".actions"),status=practice.querySelector("#run-status"),results=practice.querySelector("#run-results");
+      if(actions&&status&&results){actions.after(status);status.after(results);}
+      practice.classList.add("practice-primary");
+    }
     if(storageProblem)showStorageProblem();
     bind();
   }
