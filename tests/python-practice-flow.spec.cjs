@@ -1,0 +1,26 @@
+const {test,expect}=require("playwright/test");
+const base=process.env.MEOWDE_BASE_URL||"http://127.0.0.1:4173";
+test("Mobile practice supports problem, editor, hint, solution and retry without losing drafts",async({page})=>{
+ await page.setViewportSize({width:320,height:720});
+ await page.goto(base+"/python-lab.html");
+ const editor=page.locator("#learner-code");
+ await expect(editor).toBeVisible();
+ await expect(page.locator(".practice-learning-support")).not.toHaveAttribute("open",/./);
+ await editor.fill("print('practice-draft')");
+ await page.locator("#hint-button").click();
+ await expect(page.locator("#hints .feedback")).toHaveCount(1);
+ await page.reload();
+ await expect(editor).toHaveValue("print('practice-draft')");
+ await expect(page.locator("#hints .feedback")).toHaveCount(1);
+ await page.locator("#solution summary").click();
+ await expect(page.locator("#solution")).toHaveAttribute("open","");
+ await page.getByRole("link",{name:"개념 보기"}).click();
+ await expect(page.locator(".practice-learning-support")).toHaveAttribute("open","");
+ await expect(page.locator("#practice-concept")).toBeVisible();
+ await page.locator("#independent-retry").click();
+ await expect(page.locator("#hints .feedback")).toHaveCount(0);
+ await expect(page.locator("#learner-code")).toBeFocused();
+ await expect(page.locator(".meowde-lab-tabbar a")).toHaveCount(5);
+ const width=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:innerWidth}));
+ expect(width.scroll).toBeLessThanOrEqual(width.viewport);
+});
