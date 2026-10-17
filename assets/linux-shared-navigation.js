@@ -1,7 +1,7 @@
 (function(){
 "use strict";
 const path=location.pathname;
-const active=path.endsWith("/linux-home.html")?"home":path.endsWith("/linux-review.html")?"review":path.endsWith("/linux-crash-course.html")?"practice":path.endsWith("/robotics.html")?"my":"learn";
+const active=path.endsWith("/linux-home.html")?"home":path.endsWith("/linux-review.html")?"review":path.endsWith("/linux-crash-course.html")?"practice":path.endsWith("/robotics.html")?"":"learn";
 const items=[
  ["home","홈","/linux-home.html","⌂"],
  ["learn","학습","/learning-path.html?subject=linux","▦"],
