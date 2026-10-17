@@ -66,7 +66,7 @@
       practice.classList.add("practice-primary");
       // Keep the full curriculum available, but make the editor the first task.
       // Supplementary reading stays one tap away instead of crowding the exercise.
-      const supporting=[...lesson.querySelectorAll(":scope > section.card")].filter(card=>card!==practice&&card.id!=="quiz");
+      const supporting=[...lesson.querySelectorAll(":scope > section.card")].filter(card=>["학습 목표와 준비 사항","왜 필요하고, 어떻게 동작할까?","실행 흐름 따라가기"].some(title=>card.querySelector("h3")?.textContent?.includes(title)));
       const group=document.createElement("details");
       group.className="practice-learning-support";
       const summary=document.createElement("summary");
@@ -79,7 +79,7 @@
       // but it no longer competes with the primary practice task.
       const mode=root.querySelector(".practice-mode-switch");
       if(mode){const modes=document.createElement("details");modes.className="practice-route-details";
-        const label=document.createElement("summary");label.textContent="다른 학습 방식 보기";modes.append(label,mode);mode.replaceWith(modes);root.querySelector(".hero")?.after(modes);}
+        const label=document.createElement("summary");label.textContent="다른 학습 방식 보기";modes.append(label,mode);root.querySelector(".hero")?.after(modes);}
 
     }
     if(storageProblem)showStorageProblem();
