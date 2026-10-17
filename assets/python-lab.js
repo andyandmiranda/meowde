@@ -164,6 +164,43 @@
       root.querySelectorAll("[data-choice]").forEach(b=>b.setAttribute("aria-pressed",String(b===button)));
       const box=document.getElementById("quiz-feedback");box.className="feedback "+(correct?"good":"bad");box.textContent=(correct?"맞았습니다. ":"다시 생각해보세요. ")+unit.quiz.reasons[index];save();refreshProgress();
     });
+    // Optional no-keyboard code assembly: reusable snippets keep the real editor and grader intact.
+    const editorArea=document.getElementById("learner-code");
+    if(editorArea){
+      const snippets=['print()','if :','else:','for  in :','def ():','return ','    ','" "','0','1','=',':','(',')'];
+      const panel=document.createElement("details");
+      panel.className="tap-code-tools";
+      const summary=document.createElement("summary");
+      summary.textContent="키보드 없이 코드 만들기";
+      panel.append(summary);
+      const note=document.createElement("p");
+      note.className="meta";
+      note.textContent="코드를 터치해 추가하고, 필요하면 입력창에서 수정하세요.";
+      panel.append(note);
+      const buttons=document.createElement("div");
+      buttons.className="tap-code-buttons";
+      snippets.forEach(snippet=>{
+        const button=document.createElement("button");
+        button.type="button";
+        button.textContent=snippet==="    "?"들여쓰기":snippet;
+        button.addEventListener("click",()=>{
+          const start=editorArea.selectionStart,end=editorArea.selectionEnd;
+          editorArea.setRangeText(snippet,start,end,"end");
+          editorArea.dispatchEvent(new Event("input",{bubbles:true}));
+        });
+        buttons.append(button);
+      });
+      const newline=document.createElement("button");
+      newline.type="button";
+      newline.textContent="줄바꿈";
+      newline.addEventListener("click",()=>{
+        editorArea.setRangeText("\\n",editorArea.selectionStart,editorArea.selectionEnd,"end");
+        editorArea.dispatchEvent(new Event("input",{bubbles:true}));
+      });
+      buttons.append(newline);
+      panel.append(buttons);
+      editorArea.before(panel);
+    }
     const editor=document.getElementById("learner-code");
     editor.oninput=()=>{record().draft=editor.value;save()};
     editor.onkeydown=event=>{if(event.key==="Tab"&&!event.shiftKey){event.preventDefault();editor.setRangeText("    ",editor.selectionStart,editor.selectionEnd,"end");record().draft=editor.value;save()}};
