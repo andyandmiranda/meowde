@@ -11,7 +11,7 @@
   tabs=function(active){
     const ko=S.lang==='ko';
     const item=(name,activeKey,handler,iconName,label)=>`<button class="${active===activeKey?'on':''}" onclick="${handler}" aria-label="${label}">${icon(iconName)}<span>${label}</span></button>`;
-    return `<div class="tabbar" data-phase1-navigation="five-tabs">${item('home','home','renderHome()','home',ko?'홈':'Home')}${item('study','study','renderMap()','map',ko?'학습':'Learn')}${item('review','review','renderReview()','spark',ko?'복습':'Review')}${item('lab','lab',"location.href='/python-lab.html'",'code',ko?'실습':'Practice')}${item('my','my','renderProfile()','cat',ko?'마이':'My')}</div>`;
+    return `<div class="tabbar" data-phase1-navigation="five-tabs">${item('home','home','renderHome()','home',ko?'홈':'Home')}${item('study','study','renderMap()','map',ko?'학습':'Learn')}${item('lab','lab',"location.href='/python-lab.html'",'code',ko?'실습':'Practice')}${item('review','review','renderReview()','spark',ko?'복습':'Review')}${item('my','my','renderProfile()','cat',ko?'마이':'My')}</div>`;
   };
 
   function learnBrand(){
