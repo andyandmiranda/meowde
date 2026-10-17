@@ -9,6 +9,6 @@ const select=document.createElement("select");select.id="library-mode";
 [["concept","개념과 짧은 퀴즈"],["terminal","파일·검색 미션"],["condition","조건문 이해하기"],["bash","조건문 직접 작성"]].forEach(([value,title])=>{const o=document.createElement("option");o.value=value;o.textContent=title;select.append(o)});
 control.append(label,select);more.before(control);
 function show(mode){sections.forEach((s,i)=>{s.hidden=!(mode==="concept"?(i===0||i===1):mode==="terminal"?i===2:mode==="condition"?i===3:i===4)})}
+window.MeowdeOpenPractice=function(mode){if(!["concept","terminal","condition","bash"].includes(mode))return;select.value=mode;show(mode);};
 select.onchange=()=>show(select.value);show("concept");
-document.addEventListener("click",e=>{if(e.target.closest("[data-quiz-guide]")){select.value="terminal";const active=document.getElementById("nav").querySelector('[aria-current="true"]');if(active&&Number(active.textContent.match(/\d+/)?.[0])>=8)select.value="bash";show(select.value)}});
 })();

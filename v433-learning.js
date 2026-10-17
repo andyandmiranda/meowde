@@ -106,13 +106,14 @@
 
   const baseStartLesson=window.startLesson;
   if(typeof baseStartLesson==="function")window.startLesson=function(index,daily=false,queueOverride=null,options={}){
-    const queue=Array.isArray(queueOverride)?dedupeQueue(queueOverride):queueOverride;
+    const queue=Array.isArray(queueOverride)&&options.mode!=='focused-review'?dedupeQueue(queueOverride):queueOverride;
     return baseStartLesson.call(this,index,daily,queue,options);
   };
 
   // v4.13 remains the canonical Lesson DOM owner and reads auxiliaryLabel().
   const baseCheckQ=window.checkQ;
   if(typeof baseCheckQ==="function")window.checkQ=async function(){
+    if(S.checked||S.loading)return;
     const exercise=typeof window.cur==="function"?cur():null;
     const first=exercise&&!S.checked&&!exercise.retry;
     await baseCheckQ.apply(this,arguments);

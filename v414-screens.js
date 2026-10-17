@@ -36,8 +36,8 @@
     return `<div class="v444-coding-scene v448-approved-hero v449-coding-scene"><img class="v449-character v449-pose-coding" src="/assets/meowde-approved-headphones.svg?v=450" alt="${esc(label)}" data-v449-pose="coding" data-character-version="4.50" decoding="async"></div>`;
   }
   function canonicalTabs(active){
-    const ko=S.lang==='ko';
-    return `<div class="tabbar" data-phase1-navigation="four-tabs"><button class="${active==='home'?'on':''}" onclick="renderHome()" aria-label="${ko?'홈':'Home'}">${icon('home')}<span>${ko?'홈':'Home'}</span></button><button class="${active==='map'?'on':''}" onclick="renderMap()" aria-label="${ko?'학습':'Learn'}">${icon('map')}<span>${ko?'학습':'Learn'}</span></button><button class="${active==='review'?'on':''}" onclick="renderReview()" aria-label="${ko?'복습':'Review'}">${icon('code')}<span>${ko?'복습':'Review'}</span></button><button class="${active==='room'?'on':''}" onclick="renderRoom()" aria-label="Meowde">${icon('cat')}<span>Meowde</span></button></div>`;
+    const ko=S.lang==='ko',lab=ko?'실습':'Practice',my=ko?'마이':'My';
+    return `<div class="tabbar" data-phase1-navigation="five-tabs"><button class="${active==='home'?'on':''}" onclick="renderHome()" aria-label="${ko?'홈':'Home'}">${icon('home')}<span>${ko?'홈':'Home'}</span></button><button class="${active==='map'?'on':''}" onclick="renderMap()" aria-label="${ko?'학습':'Learn'}">${icon('map')}<span>${ko?'학습':'Learn'}</span></button><button onclick="location.href='/python-lab.html'" aria-label="${lab}">${icon('code')}<span>${lab}</span></button><button class="${active==='review'?'on':''}" onclick="renderReview()" aria-label="${ko?'복습':'Review'}">${icon('spark')}<span>${ko?'복습':'Review'}</span></button><button class="${active==='room'||active==='profile'?'on':''}" onclick="renderProfile()" aria-label="${my}">${icon('cat')}<span>${my}</span></button></div>`;
   }
   function contactMarkup(){
     const label=S.lang==='ko'?'피드백 & 문의 ↗':'Feedback & Contact ↗';
@@ -85,14 +85,16 @@
       const prompt=ex.prompt||ex.title||L.description;
       return `<button class="review-item mistake-item" onclick="startMistakeReview(${item.lessonIndex},'${esc(item.exerciseId)}')"><span class="lesson-badge">!</span><span class="lesson-info"><b>${esc(L.title)}</b><p>${esc(prompt)}</p></span><span class="pill">${Number(item.count)||1}×</span></button>`;
     }).join('');
-    const completed=S.done.slice().reverse().map(index=>{
+    const completedItems=S.done.slice().reverse().map(index=>{
       const L=lessons()[index];if(!L)return '';
       return `<button class="review-item" onclick="startLesson(${index},false,null,{mode:'review'})"><span class="lesson-badge">${String(index+1).padStart(2,'0')}</span><span class="lesson-info"><b>${esc(L.title)}</b><p>${esc(L.description)}</p></span><span class="pill">${ko?'다시':'Replay'}</span></button>`;
-    }).join('');
+    });
+    const completed=completedItems.slice(0,3).join('');
+    const completedMore=completedItems.length>3?`<details class="review-disclosure"><summary>${ko?'이전 완료 레슨 보기':'Earlier completed lessons'} · ${completedItems.length-3}</summary><div class="review-list">${completedItems.slice(3).join('')}</div></details>`:'';
     const empty=ko?'완료한 레슨이 아직 없습니다.<br>첫 레슨을 끝내면 여기서 다시 연습할 수 있어요.':'No completed lessons yet.<br>Finish your first lesson to review it here.';
     const smart=smartReviewCard();
     const quality=learningQualityCard();
-    app.innerHTML=`<div class="screen phase5-review"><div class="scroll"><div class="simple-head v449-review-head"><div><h2>${ko?'복습':'Review'}</h2><p>${ko?'틀린 문제를 먼저 정리하고 완료한 레슨을 다시 연습하세요.':'Clear mistakes first, then replay completed lessons.'}</p></div>${reviewPoseMarkup(mistakes)}</div>${smart}${mistakeRows?`<div class="review-section-head"><h3>${ko?'오답':'Mistakes'}</h3><span>${mistakes.length}</span></div><div class="review-list">${mistakeRows}</div>`:''}<div class="review-section-head"><h3>${ko?'완료한 레슨':'Completed lessons'}</h3><span>${S.done.length}</span></div>${completed?`<div class="review-list">${completed}</div>`:`<div class="empty-state">${empty}</div>`}${quality}</div>${canonicalTabs('review')}</div>`;
+    app.innerHTML=`<div class="screen phase5-review"><div class="scroll"><div class="simple-head v449-review-head"><div><h2>${ko?'복습':'Review'}</h2><p>${ko?'틀린 문제를 먼저 정리하고 완료한 레슨을 다시 연습하세요.':'Clear mistakes first, then replay completed lessons.'}</p></div>${reviewPoseMarkup(mistakes)}</div>${smart}${mistakeRows?`<div class="review-section-head"><h3>${ko?'오답':'Mistakes'}</h3><span>${mistakes.length}</span></div><div class="review-list">${mistakeRows}</div>`:''}<div class="review-section-head"><h3>${ko?'완료한 레슨':'Completed lessons'}</h3><span>${S.done.length}</span></div>${completed?`<div class="review-list">${completed}</div>${completedMore}`:`<div class="empty-state">${empty}</div>`}${quality?`<details class="review-disclosure"><summary>${ko?'학습 분석 보기':'Learning insights'}</summary><div class="review-extra">${quality}</div></details>`:''}</div>${canonicalTabs('review')}</div>`;
     document.documentElement.dataset.reviewRenderer='canonical-v414';
     document.documentElement.dataset.navigation='phase1-four-tabs';
   };

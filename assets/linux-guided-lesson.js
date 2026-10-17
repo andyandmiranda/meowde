@@ -3,10 +3,11 @@
 const el=id=>document.getElementById(id);
 let storage;try{storage=window.localStorage;}catch(error){storage={getItem(){throw error;}};}
 const progress=window.MeowdeLinuxProgress.open(storage),state=progress.state;
+const focusedReview=window.MeowFocusedReviewStore?.open(storage,'linux');
 let passed=false;
 const titles=["폴더는 파일의 집이야","이렇게 폴더를 만들어요","이제 네가 만들어 봐","다른 이름도 만들 수 있을까?","첫 폴더 만들기, 성공!"];
 function node(tag,text){const n=document.createElement(tag);n.textContent=text;return n;}
-function notice(){el("storage-status").textContent=progress.issue;}
+function notice(){el("storage-status").textContent=[progress.issue,focusedReview?.issue].filter(Boolean).join(' ');}
 function save(){progress.save();notice();}
 function render(moveFocus=false){
  const step=state.step,target=step===2?"training":"travel";
@@ -43,6 +44,7 @@ el("lesson-action").onclick=()=>{
  // Each submission starts fresh so a prior success cannot make a later wrong answer pass.
  const sim=window.MeowdeLinuxSim.create(),out=sim.run(input.value);
  passed=out.ok&&sim.snapshot().files["/home/student/"+target]?.type==="dir";
+ if(focusedReview){const exerciseId='mkdir-'+target;focusedReview.attempt({lessonId:'mkdir-intro',exerciseId,lang:'ko',correct:passed,retry:!!focusedReview.find('mkdir-intro',exerciseId,'ko'),hint:state.hints[target]>0});}
  const feedback=el("lesson-feedback");feedback.className="feedback"+(passed?" success":"");
  feedback.textContent=passed?target+" 폴더가 생겼어요! "+(step===2?"이번에는 다른 이름으로 해볼까요?":"다른 이름에도 적용했어요."):(out.ok?"폴더 이름을 "+target+"로 다시 확인해 보세요.":"아직 폴더가 생기지 않았어요. "+out.output);
  state.input=input.value;if(passed){state.solutions[target]=input.value;el("lesson-action").textContent=step===2?"새 문제 풀기 →":"레슨 마치기 →";}save();

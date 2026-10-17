@@ -38,8 +38,9 @@
     return `<div class="v433-meta" data-coach-style="${esc(style.id)}"><span class="v433-chip ${esc(label.kind||'')}">${esc(label.text||'')}</span></div>`;
   }
 
+  const beginnerHintSteps={"ko":{"if-gate-w":"조건식 끝에 콜론(:)을 붙이고 다음 줄은 공백 네 칸을 들여쓰세요. 거짓 조건이라면 그 줄은 실행되지 않아요.","if-gate-b":"조건문 끝의 콜론(:)을 먼저 확인하고, 실행할 줄의 들여쓰기도 확인하세요.","list-garden-b":"원소 개수를 세고 유효한 위치를 0부터 적어 보세요. 원소가 두 개라면 0과 1만 있어요.","list-garden-w":"리스트의 값을 왼쪽부터 0, 1, 2로 번호 매긴 후 출력할 값의 위치를 골라 보세요.","index-tower-b":"인덱스 1은 이미 올바르게 지정되어 있어요. print 다음의 여는 괄호와 닫는 괄호가 짝인지 확인하세요.","index-tower-w":"시작 코드에는 리스트가 없으므로 pets = [\"cat\", \"dog\", \"bird\"]부터 작성해야 해요. 인덱스 1은 dog이고 bird를 출력하려면 인덱스 2가 필요해요.","append-dock-b":"append()로 milk를 추가하는 줄은 올바르게 작성되어 있어요. 마지막 print 줄의 괄호 짝을 확인하세요.","append-dock-w":"먼저 snacks = []로 빈 리스트를 만들고, snacks.append(\"churu\")로 값을 추가하세요. 첫 번째 원소의 인덱스 0을 출력하면 돼요."},"en":{"if-gate-w":"End the condition with a colon, then indent the next statement four spaces. A false condition skips that statement.","if-gate-b":"Check the colon at the end of the if line, then inspect the indentation of its body.","list-garden-b":"Count the elements and label valid positions starting at zero. Two elements have only indices 0 and 1.","list-garden-w":"Label the elements 0, 1, 2 from left to right, then select the requested position.","index-tower-b":"Index 1 is already correct. Check that print has matching opening and closing parentheses.","index-tower-w":"The starter does not define a list. First create pets = [\"cat\", \"dog\", \"bird\"]. Index 1 selects dog; index 2 selects bird.","append-dock-b":"The append line already adds milk correctly. Check the matching parentheses on the final print line.","append-dock-w":"First create an empty list with snacks = [], then add the value using snacks.append(\"churu\"). Print the first element at index 0."}};
   function hintControl(exercise){
-    if(S.hint)return `<div class="hint">${esc(exercise.hint)}</div>`;
+    if(S.hint){const extra=beginnerHintSteps[S.lang==='en'?'en':'ko'][exercise.id];return '<div class="hint">'+esc(exercise.hint)+(extra?'<p data-hint-step>'+esc(extra)+'</p>':'')+'</div>';};
     const style=coachModeStyle(exercise);
     return `<button class="hint" data-coach-hint="${esc(style.id)}" onclick="S.hint=true;save();renderLesson()">${esc(style.hint||t('hint'))}</button>`;
   }
@@ -89,6 +90,25 @@
     return `<div class="v457-diagnostic" data-diagnostic-kind="${esc(diagnosis.kind||'general')}">${row(labels.cause,diagnosis.cause)}${row(labels.reason,diagnosis.reason)}${row(labels.action,diagnosis.action)}</div>`;
   }
 
+  // Presentation-only prerequisite coaching: preserve the effective curriculum and saved exercise snapshots.
+  const beginnerGuides={
+  "ko": {
+    "if-gate": "if는 '만약 ~라면'이라는 질문이에요. 조건이 True일 때만 아래 줄이 실행돼요. 조건 끝에는 : 를 쓰고, 실행할 줄 앞에는 공백 4개를 넣어 들여써요. 들여쓰기는 모양이 아니라 파이썬 문법이에요. False이고 else가 없으면 해당 줄은 실행하지 않아요.",
+    "list-garden": "리스트는 관련된 값 여러 개를 [ ] 안에 쉼표로 나눠 순서대로 보관해요. items = [\"키보드\", \"마우스\", \"노트북\"]라면 위치 0은 키보드, 1은 마우스, 2는 노트북이에요. items[0]처럼 대괄호 안의 위치 번호(인덱스)로 값을 꺼내요. 값이 세 개면 유효한 위치는 0부터 2까지이고 items[3]은 IndexError예요.",
+    "index-tower": "리스트의 인덱스는 값 자체가 아니라 값이 놓인 위치 번호예요. pets = [\"cat\", \"dog\", \"bird\"]라면 pets[0]은 cat, pets[1]은 dog, pets[2]는 bird예요. 세 개의 값에 대해 pets[3]을 요청하면 존재하지 않는 위치라 IndexError가 발생해요.",
+    "append-dock": "append(값)는 기존 리스트의 맨 끝에 값 하나를 추가해요. 예를 들어 snacks = []는 빈 리스트이고, snacks.append(\"milk\") 실행 후 snacks는 [\"milk\"]가 돼요. 이어서 snacks.append(\"cat\") 하면 [\"milk\", \"cat\"]이 돼요. append()는 리스트 자체를 바꾸므로 다시 대입하지 않아도 돼요. len(리스트)는 원소 개수를 돌려줘요. 한 개를 추가한 후 len(snacks)는 1이고, 두 개를 추가한 뒤에는 2예요."
+  },
+  "en": {
+    "if-gate": "if means 'only when this condition holds.' A True condition runs the next indented block; False skips it when there is no else. End the condition with a colon (:), then indent the body by four spaces. Indentation is Python syntax, not decoration.",
+    "list-garden": "A list stores ordered values between [ ] separated by commas. For items = [\"keyboard\", \"mouse\", \"laptop\"], index 0 is keyboard, index 1 is mouse, and index 2 is laptop. Use items[0] to retrieve a value. With three elements, valid indices are 0 through 2; items[3] raises IndexError.",
+    "index-tower": "An index is a position, not the element itself. For pets = [\"cat\", \"dog\", \"bird\"], pets[0] returns cat, pets[1] returns dog, and pets[2] returns bird. pets[3] raises IndexError because a fourth element does not exist.",
+    "append-dock": "append(value) adds one item to the end of the existing list. For example, snacks = [] starts empty; after snacks.append(\"milk\"), snacks is [\"milk\"]. After snacks.append(\"cat\"), it is [\"milk\", \"cat\"]. append() changes the list in place; you do not need to assign its result. len(list) returns the number of items. After one append, len(snacks) is 1; after two, it is 2."
+  }
+};
+  function beginnerExplanation(lesson,concept){
+    return beginnerGuides[S.lang==='en'?'en':'ko'][lesson.slug]||concept.body;
+  }
+
   renderLesson=function(){
     if(!hasLessonProgress())return renderHome();
     S.screen='lesson';
@@ -108,7 +128,7 @@
     }
     if(ex.type==='concept'){
       qhead=`<div class="coach" data-lesson-outcome="idle" data-coach-style="${esc(coachStyle.id)}">${catSVG(S.cat,'idle',62)}<div class="bubble"><div class="prompt">${esc(coachStyle.concept||t('conceptCoach'))}</div></div></div>`;
-      body=`<div class="card"><div class="pill" style="display:inline-flex;margin-bottom:10px">Q ${esc(qcode)}</div><h3>${esc(ex.title)}</h3><p style="font-size:14px;color:var(--muted);line-height:1.6;margin:8px 0 12px">${esc(ex.body)}</p><div class="code">${esc(ex.code)}</div></div>`;
+      body=`<div class="card"><div class="pill" style="display:inline-flex;margin-bottom:10px">Q ${esc(qcode)}</div><h3>${esc(ex.title)}</h3><p style="font-size:14px;color:var(--muted);line-height:1.6;margin:8px 0 12px">${esc(beginnerExplanation(L,ex))}</p><div class="code">${esc(ex.code)}</div></div>`;
     }else if(ex.type==='predict'){
       body=`<div class="code">${esc(ex.code)}</div><div class="choices">${ex.choices.map((choice,index)=>`<button class="choice ${S.sel===index?'sel':''} ${S.checked&&index===ex.answer?'right':''} ${S.checked&&S.sel===index&&index!==ex.answer?'wrong':''}" onclick="S.sel=${index};save();renderLesson()">${esc(choice)}</button>`).join('')}</div>${S.checked&&S.correct?`<div class="console">${esc(ex.output)}</div>`:''}`;
     }else if(ex.type==='fill'){
@@ -119,14 +139,27 @@
       const initial=S.write||ex.starter;
       body=`${inputControl(ex)}<textarea id="code-editor" class="codearea" spellcheck="false" autocapitalize="off" autocomplete="off" oninput="S.write=this.value;save()">${esc(initial)}</textarea><div class="code-toolbar" aria-label="${S.lang==='ko'?'코딩 보조키':'Coding helper keys'}"><button class="code-key wide" onclick="insertCodeToken('TAB')">Tab</button><button class="code-key" onclick="insertCodeToken('()')">( )</button><button class="code-key" onclick="insertCodeToken('[]')">[ ]</button><button class="code-key" onclick="insertCodeToken(':')">:</button><button class="code-key" onclick="insertCodeToken('=')">=</button><button class="code-key" onclick="insertCodeToken('_')">_</button><button class="code-key" onclick="insertCodeToken(String.fromCharCode(34,34))">&quot; &quot;</button><button class="code-key" onclick="insertCodeToken(String.fromCharCode(39,39))">' '</button></div><div class="pill" style="margin-top:10px">${esc(ex.testcase)}</div>${S.output?`<div class="console">${esc(S.output)}</div>`:''}`;
     }
+    // Keep prerequisite teaching within the active lesson instead of sending beginners to another page.
+    const concept=L.exercises&&L.exercises.find(item=>item.type==='concept'&&item.body&&item.code);
+    const conceptHelp=ex.type!=='concept'&&concept
+      ?`<details class="card" data-inline-concept><summary>${S.lang==='ko'?'개념·예제 다시 보기':'Review concept and example'}</summary><h3>${esc(concept.title||L.title)}</h3><p>${esc(beginnerExplanation(L,concept))}</p><div class="code">${esc(concept.code)}</div></details>`
+      :'';
+    // Explain wrong answers on demand without erasing the original miss or overriding grading.
+    const correctExample=ex.type==='predict'&&Array.isArray(ex.choices)?ex.choices[ex.answer]
+      :ex.type==='fill'?ex.code.replace('____',String(ex.answer))
+      :ex.type==='bughunt'?ex.fixed
+      :ex.type==='write'?ex.model:'';
+    const answerReview=S.checked&&!S.correct&&correctExample
+      ?`<details class="card" data-answer-review><summary>${S.lang==='ko'?'정답 예시와 이유 확인':'See a correct example and why'}</summary><pre class="code">${esc(correctExample)}</pre><p>${esc(ex.explain||'')}</p></details>`
+      :'';
     const can=ex.type==='concept'||S.checked||S.loading?true:(ex.type==='predict'||ex.type==='bughunt'?S.sel!==null:ex.type==='fill'?Boolean(S.fill):true);
     const foot=ex.type==='concept'
       ?`<div class="lesson-foot"><button class="btn" onclick="nextQ()">${t('got')}</button></div>`
       :S.checked
         ?`<div class="feedback ${S.correct?'ok':'no'}"><h3>${S.correct?t('correct'):t('wrong')}</h3>${reactionMarkup()}${S.correct?`<p>${feedbackExplanation(ex)}</p>`:diagnosticMarkup(ex)}<button class="btn" onclick="nextQ()">${t('continue')}</button></div>`
-        :`<div class="lesson-foot"><button class="btn" ${!can?'disabled':''} onclick="checkQ()">${ex.type==='write'?(S.loading?t('pyLoading'):(S.lang==='ko'?'코드 실행':'Run code')):t('check')}</button></div>`;
+        :`<div class="lesson-foot"><button class="btn" ${!can||S.loading?'disabled':''} onclick="checkQ()">${ex.type==='write'?(S.loading?t('pyLoading'):(S.lang==='ko'?'코드 실행':'Run code')):t('check')}</button></div>`;
     const modeLabel=typeof meowdeMode==='function'&&meowdeMode()==='smart-review'?(S.lang==='ko'?'Smart Review':'Smart Review'):'';
-    app.innerHTML=`<div class="screen"><div class="lesson-bg"></div><div class="lesson-top"><button class="close" aria-label="${S.lang==='ko'?'나가기':'Exit'}" onclick="renderHome()"></button><div class="lesson-title"><b>${modeLabel?`${esc(modeLabel)} · `:''}${esc(L.title)}</b><div class="progress"><span style="width:${pct}%"></span></div></div><div class="lesson-meta"><span class="autosave">${S.lang==='ko'?'자동 저장':'Saved'}</span><span class="pill">${step}/${S.queue.length}</span></div></div><div class="scroll"><main class="lesson-main">${qhead}${body}</main></div>${foot}</div>`;
+    app.innerHTML=`<div class="screen"><div class="lesson-bg"></div><div class="lesson-top"><button class="close" aria-label="${S.lang==='ko'?'나가기':'Exit'}" onclick="renderHome()"></button><div class="lesson-title"><b>${modeLabel?`${esc(modeLabel)} · `:''}${esc(L.title)}</b><div class="progress"><span style="width:${pct}%"></span></div></div><div class="lesson-meta"><span class="autosave">${S.lang==='ko'?'자동 저장':'Saved'}</span><span class="pill">${step}/${S.queue.length}</span></div></div><div class="scroll"><main class="lesson-main">${qhead}${conceptHelp}${body}${answerReview}</main></div>${foot}</div>`;
     document.documentElement.dataset.lessonRenderer='canonical-v413';
     document.documentElement.dataset.lessonCoachStyle=coachStyle.id;
   };

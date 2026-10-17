@@ -26,5 +26,7 @@ assert.match(html,/id="sim-next" hidden/);
 assert.match(html,/const passed=missions\[current\]\.test\(terminal\.snapshot\(\),lastResult\)/);
 assert.match(html,/next\.hidden=false/);
 assert.match(html,/document\.getElementById\("sim-next"\)\.hidden=true/);
-assert.match(html,/guide\.onclick=/);
+assert.match(html,/data-practice-note/);
+assert.match(html,/하단 실습 탭/);
+assert.doesNotMatch(html,/guide\.onclick=/);
 console.log("PASS: limited Bash condition parser and multi-input semantic grading");

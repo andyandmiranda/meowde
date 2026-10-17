@@ -1,0 +1,841 @@
+{
+  "schemaVersion": 1,
+  "sourceBase": "c06f6444abe270ecfd190f5df27b8c3ce9bb578c",
+  "python": [
+    {
+      "number": 1,
+      "id": "start-field",
+      "title": "시작의 들판",
+      "enTitle": "Start Field",
+      "focus": [
+        "시작",
+        "print"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 2,
+      "id": "print-camp",
+      "title": "출력 캠프",
+      "enTitle": "Print Camp",
+      "focus": [
+        "출력",
+        "print"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 3,
+      "id": "string-bridge",
+      "title": "문자열 다리",
+      "enTitle": "String Bridge",
+      "focus": [
+        "문자열",
+        "string"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 4,
+      "id": "quote-gate",
+      "title": "따옴표 문",
+      "enTitle": "Quote Gate",
+      "focus": [
+        "따옴표",
+        "quotes"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 5,
+      "id": "number-pond",
+      "title": "숫자 연못",
+      "enTitle": "Number Pond",
+      "focus": [
+        "숫자",
+        "number"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 6,
+      "id": "math-stone",
+      "title": "계산 돌길",
+      "enTitle": "Math Stones",
+      "focus": [
+        "계산",
+        "math"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 7,
+      "id": "variable-pond",
+      "title": "변수 연못",
+      "enTitle": "Variable Pond",
+      "focus": [
+        "변수",
+        "variable"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 8,
+      "id": "value-swap",
+      "title": "값 바꾸기 숲",
+      "enTitle": "Update Grove",
+      "focus": [
+        "업데이트",
+        "update"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 9,
+      "id": "name-rules",
+      "title": "이름표 오솔길",
+      "enTitle": "Name Path",
+      "focus": [
+        "변수명",
+        "naming"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 10,
+      "id": "concat-bridge",
+      "title": "포매팅 다리",
+      "enTitle": "Formatting Bridge",
+      "focus": [
+        "포매팅",
+        "f-string"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 11,
+      "id": "input-window",
+      "title": "입력 창가",
+      "enTitle": "Input Window",
+      "focus": [
+        "입력",
+        "input"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 12,
+      "id": "debug-missing-quote",
+      "title": "입력값 변환",
+      "enTitle": "Converting Input",
+      "focus": [
+        "형변환",
+        "int"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 13,
+      "id": "debug-typo",
+      "title": "오타 탐정길",
+      "enTitle": "Typo Trail",
+      "focus": [
+        "오타",
+        "typo"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 14,
+      "id": "compare-gate",
+      "title": "비교의 문",
+      "enTitle": "Compare Gate",
+      "focus": [
+        "비교",
+        "compare"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 15,
+      "id": "if-gate",
+      "title": "if 입구",
+      "enTitle": "If Gate",
+      "focus": [
+        "if",
+        "if"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 16,
+      "id": "else-cabin",
+      "title": "else 오두막",
+      "enTitle": "Else Cabin",
+      "focus": [
+        "else",
+        "else"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 17,
+      "id": "elif-mushroom",
+      "title": "elif 버섯",
+      "enTitle": "Elif Mushrooms",
+      "focus": [
+        "elif",
+        "elif"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 18,
+      "id": "logic-lantern",
+      "title": "논리 랜턴",
+      "enTitle": "Logic Lantern",
+      "focus": [
+        "논리",
+        "logic"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 19,
+      "id": "indent-valley",
+      "title": "들여쓰기 계곡",
+      "enTitle": "Indent Valley",
+      "focus": [
+        "들여쓰기",
+        "indent"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 20,
+      "id": "list-garden",
+      "title": "리스트 정원",
+      "enTitle": "List Garden",
+      "focus": [
+        "리스트",
+        "list"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 21,
+      "id": "index-tower",
+      "title": "인덱스 탑",
+      "enTitle": "Index Tower",
+      "focus": [
+        "인덱스",
+        "index"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 22,
+      "id": "append-dock",
+      "title": "append 선착장",
+      "enTitle": "Append Dock",
+      "focus": [
+        "추가",
+        "append"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 23,
+      "id": "loop-hill",
+      "title": "반복 언덕",
+      "enTitle": "Loop Hill",
+      "focus": [
+        "for",
+        "for"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 24,
+      "id": "range-rail",
+      "title": "range 레일",
+      "enTitle": "Range Rail",
+      "focus": [
+        "range",
+        "range"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 25,
+      "id": "while-cave",
+      "title": "while 동굴",
+      "enTitle": "While Cave",
+      "focus": [
+        "while",
+        "break"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 26,
+      "id": "function-house",
+      "title": "함수 집",
+      "enTitle": "Function House",
+      "focus": [
+        "함수",
+        "function"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 27,
+      "id": "parameter-mail",
+      "title": "파라미터 우체국",
+      "enTitle": "Parameter Post",
+      "focus": [
+        "파라미터",
+        "parameter"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 28,
+      "id": "return-spring",
+      "title": "return 샘",
+      "enTitle": "Return Spring",
+      "focus": [
+        "return",
+        "return"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 29,
+      "id": "mini-project",
+      "title": "미니 프로젝트",
+      "enTitle": "Mini Project",
+      "focus": [
+        "프로젝트",
+        "통합"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 30,
+      "id": "boss-bug",
+      "title": "보스 버그",
+      "enTitle": "Boss Bug",
+      "focus": [
+        "보스",
+        "boss"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 31,
+      "id": "string-methods",
+      "title": "문자열 변신소",
+      "enTitle": "String Workshop",
+      "focus": [
+        "문자열",
+        "upper",
+        "lower"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 32,
+      "id": "string-slice",
+      "title": "문자열 슬라이스",
+      "enTitle": "String Slice",
+      "focus": [
+        "문자열",
+        "슬라이싱"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 33,
+      "id": "membership-gate",
+      "title": "포함 여부 관문",
+      "enTitle": "Membership Gate",
+      "focus": [
+        "in",
+        "membership"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 34,
+      "id": "dict-seed",
+      "title": "딕셔너리 씨앗",
+      "enTitle": "Dictionary Seed",
+      "focus": [
+        "dictionary",
+        "key",
+        "value"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 35,
+      "id": "dict-update",
+      "title": "딕셔너리 업데이트",
+      "enTitle": "Dictionary Update",
+      "focus": [
+        "dictionary",
+        "update"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 36,
+      "id": "dict-get",
+      "title": "안전한 조회소",
+      "enTitle": "Safe Lookup",
+      "focus": [
+        "dictionary",
+        "get"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 37,
+      "id": "dict-loop",
+      "title": "딕셔너리 순회길",
+      "enTitle": "Dictionary Loop",
+      "focus": [
+        "dictionary",
+        "items",
+        "for"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 38,
+      "id": "tuple-unpack",
+      "title": "튜플 언패킹",
+      "enTitle": "Tuple Unpacking",
+      "focus": [
+        "tuple",
+        "unpacking"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 39,
+      "id": "set-garden",
+      "title": "집합 정원",
+      "enTitle": "Set Garden",
+      "focus": [
+        "set",
+        "unique"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 40,
+      "id": "data-project",
+      "title": "데이터 미니 프로젝트",
+      "enTitle": "Data Mini Project",
+      "focus": [
+        "dictionary",
+        "function",
+        "condition",
+        "data"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 41,
+      "id": "exception-door",
+      "title": "예외 처리 입구",
+      "enTitle": "Exception Door",
+      "focus": [
+        "try",
+        "except",
+        "ZeroDivisionError"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 42,
+      "id": "valueerror-net",
+      "title": "ValueError 안전망",
+      "enTitle": "ValueError Safety Net",
+      "focus": [
+        "ValueError",
+        "int",
+        "exception"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 43,
+      "id": "multi-except",
+      "title": "예외 갈림길",
+      "enTitle": "Exception Branches",
+      "focus": [
+        "KeyError",
+        "ValueError",
+        "multiple except"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 44,
+      "id": "math-module",
+      "title": "math 모듈 도구함",
+      "enTitle": "Math Toolbox",
+      "focus": [
+        "import",
+        "math",
+        "sqrt"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 45,
+      "id": "statistics-module",
+      "title": "statistics 평균소",
+      "enTitle": "Statistics Average",
+      "focus": [
+        "statistics",
+        "mean",
+        "module"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 46,
+      "id": "file-write",
+      "title": "파일에 기록하기",
+      "enTitle": "Write a File",
+      "focus": [
+        "open",
+        "write",
+        "with"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 47,
+      "id": "file-read",
+      "title": "파일에서 읽기",
+      "enTitle": "Read a File",
+      "focus": [
+        "open",
+        "read",
+        "r"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 48,
+      "id": "file-lines",
+      "title": "파일 줄 순회",
+      "enTitle": "Loop Through File Lines",
+      "focus": [
+        "for line in file",
+        "strip",
+        "count"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 49,
+      "id": "json-bridge",
+      "title": "JSON 다리",
+      "enTitle": "JSON Bridge",
+      "focus": [
+        "json",
+        "loads",
+        "dumps"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 50,
+      "id": "persistence-project",
+      "title": "저장 미니 프로젝트",
+      "enTitle": "Persistence Mini Project",
+      "focus": [
+        "json",
+        "file",
+        "function",
+        "persistence"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 51,
+      "id": "class-blueprint",
+      "title": "클래스 설계도",
+      "enTitle": "Class Blueprint",
+      "focus": [
+        "class",
+        "object",
+        "attribute"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 52,
+      "id": "init-self",
+      "title": "__init__과 self",
+      "enTitle": "__init__ and self",
+      "focus": [
+        "__init__",
+        "self",
+        "instance attribute"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 53,
+      "id": "instance-method",
+      "title": "객체의 행동",
+      "enTitle": "Object Behavior",
+      "focus": [
+        "method",
+        "self",
+        "return"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 54,
+      "id": "state-change",
+      "title": "객체 상태 바꾸기",
+      "enTitle": "Changing Object State",
+      "focus": [
+        "state",
+        "method",
+        "mutation"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 55,
+      "id": "object-collection",
+      "title": "여러 객체 다루기",
+      "enTitle": "Working with Many Objects",
+      "focus": [
+        "objects",
+        "list",
+        "loop"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 56,
+      "id": "inheritance-basics",
+      "title": "상속 첫걸음",
+      "enTitle": "Inheritance Basics",
+      "focus": [
+        "inheritance",
+        "super",
+        "override"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 57,
+      "id": "object-to-dict",
+      "title": "객체를 딕셔너리로",
+      "enTitle": "Object to Dictionary",
+      "focus": [
+        "method",
+        "dictionary",
+        "serialization"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 58,
+      "id": "object-json",
+      "title": "객체를 JSON으로",
+      "enTitle": "Object to JSON",
+      "focus": [
+        "json",
+        "dumps",
+        "to_dict"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 59,
+      "id": "json-to-object",
+      "title": "JSON에서 객체 복원",
+      "enTitle": "JSON Back to an Object",
+      "focus": [
+        "json",
+        "loads",
+        "reconstruction"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    },
+    {
+      "number": 60,
+      "id": "pet-tracker-project",
+      "title": "Pet Tracker 프로젝트",
+      "enTitle": "Pet Tracker Project",
+      "focus": [
+        "class",
+        "state",
+        "json",
+        "file"
+      ],
+      "implementation": "개념·문제·작성형 실습 구현",
+      "verification": "작성형 정답·오답 자동 실행 검사 / 단원 전체 학습 검증 필요"
+    }
+  ],
+  "linux": [
+    {
+      "id": "mkdir-intro",
+      "title": "첫 폴더 만들기",
+      "implementation": "개념 → 예제 → 직접 작성 → 다른 이름에 적용",
+      "verification": "실제 브라우저 정답·오답·재시도·저장 검사",
+      "href": "/linux-start.html"
+    },
+    {
+      "id": "linux-e1",
+      "title": "E1 · 위치와 파일",
+      "implementation": "개념·퀴즈 + 폴더·파일 생성·복사 실습",
+      "verification": "제한된 시뮬레이터 자동 검사",
+      "href": "/linux-crash-course.html"
+    },
+    {
+      "id": "linux-e2",
+      "title": "E2 · 파일 읽기",
+      "implementation": "개념·퀴즈 + 마지막 줄 읽기 실습",
+      "verification": "tail 정답·head 오답 브라우저 검사",
+      "href": "/linux-crash-course.html"
+    },
+    {
+      "id": "linux-e3",
+      "title": "E3 · 찾기와 검색",
+      "implementation": "개념·퀴즈 + 로그 검색 실습",
+      "verification": "검색 결과 자동 검사",
+      "href": "/linux-crash-course.html"
+    },
+    {
+      "id": "linux-e4",
+      "title": "E4 · 파이프와 텍스트",
+      "implementation": "개념·퀴즈만 제공 / 실행 실습 준비 중",
+      "verification": "실제 실행 실습 미구현",
+      "href": "/linux-crash-course.html"
+    },
+    {
+      "id": "linux-e5",
+      "title": "E5 · 권한",
+      "implementation": "개념·퀴즈만 제공 / 실행 실습 준비 중",
+      "verification": "실제 실행 실습 미구현",
+      "href": "/linux-crash-course.html"
+    },
+    {
+      "id": "linux-e6",
+      "title": "E6 · 프로세스",
+      "implementation": "개념·퀴즈만 제공 / 실행 실습 준비 중",
+      "verification": "실제 실행 실습 미구현",
+      "href": "/linux-crash-course.html"
+    },
+    {
+      "id": "linux-e7",
+      "title": "E7 · 패키지",
+      "implementation": "개념·퀴즈만 제공 / 실행 실습 준비 중",
+      "verification": "실제 실행 실습 미구현",
+      "href": "/linux-crash-course.html"
+    },
+    {
+      "id": "linux-e8",
+      "title": "E8 · 셸 스크립트",
+      "implementation": "변수 개념·퀴즈 + 숫자 조건 흐름 관찰",
+      "verification": "일반 셸 스크립트 실행 미지원",
+      "href": "/linux-crash-course.html"
+    },
+    {
+      "id": "linux-e9",
+      "title": "E9 · 조건문",
+      "implementation": "개념·퀴즈 + 제한된 if/else 직접 작성",
+      "verification": "여러 경계값·오답 자동 검사",
+      "href": "/linux-crash-course.html"
+    }
+  ],
+  "missingPython": [
+    "외부 패키지 설치·네트워크 API 실행",
+    "힌트 없이 낯선 문제를 푸는 독립 역량 평가",
+    "모든 레슨의 실제 초보자 학습 검증",
+    "출력 첫 개념 외의 단원별 집중 복습 (출력 개념 파일럿은 제공)"
+  ],
+  "missingLinux": [
+    "터미널 편집기 직접 사용",
+    "권한·소유권 상태 실습",
+    "프로세스 제어 실습",
+    "파이프·리다이렉션 상태 실습",
+    "셸 반복문",
+    "종합 실습·방탈출",
+    "폴더 만들기 외의 단원별 집중 복습 (첫 폴더 개념 파일럿은 제공)"
+  ],
+  "warning": "자동 실행·구조 검사 통과는 단원 전체의 교육 품질 검증이나 독립 프로그램 작성 역량을 의미하지 않아요."
+}

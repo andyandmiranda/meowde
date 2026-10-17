@@ -15,7 +15,7 @@ assert(review.includes('window.__MEOWDE_CANONICAL_REVIEW_RENDERER__=renderReview
 assert(review.includes("MeowSmartReview&&typeof MeowSmartReview.card==='function'"),'Review reads Smart Review through the helper API');
 assert(review.includes("MeowLearning&&typeof MeowLearning.reviewQualityCard==='function'"),'Review reads Learning Quality through the helper API');
 assert(review.includes('v449-review-pose'),'Review renders its final Meowde pose directly');
-assert(review.includes("canonicalTabs('review')"),'Review renders the four-tab navigation directly');
+assert(review.includes("canonicalTabs('review')"),'Review renders the five-tab navigation directly');
 assert(review.includes('startMistakeReview('),'Review preserves mistake replay actions');
 assert(review.includes("{mode:'review'}"),'Review preserves completed lesson replay mode');
 

@@ -6,7 +6,7 @@
   const ASSETS={
     base:"/assets/meowde-approved-base.svg?v=450",
     happy:"/assets/meowde-approved-base.svg?v=450",
-    smug:"/assets/meowde-approved-glasses.svg?v=450",
+    smug:"/assets/meowde-approved-base.svg?v=450",
     focus:"/assets/meowde-approved-base.svg?v=450",
     surprised:"/assets/meowde-approved-base.svg?v=450",
     meh:"/assets/meowde-approved-base.svg?v=450",

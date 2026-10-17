@@ -20,7 +20,11 @@ const poses=["base","happy","smug","focus","surprised","meh","coding","music","r
 for(const pose of poses)expect(renderer.includes(`\"${pose}\"`),`pose ${pose} is not registered`);
 expect(renderer.includes("<img class=\"v449-character"),"character renderer does not use img elements");
 expect(renderer.includes("/assets/meowde-approved-base.svg?v=450"),"base image asset is missing");
-expect(renderer.includes("/assets/meowde-approved-glasses.svg?v=450"),"glasses image asset is missing");
+expect(renderer.includes('smug:"/assets/meowde-approved-base.svg?v=450"'),"smug pose must use the approved base image");
+expect(!renderer.includes("/assets/meowde-approved-glasses.svg"),"sunglasses asset must not be rendered by the character layer");
+const legacyCharacter=read("v430-character.js");
+expect(legacyCharacter.includes('glasses:"/assets/meowde-approved-base.svg?v=4471"'),"legacy saved glasses accessory must resolve to the approved base image");
+expect(!legacyCharacter.includes("/assets/meowde-approved-glasses.svg"),"legacy character renderer must not display sunglasses");
 expect(renderer.includes("/assets/meowde-approved-headphones.svg?v=450"),"headphones image asset is missing");
 expect(!renderer.includes("__MEOWDE_V449_SPRITE__"),"legacy sprite dependency remains");
 expect(renderer.includes("decorateHero"),"hero helper is missing");

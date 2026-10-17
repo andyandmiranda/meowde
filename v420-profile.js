@@ -44,8 +44,8 @@
     return `<div class="top"><div class="brand"><span class="brand-mark"><img class="v449-character v449-pose-base v448-brand-cat" src="${BASE_ASSET}" alt="" width="42" height="42" data-v449-pose="base" data-character-version="4.50" decoding="async"></span><div><h1 class="v444-brand-wordmark">Meowde</h1><p>${esc(tagline)}</p></div></div><button class="lang" onclick="langSheet()">${ko?'KO':'EN'}</button></div>`;
   }
   function canonicalTabs(){
-    const ko=S.lang==='ko';
-    return `<div class="tabbar" data-phase1-navigation="four-tabs"><button onclick="renderHome()" aria-label="${ko?'홈':'Home'}">${icon('home')}<span>${ko?'홈':'Home'}</span></button><button onclick="renderMap()" aria-label="${ko?'학습':'Learn'}">${icon('map')}<span>${ko?'학습':'Learn'}</span></button><button onclick="renderReview()" aria-label="${ko?'복습':'Review'}">${icon('code')}<span>${ko?'복습':'Review'}</span></button><button class="on" onclick="renderRoom()" aria-label="Meowde">${icon('cat')}<span>Meowde</span></button></div>`;
+    const ko=S.lang==='ko',lab=ko?'실습':'Practice',my=ko?'마이':'My';
+    return `<div class="tabbar" data-phase1-navigation="five-tabs"><button onclick="renderHome()" aria-label="${ko?'홈':'Home'}">${icon('home')}<span>${ko?'홈':'Home'}</span></button><button onclick="renderMap()" aria-label="${ko?'학습':'Learn'}">${icon('map')}<span>${ko?'학습':'Learn'}</span></button><button onclick="renderReview()" aria-label="${ko?'복습':'Review'}">${icon('spark')}<span>${ko?'복습':'Review'}</span></button><button onclick="location.href='/python-lab.html'" aria-label="${lab}">${icon('code')}<span>${lab}</span></button><button class="on" onclick="renderProfile()" aria-label="${my}">${icon('cat')}<span>${my}</span></button></div>`;
   }
   function profileAvatar(level){
     const label=S.lang==='ko'?'헤드폰을 쓴 Meowde':'Meowde with headphones';
@@ -90,7 +90,7 @@
     const ko=S.lang==='ko',info=levelInfo(),badge=featuredBadge(),badgeTitle=badge?(ko?badge.titleKo:badge.titleEn):(ko?'대표 배지 없음':'No featured badge');
     app.innerHTML=`<div class="screen">${canonicalBrand()}${stats()}<div class="scroll"><div class="simple-head"><h2>${ko?'프로필':'Profile'}</h2><p>${ko?'학습 진도와 성장 기록을 한곳에서 확인하세요.':'See progress, growth, and practice history in one place.'}</p></div><section class="v420-profile-hero"><div class="v420-profile-top">${profileAvatar(info.level)}<div class="v420-profile-copy"><div class="v420-profile-name-row"><h2>${esc(P.name)}</h2><button class="v420-edit-name" onclick="editProfileName()">✎</button></div><div class="v420-profile-title">Lv.${info.level} ${esc(info.title)}</div><div class="v420-featured"><span>${badge?badge.icon:'🔒'}</span><span>${esc(badgeTitle)}</span></div></div></div><div class="v420-level-track"><span style="width:${info.percent}%"></span></div><div class="v420-level-meta"><span>${info.current} XP</span><span>${info.target-info.current} XP ${ko?'후 레벨업':'to level up'}</span></div><div class="v420-profile-actions"><button class="btn ghost" onclick="renderAchievements()">🏅 ${ko?'업적':'Achievements'}</button><button class="btn ghost" onclick="renderRoom()">🐱 Meowde</button></div></section><section class="card">${statsGrid()}</section>${weekCard()}${masteryCard()}${insightCard()}${goalsCard()}</div>${canonicalTabs()}</div>`;
     document.documentElement.dataset.profileRenderer='canonical-v420';
-    document.documentElement.dataset.navigation='phase1-four-tabs';
+    document.documentElement.dataset.navigation='phase1-five-tabs';
   };
   window.__MEOWDE_CANONICAL_PROFILE_RENDERER__=window.renderProfile;
   document.title='Meowde — Profile';
