@@ -136,11 +136,12 @@ test('unreadable Python and Linux quiz progress is preserved after opening or an
  expect(await page.evaluate(()=>localStorage.getItem('meowde-linux-cram-v1'))).toBe(raw);
 });
 
-test('the overview recognizes the shipped nested in-progress shape without changing records',async({page})=>{
+test('the simplified Linux home preserves existing Python progress without extra subject overview',async({page})=>{
  await page.goto(base+'/linux-home.html');
  const before=JSON.stringify({done:[0],inProgress:{queue:[{id:'saved'}],idx:0,lessonIndex:1}});
  await page.evaluate(value=>localStorage.setItem('meowde-v410-state',value),before);
  await page.reload();
- await expect(page.locator('.meowde-subject-overview')).toContainText('1개 레슨 완료 · 이어하기');
+ await expect(page.locator('.meowde-subject-overview')).toHaveCount(0);
+ await expect(page.locator('#guided-entry')).toBeVisible();
  expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(before);
 });

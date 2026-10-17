@@ -1,0 +1,132 @@
+/* Shared presentation only. Never modifies learning state or engine behavior. */
+:root{--meowde-font:"Pretendard Variable",Pretendard,Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--meowde-ink:#2D2A28;--meowde-muted:#7F7671;--meowde-cream:#FFF9EF;--meowde-mint:#53C7A0;--meowde-line:#E8DED0}
+html,body,button,input,select,textarea,summary{font-family:var(--meowde-font)}
+body{font-synthesis:none}
+pre,code,kbd,samp,.code,.terminal,.editor,.cm-editor,.monaco-editor{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+.meowde-more{margin:0 18px 18px;border:1px solid var(--meowde-line);border-radius:17px;background:#fff;color:var(--meowde-ink)}
+.meowde-more>summary{padding:15px 18px;font-size:14px;font-weight:750;cursor:pointer;min-height:48px}
+.meowde-more .more-links{display:grid;gap:10px;padding:0 16px 16px}
+.meowde-more .more-links .btn{min-height:44px}
+.meowde-more .more-links a{text-decoration:none}
+.meowde-more .more-links .muted{font-size:13px;color:var(--meowde-muted)}
+body .tabbar button{min-height:52px}
+body .tabbar button span{font-family:var(--meowde-font)}
+/* Keep existing learning engines and interaction affordances intact. */
+
+/* One brand palette across the opt-in learning surfaces. */
+body:has(>.shell){background:var(--meowde-cream);color:var(--meowde-ink)}
+body .shell{background:var(--meowde-cream)}
+.shell .primary{background:var(--meowde-mint);color:#fff}
+.shell .secondary{color:var(--meowde-ink)}
+.shell .eyebrow{color:#247B61}
+.shell .meowde-more{margin:14px 0}
+body:has(>.lab-header){background:var(--meowde-cream);color:var(--meowde-ink)}
+.lab-header a,.lab-header a:visited{color:var(--meowde-ink)}
+.lab-header span{color:var(--meowde-muted)}
+#lab .card,#lab .hero{border-color:var(--meowde-line)}
+#lab .primary,#lab button.primary{background:var(--meowde-mint);color:#fff;border-color:var(--meowde-mint)}
+#lab .unit-nav a[aria-current=page]{background:#E7F8F0}
+
+/* Linux pages previously inherited an independent pink token. Re-map the actual
+   legacy token as well as its hardcoded components, after linux-guided.css. */
+:root{--pink:#53C7A0;--line:#E8DED0;--muted:#7F7671}
+.shell{color:var(--meowde-ink)}
+.shell .primary{background:var(--meowde-mint);color:#fff}
+.shell .progress span{background:var(--meowde-mint)}
+.shell .hint{color:#247B61}
+.shell .feedback{color:var(--meowde-ink)}
+.shell .focus-card{border-color:var(--meowde-line);background:#fff;border-radius:20px;padding:20px;margin:16px 0}
+.shell .focus-card button{background:var(--meowde-mint);color:#fff;border:1px solid var(--meowde-mint);font-weight:750;min-height:48px}
+.shell .focus-card button#focus-hint,.shell .focus-card button#focus-exit{background:#fff;color:var(--meowde-ink);border:1px solid var(--meowde-line)}
+.shell .focus-card #focus-hint{margin-top:12px}
+.shell .focus-card #focus-action{margin-top:18px}
+.shell .focus-card pre{background:#F3F8F4;color:var(--meowde-ink);font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+.shell .focus-card input{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;border-color:var(--meowde-line);background:#fff}
+.shell .focus-card p{font-size:15px;line-height:1.65}
+.shell .focus-card summary{min-height:44px;padding:12px 0;cursor:pointer}
+.shell #focus-list .focus-card h2{font-size:18px;line-height:1.4}
+.shell #focus-list .focus-card p{font-size:14px;color:var(--meowde-muted)}
+.shell #focus-list .focus-card button{margin-top:12px}
+.shell :focus-visible{outline-color:#247B61}
+@media(max-width:360px){.shell .focus-card{padding:16px}}
+
+/* The optional Linux library uses inline pink styles; this stylesheet loads last. */
+.learning-library{background:var(--meowde-cream);color:var(--meowde-ink)}
+.learning-library body,.learning-library .app{background:var(--meowde-cream);color:var(--meowde-ink)}
+.learning-library .pill{background:#E7F8F0;color:#247B61}
+.learning-library button,.learning-library a.btn{background:var(--meowde-mint);color:#fff}
+.learning-library button.outline,.learning-library .answers button{background:#fff;color:var(--meowde-ink);border:1px solid var(--meowde-line)}
+.learning-library button[aria-current=true]{outline-color:#247B61}
+.learning-library .card{border-color:var(--meowde-line)}
+.learning-library pre,.learning-library code,.learning-library textarea{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+
+/* Bottom navigation was still a five-column grid after reducing its labels. */
+.app .tabbar{grid-template-columns:repeat(5,minmax(0,1fr));gap:2px;padding:8px 8px calc(8px + env(safe-area-inset-bottom))}
+.app .tabbar button{font-size:12px;font-weight:750;min-height:52px}
+.app .scroll>.card.hero{margin-top:12px}
+.app .meowde-more{margin-left:18px;margin-right:18px}
+.app .phase5-review .scroll .simple-head{margin-bottom:14px}
+.app .phase5-review .scroll [data-focused-review]{border:1px solid var(--meowde-line);box-shadow:none}
+.app .phase5-review .scroll [data-focused-review] details>summary{min-height:48px;display:flex;align-items:center;cursor:pointer;font-size:14px;font-weight:700}
+.app .phase5-review .scroll [data-focused-review] details>div{display:grid;gap:10px;padding:12px 0}
+.app .phase5-review .scroll [data-focused-review] button{min-height:48px}
+
+/* Visible learning journey: progress and next steps are essential, not hidden. */
+.app .meowde-home-journey{margin:12px 18px 14px;padding:18px;border-radius:20px}
+.app .meowde-home-journey .section-title{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.app .meowde-home-journey .section-title h3{font-size:17px;line-height:1.35}
+.app .meowde-home-journey .section-title strong{font-size:14px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.app .journey-progress{height:9px;background:#E7F8F0;border-radius:99px;overflow:hidden;margin:12px 0 10px}
+.app .journey-progress i{display:block;height:100%;background:#53C7A0;border-radius:99px}
+.app .meowde-home-journey>.muted{font-size:13px;margin:0 0 12px;color:var(--meowde-muted)}
+.app .journey-steps{display:grid;gap:0}
+.app .journey-step{display:flex;align-items:center;gap:10px;min-height:46px;padding:9px 0;border-bottom:1px solid var(--meowde-line)}
+.app .journey-step-index{flex:0 0 32px;font-size:12px;font-weight:800;color:#247B61}
+.app .journey-step-title{flex:1;min-width:0;font-size:14px;line-height:1.4;overflow-wrap:anywhere}
+.app .journey-step-state{flex:0 0 auto;font-size:12px;color:var(--meowde-muted)}
+.app .journey-step.is-current .journey-step-title{font-weight:800}
+.app .journey-step.is-current .journey-step-state{color:#247B61;font-weight:800}
+.app .journey-path-link{width:100%;text-align:left;font-size:14px;font-weight:750;color:#247B61;padding:14px 0 0;min-height:44px}
+@media(max-width:360px){.app .meowde-home-journey{padding:14px}.app .journey-step{gap:7px}}
+
+/* Practice-first Python lab: prioritize the actual coding task, not a textbook scroll. */
+#lab .practice-entry{background:#EAF8F1;border:1px solid #C9E9DC;border-radius:18px;padding:16px 18px;margin:16px 0 10px;color:#204D3C}
+#lab .practice-entry h3{margin:0 0 5px;font-size:18px;line-height:1.4}
+#lab .practice-entry p{margin:0 0 12px;font-size:14px;line-height:1.6}
+#lab .practice-entry-links{display:flex;flex-wrap:wrap;gap:8px}
+#lab .practice-entry-links a{min-height:40px;display:inline-flex;align-items:center;padding:8px 12px;border:1px solid #9AD7BD;background:#fff;border-radius:10px;color:#247B61;text-decoration:none;font-size:13px;font-weight:750}
+#lab .practice-primary{border-color:#9AD7BD;box-shadow:0 5px 20px rgba(33,119,84,.07);scroll-margin-top:16px}
+#lab #practice-concept,#lab #quiz{scroll-margin-top:16px}
+#lab .practice-primary>h3{color:#204D3C}
+#lab .practice-primary .actions .primary{background:#53C7A0;color:#173D31;border-color:#53C7A0}
+#lab .practice-primary .actions button{min-height:48px}
+@media(max-width:760px){#lab .hero{margin-bottom:12px;padding:14px}#lab .hero p.meta{font-size:12px}#lab .practice-entry{margin:10px 0 8px;padding:14px}#lab .practice-primary{margin-top:8px}#lab .practice-primary textarea.code{min-height:180px}}
+
+#lab .practice-mode-switch{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 16px}
+#lab .practice-mode-switch>div{border:1px solid var(--meowde-line);background:#fff;border-radius:15px;padding:12px 14px;display:grid;align-content:start;gap:5px;min-width:0}
+#lab .practice-mode-switch>div.is-active{border-color:#9AD7BD;background:#EAF8F1}
+#lab .practice-mode-switch strong{font-size:14px}
+#lab .practice-mode-switch span{font-size:12px;color:var(--meowde-muted);line-height:1.5}
+#lab .practice-mode-switch a{font-size:13px;font-weight:750;color:#247B61;min-height:36px;display:inline-flex;align-items:center}
+#lab .practice-mode-switch .mode-current{font-weight:750;color:#247B61}
+@media(max-width:380px){#lab .practice-mode-switch>div{padding:10px}#lab .practice-mode-switch strong{font-size:13px}}
+
+/* Keep global navigation on the standalone practice page, including iOS safe area. */
+body:has(.meowde-lab-tabbar){padding-bottom:calc(68px + env(safe-area-inset-bottom,0px))}
+.meowde-lab-tabbar{position:fixed;left:0;right:0;bottom:0;z-index:100;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;min-height:68px;padding:7px max(10px,env(safe-area-inset-left,0px)) calc(7px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-right,0px));background:rgba(255,255,255,.97);border-top:1px solid var(--meowde-line);box-shadow:0 -3px 18px rgba(45,42,40,.06)}
+.meowde-lab-tabbar a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:50px;border-radius:12px;text-decoration:none;color:var(--meowde-muted);font-size:11px;font-weight:750;line-height:1.3}
+.meowde-lab-tabbar a.is-active{background:#EAF8F1;color:#247B61}
+.meowde-lab-tabbar .lab-nav-icon{font-size:22px;line-height:1.2;font-weight:600}
+.meowde-lab-tabbar a:focus-visible{outline:3px solid #247B61;outline-offset:-2px}
+@media(min-width:480px){.meowde-lab-tabbar{max-width:430px;margin-inline:auto;border-radius:16px 16px 0 0}}
+@media(max-width:360px){.meowde-lab-tabbar{padding-left:3px;padding-right:3px}.meowde-lab-tabbar a{font-size:10px}}
+
+/* Practice-first: one primary task, with optional learning references. */
+#lab .practice-route-details{margin:0 0 12px;padding:0 12px;border:1px solid var(--meowde-line);border-radius:14px;background:#fff}
+#lab .practice-route-details>summary{font-size:13px;color:var(--meowde-muted);padding:9px 2px}
+#lab .practice-route-details .practice-mode-switch{margin:0 0 12px}
+#lab .practice-learning-support{border:1px solid var(--meowde-line);border-radius:16px;background:#fff;margin:12px 0;padding:0 16px}
+#lab .practice-learning-support>summary{padding:12px 0;font-size:14px;font-weight:750}
+#lab .practice-learning-support>.card{border:0;border-top:1px solid var(--meowde-line);border-radius:0;margin:0;padding:16px 0}
+#lab .practice-primary{margin-top:10px}
+@media(max-width:760px){#lab .practice-entry{padding:12px 14px}#lab .practice-entry-links{gap:6px}#lab .practice-entry-links a{min-height:38px}#lab .practice-primary{padding:16px}}

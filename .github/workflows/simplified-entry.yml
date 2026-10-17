@@ -1,0 +1,24 @@
+name: Simplified Entry Verification
+on:
+  push:
+    branches: [feat/simplified-learning-entry-20261017]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - name: Full validation with entry progress tests
+        run: npm run validate
+      - name: Chromium browser regression
+        run: |
+          pnpm exec playwright install --with-deps chromium
+          pnpm exec playwright test

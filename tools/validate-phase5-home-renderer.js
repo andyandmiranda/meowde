@@ -15,7 +15,7 @@ assert(home.includes("dataset.homeRenderer='canonical-v414'"),'v414 declares can
 assert(home.includes('window.__MEOWDE_CANONICAL_HOME_RENDERER__=renderHome'),'canonical Home renderer reference is retained');
 assert(home.includes('v449-coding-scene'),'Home renders final character hero directly');
 assert(home.includes('v448-brand-cat'),'Home renders final brand mark directly');
-assert(home.includes('data-phase1-navigation="five-tabs"'),'Home renders the five-tab navigation directly');
+assert(home.includes('data-phase1-navigation="three-tabs"'),'Home renders the three-tab navigation directly');
 assert(home.includes('https://amis-os.vercel.app/feedback'),'Home renders Feedback & Contact directly');
 
 assert(!character.includes('oldHome=window.renderHome'),'v430 no longer wraps Home');

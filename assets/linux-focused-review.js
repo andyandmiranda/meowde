@@ -5,23 +5,23 @@ let storage;try{storage=localStorage;}catch(error){storage={getItem(){throw erro
 const history=MeowFocusedReviewStore.open(storage,'linux'),stages=MeowFocusedReviewStore.stages;
 let selected=null,current=0,passed=false,hintUsed=false,attempts=0;
 function tasks(record){const target=record.exerciseId==='mkdir-travel'?'travel':'training';return [
- {stage:'missed',title:'틀렸던 문제 다시 풀기',prompt:target+' 폴더를 만들어 주세요.',target,answer:'mkdir '+target,why:'mkdir 뒤에 폴더 이름을 적으면 그 이름의 디렉터리가 생겨요.'},
- {stage:'concept',title:'개념 다시 이해하기',prompt:'디렉터리는 파일을 담는 폴더예요. mkdir은 새 디렉터리를 만들어요. projects/photos처럼 /로 경로를 적으면 이미 있는 projects 안에 photos를 만들 수 있어요.',example:'mkdir photos\nmkdir projects/photos'},
- {stage:'similar',title:'유사 문제',prompt:'이번에는 photos 폴더를 만들어 주세요.',target:'photos',answer:'mkdir photos',why:'명령어는 같고 만들 폴더 이름만 달라져요.'},
- {stage:'application',title:'응용: 프로젝트 안에 정리하기',prompt:'projects 폴더는 이미 있어요. 그 안에 travel 폴더를 만들어 프로젝트 자료를 정리하세요.',target:'projects/travel',answer:'mkdir projects/travel',why:'projects/travel은 projects 폴더 안의 travel이라는 경로예요.'},
- {stage:'check',title:'이해도 확인',prompt:'이번에는 projects 폴더 안에 notes 폴더를 만들어 주세요. 먼저 힌트 없이 도전해 보세요.',target:'projects/notes',answer:'mkdir projects/notes',why:'부모 폴더 projects와 새 폴더 notes 사이에 /를 넣으면 돼요.'}
+ {stage:'missed',title:'다시 풀어보기',prompt:target+' 폴더를 만들어 주세요.',target,answer:'mkdir '+target,why:'mkdir 뒤에 폴더 이름을 적으면 그 이름의 디렉터리가 생겨요.'},
+ {stage:'concept',title:'왜 그럴까?',prompt:'디렉터리는 파일을 담는 폴더예요. mkdir은 새 디렉터리를 만들어요. projects/photos처럼 /로 경로를 적으면 이미 있는 projects 안에 photos를 만들 수 있어요.',example:'mkdir photos\nmkdir projects/photos'},
+ {stage:'similar',title:'한 번 더 해보기',prompt:'이번에는 photos 폴더를 만들어 주세요.',target:'photos',answer:'mkdir photos',why:'명령어는 같고 만들 폴더 이름만 달라져요.'},
+ {stage:'application',title:'직접 써보기',prompt:'projects 폴더는 이미 있어요. 그 안에 travel 폴더를 만들어 프로젝트 자료를 정리하세요.',target:'projects/travel',answer:'mkdir projects/travel',why:'projects/travel은 projects 폴더 안의 travel이라는 경로예요.'},
+ {stage:'check',title:'마지막 확인',prompt:'이번에는 projects 폴더 안에 notes 폴더를 만들어 주세요. 먼저 힌트 없이 도전해 보세요.',target:'projects/notes',answer:'mkdir projects/notes',why:'부모 폴더 projects와 새 폴더 notes 사이에 /를 넣으면 돼요.'}
  ];}
 function notice(){el('focus-storage-status').textContent=history.issue;}
 function list(){
  el('focus-list').hidden=false;el('focus-player').hidden=true;const list=el('focus-list');list.replaceChildren();
  const records=history.state.records.filter(r=>r.lessonId==='mkdir-intro'&&['mkdir-training','mkdir-travel'].includes(r.exerciseId)&&r.lang==='ko');
- if(!records.length){list.append(node('p','아직 새 복습 기록이 없어요. 기존 완료 점수에서 오답을 추정하지 않아요.'));const link=node('a','첫 폴더 만들기 학습으로 →');link.href='/linux-start.html';list.append(link);}
- for(const record of records){const card=node('section','');card.className='focus-card';card.append(node('h2',record.exerciseId==='mkdir-travel'?'여행 폴더 만들기':'연습 폴더 만들기'),node('p','최초 오답 기록 유지'+(record.retrySuccesses?' · 이후 재시도 성공 이력 있음':'')),node('p',record.stages.check?.passed?'폴더 개념 확인 완료 · 전체 Linux 숙련 평가는 아니에요.':'틀린 이유를 정리하고 유사·응용 문제로 확인해요.'));const button=node('button','집중 복습 시작·이어하기');button.type='button';button.onclick=()=>{selected=record;const pending=stages.findIndex(stage=>stage==='concept'?!record.stages.concept?.viewed:!record.stages[stage]?.passed);current=pending<0?0:pending;render();};card.append(button);list.append(card);}
+ if(!records.length){list.append(node('p','복습할 문제가 아직 없어. 먼저 한 문제 풀어볼까?'));const link=node('a','첫 폴더 만들기 학습으로 →');link.href='/linux-start.html';list.append(link);}
+ for(const record of records){const card=node('section','');card.className='focus-card';card.append(node('h2',record.exerciseId==='mkdir-travel'?'여행 폴더 만들기':'연습 폴더 만들기'),node('p',record.retrySuccesses?'이전에 헷갈렸지만 다시 성공했어.':'헷갈렸던 내용을 다시 확인해 봐.'),node('p',record.stages.check?.passed?'복습 완료':'짧은 문제로 다시 익혀봐.'));const button=node('button','복습 시작 · 이어하기');button.type='button';button.onclick=()=>{selected=record;const pending=stages.findIndex(stage=>stage==='concept'?!record.stages.concept?.viewed:!record.stages[stage]?.passed);current=pending<0?0:pending;render();};card.append(button);list.append(card);}
  notice();
 }
 function render(){
  const task=tasks(selected)[current],concept=task.stage==='concept';passed=false;hintUsed=false;attempts=0;
- el('focus-list').hidden=true;el('focus-player').hidden=false;el('focus-step').textContent=(current+1)+' / 5 · 최초 오답은 지워지지 않아요.';
+ el('focus-list').hidden=true;el('focus-player').hidden=false;el('focus-step').textContent=(current+1)+' / 5';
  el('focus-title').textContent=task.title;el('focus-concept').textContent=task.prompt;el('focus-example').hidden=!concept;el('focus-example').textContent=task.example||'';
  for(const id of ['focus-input','focus-input-label','focus-hint'])el(id).hidden=concept;
  el('focus-input').value='';el('focus-feedback').textContent='';el('focus-answer').hidden=true;el('focus-answer').open=false;

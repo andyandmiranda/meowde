@@ -23,16 +23,17 @@
   function render(){
     stop();
     const r=record(),u=unit,t=u.task;
-    root.innerHTML=`<section class="hero"><img src="/assets/meowde-approved-headphones.svg?v=450" alt=""><div><h1>${escape(data.title)}</h1><p>원리를 이해하고, 다른 입력에도 적용해보세요.</p><p class="meta">${escape(data.notice)}</p></div></section>
+    root.innerHTML=`<section class="hero"><img src="/assets/meowde-approved-headphones.svg?v=450" alt=""><div><h1>Python 실습</h1><p>학습한 개념을 직접 적용해 봐요.</p><p class="meta">${escape(data.notice)}</p></div></section>
+      <div class="practice-mode-switch" aria-label="실습 방식 안내"><div><strong>기본 문제</strong><span>레슨 속 짧은 문제부터</span><a href="/learning-path.html?subject=python">학습 경로에서 풀기 →</a></div><div class="is-active"><strong>추가 코드 실습</strong><span>18개 응용 단원 · 현재: ${escape(u.title)}</span><span class="mode-current">지금 이 화면</span></div></div>
       <p id="storage-status" class="storage-warning" role="status"></p>
       <button class="nav-toggle" id="nav-toggle" aria-controls="unit-nav" aria-expanded="false">단원 목록 열기</button>
       <div class="layout"><nav id="unit-nav" class="unit-nav" data-collapsed="true" aria-label="학습 단원">${navigation()}</nav>
       <article class="lesson" aria-labelledby="unit-title"><h2 id="unit-title" tabindex="-1">${escape(u.title)}</h2><p class="badge">${stateLabel(u)}</p>
-      <section class="card"><h3>준비와 학습 목표</h3><div class="prerequisites">선수 개념: ${u.prerequisites.length?u.prerequisites.map(id=>`<a href="#${id}">${escape(data.units.find(x=>x.id===id).title)}</a>`).join(""):"없음 · 첫 학습부터 시작할 수 있습니다."}</div>${list(u.goals)}<p class="meta">목표를 읽고 낯선 용어가 있으면 아래 용어 설명부터 확인하세요. 어느 단원이든 자유롭게 열 수 있습니다.</p></section>
+      <section class="card"><h3>학습 목표와 준비 사항</h3><div class="prerequisites">선수 개념: ${u.prerequisites.length?u.prerequisites.map(id=>`<a href="#${id}">${escape(data.units.find(x=>x.id===id).title)}</a>`).join(""):"없음 · 첫 학습부터 시작할 수 있습니다."}</div>${list(u.goals)}<p class="meta">목표를 읽고 낯선 용어가 있으면 아래 용어 설명부터 확인하세요. 어느 단원이든 자유롭게 열 수 있습니다.</p></section>
       <section class="card"><h3>왜 필요하고, 어떻게 동작할까?</h3><p>${escape(u.concept)}</p><details><summary>새 용어와 문법 확인하기</summary><dl>${Object.entries(u.glossary).map(([k,v])=>`<dt>${escape(k)}</dt><dd>${escape(v)}</dd>`).join("")}</dl></details></section>
       <section class="card"><h3>실행 흐름 따라가기</h3><pre>${escape(u.example)}</pre><p>예상 출력</p><pre>${escape(u.output)}</pre>${list(u.flow,true)}<button data-run="example">예제 실행</button><h4>흔한 오해</h4>${list(u.pitfalls)}</section>
       <section class="card" id="quiz"><h3>이해 확인 · 결과 예측</h3><p class="meta">${escape(u.quiz.difficulty)} · 목표: ${escape(u.quiz.goal)}<br>평가 기준: ${escape(u.quiz.criteria)}<br>선수 개념: 이 단원의 개념과 실행 흐름</p><pre>${escape(u.quiz.code)}</pre><div>${u.quiz.choices.map((c,i)=>`<button class="choice" data-choice="${i}" aria-pressed="false">${escape(c)}</button>`).join("")}</div><p id="quiz-feedback" role="status"></p></section>
-      <section class="card" id="practice"><h3>직접 작성 · ${escape(t.type)}</h3><p class="meta">${escape(t.difficulty)} · 학습 목표: ${escape(u.goals.join(" / "))}<br>선수 개념: ${escape(u.prerequisites.map(id=>data.units.find(x=>x.id===id).title).concat(u.title).join(" → "))}</p><p>${escape(t.prompt)}</p><h4>평가 기준</h4>${list(t.criteria)}
+      <section class="card" id="practice"><h3>이번 문제 · ${escape(t.type)}</h3><p class="meta">${escape(t.difficulty)} · 학습 목표: ${escape(u.goals.join(" / "))}<br>선수 개념: ${escape(u.prerequisites.map(id=>data.units.find(x=>x.id===id).title).concat(u.title).join(" → "))}</p><p>${escape(t.prompt)}</p><h4>평가 기준</h4>${list(t.criteria)}
       <label for="learner-code">내 코드 · 공백 4칸으로 들여쓰세요</label><textarea id="learner-code" class="code" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-describedby="code-info">${escape(typeof r.draft==="string"?r.draft:t.starter)}</textarea><p id="code-info" class="meta">Tab으로 공백 4칸을 넣을 수 있습니다. 실행은 브라우저의 임시 환경에서 진행합니다. 입력 대기는 지원하지 않으며 각 테스트는 새 변수·임시 폴더에서 시작합니다.</p>
       <div class="actions"><button data-run="grade" class="primary">코드 실행 · 기준 확인</button><button id="hint-button">힌트 한 단계 보기</button><button id="stop-run" hidden>실행 중지</button></div><div id="hints">${(t.hints.slice(0,r.hints||0)).map((h,i)=>`<p class="feedback">힌트 ${i+1}: ${escape(h)}</p>`).join("")}</div>
       <details id="solution"><summary>풀이와 대안 보기 · 도움받은 학습으로 기록</summary><p>먼저 힌트를 적용해 직접 작성해보세요. 풀이를 본 뒤에는 다른 날 다시 작성해 독립 적용을 확인할 수 있습니다.</p>${list(t.steps,true)}<pre>${escape(t.model)}</pre><h4>흔한 실수</h4><p>${escape(t.mistake)}</p><h4>대안과 장단점</h4><p>${escape(t.alternative)}</p></details>
@@ -40,6 +41,55 @@
       ${u.reflection?`<section class="card"><h3>분석 판단 · 자기 점검</h3><p>${escape(u.reflection.prompt)}</p>${list(u.reflection.criteria)}<label for="reflection">내 판단과 추가 자료</label><textarea class="reflection" id="reflection">${escape(r.reflection||"")}</textarea><button id="reflection-save">자기 점검 메모 저장</button><p id="reflection-status" role="status"></p><details><summary>판단 비교하기 · 자동 채점 없음</summary><p>${escape(u.reflection.guidance)}</p></details></section>`:""}
       <section class="card"><h3>복습과 다음 학습</h3><div id="recommendation">${recommendation()}</div><button id="independent-retry">도움 없이 다시 작성하기</button><p class="meta">저장한 코드를 비우고 힌트를 접습니다. 기존 통과 이력은 유지하며 다음 제출은 독립 적용으로 다시 확인합니다.</p></section>
       </article></div>`;
+    // Practice is the primary destination. Preserve all original learning sections,
+    // feedback, hints, editor draft and grading; only improve their presentation order.
+    const lesson=root.querySelector(".lesson");
+    const practice=root.querySelector("#practice");
+    const intro=lesson?.querySelector("#unit-title");
+    if(lesson&&practice&&intro){
+      // The problem is already visible; do not add a second row of jump buttons.
+      const firstCard=lesson.querySelector(".card");
+      if(firstCard)lesson.insertBefore(practice,firstCard);
+      // Feedback belongs immediately after Run, before optional hints and solutions.
+      const actions=practice.querySelector(".actions");
+      const status=practice.querySelector("#run-status");
+      const results=practice.querySelector("#run-results");
+      if(actions&&status&&results){
+        actions.after(status);
+        status.after(results);
+      }
+      const conceptCards=[...lesson.querySelectorAll(".card")];
+      const concept=conceptCards.find(el=>el.querySelector("h3")?.textContent?.includes("왜 필요하고"));
+      if(concept)concept.id="practice-concept";
+      practice.classList.add("practice-primary");
+      // Keep the full curriculum available, but make the editor the first task.
+      // Supplementary reading stays one tap away instead of crowding the exercise.
+      const supporting=[...lesson.querySelectorAll(":scope > section.card")].filter(card=>["학습 목표와 준비 사항","왜 필요하고, 어떻게 동작할까?","실행 흐름 따라가기"].some(title=>card.querySelector("h3")?.textContent?.includes(title)));
+      const group=document.createElement("details");
+      group.className="practice-learning-support";
+      const summary=document.createElement("summary");
+      summary.textContent="개념 · 예제 · 학습 목표 펼쳐보기";
+      group.append(summary);
+      supporting.forEach(card=>group.append(card));
+      const quiz=lesson.querySelector("#quiz");
+      if(quiz)lesson.insertBefore(group,quiz);else lesson.append(group);
+      const help=document.createElement("button");
+      help.type="button";
+      help.className="practice-concept-help";
+      help.textContent="개념 보기";
+      help.addEventListener("click",()=>{
+        group.open=true;
+        group.scrollIntoView({block:"start",behavior:"smooth"});
+      });
+      const actionRow=practice.querySelector(".actions");
+      if(actionRow)actionRow.append(help);
+      // The same route switch is still available for users who need the distinction,
+      // but it no longer competes with the primary practice task.
+      const mode=root.querySelector(".practice-mode-switch");
+      if(mode){const modes=document.createElement("details");modes.className="practice-route-details";
+        const label=document.createElement("summary");label.textContent="다른 학습 방식 보기";modes.append(label,mode);root.querySelector(".hero")?.after(modes);}
+
+    }
     if(storageProblem)showStorageProblem();
     bind();
   }

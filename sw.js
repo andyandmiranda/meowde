@@ -7,7 +7,6 @@ const REQUIRED_ASSETS = [
   "/assets/python-lab.css",
   "/assets/python-lab.js",
   "/assets/python-lab-worker.js",
-  "/assets/python-lab-entry.js",
   "/",
   "/v412.html",
   "/index.html",
