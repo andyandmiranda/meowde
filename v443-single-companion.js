@@ -34,9 +34,53 @@
     if(current&&["room","my"].includes(current.screen))renderCompanionHub();
     return true;
   }
+  // Character appearances are independent from the learning guidance mode.
+  const CHARACTER_KEY="meowde-character-pose";
+  const CHARACTER_POSES=Object.freeze([
+    {id:"coding",ko:"코딩",en:"Coding"},
+    {id:"music",ko:"댄싱",en:"Dancing"},
+    {id:"reading",ko:"독서",en:"Reading"},
+    {id:"happy",ko:"기쁨",en:"Happy"},
+    {id:"challenge",ko:"도전",en:"Challenge"},
+    {id:"debug",ko:"디버그",en:"Debug"}
+  ]);
+  function currentCharacter(){
+    let id="coding";try{id=localStorage.getItem(CHARACTER_KEY)||id}catch(error){}
+    return CHARACTER_POSES.find(item=>item.id===id)||CHARACTER_POSES[0];
+  }
+  function characterMarkup(id,className=""){
+    const pose=CHARACTER_POSES.find(item=>item.id===id)||CHARACTER_POSES[0];
+    return `<img class="v443-character-pose ${className}" src="/assets/characters/v451/meowde-${pose.id}.webp" alt="" decoding="async">`;
+  }
+  function selectCharacter(id){
+    if(!CHARACTER_POSES.some(item=>item.id===id))return false;
+    try{localStorage.setItem(CHARACTER_KEY,id)}catch(error){console.warn("Character preference could not be saved:",error)}
+    const current=runtimeState();
+    if(current&&["room","my"].includes(current.screen))renderCompanionHub();
+    return true;
+  }
+  function characterGrid(){
+    const selected=currentCharacter(),ko=isKorean();
+    return `<div class="room-grid v443-mode-grid" role="group" aria-label="${ko?'캐릭터 모습 선택':'Choose character appearance'}">${CHARACTER_POSES.map(item=>`<button type="button" class="v443-mode-card ${item.id===selected.id?'selected':''}" aria-pressed="${item.id===selected.id}" onclick="MeowCharacterPose.select('${item.id}')">${characterMarkup(item.id,"v443-mode-thumb")}<span class="v443-mode-copy"><b>${ko?item.ko:item.en}</b></span></button>`).join("")}</div>`;
+  }
   function coachModeGrid(){
     const selected=currentCoachMode(),ko=isKorean();
-    return `<div class="room-grid v443-single-companion v443-mode-grid" role="group" aria-label="${ko?'Meowde 코치 모드 선택':'Choose Meowde coach mode'}">${COACH_MODES.map(mode=>{const active=mode.id===selected.id;return `<button type="button" class="v443-mode-card ${active?'selected':''}" aria-pressed="${active?'true':'false'}" onclick="MeowCoachMode.select('${mode.id}')">${coachModeImageMarkup(mode,"v443-mode-thumb")}<span class="v443-mode-copy"><b>${esc(ko?mode.labelKo:mode.labelEn)}</b><small>${esc(ko?mode.copyKo:mode.copyEn)}</small></span><span class="v443-mode-status">${active?(ko?'선택됨':'Selected'):''}</span></button>`}).join("")}</div>`;
+    return `<div class="v443-coach-style-grid" role="group" aria-label="${ko?'코치 모드 선택':'Choose coach mode'}">${COACH_MODES.map(mode=>`<button type="button" class="v443-coach-style ${selected.id===mode.id?'selected':''}" aria-pressed="${selected.id===mode.id}" onclick="MeowCoachMode.select('${mode.id}')"><b>${esc(ko?mode.labelKo:mode.labelEn)}</b><small>${esc(ko?mode.copyKo:mode.copyEn)}</small></button>`).join("")}</div>`;
+  }
+  function decorateLessonCharacter(){
+    const current=runtimeState();
+    if(!current||current.screen!=="lesson")return;
+    const coach=app&&app.querySelector(".coach");
+    if(!coach)return;
+    const original=coach.querySelector("svg");
+    const existing=coach.querySelector(".v443-lesson-pose");
+    if(!original&&!existing)return;
+    const checked=Boolean(current.checked);
+    const asset=checked?(current.correct?"happy":"debug"):(current.hint?"reading":currentCharacter().id);
+    if(existing){if(existing.dataset.pose!==asset){existing.src="/assets/characters/v451/meowde-"+asset+".webp";existing.dataset.pose=asset}return}
+    const img=document.createElement("img");
+    img.className="v443-lesson-pose";img.src="/assets/characters/v451/meowde-"+asset+".webp";img.alt="";img.dataset.pose=asset;img.decoding="async";
+    original.replaceWith(img);
   }
   function forceSingleCompanion(){
     const current=runtimeState();
@@ -129,11 +173,12 @@
     const modeLabel=ko?mode.labelKo:mode.labelEn;
     const modeCopy=ko?mode.copyKo:mode.copyEn;
     const sections=growthCard()+achievementSummary()+milestoneCard()+eventCards();
-    app.innerHTML=`<div class="screen">${brand()}${stats()}<div class="scroll" data-phase3-companion-hub="ordered"><div class="simple-head"><h2>Meowde</h2><p>${intro}</p></div><section class="card profile-card v443-selected-mode">${coachModeImageMarkup(mode,"v443-selected-mode-image",modeLabel)}<div class="profile-copy"><div class="section-kicker">${ko?'현재 코치 모드':'Current coach mode'}</div><h3>${esc(modeLabel)}</h3><p>${esc(modeCopy)} · ${profileCopy}</p></div></section><div class="v443-mode-heading"><div><h3>${ko?'코치 모드 6가지':'6 coach modes'}</h3><p>${ko?'원하는 모습을 누르면 바로 저장돼요.':'Tap a mode to save it instantly.'}</p></div></div>${coachModeGrid()}${sections}<div class="profile-stats"><div class="profile-stat"><b>${Number(current.xp)||0}</b><span>XP</span></div><div class="profile-stat"><b>${Number(current.churu)||0}</b><span>${ko?"츄르":"Churu"}</span></div><div class="profile-stat"><b>${progressPercent()}%</b><span>${ko?"진도":"Progress"}</span></div></div></div>${canonicalTabs()}</div>`;
+    app.innerHTML=`<div class="screen">${brand()}${stats()}<div class="scroll" data-phase3-companion-hub="ordered"><div class="simple-head"><h2>Meowde</h2><p>${intro}</p></div><section class="card profile-card v443-selected-mode">${coachModeImageMarkup(mode,"v443-selected-mode-image",modeLabel)}<div class="profile-copy"><div class="section-kicker">${ko?'현재 코치 모드':'Current coach mode'}</div><h3>${esc(modeLabel)}</h3><p>${esc(modeCopy)} · ${profileCopy}</p></div></section><div class="v443-mode-heading"><div><h3>${ko?'캐릭터 6가지':'6 character poses'}</h3><p>${ko?'좋아하는 모습을 선택하세요.':'Choose your favorite appearance.'}</p></div></div>${characterGrid()}<div class="v443-mode-heading"><div><h3>${ko?\'학습 지원 방식\':\'Coaching style\'}</h3></div></div>${coachModeGrid()}${sections}<div class="profile-stats"><div class="profile-stat"><b>${Number(current.xp)||0}</b><span>XP</span></div><div class="profile-stat"><b>${Number(current.churu)||0}</b><span>${ko?"츄르":"Churu"}</span></div><div class="profile-stat"><b>${progressPercent()}%</b><span>${ko?"진도":"Progress"}</span></div></div></div>${canonicalTabs()}</div>`;
     document.documentElement.dataset.companionSystem="single";document.documentElement.dataset.navigation="phase1-four-tabs";document.documentElement.dataset.roomRenderer="canonical-v443";document.documentElement.dataset.coachMode=mode.id;
     if(window.MeowCharacterMaster&&typeof MeowCharacterMaster.purgeLegacyCats==="function")MeowCharacterMaster.purgeLegacyCats();
   }
   function decorate(root=document){
+    decorateLessonCharacter();
     forceSingleCompanion();
     const current=runtimeState();
     const canonicalSurface=current&&["home","map","review","profile","achievements","room","my"].includes(current.screen);
@@ -147,6 +192,7 @@
   const observer=new MutationObserver(records=>{const added=records.some(record=>record.addedNodes&&record.addedNodes.length);if(added)queueDecoration(document)});
   observer.observe(document.documentElement,{childList:true,subtree:true});
 
+  window.MeowCharacterPose=Object.freeze({storageKey:CHARACTER_KEY,poses:CHARACTER_POSES,current:currentCharacter,select:selectCharacter});
   window.MeowCoachMode=Object.freeze({version:VERSION,storageKey:MODE_STORAGE_KEY,modes:COACH_MODES,current:currentCoachMode,select:selectCoachMode,imageMarkup:coachModeImageMarkup});
   window.MeowSingleCompanion=Object.freeze({version:VERSION,render:renderCompanionHub,tabs:canonicalTabs,decorate,normalizeNavigation,forceSingleCompanion});
   window.__MEOWDE_VERSION__=VERSION;
