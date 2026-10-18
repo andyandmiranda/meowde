@@ -11,5 +11,4 @@ control.append(label,select);more.before(control);
 function show(mode){sections.forEach((s,i)=>{s.hidden=!(mode==="concept"?(i===0||i===1):mode==="terminal"?i===2:mode==="condition"?i===3:i===4)})}
 window.MeowdeOpenPractice=function(mode){if(!["concept","terminal","condition","bash"].includes(mode))return;select.value=mode;show(mode);};
 select.onchange=()=>show(select.value);show("concept");
-document.addEventListener("click",e=>{const button=e.target.closest("[data-quiz-guide]");if(button&&!button.disabled){const active=document.getElementById("nav").querySelector('[aria-current="true"]');const unit=Number(active?.textContent.match(/\d+/)?.[0]);window.MeowdeOpenPractice(unit===8?"condition":unit===9?"bash":"terminal");}});
 })();
