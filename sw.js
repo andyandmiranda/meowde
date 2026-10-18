@@ -1,7 +1,9 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v471-tester-build-identity";
+const CACHE_NAME = "meowde-v472-linux-five-tabs";
 
 const REQUIRED_ASSETS = [
+  "/assets/linux-shared-navigation.js",
+  "/assets/linux-shared-navigation.css",
   "/python-lab.html",
   "/assets/python-lab-content.json",
   "/assets/python-lab.css",
