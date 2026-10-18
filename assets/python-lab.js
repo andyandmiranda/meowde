@@ -4,14 +4,22 @@
   const escape=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const list=(items,ordered=false)=>`<${ordered?"ol":"ul"}>${items.map(item=>`<li>${escape(item)}</li>`).join("")}</${ordered?"ol":"ul"}>`;
   let data,progress={},unit,worker=null,timer=null,busy=false,storageProblem=false;
-  let runAssisted=false;
-  try{const stored=JSON.parse(localStorage.getItem(KEY)||"{}");if(stored&&stored.version===1&&stored.units&&typeof stored.units==="object"&&!Array.isArray(stored.units))progress=stored.units}catch{storageProblem=true}
+  let runAssisted=false,storageReadBlocked=false;
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(raw!==null){
+      const stored=JSON.parse(raw);
+      const object=value=>value!==null&&typeof value==="object"&&!Array.isArray(value);
+      if(!object(stored)||stored.version!==1||!object(stored.units)||!Object.values(stored.units).every(object))throw new Error("Unsupported practice records");
+      progress=stored.units;
+    }
+  }catch{storageProblem=true;storageReadBlocked=true}
   function record(id=unit.id){
     if(!progress[id]||typeof progress[id]!=="object"||Array.isArray(progress[id]))progress[id]={};
     return progress[id];
   }
-  function save(){try{localStorage.setItem(KEY,JSON.stringify({version:1,units:progress}));return true}catch{storageProblem=true;showStorageProblem();return false}}
-  function showStorageProblem(){const notice=document.getElementById("storage-status");if(notice)notice.textContent="이 브라우저에 기록을 저장하지 못했습니다. 현재 탭에서는 계속할 수 있지만 새로고침하면 사라질 수 있습니다."}
+  function save(){if(storageReadBlocked){showStorageProblem();return false}try{localStorage.setItem(KEY,JSON.stringify({version:1,units:progress}));return true}catch{storageProblem=true;showStorageProblem();return false}}
+  function showStorageProblem(){const notice=document.getElementById("storage-status");if(notice)notice.textContent=storageReadBlocked?"기존 기록을 안전하게 읽을 수 없어 덮어쓰지 않았습니다. 현재 탭에서 연습할 수 있지만 새 작업은 저장되지 않으니 코드를 별도로 복사해두세요.":"이 브라우저에 기록을 저장하지 못했습니다. 현재 탭에서는 계속할 수 있지만 새로고침하면 사라질 수 있습니다."}
   function stateLabel(u){const r=record(u.id);return r.lastPassed===false?"최근 재시도 · 복습 권장":r.independentPassed&&r.quizPassed?"혼자 적용 확인":r.passed?"코드 통과 · 이해/독립 재도전 권장":r.attempts?"복습 권장":"학습 시작"}
   function navigation(){return data.units.map((u,i)=>`<a href="#${u.id}" ${u.id===unit.id?'aria-current="page"':''}>${i+1}. ${escape(u.title)}<small>${stateLabel(u)}</small></a>`).join("")}
   function stop(message){
@@ -40,6 +48,100 @@
       ${u.reflection?`<section class="card"><h3>분석 판단 · 자기 점검</h3><p>${escape(u.reflection.prompt)}</p>${list(u.reflection.criteria)}<label for="reflection">내 판단과 추가 자료</label><textarea class="reflection" id="reflection">${escape(r.reflection||"")}</textarea><button id="reflection-save">자기 점검 메모 저장</button><p id="reflection-status" role="status"></p><details><summary>판단 비교하기 · 자동 채점 없음</summary><p>${escape(u.reflection.guidance)}</p></details></section>`:""}
       <section class="card"><h3>복습과 다음 학습</h3><div id="recommendation">${recommendation()}</div><button id="independent-retry">도움 없이 다시 작성하기</button><p class="meta">저장한 코드를 비우고 힌트를 접습니다. 기존 통과 이력은 유지하며 다음 제출은 독립 적용으로 다시 확인합니다.</p></section>
       </article></div>`;
+    // Keep all existing learning aids but place the hands-on task first.
+    // This is a presentation-only move: IDs, inputs, grading and storage are unchanged.
+    const article=root.querySelector(".lesson"),practice=root.querySelector("#practice");
+    if(article&&practice){
+      const firstSection=article.querySelector(":scope > section.card");
+      if(firstSection)article.insertBefore(practice,firstSection);
+      const support=[...article.querySelectorAll(":scope > section.card")].filter(card=>card!==practice&&card.id!=="quiz"&&
+        ["준비와 학습 목표","왜 필요하고, 어떻게 동작할까?","실행 흐름 따라가기"].some(title=>card.querySelector("h3")?.textContent?.includes(title)));
+      if(support.length){
+        const details=document.createElement("details");
+        details.className="practice-support";
+        const summary=document.createElement("summary");
+        summary.textContent="개념 · 예제 · 학습 목표 보기";
+        details.append(summary);
+        support.forEach(card=>details.append(card));
+        practice.after(details);
+      }
+      const actions=practice.querySelector(".actions"),status=practice.querySelector("#run-status"),results=practice.querySelector("#run-results");
+      if(actions&&status&&results){actions.after(status);status.after(results);}
+      // Secondary grading criteria and long runtime help remain available on demand.
+      // Never collapse the problem prompt, editor, run action, hint, or live results.
+      const criteria=practice.querySelector("h4");
+      if(criteria&&criteria.textContent==="평가 기준"){
+        const group=document.createElement("details");
+        group.className="practice-criteria";
+        const title=document.createElement("summary");
+        title.textContent="채점 기준 · 도움말";
+        group.append(title);
+        const criteriaList=criteria.nextElementSibling;
+        const description=practice.querySelector(":scope > p.meta");
+        if(description)group.append(description);
+        group.append(criteria);
+        if(criteriaList?.tagName==="UL"||criteriaList?.tagName==="OL")group.append(criteriaList);
+        const info=practice.querySelector("#code-info");
+        if(info)group.append(info);
+        const runtime=practice.querySelector("#run-results + p.meta");
+        if(runtime)group.append(runtime);
+        const prompt=practice.querySelector(":scope > p:not(.meta)");
+        if(prompt)prompt.after(group);else practice.prepend(group);
+      }
+      practice.classList.add("practice-primary");
+      // Focus mode: keep just ONE task visible. All educational material remains
+      // intact in a separate accessible dialog, not another long scrolling page.
+      const sheet=document.createElement("dialog");
+      sheet.id="practice-tools";
+      sheet.className="practice-tools-sheet";
+      sheet.setAttribute("aria-label","학습 도구");
+      const sheetHeading=document.createElement("div");
+      sheetHeading.className="practice-tools-heading";
+      const sheetTitle=document.createElement("h2");
+      sheetTitle.textContent="학습 도구";
+      const close=document.createElement("button");
+      close.type="button";
+      close.className="practice-tools-close";
+      close.textContent="닫기";
+      close.addEventListener("click",()=>sheet.close());
+      sheetHeading.append(sheetTitle,close);
+      sheet.append(sheetHeading);
+      const tools=document.createElement("div");
+      tools.className="practice-tools-content";
+      sheet.append(tools);
+      const move=(node,label)=>{
+        if(!node)return;
+        const detail=document.createElement("details");
+        detail.className="practice-tools-group";
+        const title=document.createElement("summary");
+        title.textContent=label;
+        detail.append(title,node);
+        tools.append(detail);
+      };
+      // Existing DOM handlers still bind by ID after the move.
+      move(article.querySelector(".practice-support"),"개념과 예제");
+      move(article.querySelector("#quiz"),"이해 확인 문제");
+      move(article.querySelector(".card:has(#reflection)"),"생각 정리");
+      move(article.querySelector("#recommendation")?.closest(".card"),"복습과 다음 학습");
+      const criteriaPanel=practice.querySelector(".practice-criteria");
+      move(criteriaPanel,"채점 기준");
+      move(practice.querySelector("#solution"),"해설과 풀이");
+      article.append(sheet);
+      const toolsButton=document.createElement("button");
+      toolsButton.id="practice-tools-open";
+      toolsButton.type="button";
+      toolsButton.textContent="도움 · 해설";
+      toolsButton.setAttribute("aria-haspopup","dialog");
+      toolsButton.addEventListener("click",()=>sheet.showModal());
+      // The hint button remains one-tap, with inline feedback shown only when requested.
+      const row=practice.querySelector(".actions");
+      if(row)row.append(toolsButton);
+      sheet.addEventListener("click",event=>{
+        if(event.target===sheet)sheet.close();
+      });
+      document.body.classList.add("meowde-practice-focus");
+
+    }
     if(storageProblem)showStorageProblem();
     bind();
   }
@@ -62,6 +164,43 @@
       root.querySelectorAll("[data-choice]").forEach(b=>b.setAttribute("aria-pressed",String(b===button)));
       const box=document.getElementById("quiz-feedback");box.className="feedback "+(correct?"good":"bad");box.textContent=(correct?"맞았습니다. ":"다시 생각해보세요. ")+unit.quiz.reasons[index];save();refreshProgress();
     });
+    // Optional no-keyboard code assembly: reusable snippets keep the real editor and grader intact.
+    const editorArea=document.getElementById("learner-code");
+    if(editorArea){
+      const snippets=['print()','if :','else:','for  in :','def ():','return ','    ','" "','0','1','=',':','(',')'];
+      const panel=document.createElement("details");
+      panel.className="tap-code-tools";
+      const summary=document.createElement("summary");
+      summary.textContent="키보드 없이 코드 만들기";
+      panel.append(summary);
+      const note=document.createElement("p");
+      note.className="meta";
+      note.textContent="코드를 터치해 추가하고, 필요하면 입력창에서 수정하세요.";
+      panel.append(note);
+      const buttons=document.createElement("div");
+      buttons.className="tap-code-buttons";
+      snippets.forEach(snippet=>{
+        const button=document.createElement("button");
+        button.type="button";
+        button.textContent=snippet==="    "?"들여쓰기":snippet;
+        button.addEventListener("click",()=>{
+          const start=editorArea.selectionStart,end=editorArea.selectionEnd;
+          editorArea.setRangeText(snippet,start,end,"end");
+          editorArea.dispatchEvent(new Event("input",{bubbles:true}));
+        });
+        buttons.append(button);
+      });
+      const newline=document.createElement("button");
+      newline.type="button";
+      newline.textContent="줄바꿈";
+      newline.addEventListener("click",()=>{
+        editorArea.setRangeText("\n",editorArea.selectionStart,editorArea.selectionEnd,"end");
+        editorArea.dispatchEvent(new Event("input",{bubbles:true}));
+      });
+      buttons.append(newline);
+      panel.append(buttons);
+      editorArea.before(panel);
+    }
     const editor=document.getElementById("learner-code");
     editor.oninput=()=>{record().draft=editor.value;save()};
     editor.onkeydown=event=>{if(event.key==="Tab"&&!event.shiftKey){event.preventDefault();editor.setRangeText("    ",editor.selectionStart,editor.selectionEnd,"end");record().draft=editor.value;save()}};
