@@ -61,7 +61,7 @@
   }
   function characterGrid(){
     const selected=currentCharacter(),ko=isKorean();
-    return `<div class="room-grid v443-mode-grid" role="group" aria-label="${ko?'캐릭터 모습 선택':'Choose character appearance'}">${CHARACTER_POSES.map(item=>`<button type="button" class="v443-mode-card ${item.id===selected.id?'selected':''}" aria-pressed="${item.id===selected.id}" onclick="MeowCharacterPose.select('${item.id}')">${characterMarkup(item.id,"v443-mode-thumb")}<span class="v443-mode-copy"><b>${ko?item.ko:item.en}</b></span></button>`).join("")}</div>`;
+    return `<div class="room-grid v443-single-companion v443-mode-grid" role="group" aria-label="${ko?'캐릭터 모습 선택':'Choose character appearance'}">${CHARACTER_POSES.map(item=>`<button type="button" class="v443-mode-card ${item.id===selected.id?'selected':''}" aria-pressed="${item.id===selected.id}" onclick="MeowCharacterPose.select('${item.id}')">${characterMarkup(item.id,"v443-mode-thumb")}<span class="v443-mode-copy"><b>${ko?item.ko:item.en}</b></span></button>`).join("")}</div>`;
   }
   function coachModeGrid(){
     const selected=currentCoachMode(),ko=isKorean();
