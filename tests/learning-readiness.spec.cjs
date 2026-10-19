@@ -78,6 +78,18 @@ test("root stays clean, old bootstrap works and offline Linux resumes",async({pa
  // assertions execute; keep full offline navigation in Chromium and check the
  // cached response while offline in WebKit without hiding real cache failures.
  const engine=page.context().browser().browserType().name();
+ // Diagnostic invariant: the install event precaches Linux before any offline probe.
+ // Distinguishes missing application cache entries from a WebKit offline transport failure.
+ const swState=await page.evaluate(async()=>({
+  controlled:!!navigator.serviceWorker.controller,
+  cacheNames:await caches.keys(),
+  cachedLinux:!!(await caches.match("/linux-start.html")),
+  cachedScript:!!(await caches.match("/assets/linux-guided-lesson.js"))
+ }));
+ console.log("Offline preflight:",JSON.stringify({engine,...swState}));
+ expect(swState.controlled).toBe(true);
+ expect(swState.cachedLinux).toBe(true);
+ expect(swState.cachedScript).toBe(true);
  await context.setOffline(true);
  try{
   if(engine==="webkit"){
