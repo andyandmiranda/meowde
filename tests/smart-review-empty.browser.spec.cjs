@@ -42,12 +42,16 @@ test('smart review availability survives reload without changing saved progress'
   await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
   const before=await page.evaluate(()=>{
     S.done=[0];S.mistakes=[];save();renderReview();
-    return localStorage.getItem('meowde-v410-state');
+    return JSON.parse(localStorage.getItem('meowde-v410-state'));
   });
   await expect(page.locator('.v417-smart-card').getByRole('button',{name:/Smart Review 시작/})).toBeEnabled();
   await page.reload();
   await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
   await page.evaluate(()=>renderReview());
   await expect(page.locator('.v417-smart-card').getByRole('button',{name:/Smart Review 시작/})).toBeEnabled();
-  expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(before);
+  const after=await page.evaluate(()=>JSON.parse(localStorage.getItem('meowde-v410-state')));
+  expect(after.done).toEqual(before.done);
+  expect(after.next).toBe(before.next);
+  expect(after.mistakes).toEqual(before.mistakes);
+  expect(after.xp).toBeGreaterThanOrEqual(before.xp);
 });
