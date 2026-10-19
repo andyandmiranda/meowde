@@ -56,17 +56,18 @@
     return [
       `<button class="${screen==='home'?'on':''}" onclick="renderHome()" aria-label="${ko?'홈':'Home'}">${icon('home')}<span>${ko?'홈':'Home'}</span></button>`,
       `<button class="${learnActive?'on':''}" onclick="renderMap()" aria-label="${ko?'학습':'Learn'}">${icon('map')}<span>${ko?'학습':'Learn'}</span></button>`,
+      `<button onclick="location.href='/python-lab.html'" aria-label="${ko?'실습':'Practice'}">${icon('code')}<span>${ko?'실습':'Practice'}</span></button>`,
       `<button class="${reviewActive?'on':''}" onclick="renderReview()" aria-label="${ko?'복습':'Review'}">${icon('code')}<span>${ko?'복습':'Review'}</span></button>`,
-      `<button class="${meowdeActive?'on':''}" onclick="renderRoom()" aria-label="Meowde">${icon('cat')}<span>Meowde</span></button>`
+      `<button class="${meowdeActive?'on':''}" onclick="renderProfile()" aria-label="${ko?'마이':'My'}">${icon('cat')}<span>${ko?'마이':'My'}</span></button>`
     ].join("");
   }
-  function canonicalTabs(){return `<div class="tabbar" data-phase1-navigation="four-tabs">${tabMarkup()}</div>`}
+  function canonicalTabs(){return `<div class="tabbar" data-phase1-navigation="five-tabs">${tabMarkup()}</div>`}
   function normalizeNavigation(root=document){
     if(!root||typeof root.querySelectorAll!=="function")return;
     root.querySelectorAll(".tabbar").forEach(bar=>{
       const expected=tabMarkup();
       if(expected&&bar.innerHTML!==expected)bar.innerHTML=expected;
-      bar.dataset.phase1Navigation="four-tabs";
+      bar.dataset.phase1Navigation="five-tabs";
     });
   }
   function progressPercent(){
@@ -130,7 +131,7 @@
     const modeCopy=ko?mode.copyKo:mode.copyEn;
     const sections=growthCard()+achievementSummary()+milestoneCard()+eventCards();
     app.innerHTML=`<div class="screen">${brand()}${stats()}<div class="scroll" data-phase3-companion-hub="ordered"><div class="simple-head"><h2>Meowde</h2><p>${intro}</p></div><section class="card profile-card v443-selected-mode">${coachModeImageMarkup(mode,"v443-selected-mode-image",modeLabel)}<div class="profile-copy"><div class="section-kicker">${ko?'현재 코치 모드':'Current coach mode'}</div><h3>${esc(modeLabel)}</h3><p>${esc(modeCopy)} · ${profileCopy}</p></div></section><div class="v443-mode-heading"><div><h3>${ko?'코치 모드 6가지':'6 coach modes'}</h3><p>${ko?'원하는 모습을 누르면 바로 저장돼요.':'Tap a mode to save it instantly.'}</p></div></div>${coachModeGrid()}${sections}<div class="profile-stats"><div class="profile-stat"><b>${Number(current.xp)||0}</b><span>XP</span></div><div class="profile-stat"><b>${Number(current.churu)||0}</b><span>${ko?"츄르":"Churu"}</span></div><div class="profile-stat"><b>${progressPercent()}%</b><span>${ko?"진도":"Progress"}</span></div></div></div>${canonicalTabs()}</div>`;
-    document.documentElement.dataset.companionSystem="single";document.documentElement.dataset.navigation="phase1-four-tabs";document.documentElement.dataset.roomRenderer="canonical-v443";document.documentElement.dataset.coachMode=mode.id;
+    document.documentElement.dataset.companionSystem="single";document.documentElement.dataset.navigation="phase1-five-tabs";document.documentElement.dataset.roomRenderer="canonical-v443";document.documentElement.dataset.coachMode=mode.id;
     if(window.MeowCharacterMaster&&typeof MeowCharacterMaster.purgeLegacyCats==="function")MeowCharacterMaster.purgeLegacyCats();
   }
   function decorate(root=document){
@@ -138,7 +139,7 @@
     const current=runtimeState();
     const canonicalSurface=current&&["home","map","review","profile","achievements","room","my"].includes(current.screen);
     if(!canonicalSurface)normalizeNavigation(root);
-    document.documentElement.dataset.companionSystem="single";document.documentElement.dataset.navigation="phase1-four-tabs";document.documentElement.dataset.coachMode=currentCoachMode().id;
+    document.documentElement.dataset.companionSystem="single";document.documentElement.dataset.navigation="phase1-five-tabs";document.documentElement.dataset.coachMode=currentCoachMode().id;
   }
   function queueDecoration(root=document){if(decorationQueued)return;decorationQueued=true;requestAnimationFrame(()=>{decorationQueued=false;decorate(root&&root.isConnected?root:document)})}
 
