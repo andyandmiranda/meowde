@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v473-coach-identity";
+const CACHE_NAME = "meowde-v475-integrated-ux-review";
 
 const REQUIRED_ASSETS = [
   "/assets/linux-shared-navigation.js",
