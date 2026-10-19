@@ -79,7 +79,13 @@ async function launchDisposableOrigin(){
  });
  const child=spawn(process.execPath,["tools/serve-preview.cjs"],{cwd:process.cwd(),env:{...process.env,PORT:String(port)},stdio:"ignore"});
  const origin="http://127.0.0.1:"+port;
- const stop=async()=>{if(child.exitCode!==null)return;await new Promise(resolve=>{child.once("exit",resolve);child.kill();});};
+ let stopped=false;
+ const stop=async()=>{
+  if(stopped)return;
+  stopped=true;
+  if(child.exitCode!==null||child.signalCode!==null)return;
+  await new Promise(resolve=>{child.once("exit",resolve);if(!child.kill())resolve();});
+ };
  let ready=false;
  for(let attempt=0;attempt<60;attempt++){
   if(child.exitCode!==null)break;
