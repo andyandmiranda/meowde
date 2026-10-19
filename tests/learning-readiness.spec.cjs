@@ -1,7 +1,7 @@
 const {test,expect}=require("playwright/test");
 const base=process.env.MEOWDE_BASE_URL||"http://127.0.0.1:4173";
 test.use({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
-async function start(page){await page.goto(base+"/linux-start.html");await page.locator("#lesson-action").click();await page.locator("#lesson-action").click();}
+async function start(page,origin=base){await page.goto(origin+"/linux-start.html");await page.locator("#lesson-action").click();await page.locator("#lesson-action").click();}
 async function submit(page,command){await page.locator("#lesson-input").fill(command);await page.locator("#lesson-action").click();}
 test("a correct answer cannot make later wrong input pass",async({page})=>{
  await start(page);await submit(page,"mkdir training");await expect(page.locator("#lesson-action")).toContainText("새 문제");
@@ -68,47 +68,68 @@ test("Python subject navigation preserves an unfinished lesson and Linux records
  // Ignore only that exact browser/environment warning; all other page errors fail.
  expect(errors.filter(message=>!(/\/127\.0\.0\.1:4173\/sw\.js due to access control checks\./.test(message)))).toEqual([]);
 });
+// WebKit's Playwright setOffline(true) rejects even SW literal/cache-only responses
+// (upstream microsoft/playwright#42775). Use a real origin outage for WebKit
+// while retaining context.setOffline(true) and reload assertions in Chromium.
+async function launchDisposableOrigin(){
+ const net=require("node:net"),{spawn}=require("node:child_process");
+ const port=await new Promise((resolve,reject)=>{
+  const socket=net.createServer();socket.once("error",reject);
+  socket.listen(0,"127.0.0.1",()=>{const value=socket.address().port;socket.close(()=>resolve(value));});
+ });
+ const child=spawn(process.execPath,["tools/serve-preview.cjs"],{cwd:process.cwd(),env:{...process.env,PORT:String(port)},stdio:"ignore"});
+ const origin="http://127.0.0.1:"+port;
+ const stop=async()=>{if(child.exitCode!==null)return;await new Promise(resolve=>{child.once("exit",resolve);child.kill();});};
+ let ready=false;
+ for(let attempt=0;attempt<60;attempt++){
+  if(child.exitCode!==null)break;
+  try{const response=await fetch(origin+"/linux-start.html");if(response.ok){ready=true;break;}}catch{}
+  await new Promise(resolve=>setTimeout(resolve,150));
+ }
+ if(!ready){await stop();throw Error("Disposable offline test origin did not start");}
+ return {origin,stop};
+}
 test("root stays clean, old bootstrap works and offline Linux resumes",async({page,context})=>{
- await page.goto(base+"/");await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");await expect(page).toHaveURL(base+"/");
- await page.evaluate(async()=>{await navigator.serviceWorker.ready;});
- await expect.poll(()=>page.evaluate(()=>navigator.serviceWorker.controller!==null)).toBe(true);
- await page.goto(base+"/v412.html");await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
- await start(page);await page.locator("#lesson-input").fill("mkdir train");
- // Playwright WebKit crashes internally on offline page.reload() before application
- // assertions execute; keep full offline navigation in Chromium and check the
- // cached response while offline in WebKit without hiding real cache failures.
  const engine=page.context().browser().browserType().name();
- // Diagnostic invariant: the install event precaches Linux before any offline probe.
- // Distinguishes missing application cache entries from a WebKit offline transport failure.
- const swState=await page.evaluate(async()=>({
-  controlled:!!navigator.serviceWorker.controller,
-  cacheNames:await caches.keys(),
-  cachedLinux:!!(await caches.match("/linux-start.html")),
-  cachedScript:!!(await caches.match("/assets/linux-guided-lesson.js"))
- }));
- console.log("Offline preflight:",JSON.stringify({engine,...swState}));
- expect(swState.controlled).toBe(true);
- expect(swState.cachedLinux).toBe(true);
- expect(swState.cachedScript).toBe(true);
- await context.setOffline(true);
+ const disposable=engine==="webkit"?await launchDisposableOrigin():null;
+ const origin=disposable?.origin||base;
  try{
-  if(engine==="webkit"){
-   const cached=await page.evaluate(async()=>{
-    const response=await fetch("/linux-start.html");
-    return {ok:response.ok,body:await response.text()};
-   });
-   expect(cached.ok).toBe(true);
-   expect(cached.body).toContain('id="lesson-input"');
-  }else{
+  await page.goto(origin+"/");
+  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+  await expect(page).toHaveURL(origin+"/");
+  await page.evaluate(async()=>{await navigator.serviceWorker.ready;});
+  await expect.poll(()=>page.evaluate(()=>navigator.serviceWorker.controller!==null)).toBe(true);
+  await page.goto(origin+"/v412.html");
+  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+  await start(page,origin);
+  await page.locator("#lesson-input").fill("mkdir train");
+  const swState=await page.evaluate(async()=>({
+   controlled:!!navigator.serviceWorker.controller,
+   cacheNames:await caches.keys(),
+   cachedLinux:!!(await caches.match("/linux-start.html")),
+   cachedScript:!!(await caches.match("/assets/linux-guided-lesson.js"))
+  }));
+  console.log("Offline preflight:",JSON.stringify({engine,...swState}));
+  expect(swState.controlled).toBe(true);
+  expect(swState.cachedLinux).toBe(true);
+  expect(swState.cachedScript).toBe(true);
+  if(disposable){
+   // Stop the actual origin: WebKit must reload from its service worker cache.
+   await disposable.stop();
    await page.reload();
    await expect(page.locator("#lesson-input")).toHaveValue("mkdir train");
+   await submit(page,"mkdir training");
+   await expect(page.locator("#lesson-action")).toContainText("새 문제");
+  }else{
+   await context.setOffline(true);
+   try{
+    await page.reload();
+    await expect(page.locator("#lesson-input")).toHaveValue("mkdir train");
+    await submit(page,"mkdir training");
+    await expect(page.locator("#lesson-action")).toContainText("새 문제");
+   }finally{await context.setOffline(false);}
   }
- }finally{await context.setOffline(false);}
- if(engine==="webkit"){
-  await page.reload();
-  await expect(page.locator("#lesson-input")).toHaveValue("mkdir train");
- }
- await submit(page,"mkdir training");await expect(page.locator("#lesson-action")).toContainText("새 문제");
+ }finally{if(disposable)await disposable.stop();}
 });
 test("legacy records remain byte-identical after complete guided learning",async({page})=>{
  await page.goto(base+"/linux-home.html");const keys={"meowde-linux-robotics-v1":'{"done":{"0-0":true},"quiz":{"0-0":1}}',"meowde-linux-cram-v1":'{"index":2,"done":{"0":true}}',"meowde-v410-state":'{"xp":17,"done":[0]}'};
