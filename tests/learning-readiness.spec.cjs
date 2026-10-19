@@ -27,6 +27,23 @@ test("quota failure allows practice but warns that it is not saved",async({page}
  await page.addInitScript(()=>{Storage.prototype.setItem=function(){throw new DOMException("full","QuotaExceededError");};});
  await start(page);await expect(page.locator("#storage-status")).toContainText("저장하지 못했어요");await submit(page,"mkdir training");await expect(page.locator("#lesson-action")).toContainText("새 문제");
 });
+test("SecurityError on storage reads warns and does not overwrite existing progress",async({page})=>{
+ await page.addInitScript(()=>{Storage.prototype.getItem=function(){throw new DOMException("blocked","SecurityError");};});
+ await page.goto(base+"/linux-start.html");
+ await expect(page.locator("#storage-status")).toContainText("원본은 보존");
+ await page.locator("#lesson-action").click();
+ await expect(page.locator("#storage-status")).toContainText("저장되지 않아요");
+});
+test("SecurityError on storage writes warns without overwriting existing progress",async({page})=>{
+ await page.goto(base+"/linux-home.html");
+ const original='{"version":1,"step":0,"input":"","solutions":{},"hints":{"training":0,"travel":0}}';
+ await page.evaluate(raw=>localStorage.setItem("meowde-linux-guided-v1",raw),original);
+ await page.addInitScript(()=>{Storage.prototype.setItem=function(){throw new DOMException("blocked","SecurityError");};});
+ await page.goto(base+"/linux-start.html");
+ await page.locator("#lesson-action").click();
+ await expect(page.locator("#storage-status")).toContainText("저장하지 못했어요");
+ expect(await page.evaluate(()=>localStorage.getItem("meowde-linux-guided-v1"))).toBe(original);
+});
 test("invented completion flags cannot bypass both learning tasks",async({page})=>{
  await page.goto(base+"/linux-home.html");await page.evaluate(()=>localStorage.setItem("meowde-linux-guided-v1",JSON.stringify({version:1,step:4,input:"",solutions:{training:"pwd",travel:"mkdir travel"},hints:{}})));
  await page.goto(base+"/linux-start.html");await expect(page.locator("#step-label")).toContainText("3 / 4");await expect(page.locator("#lesson-action")).toHaveText("폴더 만들기");
