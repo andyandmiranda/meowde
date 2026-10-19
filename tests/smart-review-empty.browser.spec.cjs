@@ -35,3 +35,18 @@ test('smart review unlocks from completed lessons without altering course progre
   const after=await page.evaluate(()=>({done:S.done.slice(),xp:S.xp,next:S.next}));
   expect(after).toEqual(before);
 });
+
+test('smart review availability survives reload without changing saved progress',async({page})=>{
+  await page.setViewportSize({width:375,height:740});
+  await page.goto(base+'/');
+  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+  const before=await page.evaluate(()=>{
+    S.done=[0];S.mistakes=[];save();renderReview();
+    return localStorage.getItem('meowde-v410-state');
+  });
+  await expect(page.locator('.v417-smart-card').getByRole('button',{name:/Smart Review 시작/})).toBeEnabled();
+  await page.reload();
+  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+  await expect(page.locator('.v417-smart-card').getByRole('button',{name:/Smart Review 시작/})).toBeEnabled();
+  expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(before);
+});
