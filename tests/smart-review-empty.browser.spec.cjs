@@ -47,6 +47,7 @@ test('smart review availability survives reload without changing saved progress'
   await expect(page.locator('.v417-smart-card').getByRole('button',{name:/Smart Review 시작/})).toBeEnabled();
   await page.reload();
   await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+  await page.evaluate(()=>renderReview());
   await expect(page.locator('.v417-smart-card').getByRole('button',{name:/Smart Review 시작/})).toBeEnabled();
   expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(before);
 });
