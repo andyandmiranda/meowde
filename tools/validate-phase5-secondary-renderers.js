@@ -16,6 +16,7 @@ assert(profile.includes('window.__MEOWDE_CANONICAL_PROFILE_RENDERER__=window.ren
 assert(profile.includes('data-phase1-navigation="five-tabs"'),'Profile renders the five-tab navigation directly');
 assert(profile.includes('v449-pose-music'),'Profile renders its final Meowde avatar directly');
 assert(profile.includes("my=ko?'마이':'My'") && profile.includes('aria-label="${my}"') && profile.includes('<span>${my}</span>'),'Profile owns localized My tab label and accessible name');
+assert(profile.includes('🐱 Meowde'),'Profile owns the final Meowde action label');
 assert(!profile.includes('tabs=function'),'Profile no longer replaces the global navigation renderer');
 assert(!profile.includes('renderLeague()'),'Profile no longer reintroduces League into persistent navigation');
 

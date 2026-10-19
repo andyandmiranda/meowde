@@ -1,0 +1,21 @@
+const {test,expect}=require('playwright/test');
+const base=process.env.MEOWDE_BASE_URL||'http://127.0.0.1:4173';
+test('compact My retains consistent tabs, character access and learning records',async({page})=>{
+ await page.setViewportSize({width:375,height:740});
+ await page.goto(base+'/');
+ await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+ await page.getByRole('button',{name:'마이',exact:true}).last().click();
+ await expect(page.getByRole('heading',{name:'마이',exact:true})).toBeVisible();
+ const before=await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('meowde-v410-state'));return {xp:s.xp,done:s.done,mistakes:s.mistakes,next:s.next}});
+ expect(await page.locator('.tabbar button').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('aria-label')))).toEqual(['홈','학습','실습','복습','마이']);
+ for(const name of ['학습 숙련도','학습 인사이트','다음 행동','최근 7일'])await expect(page.getByRole('heading',{name,exact:true})).toHaveCount(0);
+ await expect(page.locator('details')).not.toHaveAttribute('open','');
+ await page.getByRole('button',{name:'🐱 Meowde',exact:true}).click();
+ await expect(page.locator('[data-phase3-companion-hub="ordered"]')).toBeVisible();
+ await page.getByRole('button',{name:'마이',exact:true}).last().click();
+ await page.getByRole('button',{name:'복습',exact:true}).last().click();
+ await expect(page.getByRole('heading',{name:'복습',exact:true})).toBeVisible();
+ await page.reload();
+ await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+ expect(await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('meowde-v410-state'));return {xp:s.xp,done:s.done,mistakes:s.mistakes,next:s.next}})).toEqual(before);
+});
