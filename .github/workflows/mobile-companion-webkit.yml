@@ -1,0 +1,43 @@
+name: Verify mobile companion and review in WebKit
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'v443-single-companion.js'
+      - 'v443-single-companion.css'
+      - 'v420-profile.js'
+      - 'v420-profile.css'
+      - 'v417-review.js'
+      - 'tests/coach-character-preservation.spec.cjs'
+      - 'tests/compact-my.spec.cjs'
+      - 'tests/smart-review-empty.browser.spec.cjs'
+      - '.github/workflows/mobile-companion-webkit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mobile-webkit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm exec playwright install --with-deps webkit
+      - name: Verify mobile character, My and honest review in WebKit
+        run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/coach-character-preservation.spec.cjs tests/compact-my.spec.cjs tests/smart-review-empty.browser.spec.cjs
+      - name: Upload WebKit failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-webkit-diagnostics
+          path: artifacts/
+          retention-days: 7
