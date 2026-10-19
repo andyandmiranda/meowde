@@ -41,7 +41,9 @@ test('smart review availability survives reload without changing saved progress'
   await page.goto(base+'/');
   await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
   const before=await page.evaluate(()=>{
-    S.done=[0];S.mistakes=[];save();renderReview();
+    S.done=[0];S.mistakes=[];
+    // Settle the first-step achievement before snapshotting persisted rewards.
+    MeowAchievements.evaluate(false);save();renderReview();
     return JSON.parse(localStorage.getItem('meowde-v410-state'));
   });
   await expect(page.locator('.v417-smart-card').getByRole('button',{name:/Smart Review 시작/})).toBeEnabled();
@@ -53,5 +55,6 @@ test('smart review availability survives reload without changing saved progress'
   expect(after.done).toEqual(before.done);
   expect(after.next).toBe(before.next);
   expect(after.mistakes).toEqual(before.mistakes);
-  expect(after.xp).toBeGreaterThanOrEqual(before.xp);
+  expect(after.xp).toBe(before.xp);
+  expect(after.churu).toBe(before.churu);
 });
