@@ -12,6 +12,7 @@ on:
       - 'tests/coach-character-preservation.spec.cjs'
       - 'tests/compact-my.spec.cjs'
       - 'tests/smart-review-empty.browser.spec.cjs'
+      - 'tests/learning-readiness.spec.cjs'
       - '.github/workflows/mobile-companion-webkit.yml'
   workflow_dispatch:
 
@@ -34,6 +35,8 @@ jobs:
       - run: pnpm exec playwright install --with-deps webkit
       - name: Verify mobile character, My and honest review in WebKit
         run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/coach-character-preservation.spec.cjs tests/compact-my.spec.cjs tests/smart-review-empty.browser.spec.cjs
+      - name: Verify SecurityError storage preservation in WebKit
+        run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/learning-readiness.spec.cjs --grep 'SecurityError on storage'
       - name: Upload WebKit failure diagnostics
         if: failure()
         uses: actions/upload-artifact@v4
