@@ -37,6 +37,8 @@ jobs:
         run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/coach-character-preservation.spec.cjs tests/compact-my.spec.cjs tests/smart-review-empty.browser.spec.cjs
       - name: Verify SecurityError storage preservation in WebKit
         run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/learning-readiness.spec.cjs --grep 'SecurityError on storage'
+      - name: Verify mobile learning, keyboard and reload preservation in WebKit
+        run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/learning-readiness.spec.cjs --grep 'partial input, verified answer|keyboard-only Linux entry|Python subject navigation preserves'
       - name: Upload WebKit failure diagnostics
         if: failure()
         uses: actions/upload-artifact@v4
