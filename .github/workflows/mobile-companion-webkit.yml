@@ -39,6 +39,8 @@ jobs:
         run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/learning-readiness.spec.cjs --grep 'SecurityError on storage'
       - name: Verify mobile learning, keyboard and reload preservation in WebKit
         run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/learning-readiness.spec.cjs --grep 'partial input, verified answer|keyboard-only Linux entry|Python subject navigation preserves'
+      - name: Verify mobile viewport, offline resume and legacy storage in WebKit
+        run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/learning-readiness.spec.cjs --grep 'Python navigation and editor fit viewport|root stays clean, old bootstrap works and offline Linux resumes|legacy records remain byte-identical after complete guided learning|Python retry completion renders 80%'
       - name: Upload WebKit failure diagnostics
         if: failure()
         uses: actions/upload-artifact@v4
