@@ -48,13 +48,6 @@
         });
       });
     }
-    if(!selected.length){
-      const lessonIndex=Math.max(0,Math.min(Number(S.next)||0,lessons().length-1));
-      const lesson=lessons()[lessonIndex];
-      if(lesson){
-        lesson.exercises.filter(x=>x.type!=='concept').slice(0,LIMIT).forEach(exercise=>selected.push({lessonIndex,key:'',exercise}));
-      }
-    }
     return selected.slice(0,LIMIT);
   }
   function streak(){
@@ -74,10 +67,10 @@
     }).join('');
     return '<section class="card v417-smart-card '+(done?'done':'')+'">'
       +'<div class="v417-smart-head"><div><div class="section-kicker">'+(ko?'맞춤 복습':'Smart review')+'</div><h3>'+(ko?'오늘의 추천 복습':'Today’s recommended review')+'</h3></div><span class="pill">'+(done?'✓':list.length+(ko?'문제':' tasks'))+'</span></div>'
-      +'<p>'+(wrong?(ko?'자주 틀린 문제부터 자동으로 구성했습니다.':'Built automatically from your highest-priority mistakes.'):(ko?'완료한 레슨에서 기억을 유지할 문제를 골랐습니다.':'Selected from completed lessons to keep the material fresh.'))+'</p>'
+      +'<p>'+(wrong?(ko?'자주 틀린 문제부터 자동으로 구성했습니다.':'Built automatically from your highest-priority mistakes.'):(list.length?(ko?'완료한 레슨에서 기억을 유지할 문제를 골랐습니다.':'Selected from completed lessons to keep the material fresh.'):(ko?'아직 복습할 문제가 없어요. 먼저 학습을 완료해 주세요.':'Nothing to review yet. Complete a lesson to unlock review.')))+'</p>'
       +'<div class="v417-review-tags">'+labels+'</div>'
       +'<div class="v417-review-stats"><div><b>'+wrong+'</b><small>'+(ko?'남은 오답':'mistakes')+'</small></div><div><b>'+streak()+'</b><small>'+(ko?'복습 연속일':'review streak')+'</small></div><div><b>'+R.history.length+'</b><small>'+(ko?'완료 기록':'sessions')+'</small></div></div>'
-      +'<button class="btn '+(done?'ghost':'butter')+'" onclick="startSmartReview()">🧠 '+(done?(ko?'보상 없이 다시 복습':'Practice again'):(ko?'Smart Review 시작 · +10 XP':'Start Smart Review · +10 XP'))+'</button></section>';
+      +'<button class="btn '+(done?'ghost':'butter')+'" '+(!list.length?'disabled aria-disabled="true"':'onclick="startSmartReview()"')+'>🧠 '+(!list.length?(ko?'학습 후 복습 가능':'Review unlocks after learning'):(done?(ko?'보상 없이 다시 복습':'Practice again'):(ko?'Smart Review 시작 · +10 XP':'Start Smart Review · +10 XP')))+'</button></section>';
   }
   window.startSmartReview=function(){
     const items=recommendations();
