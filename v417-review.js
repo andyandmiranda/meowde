@@ -5,7 +5,7 @@
     const n=new Date(),y=n.getFullYear(),m=String(n.getMonth()+1).padStart(2,'0'),d=String(n.getDate()).padStart(2,'0');
     return y+'-'+m+'-'+d;
   }
-  let storageReadable=true;
+  let storageReadable=true,storageWritable=true;
   function isRecord(value){return value!==null&&typeof value==='object'&&!Array.isArray(value)}
   function read(){
     try{
@@ -24,9 +24,9 @@
   R.days=R.days&&typeof R.days==='object'?R.days:{};
   R.history=Array.isArray(R.history)?R.history:[];
   function persist(){
-    if(!storageReadable)return;
-    try{localStorage.setItem(KEY,JSON.stringify(R))}
-    catch(error){console.warn('Meowde v4.17 could not save review state:',error)}
+    if(!storageReadable||!storageWritable)return false;
+    try{localStorage.setItem(KEY,JSON.stringify(R));return true}
+    catch(error){storageWritable=false;console.warn('Meowde v4.17 could not save review state:',error);return false}
   }
   function contextFor(exercise){
     if(typeof meowdeExerciseContext==='function')return meowdeExerciseContext(exercise);
@@ -86,7 +86,7 @@
       +'<button class="btn '+(done?'ghost':'butter')+'" '+(!list.length?'disabled aria-disabled="true"':'onclick="startSmartReview()"')+'>🧠 '+(!list.length?(ko?'학습 후 복습 가능':'Review unlocks after learning'):(done?(ko?'보상 없이 다시 복습':'Practice again'):(ko?'Smart Review 시작 · +10 XP':'Start Smart Review · +10 XP')))+'</button></section>';
   }
   window.startSmartReview=function(){
-    if(!storageReadable)return toast(storageMessage());
+    if(!storageReadable||!storageWritable)return toast(storageMessage());
     const items=recommendations();
     if(!items.length)return toast(S.lang==='ko'?'복습할 문제가 아직 없습니다.':'No review tasks are available yet.');
     const queue=items.map(item=>Object.assign({},item.exercise,{
@@ -121,7 +121,7 @@
   finish=function(){
     const smart=typeof meowdeMode==='function'&&meowdeMode()==='smart-review';
     // A resumed review must not clear progress or re-award an unreadable daily claim.
-    if(smart&&!storageReadable)return toast(storageMessage());
+    if(smart&&(!storageReadable||!storageWritable||!persist()))return toast(storageMessage());
     const key=dayKey(),first=smart&&!R.days[key],active=R.active||{};
     baseFinish();
     if(!smart)return;
