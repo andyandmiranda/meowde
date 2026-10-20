@@ -58,3 +58,18 @@ for(const writeError of ['QuotaExceededError','SecurityError'])test(writeError+'
   assert.equal(f.records.has(KEY),false);
   assert.equal(f.context.S.xp,123);assert.equal(f.context.S.churu,57);
 });
+
+for(const writeError of ['QuotaExceededError','SecurityError'])test(writeError+' denied write then fresh reload and recovered write awards once',()=>{
+  const f=fixture(null,{denyWrite:true,writeError});
+  f.context.startSmartReview();f.context.finish();
+  assert.equal(f.context.S.xp,123);assert.equal(f.context.S.churu,57);
+  assert.equal(f.records.has(KEY),false);
+  const recovered=fixture(f.records.get(KEY),{xp:f.context.S.xp,churu:f.context.S.churu});
+  recovered.context.startSmartReview();recovered.context.finish();
+  assert.equal(recovered.context.S.xp,133);assert.equal(recovered.context.S.churu,62);
+  assert.deepEqual(Array.from(recovered.context.S.done),[0]);assert.equal(recovered.context.S.next,1);
+  const reopened=fixture(recovered.records.get(KEY),{xp:133,churu:62});
+  reopened.context.startSmartReview();reopened.context.finish();
+  assert.equal(reopened.context.S.xp,133);assert.equal(reopened.context.S.churu,62);
+  assert.equal(JSON.parse(reopened.records.get(KEY)).days['2026-10-20'].xp,10);
+});
