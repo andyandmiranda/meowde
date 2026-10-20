@@ -4,12 +4,12 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const source=fs.readFileSync('v417-review.js','utf8');
 const KEY='meowde-v417-review';
-function fixture(raw=null,{denyRead=false,denyWrite=false,writeError='QuotaExceededError',xp=123,churu=57}={}){
+function fixture(raw=null,{denyRead=false,denyWrite=false,writeError='QuotaExceededError',failAtWrite=0,xp=123,churu=57}={}){
   const records=new Map(raw===null?[]:[[KEY,raw]]);
   let mode='lesson',starts=0,finishes=0,writes=0;
   const S={lang:'ko',lessonIndex:0,done:[0],next:1,xp,churu,mistakes:[],screen:'home'};
   const context={S,document:{documentElement:{dataset:{}},querySelector:()=>null},
-    localStorage:{getItem:key=>{if(denyRead)throw new Error('SecurityError');return records.get(key)??null;},setItem:(key,value)=>{writes++;if(denyWrite)throw Object.assign(new Error('write blocked'),{name:writeError});records.set(key,value);}},
+    localStorage:{getItem:key=>{if(denyRead)throw new Error('SecurityError');return records.get(key)??null;},setItem:(key,value)=>{writes++;if(denyWrite||(failAtWrite&&writes>=failAtWrite))throw Object.assign(new Error('write blocked'),{name:writeError});records.set(key,value);}},
     lessons:()=>[{title:'First lesson',exercises:[{id:'e1',type:'predict'}]}],
     startLesson:(index,daily,queue,options)=>{starts++;mode=options.mode;options.onStarted();},
     meowdeMode:()=>mode,meowdeTodayKey:()=>'2026-10-20',
@@ -72,4 +72,17 @@ for(const writeError of ['QuotaExceededError','SecurityError'])test(writeError+'
   reopened.context.startSmartReview();reopened.context.finish();
   assert.equal(reopened.context.S.xp,133);assert.equal(reopened.context.S.churu,62);
   assert.equal(JSON.parse(reopened.records.get(KEY)).days['2026-10-20'].xp,10);
+});
+
+for(const writeError of ['QuotaExceededError','SecurityError'])test(writeError+' final claim write fails after successful preflight: no unclaimed bonus',()=>{
+ const f=fixture(null,{failAtWrite:3,writeError});
+ f.context.startSmartReview();
+ const prior=f.records.get(KEY);
+ f.context.finish();
+ assert.equal(f.records.get(KEY),prior,'last durable record must remain unchanged');
+ assert.equal(f.context.S.xp,123,'unclaimed bonus must not be granted');
+ assert.equal(f.context.S.churu,57,'unclaimed churu must not be granted');
+ const reopened=fixture(f.records.get(KEY),{xp:f.context.S.xp,churu:f.context.S.churu});
+ reopened.context.startSmartReview();reopened.context.finish();
+ assert.equal(reopened.context.S.xp,133);assert.equal(reopened.context.S.churu,62);
 });
