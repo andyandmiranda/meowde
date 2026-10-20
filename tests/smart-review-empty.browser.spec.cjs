@@ -148,3 +148,26 @@ for(const denyRead of [false,true]){
   });
 }
 
+
+for(const errorName of ['QuotaExceededError','SecurityError']){
+  test('mobile Smart Review write denial ('+errorName+') preserves rewards and prior bytes',async({page})=>{
+    await page.setViewportSize({width:375,height:740});
+    await page.goto(base+'/');
+    await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+    const before=await page.evaluate(errorName=>{
+      S.done=[0];S.next=1;MeowAchievements.evaluate(false);save();
+      const key='meowde-v417-review';
+      const original=localStorage.getItem(key);
+      const xp=S.xp,churu=S.churu;
+      const set=Storage.prototype.setItem;
+      Storage.prototype.setItem=function(k,v){
+        if(k===key)throw new DOMException('blocked',errorName);
+        return set.call(this,k,v);
+      };
+      return {original,xp,churu};
+    },errorName);
+    await page.evaluate(()=>startSmartReview());
+    await page.evaluate(()=>finish());
+    expect(await page.evaluate(()=>({xp:S.xp,churu:S.churu,original:localStorage.getItem('meowde-v417-review')}))).toEqual(before);
+  });
+}
