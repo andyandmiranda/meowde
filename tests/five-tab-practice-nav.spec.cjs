@@ -13,15 +13,46 @@ test("Python practice keeps all five tabs visible on narrow phones",async({page}
     expect(Math.abs(dims.bottom-dims.height)).toBeLessThan(2);
   }
 });
-test("Python lab draft survives using bottom navigation and returning",async({page})=>{
+test("Practice links open the requested screen and preserve progress through reload",async({page})=>{
+  await page.goto(base+"/");
+  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+  // Normalize an existing learner record before comparing navigation-only changes.
+  await page.evaluate(()=>{S.done=[0];S.xp=120;S.churu=7;save()});
+  await page.reload();
+  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+  const progress=()=>page.evaluate(()=>({done:S.done,xp:S.xp,churu:S.churu,mistakes:S.mistakes}));
+  const before=await progress();
+  expect(before).toMatchObject({done:[0],xp:120,churu:7});
   await page.goto(base+"/python-lab.html");
-  const editor=page.locator("#learner-code");
-  await expect(editor).toBeVisible();
-  await editor.fill("print('draft preserved')");
-  await page.getByRole("navigation",{name:"메인 메뉴"}).getByRole("link",{name:"학습"}).click();
-  await expect(page).toHaveURL(/tab=map/);
-  await page.goto(base+"/python-lab.html");
-  await expect(page.locator("#learner-code")).toHaveValue("print('draft preserved')");
+  await page.locator("#learner-code").fill("print('draft preserved')");
+  const draft=await page.evaluate(()=>localStorage.getItem("meowde-python-lab-v1"));
+  for(const [label,tab,surface] of [
+    ["복습","review",".phase5-review"],
+    ["학습","map","[data-learn-path=canonical]"],
+    ["마이","my",".v420-profile-hero"],
+    ["홈","home",".phase1-home"]
+  ]){
+    await page.getByRole("navigation",{name:"메인 메뉴"}).getByRole("link",{name:label,exact:true}).click();
+    await expect(page).toHaveURL(new RegExp("tab="+tab));
+    await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+    await expect(page.locator(surface)).toBeVisible();
+    await expect(page.locator(".tabbar button.on")).toHaveAttribute("aria-label",label);
+    expect(await progress()).toEqual(before);
+    await page.reload();
+    await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+    await expect(page.locator(surface)).toBeVisible();
+    expect(await progress()).toEqual(before);
+    await page.getByRole("button",{name:"실습",exact:true}).click();
+    await expect(page.locator("#learner-code")).toHaveValue("print('draft preserved')");
+    expect(await page.evaluate(()=>localStorage.getItem("meowde-python-lab-v1"))).toBe(draft);
+  }
+});
+test("Unknown entry tabs leave the default home screen usable",async({page})=>{
+  await page.goto(base+"/?tab=constructor");
+  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+  await expect(page.locator(".phase1-home")).toBeVisible();
+  await page.getByRole("button",{name:"복습",exact:true}).click();
+  await expect(page.locator(".phase5-review")).toBeVisible();
 });
 test("Canonical Home, Learn and Review do not inject duplicate Python lab CTA",async({page})=>{
   await page.goto(base+"/");
@@ -226,3 +257,4 @@ test('Linux quiz feedback uses the bottom practice tab without another entry but
  await page.goto(base+'/linux-crash-course.html');await page.locator('#lesson .answers button').first().click();
  await expect(page.locator('[data-practice-note]')).toContainText('하단 실습 탭');await expect(page.locator('[data-quiz-guide]')).toHaveCount(0);
 });
+
