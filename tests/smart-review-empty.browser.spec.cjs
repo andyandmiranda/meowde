@@ -87,7 +87,7 @@ test('learner completes a lesson, starts Smart Review, and preserves course prog
   expect(course.done).toContain(0);
 
   await page.locator('.lesson-foot .btn').click();
-  await page.getByRole('link',{name:'복습'}).click();
+  await page.locator('.tabbar button[aria-label="복습"]').click();
   const card=page.locator('.v417-smart-card');
   await expect(card).toContainText('완료한 레슨에서 기억을 유지할 문제');
   await card.getByRole('button',{name:/Smart Review 시작/}).click();
