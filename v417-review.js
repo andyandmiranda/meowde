@@ -123,13 +123,23 @@
     // A resumed review must not clear progress or re-award an unreadable daily claim.
     if(smart&&(!storageReadable||!storageWritable||!persist()))return toast(storageMessage());
     const key=dayKey(),first=smart&&!R.days[key],active=R.active||{};
-    baseFinish();
-    if(!smart)return;
+    if(!smart){baseFinish();return;}
     const accuracy=Math.round((Number(active.firstCorrect)||0)/Math.max(1,Number(active.firstTotal)||0)*100);
-    if(first){S.xp=(Number(S.xp)||0)+BONUS_XP;S.churu=(Number(S.churu)||0)+BONUS_CHURU}
+    // Commit the claim before granting a reward. A later storage denial must
+    // leave both the learner's XP and the durable claim unchanged.
+    const previousDay=R.days[key],previousHistory=R.history,previousActive=R.active;
     R.days[key]=R.days[key]||{completedAt:new Date().toISOString(),accuracy,total:Number(active.total)||0,xp:first?BONUS_XP:0,churu:first?BONUS_CHURU:0};
-    R.history.push({date:key,completedAt:new Date().toISOString(),accuracy,total:Number(active.total)||0});
-    R.history=R.history.slice(-30);delete R.active;persist();save();
+    R.history=R.history.concat([{date:key,completedAt:new Date().toISOString(),accuracy,total:Number(active.total)||0}]).slice(-30);
+    delete R.active;
+    if(!persist()){
+      if(previousDay===undefined)delete R.days[key];else R.days[key]=previousDay;
+      R.history=previousHistory;
+      if(previousActive===undefined)delete R.active;else R.active=previousActive;
+      return toast(storageMessage());
+    }
+    baseFinish();
+    if(first){S.xp=(Number(S.xp)||0)+BONUS_XP;S.churu=(Number(S.churu)||0)+BONUS_CHURU}
+    save();
     const screen=document.querySelector('.reward-screen');
     if(screen){
       const title=screen.querySelector('h2');if(title)title.textContent=S.lang==='ko'?'Smart Review 완료':'Smart Review complete';
