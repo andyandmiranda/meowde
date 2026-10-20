@@ -4,12 +4,12 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const source=fs.readFileSync('v417-review.js','utf8');
 const KEY='meowde-v417-review';
-function fixture(raw=null,{denyRead=false,denyWrite=false,xp=123,churu=57}={}){
+function fixture(raw=null,{denyRead=false,denyWrite=false,writeError='QuotaExceededError',xp=123,churu=57}={}){
   const records=new Map(raw===null?[]:[[KEY,raw]]);
   let mode='lesson',starts=0,finishes=0,writes=0;
   const S={lang:'ko',lessonIndex:0,done:[0],next:1,xp,churu,mistakes:[],screen:'home'};
   const context={S,document:{documentElement:{dataset:{}},querySelector:()=>null},
-    localStorage:{getItem:key=>{if(denyRead)throw new Error('SecurityError');return records.get(key)??null;},setItem:(key,value)=>{writes++;if(denyWrite)throw Object.assign(new Error('write blocked'),{name:'QuotaExceededError'});records.set(key,value);}},
+    localStorage:{getItem:key=>{if(denyRead)throw new Error('SecurityError');return records.get(key)??null;},setItem:(key,value)=>{writes++;if(denyWrite)throw Object.assign(new Error('write blocked'),{name:writeError});records.set(key,value);}},
     lessons:()=>[{title:'First lesson',exercises:[{id:'e1',type:'predict'}]}],
     startLesson:(index,daily,queue,options)=>{starts++;mode=options.mode;options.onStarted();},
     meowdeMode:()=>mode,meowdeTodayKey:()=>'2026-10-20',
@@ -49,8 +49,8 @@ test('valid new review earns exact daily reward once, including reload and repea
   assert.equal(saved.history.length,2);
 });
 
-test('quota-denied review write never awards XP/churu without a durable claim',()=>{
-  const f=fixture(null,{denyWrite:true});
+for(const writeError of ['QuotaExceededError','SecurityError'])test(writeError+' review writes never award XP/churu without a durable claim',()=>{
+  const f=fixture(null,{denyWrite:true,writeError});
   f.context.startSmartReview();
   assert.equal(f.records.has(KEY),false);
   assert.equal(f.context.S.xp,123);assert.equal(f.context.S.churu,57);
