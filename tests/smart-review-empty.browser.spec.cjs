@@ -58,3 +58,57 @@ test('smart review availability survives reload without changing saved progress'
   expect(after.xp).toBe(before.xp);
   expect(after.churu).toBe(before.churu);
 });
+
+test('learner completes a lesson, starts Smart Review, and preserves course progress',async({page})=>{
+  test.setTimeout(180000);
+  page.setDefaultTimeout(15000);
+  await page.setViewportSize({width:375,height:740});
+  await page.goto(base+'/');
+  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+
+  // Earn completion through shipped controls; do not seed S.done.
+  await page.getByRole('button',{name:'오늘 학습 시작'}).click();
+  for(let step=0;step<12;step++){
+    if(!(await page.locator('.lesson-top').count()))break;
+    const ex=await page.evaluate(()=>({type:cur().type,answer:cur().answer,buggy:cur().buggy,tokens:cur().tokens,model:cur().model}));
+    if(ex.type==='concept')await page.locator('.lesson-foot .btn').click();
+    else{
+      if(ex.type==='predict')await page.locator('.choice').nth(ex.answer).click();
+      if(ex.type==='fill')await page.locator('.tokens .token').nth(ex.tokens.indexOf(ex.answer)).click();
+      if(ex.type==='bughunt')await page.locator('.linebtn').nth(ex.buggy).click();
+      if(ex.type==='write')await page.locator('#code-editor').fill(ex.model);
+      await page.locator('.lesson-foot .btn').click();
+      await expect(page.locator('.feedback.ok')).toBeVisible({timeout:60000});
+      await page.locator('.feedback .btn').click();
+    }
+  }
+  await expect(page.locator('.reward-screen')).toBeVisible({timeout:60000});
+  const course=await page.evaluate(()=>({done:S.done.slice(),next:S.next,xp:S.xp,churu:S.churu}));
+  expect(course.done).toContain(0);
+
+  await page.locator('.lesson-foot .btn').click();
+  await page.getByRole('link',{name:'복습'}).click();
+  const card=page.locator('.v417-smart-card');
+  await expect(card).toContainText('완료한 레슨에서 기억을 유지할 문제');
+  await card.getByRole('button',{name:/Smart Review 시작/}).click();
+
+  for(let step=0;step<8;step++){
+    if(!(await page.locator('.lesson-top').count()))break;
+    const ex=await page.evaluate(()=>({type:cur().type,answer:cur().answer,buggy:cur().buggy,tokens:cur().tokens,model:cur().model}));
+    if(ex.type==='concept')await page.locator('.lesson-foot .btn').click();
+    else{
+      if(ex.type==='predict')await page.locator('.choice').nth(ex.answer).click();
+      if(ex.type==='fill')await page.locator('.tokens .token').nth(ex.tokens.indexOf(ex.answer)).click();
+      if(ex.type==='bughunt')await page.locator('.linebtn').nth(ex.buggy).click();
+      if(ex.type==='write')await page.locator('#code-editor').fill(ex.model);
+      await page.locator('.lesson-foot .btn').click();
+      await expect(page.locator('.feedback.ok')).toBeVisible({timeout:60000});
+      await page.locator('.feedback .btn').click();
+    }
+  }
+  await expect(page.locator('.reward-screen h2')).toHaveText('Smart Review 완료');
+  await page.reload();
+  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+  const after=await page.evaluate(()=>({done:S.done.slice(),next:S.next,xp:S.xp,churu:S.churu}));
+  expect(after).toEqual({...course,xp:course.xp+10,churu:course.churu+5});
+});
