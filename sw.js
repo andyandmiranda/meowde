@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v475-integrated-ux-review";
+const CACHE_NAME = "meowde-v476-preserve-review-records";
 
 const REQUIRED_ASSETS = [
   "/assets/linux-shared-navigation.js",
@@ -178,3 +178,4 @@ self.addEventListener("fetch", event => {
     })
   );
 });
+

@@ -5,14 +5,26 @@
     const n=new Date(),y=n.getFullYear(),m=String(n.getMonth()+1).padStart(2,'0'),d=String(n.getDate()).padStart(2,'0');
     return y+'-'+m+'-'+d;
   }
+  let storageReadable=true;
+  function isRecord(value){return value!==null&&typeof value==='object'&&!Array.isArray(value)}
   function read(){
-    try{const value=JSON.parse(localStorage.getItem(KEY)||'{}');return value&&typeof value==='object'?value:{}}
-    catch(error){console.warn('Meowde v4.17 review state was reset:',error);return {}}
+    try{
+      const raw=localStorage.getItem(KEY);
+      if(raw===null)return {};
+      const value=JSON.parse(raw);
+      if(!isRecord(value)||(value.days!==undefined&&!isRecord(value.days))||(value.history!==undefined&&!Array.isArray(value.history)))throw new Error('Unsupported review record');
+      return value;
+    }
+    catch(error){storageReadable=false;console.warn('Meowde v4.17 review state could not be read; original preserved:',error);return {}}
+  }
+  function storageMessage(){
+    return S.lang==='ko'?'복습 기록을 읽을 수 없어 원본을 보존하고 복습·보상 처리를 멈췄어요. 브라우저 저장 권한을 확인한 뒤 새로고침해 주세요. 일반 학습은 계속할 수 있어요.':'Review records could not be read. The original is preserved; review and rewards are paused. Check browser storage permissions, then reload. Regular lessons are still available.';
   }
   const R=read();
   R.days=R.days&&typeof R.days==='object'?R.days:{};
   R.history=Array.isArray(R.history)?R.history:[];
   function persist(){
+    if(!storageReadable)return;
     try{localStorage.setItem(KEY,JSON.stringify(R))}
     catch(error){console.warn('Meowde v4.17 could not save review state:',error)}
   }
@@ -60,6 +72,7 @@
     return count;
   }
   function card(){
+    if(!storageReadable)return '<section class="card v417-smart-card"><h3>'+(S.lang==='ko'?'맞춤 복습':'Smart review')+'</h3><p role="status">'+storageMessage()+'</p><button class="btn ghost" disabled aria-disabled="true">'+(S.lang==='ko'?'복습 기록 확인 필요':'Review records need attention')+'</button></section>';
     const ko=S.lang==='ko',list=recommendations(),wrong=mistakes().length,done=Boolean(R.days[dayKey()]);
     const labels=list.slice(0,3).map(item=>{
       const lesson=lessons()[item.lessonIndex];
@@ -73,6 +86,7 @@
       +'<button class="btn '+(done?'ghost':'butter')+'" '+(!list.length?'disabled aria-disabled="true"':'onclick="startSmartReview()"')+'>🧠 '+(!list.length?(ko?'학습 후 복습 가능':'Review unlocks after learning'):(done?(ko?'보상 없이 다시 복습':'Practice again'):(ko?'Smart Review 시작 · +10 XP':'Start Smart Review · +10 XP')))+'</button></section>';
   }
   window.startSmartReview=function(){
+    if(!storageReadable)return toast(storageMessage());
     const items=recommendations();
     if(!items.length)return toast(S.lang==='ko'?'복습할 문제가 아직 없습니다.':'No review tasks are available yet.');
     const queue=items.map(item=>Object.assign({},item.exercise,{
@@ -106,6 +120,8 @@
   const baseFinish=finish;
   finish=function(){
     const smart=typeof meowdeMode==='function'&&meowdeMode()==='smart-review';
+    // A resumed review must not clear progress or re-award an unreadable daily claim.
+    if(smart&&!storageReadable)return toast(storageMessage());
     const key=dayKey(),first=smart&&!R.days[key],active=R.active||{};
     baseFinish();
     if(!smart)return;

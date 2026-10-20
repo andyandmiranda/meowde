@@ -112,3 +112,39 @@ test('learner completes a lesson, starts Smart Review, and preserves course prog
   const after=await page.evaluate(()=>({done:S.done.slice(),next:S.next,xp:S.xp,churu:S.churu}));
   expect(after).toEqual({...course,xp:course.xp+10,churu:course.churu+5});
 });
+
+for(const denyRead of [false,true]){
+  test('Smart Review preserves '+(denyRead?'unreadable':'corrupt')+' history and keeps regular lessons available',async({page})=>{
+    const key='meowde-v417-review';
+    const raw=denyRead?'{"days":{"2026-10-20":{"xp":10,"churu":5}},"history":[]}':'{broken';
+    await page.goto(base+'/');
+    await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+    const before=await page.evaluate(({key,raw})=>{
+      S.done=[0];S.next=1;MeowAchievements.evaluate(false);save();
+      localStorage.setItem(key,raw);
+      return {xp:S.xp,churu:S.churu,done:S.done.slice(),next:S.next};
+    },{key,raw});
+    if(denyRead)await page.addInitScript(key=>{
+      const original=Storage.prototype.getItem;
+      window.__qaReadReview=()=>original.call(localStorage,key);
+      Storage.prototype.getItem=function(k){
+        if(k===key)throw new DOMException('blocked','SecurityError');
+        return original.call(this,k);
+      };
+    },key);
+    await page.reload();
+    await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+    await page.locator('.tabbar button[aria-label="복습"]').click();
+    const card=page.locator('.v417-smart-card');
+    await expect(card).toContainText('원본을 보존');
+    await expect(card.getByRole('button',{name:'복습 기록 확인 필요'})).toBeDisabled();
+    await page.evaluate(()=>startSmartReview());
+    expect(await page.evaluate(()=>({xp:S.xp,churu:S.churu,done:S.done.slice(),next:S.next}))).toEqual(before);
+    expect(await page.evaluate(key=>window.__qaReadReview?window.__qaReadReview():localStorage.getItem(key),key)).toBe(raw);
+    await page.locator('.tabbar button[aria-label="홈"]').click();
+    await page.getByRole('button',{name:'오늘 학습 시작'}).click();
+    await expect(page.locator('.lesson-top')).toBeVisible();
+    expect(await page.evaluate(key=>window.__qaReadReview?window.__qaReadReview():localStorage.getItem(key),key)).toBe(raw);
+  });
+}
+
