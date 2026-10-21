@@ -85,3 +85,13 @@ test('practice header back-to-learn opens actual map in both engines',async({pag
  await expect.poll(()=>page.evaluate(()=>S.screen)).toBe('map');
  expect(new URL(page.url()).searchParams.get('tab')).toBe('map');
 });
+
+test('Linux loop feedback shows the correct answer even after a correct choice',async({page})=>{
+ await page.goto(base+'/linux-loops-intro.html');
+ const guided=page.locator('#guided');
+ await guided.locator('button[data-value="3"]').click();
+ await expect(guided.locator('[role="status"]')).toContainText('정답: 3줄');
+ const transfer=page.locator('#transfer');
+ await transfer.locator('button[data-value="6"]').click();
+ await expect(transfer.locator('[role="status"]')).toContainText('정답: 2 다음 줄에 4');
+});
