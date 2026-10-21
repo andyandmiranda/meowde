@@ -92,6 +92,7 @@ test('Linux loop feedback shows the correct answer even after a correct choice',
  const nav=page.getByRole('navigation',{name:'메인 메뉴'});
  await expect(nav.getByRole('link')).toHaveCount(5);
  await expect(nav.getByRole('link',{name:'복습'})).toHaveAttribute('href','/?tab=review');
+ await expect(nav.getByRole('link',{name:'학습'})).toHaveAttribute('aria-current','page');
  const palette=await page.evaluate(()=>({link:getComputedStyle(document.querySelector('main a')).color,buttonBorder:getComputedStyle(document.querySelector('#guided button')).borderTopColor}));
  expect(palette.link).toBe('rgb(36, 123, 97)');
  expect(palette.buttonBorder).toBe('rgb(180, 220, 203)');
