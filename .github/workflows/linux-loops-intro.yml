@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - 'linux-loops-intro.html'
+      - 'linux-home.html'
       - 'tests/linux-loops-intro.test.cjs'
       - '.github/workflows/linux-loops-intro.yml'
   workflow_dispatch:
