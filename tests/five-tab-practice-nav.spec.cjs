@@ -393,3 +393,27 @@ test("Python worker runtime error keeps graded attempts unchanged",async({page})
  await page.reload();
  await expect(page.locator("#learner-code")).toHaveValue("print('keep my work')");
 });
+
+// Opt-in integration: real Worker + real Pyodide 0.28.0 CDN, never a fake.
+// Run explicitly with MEOWDE_REAL_PYODIDE=1 and network access; excluded from default CI.
+test("real Pyodide: wrong answer, correction and saved attempts",async({page})=>{
+ test.skip(process.env.MEOWDE_REAL_PYODIDE!=="1","Real CDN-backed Pyodide integration is opt-in");
+ test.setTimeout(240000);
+ await page.goto(base+"/python-lab.html");
+ const editor=page.locator("#learner-code");
+ await expect(editor).toBeVisible();
+ const original=await editor.inputValue();
+ await editor.fill("raise AssertionError('deliberate wrong answer')");
+ await page.locator('#practice [data-run="grade"]').click();
+ await expect(page.locator("#run-status")).toContainText("일부 기준",{timeout:180000});
+ await expect(page.locator("#run-results .result-fail").first()).toBeVisible();
+ const first=await page.evaluate(()=>JSON.parse(localStorage.getItem("meowde-python-lab-v1")));
+ expect(Object.values(first.units).some(u=>u.attempts===1&&u.lastPassed===false)).toBe(true);
+ await editor.fill(original);
+ await page.locator('#practice [data-run="grade"]').click();
+ await expect(page.locator("#run-status")).toContainText("모든 기준 통과",{timeout:180000});
+ const second=await page.evaluate(()=>JSON.parse(localStorage.getItem("meowde-python-lab-v1")));
+ expect(Object.values(second.units).some(u=>u.attempts===2&&u.passed===true)).toBe(true);
+ await page.reload();
+ await expect(page.locator("#learner-code")).toHaveValue(original);
+});
