@@ -6,3 +6,4 @@ test('independent lesson avoids touching saved learner state and misleading simu
  assert.ok(!/localStorage|sessionStorage|fetch\(|XP\s*\+=|churu\s*\+=/.test(html));
  assert.ok(html.includes('실제 Bash 실행이나 강의 원문 실습을 대체하지 않습니다.'));
 });
+test('Linux home exposes the guided loop supplement without progress writes',()=>{const home=fs.readFileSync(require('node:path').join(__dirname,'../linux-home.html'),'utf8');assert.ok(home.includes('href="/linux-loops-intro.html"'));});
