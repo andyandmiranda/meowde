@@ -22,7 +22,12 @@ test("Practice links open the requested screen and preserve progress through rel
   await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
   const progress=()=>page.evaluate(()=>({done:S.done,xp:S.xp,churu:S.churu,mistakes:S.mistakes}));
   const before=await progress();
-  expect(before).toMatchObject({done:[0],xp:120,churu:7});
+  // Restoring a completed first lesson earns the existing First Step reward once
+  // (v419-achievements: +20 XP, +5 churu). Navigation must not award it again.
+  expect(before).toMatchObject({done:[0],xp:140,churu:12});
+  expect(await page.evaluate(()=>MeowAchievements.state.unlocked["first-step"]))
+    .toMatchObject({xp:20,churu:5});
+  const achievements=await page.evaluate(()=>localStorage.getItem("meowde-v419-achievements"));
   await page.goto(base+"/python-lab.html");
   await page.locator("#learner-code").fill("print('draft preserved')");
   const draft=await page.evaluate(()=>localStorage.getItem("meowde-python-lab-v1"));
@@ -38,10 +43,12 @@ test("Practice links open the requested screen and preserve progress through rel
     await expect(page.locator(surface)).toBeVisible();
     await expect(page.locator(".tabbar button.on")).toHaveAttribute("aria-label",label);
     expect(await progress()).toEqual(before);
+    expect(await page.evaluate(()=>localStorage.getItem("meowde-v419-achievements"))).toBe(achievements);
     await page.reload();
     await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
     await expect(page.locator(surface)).toBeVisible();
     expect(await progress()).toEqual(before);
+    expect(await page.evaluate(()=>localStorage.getItem("meowde-v419-achievements"))).toBe(achievements);
     await page.getByRole("button",{name:"실습",exact:true}).click();
     await expect(page.locator("#learner-code")).toHaveValue("print('draft preserved')");
     expect(await page.evaluate(()=>localStorage.getItem("meowde-python-lab-v1"))).toBe(draft);
