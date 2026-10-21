@@ -120,6 +120,10 @@
       };
       // Existing DOM handlers still bind by ID after the move.
       move(article.querySelector(".practice-support"),"개념과 예제");
+      // Open the existing concept section directly when requested; keep the original learning content intact.
+      const conceptGroup=tools.querySelector(".practice-tools-group");
+      const conceptDetails=conceptGroup?.querySelector(".practice-support");
+      if(conceptDetails)conceptDetails.open=true;
       move(article.querySelector("#quiz"),"이해 확인 문제");
       move(article.querySelector(".card:has(#reflection)"),"생각 정리");
       move(article.querySelector("#recommendation")?.closest(".card"),"복습과 다음 학습");
@@ -130,7 +134,7 @@
       const toolsButton=document.createElement("button");
       toolsButton.id="practice-tools-open";
       toolsButton.type="button";
-      toolsButton.textContent="도움 · 해설";
+      toolsButton.textContent="개념 · 예제 · 해설";
       toolsButton.setAttribute("aria-haspopup","dialog");
       toolsButton.addEventListener("click",()=>sheet.showModal());
       // The hint button remains one-tap, with inline feedback shown only when requested.
