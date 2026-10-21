@@ -22,3 +22,7 @@ Local Chromium NOT RUN: download yielded truncated archive (central-directory si
 No main merge, Production/alias writes, learner deletion, private teaching assets, new expense or weakened tests. #98 contains later reward safety fixes: do not release this main-based branch independently. Shared integration overlaps: v412.html, v413-core.js, v414-state.js, v414-reward.js, sw.js, package.json. #99 PWA change also needs reconciliation.
 Rollback before release: drop scoped changes. After separately approved release, retain additive resume data or forward-fix: old serializers omit unknown fields. Never clear localStorage.
 Next: exact-head CI, resolve regressions, authorized hosted UI QA, reconcile with #98; explicit approval still required for release.
+
+
+## Browser-discovered bootstrap regression
+First exact-head WebKit run 39546669063 at f498c07 failed KO/EN: reload of selected index 59 restored index 29. The base shell loads 30 lessons and its early serializers overwrote deferred inProgress before v425 read it. Quota-failure browser case passed. Fixed earliest serializers in index.html, v412-hotfix.js and v414-state.js to retain original future session and additive snapshots until ordered curriculum expansion can restore them. Existing browser expectations unchanged. Added early-serialization Node regression. New-head CI required; this is a product fix, not a relaxed test.

@@ -108,7 +108,7 @@
     if(hasLessonProgress()){
       state.inProgress=snapshot();
     }
-    try{localStorage.setItem('meowde-v410-state',JSON.stringify(state))}
+    try{if(typeof preserveDeferredLessonState==='function')preserveDeferredLessonState(state);localStorage.setItem('meowde-v410-state',JSON.stringify(state))}
     catch(error){console.warn('Meowde could not save progress:',error)}
   }
   save=v414Save;

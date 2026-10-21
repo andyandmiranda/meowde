@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v473-free-lesson-resume";
+const CACHE_NAME = "meowde-v474-free-lesson-bootstrap";
 
 const REQUIRED_ASSETS = [
   "/assets/lesson-access-policy.js",

@@ -80,7 +80,15 @@ const S=Object.assign({lang:'ko',screen:'home',unit:0,done:[],next:0,xp:0,churu:
 function hasLessonProgress(){return Array.isArray(S.queue)&&S.queue.length>0&&S.idx>=0&&S.idx<S.queue.length&&Number.isInteger(S.lessonIndex)}
 function restoreLessonProgress(){const p=rawState.inProgress;if(!p||!Array.isArray(p.queue)||!p.queue.length)return;S.lang=DATA[p.lang]?p.lang:S.lang;S.lessonIndex=Math.max(0,Math.min(Number(p.lessonIndex)||0,lessons().length-1));S.queue=p.queue;S.idx=Math.max(0,Math.min(Number(p.idx)||0,S.queue.length-1));S.combo=Number(p.combo)||0;S.maxCombo=Number(p.maxCombo)||0;S.firstTotal=Number(p.firstTotal)||S.queue.filter(e=>e.type!=='concept').length;S.firstCorrect=Number(p.firstCorrect)||0;S.xpEarned=Number(p.xpEarned)||0;S.daily=!!p.daily;S.sel=p.sel??null;S.fill=p.fill??null;S.checked=!!p.checked;S.correct=!!p.correct;S.hint=!!p.hint;S.output=p.output||'';S.write=p.write||'';S.loading=false}
 restoreLessonProgress();
-function save(){const state={lang:S.lang,done:S.done,next:S.next,xp:S.xp,churu:S.churu,streak:S.streak,milk:S.milk,cat:S.cat,unit:S.unit};if(hasLessonProgress()){state.inProgress={lang:S.lang,lessonIndex:S.lessonIndex,idx:S.idx,queue:S.queue,combo:S.combo,maxCombo:S.maxCombo,firstTotal:S.firstTotal,firstCorrect:S.firstCorrect,xpEarned:S.xpEarned,daily:S.daily,sel:S.sel,fill:S.fill,checked:S.checked,correct:S.correct,hint:S.hint,output:S.output||'',write:S.write||''}}localStorage.setItem(STORAGE,JSON.stringify(state));}
+function preserveDeferredLessonState(state){
+ // The base shell has only 30 lessons. Keep later sessions intact on disk until
+ // ordered curriculum expansion can restore them through v425 recovery.
+ const pending=rawState.inProgress;
+ if(pending&&Number.isInteger(pending.lessonIndex)&&pending.lessonIndex>=lessons().length)state.inProgress=pending;
+ if(state.lessonResumes===undefined&&rawState.lessonResumes!==undefined)state.lessonResumes=rawState.lessonResumes;
+ return state;
+}
+function save(){const state={lang:S.lang,done:S.done,next:S.next,xp:S.xp,churu:S.churu,streak:S.streak,milk:S.milk,cat:S.cat,unit:S.unit};if(hasLessonProgress()){state.inProgress={lang:S.lang,lessonIndex:S.lessonIndex,idx:S.idx,queue:S.queue,combo:S.combo,maxCombo:S.maxCombo,firstTotal:S.firstTotal,firstCorrect:S.firstCorrect,xpEarned:S.xpEarned,daily:S.daily,sel:S.sel,fill:S.fill,checked:S.checked,correct:S.correct,hint:S.hint,output:S.output||'',write:S.write||''}}localStorage.setItem(STORAGE,JSON.stringify(preserveDeferredLessonState(state)));}
 function clearLessonProgress(){S.queue=[];S.idx=0;S.combo=0;S.maxCombo=0;S.firstTotal=0;S.firstCorrect=0;S.xpEarned=0;S.daily=false;S.sel=null;S.fill=null;S.checked=false;S.correct=false;S.loading=false;S.hint=false;S.output='';S.write=''}
 function resumeLesson(){if(!hasLessonProgress()){toast(S.lang==='ko'?'저장된 학습 지점이 없어요':'No saved lesson');return renderHome()}renderLesson()}
 function t(k){return (I18N[S.lang]&&I18N[S.lang][k])||k}

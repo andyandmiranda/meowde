@@ -49,3 +49,18 @@ test('invalid selection and loading execution cannot replace a live session',()=
  for(const index of [-1,60,'2',NaN])b.c.startLesson(index,false,null,{force:true});
  b.c.S.loading=true;b.c.startLesson(59,false,null,{force:true});assert.equal(b.c.S.queue,q);
 });
+
+test('early serializers retain future lesson 60 and archived places until curriculum loads',()=>{
+ const html=fs.readFileSync('index.html','utf8');
+ const helper=html.slice(html.indexOf('function preserveDeferredLessonState('),html.indexOf('function save(){'));
+ const original={lang:'ko',lessonIndex:59,idx:1,queue:[{id:'late',type:'concept'}, {id:'late-q',type:'predict'}],resumeKey:'lesson-60'};
+ const archives={old:{lessonIndex:0,write:'keep'}};
+ const c={rawState:{inProgress:original,lessonResumes:archives},lessons:()=>Array(30)};vm.createContext(c);vm.runInContext(helper,c);
+ const saved=c.preserveDeferredLessonState({inProgress:{lessonIndex:29}});
+ assert.equal(saved.inProgress,original);assert.equal(saved.lessonResumes,archives);
+ c.lessons=()=>Array(60);
+ const current={inProgress:{lessonIndex:0},lessonResumes:{new:'latest'}};
+ assert.equal(c.preserveDeferredLessonState(current),current);assert.equal(current.inProgress.lessonIndex,0);
+ for(const file of ['v412-hotfix.js','v414-state.js'])assert.match(fs.readFileSync(file,'utf8'),/preserveDeferredLessonState\(state\)/);
+ assert.match(html,/JSON.stringify\(preserveDeferredLessonState\(state\)\)/);
+});
