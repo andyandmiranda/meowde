@@ -53,3 +53,25 @@ test('measure review tab navigation without changing learner state',async({page}
  expect(result.unchanged).toBe(true);
  expect(result.hasTabs).toBe(true);
 });
+
+test('measure first review entry phases in real browser',async({page})=>{
+ const navigationStart=Date.now();
+ await page.goto(base+'/');
+ const domReadyMs=Date.now()-navigationStart;
+ await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+ const scriptsReadyMs=Date.now()-navigationStart;
+ const result=await page.evaluate(()=>{
+  const start=performance.now();
+  const before=JSON.stringify({done:S.done,xp:S.xp,churu:S.churu,queue:S.queue,idx:S.idx});
+  const dataMs=performance.now()-start;
+  renderReview();
+  const renderMs=performance.now()-start-dataMs;
+  const after=JSON.stringify({done:S.done,xp:S.xp,churu:S.churu,queue:S.queue,idx:S.idx});
+  return {dataMs,renderMs,unchanged:before===after,screen:S.screen};
+ });
+ await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+ const firstPaintMs=Date.now()-navigationStart;
+ console.log('QA_REVIEW_FIRST_ENTRY_PHASES',JSON.stringify({domReadyMs,scriptsReadyMs,firstPaintMs,...result}));
+ expect(result.unchanged).toBe(true);
+ expect(result.screen).toBe('review');
+});
