@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v479-approved-png-icons-free-resume-v480";
+const CACHE_NAME = "meowde-v479-approved-png-icons-free-resume-v481";
 
 const REQUIRED_ASSETS = [
   "/assets/lesson-access-policy.js",

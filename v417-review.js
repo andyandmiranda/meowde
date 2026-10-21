@@ -87,6 +87,15 @@
   }
   window.startSmartReview=function(){
     if(!storageReadable||!storageWritable)return toast(storageMessage());
+    // Recommendations can reorder after an answer. Resume the stored queue and
+    // counters before generating a new daily session from that changing list.
+    const suspended=S.lessonResumes&&typeof S.lessonResumes==='object'&&!Array.isArray(S.lessonResumes)
+      ?Object.entries(S.lessonResumes).reverse().find(([key,session])=>session&&session.lang===S.lang&&session.mode==='smart-review')
+      :null;
+    if(suspended){
+      const [resumeKey,session]=suspended;
+      return startLesson(session.lessonIndex,false,session.queue,{mode:'smart-review',resumeKey});
+    }
     const items=recommendations();
     if(!items.length)return toast(S.lang==='ko'?'복습할 문제가 아직 없습니다.':'No review tasks are available yet.');
     const queue=items.map(item=>Object.assign({},item.exercise,{

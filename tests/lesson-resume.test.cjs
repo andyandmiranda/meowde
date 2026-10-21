@@ -64,3 +64,13 @@ test('early serializers retain future lesson 60 and archived places until curric
  for(const file of ['v412-hotfix.js','v414-state.js'])assert.match(fs.readFileSync(file,'utf8'),/preserveDeferredLessonState\(state\)/);
  assert.match(html,/JSON.stringify\(preserveDeferredLessonState\(state\)\)/);
 });
+
+test('a changing review recommendation order resumes the saved identity instead of restarting',()=>{
+ const b=boot();const c=b.c;
+ c.startLesson(0,false,[{id:'a',type:'predict'},{id:'b',type:'predict'}],{mode:'smart-review'});
+ c.S.checked=true;c.S.firstCorrect=1;
+ c.startLesson(59,false,null,{force:true});
+ const key=Object.keys(c.S.lessonResumes).find(key=>c.S.lessonResumes[key].mode==='smart-review');
+ c.startLesson(0,false,[{id:'b',type:'predict'},{id:'a',type:'predict'}],{mode:'smart-review',resumeKey:key,force:true,onStarted:()=>{throw Error('must not start a fresh session')}});
+ assert.equal(c.S.checked,true);assert.equal(c.S.firstCorrect,1);assert.equal(c.S.queue[0].id,'a');
+});

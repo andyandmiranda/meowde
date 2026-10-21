@@ -135,10 +135,11 @@
     if(S.loading)return;
     if(!preserveBeforeSwitch())return;
     const mode=options&&options.mode?options.mode:(daily?'daily':(S.done.includes(index)?'review':'lesson'));
-    const key=resumeKey(index,mode,options,queueOverride);
+    const key=typeof options.resumeKey==='string'&&Object.prototype.hasOwnProperty.call(S.lessonResumes,options.resumeKey)
+      ?options.resumeKey:resumeKey(index,mode,options,queueOverride);
     const saved=S.lessonResumes[key];
     if(saved){
-      if(!Array.isArray(saved.queue)||!Number.isInteger(saved.idx)||saved.idx<0||saved.idx>=saved.queue.length||saved.lessonIndex!==index||saved.lang!==S.lang){
+      if(!Array.isArray(saved.queue)||!Number.isInteger(saved.idx)||saved.idx<0||saved.idx>=saved.queue.length||saved.lessonIndex!==index||saved.lang!==S.lang||saved.mode!==mode){
         toast(S.lang==='ko'?'이 레슨의 저장 지점을 확인해야 해요. 기존 기록을 보존했어요.':'This saved lesson needs recovery. Existing records were kept.');
         return;
       }
