@@ -103,3 +103,17 @@ test('Linux loop feedback shows the correct answer even after a correct choice',
  await transfer.locator('button[data-value="6"]').click();
  await expect(transfer.locator('[role="status"]')).toContainText('정답: 2 다음 줄에 4');
 });
+
+test('practice task surfaces use distinct shared styles without changing storage',async({page})=>{
+ await page.goto(base+'/python-lab.html');
+ await expect(page.locator('#practice')).toBeVisible();
+ const state=await page.evaluate(()=>{
+  const task=document.querySelector('#practice');
+  const kicker=task.querySelector('.practice-kicker');
+  const editor=task.querySelector('textarea.code');
+  return {taskBorder:getComputedStyle(task).borderTopWidth,kickerBg:getComputedStyle(kicker).backgroundColor,editorBorder:editor?getComputedStyle(editor).borderTopWidth:null};
+ });
+ expect(state.taskBorder).toBe('2px');
+ expect(state.kickerBg).not.toBe('rgba(0, 0, 0, 0)');
+ if(state.editorBorder)expect(state.editorBorder).toBe('2px');
+});
