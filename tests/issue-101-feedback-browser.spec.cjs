@@ -28,5 +28,9 @@ test('lesson close returns to learning map without clearing progress',async({pag
  await ready(page);
  await page.evaluate(()=>{S.lessonIndex=0;S.queue=[{id:'qa-nav',type:'concept',title:'Preview concept',body:'Read me',code:'print(1)'}];S.idx=0;S.firstTotal=1;S.firstCorrect=0;S.xpEarned=0;S.daily=false;renderLesson();});
  await page.locator('.lesson-top .close').click();
- expect(await page.evaluate(()=>({screen:S.screen,idx:S.idx,queue:S.queue.length}))).toEqual({screen:'map',idx:0,queue:1});
+ const navigation=await page.evaluate(()=>({screen:S.screen,idx:S.idx,queue:S.queue.length,pathname:location.pathname,onclick:document.querySelector('.lesson-top .close')?.getAttribute('onclick')||null,mapVisible:!!document.querySelector('.map-head'),homeVisible:!!document.querySelector('.home-head')}));
+ console.log('QA_LESSON_CLOSE_NAVIGATION',JSON.stringify(navigation));
+ expect(navigation.screen).toBe('map');
+ expect(navigation.idx).toBe(0);
+ expect(navigation.queue).toBe(1);
 });
