@@ -150,3 +150,8 @@ body:has(#lab) #practice label[for="learner-code"]::before{content:"02 · ";colo
 body:has(#lab) #practice [data-run="grade"]::before{content:"03 · "}
 body:has(#lab) #practice #run-status:not(:empty){border-top:1px solid var(--surface-line);padding-top:13px;margin-top:14px}
 body:has(#lab) #practice #run-status:not(:empty)::before{content:"04 · 실행 결과  ";font-weight:800;color:var(--surface-mint-dark)}
+
+/* Keep Review screen heading aligned with Home/Learn/My without changing review state. */
+.phase5-review .simple-head{padding:20px 18px 12px;background:var(--surface-cream)}
+.phase5-review .simple-head h2{font-size:25px;line-height:1.35;letter-spacing:-.04em;margin:0;color:var(--surface-ink)}
+.phase5-review .simple-head p{font-size:12px;line-height:1.5;margin-top:5px;color:var(--surface-muted)}
