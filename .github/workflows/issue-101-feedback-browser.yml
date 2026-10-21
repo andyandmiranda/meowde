@@ -34,3 +34,4 @@ jobs:
         run: pnpm exec playwright test tests/issue-101-feedback-browser.spec.cjs
         env:
           MEOWDE_TEST_BROWSER: ${{ matrix.browser }}
+          MEOWDE_BASE_URL: http://127.0.0.1:4173
