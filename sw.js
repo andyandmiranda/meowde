@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v474-free-lesson-bootstrap";
+const CACHE_NAME = "meowde-v479-approved-png-icons-free-resume-v480";
 
 const REQUIRED_ASSETS = [
   "/assets/lesson-access-policy.js",
@@ -35,13 +35,13 @@ const REQUIRED_ASSETS = [
   "/assets/characters/v451/meowde-challenge.webp",
   "/assets/characters/v451/meowde-debug.webp",
   "/manifest.webmanifest",
-  "/meowde-icon-192.svg",
-  "/meowde-icon-512.svg",
-  "/icons/meowde-180.png",
-  "/icons/meowde-192.png",
-  "/icons/meowde-512.png",
-  "/icons/meowde-maskable-192.png",
-  "/icons/meowde-maskable-512.png",
+  "/icons/meowde-approved.svg",
+  "/icons/meowde-approved-maskable.svg",
+  "/icons/meowde-approved-192.png",
+  "/icons/meowde-approved-512.png",
+  "/icons/meowde-approved-maskable-192.png",
+  "/icons/meowde-approved-maskable-512.png",
+  "/icons/meowde-approved-touch-180.png",
   "/v412-hotfix.js",
   "/v413-core.js",
   "/v413-lesson.js",

@@ -3,6 +3,8 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'index.html'
+      - 'v412-hotfix.js'
       - 'v414-state.js'
       - 'v414-reward.js'
       - 'v413-core.js'

@@ -36,3 +36,43 @@ test('failed snapshot write keeps the active lesson and stored bytes',async({pag
  expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(before);
  await expect(page.locator('.toast')).toContainText('저장');
 });
+test('switching a lesson around Smart Review preserves counters and grants its daily bonus once',async({page})=>{
+ test.setTimeout(120000);
+ await page.addInitScript(()=>{if(!sessionStorage.getItem('smart-integration-seed')){
+  localStorage.setItem('meowde-v410-state',JSON.stringify({lang:'ko',done:[0],next:1,xp:17,churu:8}));
+  sessionStorage.setItem('smart-integration-seed','1');
+ }});
+ await page.goto(base+'/');await ready(page);
+ async function openSmart(){
+  await page.locator('.tabbar button').filter({hasText:/^복습$/}).click();
+  await page.locator('.v417-smart-card .btn').click();
+  if(await page.locator('.start-guard').count())await page.locator('.start-guard button').last().click();
+ }
+ await openSmart();
+ const answer=await page.evaluate(()=>cur().answer);
+ await page.locator('.choice').nth(answer).click();await page.locator('.lesson-foot .btn').click();
+ await expect(page.locator('.feedback.ok')).toBeVisible();
+ const active=await page.evaluate(()=>({active:MeowSmartReview.state.active,idx:S.idx,checked:S.checked,queue:S.queue}));
+ await page.locator('.close').click();await select(page,59);
+ await page.reload();await ready(page);await page.locator('.close').click();await openSmart();
+ expect(await page.evaluate(()=>({active:MeowSmartReview.state.active,idx:S.idx,checked:S.checked,queue:S.queue}))).toEqual(active);
+ async function complete(){
+  for(let step=0;step<12&&await page.locator('.lesson-top').count();step++){
+   if(await page.locator('.feedback.ok').count()){await page.locator('.feedback .btn').click();continue;}
+   const ex=await page.evaluate(()=>({type:cur().type,answer:cur().answer,buggy:cur().buggy,tokens:cur().tokens,model:cur().model}));
+   if(ex.type==='concept'){await page.locator('.lesson-foot .btn').click();continue;}
+   if(ex.type==='predict')await page.locator('.choice').nth(ex.answer).click();
+   if(ex.type==='fill')await page.locator('.token').nth(ex.tokens.indexOf(ex.answer)).click();
+   if(ex.type==='bughunt')await page.locator('.linebtn').nth(ex.buggy).click();
+   if(ex.type==='write')await page.locator('#code-editor').fill(ex.model);
+   await page.locator('.lesson-foot .btn').click();await expect(page.locator('.feedback.ok')).toBeVisible({timeout:60000});
+  }
+  await expect(page.locator('.reward-screen')).toBeVisible();
+ }
+ await complete();
+ expect(await page.evaluate(()=>({done:S.done,next:S.next,xp:S.xp,churu:S.churu}))).toEqual({done:[0],next:1,xp:27,churu:13});
+ await page.locator('.lesson-foot .btn').click();await openSmart();await complete();
+ expect(await page.evaluate(()=>({xp:S.xp,churu:S.churu}))).toEqual({xp:27,churu:13});
+ await page.locator('.lesson-foot .btn').click();await select(page,59);
+ expect(await page.evaluate(()=>({index:S.lessonIndex,idx:S.idx}))).toEqual({index:59,idx:0});
+});
