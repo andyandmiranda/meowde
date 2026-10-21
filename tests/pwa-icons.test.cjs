@@ -21,7 +21,7 @@ test("manifest has install icons with retained app identity and safe maskable va
   ]);
   for(const icon of [regular,maskable]){
     const data=read(icon.slice(1));
-    assert.match(data,/viewBox="0 0 512 512"/);assert.match(data,/data:image\\/webp;base64,/);
+    assert.match(data,/viewBox="0 0 512 512"/);assert.ok(data.includes("data:image/webp;base64,"));
     assert.ok(data.length>7000);
     assert.ok(sw.includes('"' + icon + '"'),icon);
   }
