@@ -155,3 +155,9 @@ body:has(#lab) #practice #run-status:not(:empty)::before{content:"04 · 실행 �
 .phase5-review .simple-head{padding:20px 18px 12px;background:var(--surface-cream)}
 .phase5-review .simple-head h2{font-size:25px;line-height:1.35;letter-spacing:-.04em;margin:0;color:var(--surface-ink)}
 .phase5-review .simple-head p{font-size:12px;line-height:1.5;margin-top:5px;color:var(--surface-muted)}
+
+/* iPhone QA #101: make code readable and keep the first action within reach. */
+body:has(#lab) #practice textarea.code{color:#20342e!important;-webkit-text-fill-color:#20342e!important;caret-color:#20342e;background:#f8faf9!important;opacity:1}
+body:has(#lab) #practice textarea.code::placeholder{color:#596b64;opacity:1}
+body:has(#lab) #practice textarea.code:focus{outline:3px solid #39886d;outline-offset:2px}
+@media(max-width:479px){body:has(#lab) .lab-header{padding:8px 18px 0}body:has(#lab) .lab-header-eyebrow{margin:2px 0 0}body:has(#lab) .lab-header-description{margin:2px 0 0}body:has(#lab) #practice.practice-task{padding:14px}body:has(#lab) #practice textarea.code{min-height:160px}}
