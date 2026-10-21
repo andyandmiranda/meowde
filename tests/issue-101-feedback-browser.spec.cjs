@@ -89,6 +89,7 @@ test('practice header back-to-learn opens actual map in both engines',async({pag
 test('Linux loop feedback shows the correct answer even after a correct choice',async({page})=>{
  await page.goto(base+'/linux-loops-intro.html');
  const guided=page.locator('#guided');
+ await expect(guided.locator('button[aria-pressed="false"]')).toHaveCount(3);
  await guided.locator('button[data-value="3"]').click();
  await expect(guided.locator('[role="status"]')).toContainText('정답: 3줄');
  await expect(guided.locator('button[data-value="3"]')).toHaveAttribute('aria-pressed','true');
