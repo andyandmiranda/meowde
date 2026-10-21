@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v472-linux-five-tabs";
+const CACHE_NAME = "meowde-v473-original-oop-composition";
 
 const REQUIRED_ASSETS = [
   "/assets/linux-shared-navigation.js",
