@@ -161,3 +161,14 @@ body:has(#lab) #practice textarea.code{color:#20342e!important;-webkit-text-fill
 body:has(#lab) #practice textarea.code::placeholder{color:#596b64;opacity:1}
 body:has(#lab) #practice textarea.code:focus{outline:3px solid #39886d;outline-offset:2px}
 @media(max-width:479px){body:has(#lab) .lab-header{padding:8px 18px 0}body:has(#lab) .lab-header-eyebrow{margin:2px 0 0}body:has(#lab) .lab-header-description{margin:2px 0 0}body:has(#lab) #practice.practice-task{padding:14px}body:has(#lab) #practice textarea.code{min-height:160px}}
+
+/* Founder iPhone QA: use the same clean header rhythm across Practice and Review. */
+body:has(#lab) .lab-header{padding:18px 18px 10px;max-width:430px}
+body:has(#lab) .lab-header-main>a:first-child{font-family:Georgia,serif;font-size:24px;font-weight:800;letter-spacing:-.035em;color:var(--surface-ink)}
+body:has(#lab) .lab-header h1{font-size:29px;line-height:1.25;margin:12px 0 0}
+body:has(#lab) .lab-header-description{font-size:13px;margin-top:5px}
+.phase5-review .simple-head{background:transparent;padding:18px 18px 10px}
+.phase5-review .simple-head h2{font-size:29px;line-height:1.25;color:var(--surface-ink)}
+.phase5-review .simple-head p{font-size:13px;line-height:1.5}
+/* Review mascot: half the displayed dimensions, without touching other cats. */
+.phase5-review .simple-head img{width:50%!important;height:auto!important;max-width:70px!important;object-fit:contain}
