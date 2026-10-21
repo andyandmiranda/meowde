@@ -18,3 +18,20 @@
 - 신규 OOP 합성 학습 목표: mutable class vs instance, shallow list copy vs contained object references.
 - JSON 구조 검사/정적 스키마/추가된 6개 실행 기준, 브라우저에서 모델 코드 제출·오답 거절·새로고침 보존을 검증할 것.
 - 이번 파일은 **검증 계획과 권리 위험 기록**이며, 독립 법률 의견이나 완전한 저작권 클리어런스가 아니다.
+
+
+## 2026-10-21 추가 라이선스 감사 — 외부 원문 대조
+
+| 항목 | 이번 확인 | 아직 필요한 확인 / 처리 |
+|---|---|---|
+| 새 `object-collaboration` 문제·해설·예제·테스트 | 이번 작업에서 독립 창작, 기존 교육 자료의 문제 문장·예제·정답·그림 미복제 | 다른 공개·사내 강의와의 전체 유사성 검사를 완료한 것은 아님 |
+| 기존 Python 교육자료 15개 | `docs/python-learning-coverage.json`에 파일명/학습 목표/범위 대응이 존재. 이 대응표는 허가증이 아님 | 자료별 제공자, 저작권자, 제공 경위, 재이용·상업적 이용 범위. 원문 PDF/IPYNB, 세트 문제/정답 공개 금지 |
+| 기존 Linux/로보틱스 자료 | `docs/LINUX_CONTENT_REVIEW.md`가 식별 가능한 기관 표기·원문 유래 공개 과제 제거 범위를 서술 | 모든 과거 Git 커밋·배포·포크, 남은 유사 문항과 실제 원저작물 대조는 미검증 |
+| 기존 캐릭터 SVG 및 여섯 `assets/characters/v451/` WebP | 코드의 `approved` 명칭 및 기존 자산 기준 SHA는 있음 | **창작자·의뢰/양도 계약·AI 생성 도구 조건·상업적 변경/배포 허가 증빙 미확인**. 파일명과 웹 노출이 권리 증빙은 아님 |
+| Pretendard 글꼴 v1.3.9 | 공식 배포본은 SIL Open Font License 1.1, 저작자·Reserved Font Name 및 복제/재배포 조건을 명시함. [배포 LICENSE](https://github.com/orioncactus/pretendard/blob/main/packages/pretendard/dist/LICENSE.txt) | 현재 실제 로드되는 CDN 파일·고지 제공·자체 호스팅 여부, 배포본과 원저작권 표시 일치 검증. OFL의 상업적 사용 허용과 고지 의무를 구분 |
+| Pyodide v0.28.0 | 공식 [프로젝트 문서](https://pyodide.org/en/0.28.0/project/about.html)는 핵심 Pyodide 프로젝트를 **Mozilla Public License 2.0**으로 표시함 | 런타임이 가져오는 CPython·NumPy·pandas·Matplotlib·기타 번들 패키지의 각각 다른 라이선스, 고지 의무, 수정/배포 형태 감사 미완료 |
+| jsDelivr CDN | [2026-05-30 이용조건](https://github.com/jsdelivr/jsdelivr/blob/master/Terms%20of%20Use.md)은 조건 준수 시 상업적 CDN 사용을 허용하며, 원호스팅 플랫폼의 라이선스/약관도 따를 것을 요구함 | CDN 약관은 배포된 외부 코드·폰트·이미지의 저작권 이용 허가를 대체하지 않음 |
+| Playwright 1.62.1 | 현 저장소 `package.json`의 테스트 개발 의존성; 배포 앱에 번들된다는 증거 없음 | 실제 배포 트리와 전이 의존성 고지 요구 확인 |
+| MEOWDE 저장소 최상위 LICENSE | 현재 기준 브랜치에 `LICENSE` 404 | 프로젝트 전체 소스/자산 재사용 권리·기여자 계약 분리 정리. 라이선스 파일 부재가 침해 입증은 아님 |
+
+**확인 범위 한계:** 이 감사는 접근 가능한 저장소 파일, 기존 보존 기록, 상기 공식 외부 라이선스 문서 중심이며 **공개 저장소 전체와 과거 배포 아티팩트를 법률적으로 완전 조사한 결과가 아니다.** 새로운 재배포·상업화 이전에 권리 자료를 연결하고 미확인 콘텐츠는 제외 또는 독창적 대안으로 교체한다. 외부 폰트/라이브러리의 오픈소스 라이선스 확인이 기존 캐릭터나 강의자료 사용 허가를 보증하지 않는다.
