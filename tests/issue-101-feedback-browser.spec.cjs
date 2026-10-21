@@ -91,6 +91,10 @@ test('Linux loop feedback shows the correct answer even after a correct choice',
  const guided=page.locator('#guided');
  await guided.locator('button[data-value="3"]').click();
  await expect(guided.locator('[role="status"]')).toContainText('정답: 3줄');
+ await expect(guided.locator('button[data-value="3"]')).toHaveAttribute('aria-pressed','true');
+ await guided.locator('button[data-value="1"]').click();
+ await expect(guided.locator('button[data-value="3"]')).toHaveAttribute('aria-pressed','false');
+ await expect(guided.locator('button[data-value="1"]')).toHaveAttribute('aria-pressed','true');
  const transfer=page.locator('#transfer');
  await transfer.locator('button[data-value="6"]').click();
  await expect(transfer.locator('[role="status"]')).toContainText('정답: 2 다음 줄에 4');
