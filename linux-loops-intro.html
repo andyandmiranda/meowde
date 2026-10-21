@@ -22,13 +22,13 @@ done</pre><div id="transfer" data-answer="2 4" data-reason="반복은 목록에 
 'use strict';
 for(const block of document.querySelectorAll('[data-answer]')){
   const buttons=[...block.querySelectorAll('button[data-value]')];
-  for(const button of buttons)button.addEventListener('click',()=>{
+  for(const button of buttons){button.setAttribute('aria-pressed','false');button.addEventListener('click',()=>{
     for(const choice of buttons)choice.setAttribute('aria-pressed',String(choice===button));
     const correct=button.dataset.value===block.dataset.answer;
     const answer=buttons.find(x=>x.dataset.value===block.dataset.answer);
     const p=block.querySelector('[role=status]');
     p.className=correct?'correct':'wrong';
     p.textContent=(correct?'정답이에요. 정답: '+answer.textContent+'.':'선택한 답: '+button.textContent+'. 정답: '+answer.textContent+'.')+' 이유: '+block.dataset.reason;
-  });
+  });}
 }
 </script></body></html>
