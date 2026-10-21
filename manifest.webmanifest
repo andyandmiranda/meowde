@@ -18,27 +18,27 @@
   ],
   "icons": [
     {
-      "src": "/icons/meowde-approved.svg",
+      "src": "/icons/meowde-approved-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/meowde-approved.svg",
+      "src": "/icons/meowde-approved-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/meowde-approved-maskable.svg",
+      "src": "/icons/meowde-approved-maskable-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/icons/meowde-approved-maskable.svg",
+      "src": "/icons/meowde-approved-maskable-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ]

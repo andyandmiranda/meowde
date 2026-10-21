@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v478-approved-pwa-icons";
+const CACHE_NAME = "meowde-v479-approved-png-icons";
 
 const REQUIRED_ASSETS = [
   "/assets/linux-shared-navigation.js",
@@ -36,6 +36,11 @@ const REQUIRED_ASSETS = [
   "/manifest.webmanifest",
   "/icons/meowde-approved.svg",
   "/icons/meowde-approved-maskable.svg",
+  "/icons/meowde-approved-192.png",
+  "/icons/meowde-approved-512.png",
+  "/icons/meowde-approved-maskable-192.png",
+  "/icons/meowde-approved-maskable-512.png",
+  "/icons/meowde-approved-touch-180.png",
   "/v412-hotfix.js",
   "/v413-core.js",
   "/v413-lesson.js",
