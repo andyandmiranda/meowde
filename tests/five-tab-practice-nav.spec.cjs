@@ -417,3 +417,14 @@ test("real Pyodide: wrong answer, correction and saved attempts",async({page})=>
  await page.reload();
  await expect(page.locator("#learner-code")).toHaveValue(original);
 });
+
+test("iPhone QA: readable editor, compact header and matching practice navigation",async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ await page.goto(base+"/python-lab.html");
+ const editor=page.locator("#learner-code");await expect(editor).toBeVisible();
+ const c=await editor.evaluate(el=>{const s=getComputedStyle(el);return {color:s.color,fill:s.webkitTextFillColor,background:s.backgroundColor,height:el.getBoundingClientRect().height}});
+ expect(c.color).toBe("rgb(32, 52, 46)");expect(c.fill).toBe("rgb(32, 52, 46)");expect(c.height).toBeLessThanOrEqual(200);
+ await expect(page.locator(".lab-header-eyebrow")).toHaveCount(0);
+ await expect(page.locator(".meowde-lab-tabbar a[aria-current=page]")).toHaveCSS("color","rgb(109, 77, 137)");
+ await expect(page.locator('#practice [data-run="grade"]')).toBeVisible();
+});
