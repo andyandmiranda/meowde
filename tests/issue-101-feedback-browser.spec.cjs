@@ -23,3 +23,10 @@ for(const row of cases)test('wrong '+row.kind+' reveals correct example and reas
  await expect(disclosure).toContainText(row.exercise.explain);
  expect(await page.evaluate(()=>({xp:S.xp,churu:S.churu,done:[...S.done]}))).toEqual(before);
 });
+
+test('lesson close returns to learning map without clearing progress',async({page})=>{
+ await ready(page);
+ await page.evaluate(()=>{S.lessonIndex=0;S.queue=[{id:'qa-nav',type:'concept',title:'Preview concept',body:'Read me',code:'print(1)'}];S.idx=0;S.firstTotal=1;S.firstCorrect=0;S.xpEarned=0;S.daily=false;renderLesson();});
+ await page.locator('.lesson-top .close').click();
+ expect(await page.evaluate(()=>({screen:S.screen,idx:S.idx,queue:S.queue.length}))).toEqual({screen:'map',idx:0,queue:1});
+});
