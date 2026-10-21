@@ -318,3 +318,20 @@ test("Practice question is distinguishable as its own card in focus mode",async(
   expect(card.background).toBe("rgb(255, 255, 255)");
   expect(card.padding).toBeGreaterThanOrEqual(12);
 });
+
+test("Practice mobile four-step flow and Review header remain aligned",async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ await page.goto(base+"/python-lab.html");
+ const task=page.locator("#practice");
+ await expect(page.getByRole("banner",{name:"실습 화면 상단"}).getByRole("heading",{name:"실습"})).toBeVisible();
+ await expect(task.locator(".practice-kicker")).toBeVisible();
+ await expect(task.locator("#learner-code")).toBeVisible();
+ await expect(task.locator('[data-run="grade"]')).toBeVisible();
+ const steps=await page.evaluate(()=>({task:getComputedStyle(document.querySelector(".practice-kicker"),"::before").content,code:getComputedStyle(document.querySelector('label[for="learner-code"]'),"::before").content,run:getComputedStyle(document.querySelector('[data-run="grade"]'),"::before").content}));
+ expect(steps.task).toContain("01");expect(steps.code).toContain("02");expect(steps.run).toContain("03");
+ await page.goto(base+"/?tab=review");
+ await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+ await expect(page.locator(".phase5-review .simple-head h2")).toBeVisible();
+ const h=await page.locator(".phase5-review .simple-head h2").evaluate(el=>({size:getComputedStyle(el).fontSize,margin:getComputedStyle(el.closest(".simple-head")).paddingLeft}));
+ expect(h.size).toBe("25px");expect(h.margin).toBe("18px");
+});
