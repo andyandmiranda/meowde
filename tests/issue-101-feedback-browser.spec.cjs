@@ -27,6 +27,9 @@ for(const row of cases)test('wrong '+row.kind+' reveals correct example and reas
 test('lesson close returns to learning map without clearing progress',async({page})=>{
  await ready(page);
  await page.evaluate(()=>{S.lessonIndex=0;S.queue=[{id:'qa-nav',type:'concept',title:'Preview concept',body:'Read me',code:'print(1)'}];S.idx=0;S.firstTotal=1;S.firstCorrect=0;S.xpEarned=0;S.daily=false;renderLesson();});
+ const beforeClose=await page.evaluate(()=>({screen:S.screen,button:document.querySelector('.lesson-top .close')?.outerHTML||null,hasMap:!!document.querySelector('.map-head')})); console.log('QA_BEFORE_LESSON_CLOSE',JSON.stringify(beforeClose));
+ await page.waitForTimeout(180);
+ console.log('QA_BEFORE_LESSON_CLOSE_STABLE',JSON.stringify(await page.evaluate(()=>({screen:S.screen,button:document.querySelector('.lesson-top .close')?.outerHTML||null}))));
  await page.evaluate(()=>{window.__navCalls=[];for(const name of ['renderMap','renderHome']){const original=window[name];window[name]=function(...args){window.__navCalls.push(name);return original.apply(this,args)}}});
  await page.locator('.lesson-top .close').click();
  const navigation=await page.evaluate(()=>({screen:S.screen,idx:S.idx,queue:S.queue.length,pathname:location.pathname,navCalls:window.__navCalls,onclick:document.querySelector('.lesson-top .close')?.getAttribute('onclick')||null,mapVisible:!!document.querySelector('.map-head'),homeVisible:!!document.querySelector('.home-head')}));
