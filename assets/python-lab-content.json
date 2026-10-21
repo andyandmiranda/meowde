@@ -751,6 +751,113 @@
       }
     },
     {
+      "id": "object-collaboration",
+      "title": "클래스와 객체를 함께 사용하기",
+      "prerequisites": [
+        "objects"
+      ],
+      "goals": [
+        "클래스 속성과 인스턴스별 가변 상태를 구분한다.",
+        "상속 없이 객체를 조합하고, 원본 목록과 객체 상태의 차이를 확인한다."
+      ],
+      "concept": "클래스는 여러 객체가 공유하는 규칙이고 인스턴스는 각자의 상태를 가집니다. 변경되는 목록을 클래스 본문에 두면 여러 객체가 같은 목록을 함께 쓸 수 있습니다. 객체마다 따로 기록할 때는 __init__에서 self.records = []처럼 새 목록을 만드세요. 여러 객체를 한 기능에서 협력시키는 방법을 컴포지션(객체 합성)이라고 합니다. 같은 종류가 아닌 두 역할을 단순히 묶을 때는 상속보다 합성이 읽기 쉽습니다. list(logs)는 바깥 목록만 복사하며 그 안의 객체까지 복제하지는 않습니다.",
+      "glossary": {
+        "인스턴스 속성": "self.records처럼 객체마다 따로 보유하는 값입니다.",
+        "클래스 속성": "클래스 본문에 정의해 인스턴스가 공유할 수 있는 값입니다. 변경 가능한 값을 둘 때 주의하세요.",
+        "컴포지션": "어떤 객체가 다른 객체를 보유하거나 이용해 역할을 나누는 설계입니다.",
+        "참조": "목록에 담긴 객체를 가리키는 연결입니다. 목록을 복사해도 안의 객체는 그대로 연결됩니다."
+      },
+      "example": "class Label:\n    def __init__(self, text):\n        self.text = text\n\nclass Panel:\n    def __init__(self, labels):\n        self.labels = list(labels)\n\n    def texts(self):\n        return [label.text for label in self.labels]\n\nprint(Panel([Label(\"시작\"), Label(\"복습\")]).texts())",
+      "output": "['시작', '복습']",
+      "flow": [
+        "Label 객체는 각각 text를 보유합니다.",
+        "Panel은 Label 객체를 상속하지 않고 목록으로 묶습니다.",
+        "texts()는 각 객체의 속성을 읽어 새 목록으로 반환합니다."
+      ],
+      "pitfalls": [
+        "records = []를 클래스 본문에 두면 다른 인스턴스의 기록이 섞일 수 있습니다.",
+        "list(logs)는 목록을 복사하지만 포함된 TaskLog 객체까지 복제하지 않습니다.",
+        "상속을 단순한 객체 묶음에 사용하면 불필요한 결합이 생깁니다."
+      ],
+      "quiz": {
+        "type": "predict",
+        "difficulty": "기초 → 이해",
+        "code": "class Notes:\n    shared = []\n    def __init__(self):\n        self.own = []\n\na = Notes()\nb = Notes()\na.own.append(\"A\")\na.shared.append(\"B\")\nprint(len(b.own), len(b.shared))",
+        "choices": [
+          "0 1",
+          "1 1",
+          "0 0"
+        ],
+        "answer": 0,
+        "reasons": [
+          "own은 각각 생성되지만 shared는 클래스 목록을 함께 가리킵니다.",
+          "b.own은 a.own과 서로 다른 목록입니다.",
+          "shared에 추가한 항목은 b에서도 보입니다."
+        ],
+        "goal": "클래스 수준 목록과 인스턴스별 목록의 차이를 예측한다.",
+        "criteria": "서로 다른 객체의 변경 가능한 속성이 공유되는지 구분한다."
+      },
+      "task": {
+        "type": "설계 · 코드 작성",
+        "difficulty": "심화",
+        "prompt": "TaskLog(label)와 LogSummary(logs)를 구현하세요. 각 TaskLog는 label과 빈 records 목록을 갖고, record(text)는 문자열을 저장한 후 해당 객체의 기록 개수를 반환합니다. LogSummary는 전달받은 TaskLog 객체들의 목록을 복사해 보관하고 count()로 현재 총 기록 수를 반환합니다. 원래 logs 목록에 다른 객체를 나중에 추가해도 기존 LogSummary의 대상은 늘어나지 않지만, 이미 포함된 객체의 기록이 늘면 합계는 바뀌어야 합니다. 예: a = TaskLog(\"A\"); group = LogSummary([a]); a.record(\"시작\"); group.count() → 1.",
+        "starter": "class TaskLog:\n    def __init__(self, label):\n        pass\n\n    def record(self, text):\n        pass\n\nclass LogSummary:\n    def __init__(self, logs):\n        pass\n\n    def count(self):\n        pass",
+        "model": "class TaskLog:\n    def __init__(self, label):\n        self.label = label\n        self.records = []\n\n    def record(self, text):\n        self.records.append(text)\n        return len(self.records)\n\nclass LogSummary:\n    def __init__(self, logs):\n        self.logs = list(logs)\n\n    def count(self):\n        return sum(len(log.records) for log in self.logs)",
+        "tests": [
+          {
+            "label": "객체별 초기 상태",
+            "code": "a = TaskLog('A'); b = TaskLog('B'); assert a.label == 'A' and b.label == 'B'; assert a.records == [] and b.records == [] and a.records is not b.records",
+            "feedback": "__init__ 안에서 각각 새 records 목록을 만드세요. 클래스 속성으로 공유하지 마세요."
+          },
+          {
+            "label": "기록과 반환값",
+            "code": "a = TaskLog('A'); assert a.record('시작') == 1; assert a.record('완료') == 2; assert a.records == ['시작', '완료']",
+            "feedback": "record는 해당 객체의 records에 text를 추가하고 현재 길이를 반환해야 합니다."
+          },
+          {
+            "label": "다른 인스턴스에 영향 없음",
+            "code": "a = TaskLog('A'); b = TaskLog('B'); a.record('로그'); assert b.records == [] and b.record('다른 로그') == 1 and a.records == ['로그']",
+            "feedback": "객체의 가변 상태를 공용 클래스 목록에 저장하지 않았는지 확인하세요."
+          },
+          {
+            "label": "객체 변경은 합계에 반영",
+            "code": "a = TaskLog('A'); b = TaskLog('B'); s = LogSummary([a, b]); assert s.count() == 0; a.record('열기'); b.record('읽기'); a.record('닫기'); assert s.count() == 3",
+            "feedback": "LogSummary는 객체들의 현재 records를 읽어 매번 합산해야 합니다."
+          },
+          {
+            "label": "원본 목록 추가는 분리",
+            "code": "a = TaskLog('A'); b = TaskLog('B'); a.record('하나'); b.record('둘'); source = [a]; s = LogSummary(source); source.append(b); assert s.count() == 1",
+            "feedback": "LogSummary.__init__에서 logs 원본 목록을 그대로 저장하지 말고 list(logs)로 복사하세요."
+          },
+          {
+            "label": "빈 그룹과 목록 무변경",
+            "code": "source = []; s = LogSummary(source); assert s.count() == 0 and source == []; a = TaskLog('새 객체'); source.append(a); a.record('시작'); assert s.count() == 0",
+            "feedback": "빈 그룹은 0을 반환하고, 생성 당시 복사된 목록만 집계하세요."
+          }
+        ],
+        "hints": [
+          "기록 목록을 클래스 밖이 아닌 __init__의 self.records = []에 두세요.",
+          "LogSummary는 TaskLog를 상속할 필요 없이 그 객체들의 목록을 보유하면 됩니다.",
+          "self.logs = list(logs)로 외부 목록과 분리하고 sum(len(log.records) for log in self.logs)로 합산하세요."
+        ],
+        "steps": [
+          "TaskLog의 인스턴스별 속성과 record 반환값을 구현합니다.",
+          "LogSummary 생성 시 목록을 복사하고 내부 객체의 기록 개수를 합산합니다.",
+          "같은 객체의 기록 변경과 바깥 목록에 객체 추가를 서로 다른 경우로 검사합니다."
+        ],
+        "mistake": "원본 목록을 그대로 저장하거나, records를 클래스 속성으로 선언하면 여러 인스턴스 사이에 예상치 못한 공유가 발생합니다.",
+        "alternative": "객체들이 서로 다른 역할을 가진다면 컴포지션이 간단합니다. 공통 인터페이스를 가진 여러 구현이 필요한 때는 상속이나 다형성을 검토하세요.",
+        "criteria": [
+          "객체별 초기 상태",
+          "기록과 반환값",
+          "다른 인스턴스에 영향 없음",
+          "객체 변경은 합계에 반영",
+          "원본 목록 추가는 분리",
+          "빈 그룹과 목록 무변경"
+        ]
+      }
+    },
+    {
       "id": "numpy-shape",
       "title": "배열의 모양과 공유",
       "prerequisites": [

@@ -12,7 +12,7 @@ const content=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/python-l
  page.on('pageerror',e=>errors.push(e.message));
  const check=(name,value)=>{assert.ok(value,name);results.push({name,pass:true});console.log('PASS',name)};
  await page.goto(base+'/python-lab.html');await page.waitForSelector('#learner-code');
- check('18 navigable units',await page.locator('#unit-nav a').count()===18);
+ check('19 navigable units',await page.locator('#unit-nav a').count()===19);
  check('Desktop unit menu fits viewport',await page.locator('#unit-nav').evaluate(e=>e.getBoundingClientRect().height<=innerHeight-20));
  await page.evaluate(()=>{
    const p=JSON.parse(localStorage.getItem('meowde-python-lab-v1')||'{"version":1,"units":{}}');
@@ -40,7 +40,7 @@ const content=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/python-l
  check('Independent prediction + application label',(await page.locator('.lesson > .badge').textContent()).includes('혼자 적용'));
  await page.screenshot({path:path.join(out,'python-lab-desktop.png'),fullPage:true});
  await page.screenshot({path:path.join(out,'python-lab-desktop-view.png')});
- for(const id of ['numpy-shape','numpy-axis','numpy-index','numpy-batches','numpy-random','pandas-select','pandas-clean','pandas-time','charts','eda-project']){
+ for(const id of ['object-collaboration','numpy-shape','numpy-axis','numpy-index','numpy-batches','numpy-random','pandas-select','pandas-clean','pandas-time','charts','eda-project']){
    await page.goto(base+'/python-lab.html#'+id);await page.waitForSelector('#learner-code');
    const unit=content.units.find(u=>u.id===id);
    const wrongs={
