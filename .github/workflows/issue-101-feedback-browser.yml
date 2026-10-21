@@ -1,0 +1,31 @@
+name: Issue 101 feedback browser regression
+on:
+  pull_request:
+    paths:
+      - 'tests/issue-101-feedback-browser.spec.cjs'
+      - '.github/workflows/issue-101-feedback-browser.yml'
+  workflow_dispatch:
+jobs:
+  feedback:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Launch isolated local preview
+        run: |
+          npm run preview:local > /tmp/meowde-preview.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/meowde-preview.log
+          exit 1
+      - name: Check incorrect-answer feedback
+        run: npx playwright test tests/issue-101-feedback-browser.spec.cjs --project=${{ matrix.browser }}
