@@ -134,3 +134,19 @@ body:has(#lab) #practice textarea.code{background:#F8FAF9;border:2px solid #A7CD
 body:has(#lab) #practice .feedback{border-left:4px solid var(--surface-mint-dark);padding:12px 14px;border-radius:10px;background:#F1F9F5}
 body:has(#lab) #practice .feedback.bad{border-left-color:#B44551;background:#FFF2F1;color:#90333F}
 body:has(#lab) #practice .feedback.good{border-left-color:#247B61;background:#ECF8F2;color:#205844}
+
+/* Shared main-tab heading: practice follows Home/Learn/My type and spacing. */
+body:has(#lab) .lab-header{max-width:430px;padding:20px 18px 6px;align-items:flex-start;gap:12px}
+body:has(#lab) .lab-header-main{min-width:0;flex:1}
+body:has(#lab) .lab-header-main>a:first-child{font-size:13px;font-weight:800;color:var(--surface-mint-dark);text-decoration:none;letter-spacing:.03em}
+body:has(#lab) .lab-header-eyebrow{font-size:10px;letter-spacing:.12em;font-weight:800;color:var(--surface-muted);margin:8px 0 2px}
+body:has(#lab) .lab-header h1{font-size:25px;line-height:1.35;letter-spacing:-.04em;margin:0;color:var(--surface-ink)}
+body:has(#lab) .lab-header-description{font-size:12px;color:var(--surface-muted);line-height:1.5;margin:5px 0 0}
+body:has(#lab) .lab-back-link{font-size:12px;white-space:nowrap;min-height:44px;display:flex;align-items:center}
+/* Four clearly separated practice steps; interactive elements remain unchanged. */
+body:has(#lab) #practice .practice-kicker::before{content:"01 · "}
+body:has(#lab) #practice label[for="learner-code"]{border-top:1px solid var(--surface-line);margin-top:18px;padding-top:15px}
+body:has(#lab) #practice label[for="learner-code"]::before{content:"02 · ";color:var(--surface-mint-dark)}
+body:has(#lab) #practice [data-run="grade"]::before{content:"03 · "}
+body:has(#lab) #practice #run-status:not(:empty){border-top:1px solid var(--surface-line);padding-top:13px;margin-top:14px}
+body:has(#lab) #practice #run-status:not(:empty)::before{content:"04 · 실행 결과  ";font-weight:800;color:var(--surface-mint-dark)}
