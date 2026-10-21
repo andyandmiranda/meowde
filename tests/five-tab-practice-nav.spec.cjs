@@ -265,3 +265,28 @@ test('Linux quiz feedback uses the bottom practice tab without another entry but
  await expect(page.locator('[data-practice-note]')).toContainText('하단 실습 탭');await expect(page.locator('[data-quiz-guide]')).toHaveCount(0);
 });
 
+
+test("Learn tab opens roadmap with unfinished lesson and preserves explicit resume",async({page})=>{
+  await page.goto(base+"/");
+  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+  await page.evaluate(()=>startLesson(0));
+  const snapshot=()=>page.evaluate(()=>({
+    index:S.lessonIndex,step:S.idx,completed:[...S.done],xp:S.xp,churu:S.churu,
+    progress:hasLessonProgress()
+  }));
+  const previous=await snapshot();
+  expect(previous.progress).toBe(true);
+  await page.goto(base+"/python-lab.html");
+  await page.getByRole("navigation",{name:"메인 메뉴"}).getByRole("link",{name:"학습",exact:true}).click();
+  await expect(page).toHaveURL(/tab=map/);
+  await expect(page.locator("[data-learn-path=canonical]")).toBeVisible();
+  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+  await expect(page.locator(".tabbar button.on")).toHaveAttribute("aria-label","학습");
+  expect(await snapshot()).toEqual(previous);
+  await page.reload();
+  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+  await expect(page.locator("[data-learn-path=canonical]")).toBeVisible();
+  expect(await snapshot()).toEqual(previous);
+  await page.evaluate(()=>resumeLesson());
+  expect(await snapshot()).toEqual(previous);
+});
