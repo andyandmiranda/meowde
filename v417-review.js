@@ -5,16 +5,28 @@
     const n=new Date(),y=n.getFullYear(),m=String(n.getMonth()+1).padStart(2,'0'),d=String(n.getDate()).padStart(2,'0');
     return y+'-'+m+'-'+d;
   }
+  let storageReadable=true,storageWritable=true;
+  function isRecord(value){return value!==null&&typeof value==='object'&&!Array.isArray(value)}
   function read(){
-    try{const value=JSON.parse(localStorage.getItem(KEY)||'{}');return value&&typeof value==='object'?value:{}}
-    catch(error){console.warn('Meowde v4.17 review state was reset:',error);return {}}
+    try{
+      const raw=localStorage.getItem(KEY);
+      if(raw===null)return {};
+      const value=JSON.parse(raw);
+      if(!isRecord(value)||(value.days!==undefined&&!isRecord(value.days))||(value.history!==undefined&&!Array.isArray(value.history)))throw new Error('Unsupported review record');
+      return value;
+    }
+    catch(error){storageReadable=false;console.warn('Meowde v4.17 review state could not be read; original preserved:',error);return {}}
+  }
+  function storageMessage(){
+    return S.lang==='ko'?'복습 기록을 읽을 수 없어 원본을 보존하고 복습·보상 처리를 멈췄어요. 브라우저 저장 권한을 확인한 뒤 새로고침해 주세요. 일반 학습은 계속할 수 있어요.':'Review records could not be read. The original is preserved; review and rewards are paused. Check browser storage permissions, then reload. Regular lessons are still available.';
   }
   const R=read();
   R.days=R.days&&typeof R.days==='object'?R.days:{};
   R.history=Array.isArray(R.history)?R.history:[];
   function persist(){
-    try{localStorage.setItem(KEY,JSON.stringify(R))}
-    catch(error){console.warn('Meowde v4.17 could not save review state:',error)}
+    if(!storageReadable||!storageWritable)return false;
+    try{localStorage.setItem(KEY,JSON.stringify(R));return true}
+    catch(error){storageWritable=false;console.warn('Meowde v4.17 could not save review state:',error);return false}
   }
   function contextFor(exercise){
     if(typeof meowdeExerciseContext==='function')return meowdeExerciseContext(exercise);
@@ -48,13 +60,6 @@
         });
       });
     }
-    if(!selected.length){
-      const lessonIndex=Math.max(0,Math.min(Number(S.next)||0,lessons().length-1));
-      const lesson=lessons()[lessonIndex];
-      if(lesson){
-        lesson.exercises.filter(x=>x.type!=='concept').slice(0,LIMIT).forEach(exercise=>selected.push({lessonIndex,key:'',exercise}));
-      }
-    }
     return selected.slice(0,LIMIT);
   }
   function streak(){
@@ -67,6 +72,7 @@
     return count;
   }
   function card(){
+    if(!storageReadable)return '<section class="card v417-smart-card"><h3>'+(S.lang==='ko'?'맞춤 복습':'Smart review')+'</h3><p role="status">'+storageMessage()+'</p><button class="btn ghost" disabled aria-disabled="true">'+(S.lang==='ko'?'복습 기록 확인 필요':'Review records need attention')+'</button></section>';
     const ko=S.lang==='ko',list=recommendations(),wrong=mistakes().length,done=Boolean(R.days[dayKey()]);
     const labels=list.slice(0,3).map(item=>{
       const lesson=lessons()[item.lessonIndex];
@@ -74,12 +80,13 @@
     }).join('');
     return '<section class="card v417-smart-card '+(done?'done':'')+'">'
       +'<div class="v417-smart-head"><div><div class="section-kicker">'+(ko?'맞춤 복습':'Smart review')+'</div><h3>'+(ko?'오늘의 추천 복습':'Today’s recommended review')+'</h3></div><span class="pill">'+(done?'✓':list.length+(ko?'문제':' tasks'))+'</span></div>'
-      +'<p>'+(wrong?(ko?'자주 틀린 문제부터 자동으로 구성했습니다.':'Built automatically from your highest-priority mistakes.'):(ko?'완료한 레슨에서 기억을 유지할 문제를 골랐습니다.':'Selected from completed lessons to keep the material fresh.'))+'</p>'
+      +'<p>'+(wrong?(ko?'자주 틀린 문제부터 자동으로 구성했습니다.':'Built automatically from your highest-priority mistakes.'):(list.length?(ko?'완료한 레슨에서 기억을 유지할 문제를 골랐습니다.':'Selected from completed lessons to keep the material fresh.'):(ko?'아직 복습할 문제가 없어요. 먼저 학습을 완료해 주세요.':'Nothing to review yet. Complete a lesson to unlock review.')))+'</p>'
       +'<div class="v417-review-tags">'+labels+'</div>'
       +'<div class="v417-review-stats"><div><b>'+wrong+'</b><small>'+(ko?'남은 오답':'mistakes')+'</small></div><div><b>'+streak()+'</b><small>'+(ko?'복습 연속일':'review streak')+'</small></div><div><b>'+R.history.length+'</b><small>'+(ko?'완료 기록':'sessions')+'</small></div></div>'
-      +'<button class="btn '+(done?'ghost':'butter')+'" onclick="startSmartReview()">🧠 '+(done?(ko?'보상 없이 다시 복습':'Practice again'):(ko?'Smart Review 시작 · +10 XP':'Start Smart Review · +10 XP'))+'</button></section>';
+      +'<button class="btn '+(done?'ghost':'butter')+'" '+(!list.length?'disabled aria-disabled="true"':'onclick="startSmartReview()"')+'>🧠 '+(!list.length?(ko?'학습 후 복습 가능':'Review unlocks after learning'):(done?(ko?'보상 없이 다시 복습':'Practice again'):(ko?'Smart Review 시작 · +10 XP':'Start Smart Review · +10 XP')))+'</button></section>';
   }
   window.startSmartReview=function(){
+    if(!storageReadable||!storageWritable)return toast(storageMessage());
     const items=recommendations();
     if(!items.length)return toast(S.lang==='ko'?'복습할 문제가 아직 없습니다.':'No review tasks are available yet.');
     const queue=items.map(item=>Object.assign({},item.exercise,{
@@ -113,14 +120,26 @@
   const baseFinish=finish;
   finish=function(){
     const smart=typeof meowdeMode==='function'&&meowdeMode()==='smart-review';
+    // A resumed review must not clear progress or re-award an unreadable daily claim.
+    if(smart&&(!storageReadable||!storageWritable||!persist()))return toast(storageMessage());
     const key=dayKey(),first=smart&&!R.days[key],active=R.active||{};
-    baseFinish();
-    if(!smart)return;
+    if(!smart){baseFinish();return;}
     const accuracy=Math.round((Number(active.firstCorrect)||0)/Math.max(1,Number(active.firstTotal)||0)*100);
-    if(first){S.xp=(Number(S.xp)||0)+BONUS_XP;S.churu=(Number(S.churu)||0)+BONUS_CHURU}
+    // Commit the claim before granting a reward. A later storage denial must
+    // leave both the learner's XP and the durable claim unchanged.
+    const previousDay=R.days[key],previousHistory=R.history,previousActive=R.active;
     R.days[key]=R.days[key]||{completedAt:new Date().toISOString(),accuracy,total:Number(active.total)||0,xp:first?BONUS_XP:0,churu:first?BONUS_CHURU:0};
-    R.history.push({date:key,completedAt:new Date().toISOString(),accuracy,total:Number(active.total)||0});
-    R.history=R.history.slice(-30);delete R.active;persist();save();
+    R.history=R.history.concat([{date:key,completedAt:new Date().toISOString(),accuracy,total:Number(active.total)||0}]).slice(-30);
+    delete R.active;
+    if(!persist()){
+      if(previousDay===undefined)delete R.days[key];else R.days[key]=previousDay;
+      R.history=previousHistory;
+      if(previousActive===undefined)delete R.active;else R.active=previousActive;
+      return toast(storageMessage());
+    }
+    baseFinish();
+    if(first){S.xp=(Number(S.xp)||0)+BONUS_XP;S.churu=(Number(S.churu)||0)+BONUS_CHURU}
+    save();
     const screen=document.querySelector('.reward-screen');
     if(screen){
       const title=screen.querySelector('h2');if(title)title.textContent=S.lang==='ko'?'Smart Review 완료':'Smart Review complete';
