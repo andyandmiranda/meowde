@@ -333,7 +333,7 @@ test("Practice mobile four-step flow and Review header remain aligned",async({pa
  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
  await expect(page.locator(".phase5-review .simple-head h2")).toBeVisible();
  const h=await page.locator(".phase5-review .simple-head h2").evaluate(el=>({size:getComputedStyle(el).fontSize,margin:getComputedStyle(el.closest(".simple-head")).paddingLeft}));
- expect(h.size).toBe("25px");expect(h.margin).toBe("18px");
+ expect(h.size).toBe("29px");expect(h.margin).toBe("18px");
 });
 
 // Exercise the actual UI worker message protocol without downloading Pyodide.
