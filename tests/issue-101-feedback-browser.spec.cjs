@@ -88,6 +88,7 @@ test('practice header back-to-learn opens actual map in both engines',async({pag
 
 test('Linux loop feedback shows the correct answer even after a correct choice',async({page})=>{
  await page.goto(base+'/linux-loops-intro.html');
+ await expect(page.getByRole('link',{name:'학습 지도로 돌아가기'})).toHaveAttribute('href','/?tab=map');
  const nav=page.getByRole('navigation',{name:'메인 메뉴'});
  await expect(nav.getByRole('link')).toHaveCount(5);
  await expect(nav.getByRole('link',{name:'복습'})).toHaveAttribute('href','/?tab=review');
