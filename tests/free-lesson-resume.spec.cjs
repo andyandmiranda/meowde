@@ -40,6 +40,10 @@ test('switching a lesson around Smart Review preserves counters and grants its d
  test.setTimeout(120000);
  await page.addInitScript(()=>{if(!sessionStorage.getItem('smart-integration-seed')){
   localStorage.setItem('meowde-v410-state',JSON.stringify({lang:'ko',done:[0],next:1,xp:17,churu:8}));
+  // Preclaimed achievements keep their independent one-time bonuses out of
+  // this Smart Review accounting fixture; all real grading/reward hooks run.
+  const claimed=['first-step','daily-one','no-hints','five-correct','steady-paws','three-in-row','ten-in-row','fifty-correct','python-basics','master'];
+  localStorage.setItem('meowde-v419-achievements',JSON.stringify({unlocked:Object.fromEntries(claimed.map(id=>[id,{unlockedAt:'2026-10-20T00:00:00Z',xp:0,churu:0}]))}));
   sessionStorage.setItem('smart-integration-seed','1');
  }});
  await page.goto(base+'/');await ready(page);
