@@ -35,3 +35,9 @@
 | MEOWDE 저장소 최상위 LICENSE | 현재 기준 브랜치에 `LICENSE` 404 | 프로젝트 전체 소스/자산 재사용 권리·기여자 계약 분리 정리. 라이선스 파일 부재가 침해 입증은 아님 |
 
 **확인 범위 한계:** 이 감사는 접근 가능한 저장소 파일, 기존 보존 기록, 상기 공식 외부 라이선스 문서 중심이며 **공개 저장소 전체와 과거 배포 아티팩트를 법률적으로 완전 조사한 결과가 아니다.** 새로운 재배포·상업화 이전에 권리 자료를 연결하고 미확인 콘텐츠는 제외 또는 독창적 대안으로 교체한다. 외부 폰트/라이브러리의 오픈소스 라이선스 확인이 기존 캐릭터나 강의자료 사용 허가를 보증하지 않는다.
+
+## 2026-10-21 공식 원문 추가 확인 — 권리 확인과 배포물 고지는 별도
+
+- Pretendard 공식 [원본 저장소 LICENSE](https://github.com/orioncactus/pretendard/blob/main/packages/pretendard/dist/LICENSE.txt)는 **SIL Open Font License 1.1**, Reserved Font Name Pretendard, 복제·번들 배포 시 저작권 및 라이선스 고지 포함 조건을 명시한다. 공식 [README](https://github.com/orioncactus/pretendard/blob/main/packages/pretendard/README.md)도 상업적 사용·재배포 허용을 설명한다. **라이선스 유형 확인**, 실제 MEOWDE CDN 로드 자산에 고지가 충분히 제공되는지는 별도 **미검증**. 폰트 파일을 새로 재배포하거나 보호 조건을 변경하지 않았다.
+- Pyodide **0.28.0** 공식 [프로젝트 문서](https://pyodide.org/en/0.28.0/project/about.html)는 **MPL-2.0**을 밝힌다. 공식 [배포 패키지 목록](https://pyodide.org/en/0.28.0/usage/packages-in-pyodide.html)은 Pyodide가 수많은 서드파티 패키지를 포함한다고 명시하지만, 목록 자체는 각 패키지의 라이선스 허가증이나 현재 앱의 런타임 로드 목록은 아니다. **Pyodide 자체 라이선스 확인**, 현재 앱이 로드하는 개별 패키지·전이 의존성·고지·CDN 제공 조건은 **미검증**.
+- Preview 테스트의 정상 인증 경로는 기존 Vercel 인증 상태의 `vc curl <full-preview-url>` 또는 **짧은 수명 개발 OIDC 토큰을 인증 브라우저의 요청 헤더에만 적용**하는 방법이다. 이 실행 환경에는 `vc` 인증 CLI/브라우저 조작 기능이 없으며, 배포 보호 설정·우회 토큰·공유 링크·별칭을 변경하지 않았다. 보호 여부를 직접 HTTP 상태 코드로 입증하지 못했으므로 **Preview 실사용 접근 미검증**.
