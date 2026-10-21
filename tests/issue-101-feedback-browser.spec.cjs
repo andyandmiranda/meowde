@@ -124,7 +124,7 @@ test('practice task surfaces use distinct shared styles without changing storage
 
 test('Linux crash course uses shared cream and mint UI in Chromium and WebKit',async({page})=>{
  await page.goto(base+'/linux-crash-course.html');
- const colors=await page.evaluate(()=>({background:getComputedStyle(document.querySelector('.app')).backgroundColor,button:getComputedStyle(document.querySelector('button')).backgroundColor}));
+ const colors=await page.evaluate(()=>({background:getComputedStyle(document.querySelector('.app')).backgroundColor,button:getComputedStyle(document.querySelector('#sim-run')).backgroundColor}));
  expect(colors.background).toBe('rgb(255, 249, 239)');
  expect(colors.button).toBe('rgb(83, 199, 160)');
 });
