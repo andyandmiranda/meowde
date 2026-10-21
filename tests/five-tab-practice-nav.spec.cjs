@@ -290,3 +290,31 @@ test("Learn tab opens roadmap with unfinished lesson and preserves explicit resu
   await page.evaluate(()=>resumeLesson());
   expect(await snapshot()).toEqual(previous);
 });
+
+test("Home current-course card matches daily card inset on mobile widths",async({page})=>{
+  for(const width of [320,390,430]){
+    await page.setViewportSize({width,height:840});
+    await page.goto(base+"/?tab=home");
+    await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+    const bounds=await page.evaluate(()=>{
+      const daily=document.querySelector(".daily-card").getBoundingClientRect();
+      const unit=document.querySelector(".phase1-unit-card").getBoundingClientRect();
+      return {dailyLeft:daily.left,dailyRight:daily.right,unitLeft:unit.left,unitRight:unit.right,viewport:document.documentElement.clientWidth};
+    });
+    expect(Math.abs(bounds.dailyLeft-bounds.unitLeft)).toBeLessThan(2);
+    expect(Math.abs(bounds.dailyRight-bounds.unitRight)).toBeLessThan(2);
+    expect(bounds.unitRight).toBeLessThanOrEqual(bounds.viewport);
+  }
+});
+test("Practice question is distinguishable as its own card in focus mode",async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(base+"/python-lab.html");
+  await expect(page.locator("#learner-code")).toBeVisible();
+  const card=await page.locator("#practice.practice-primary").evaluate(node=>{
+    const style=getComputedStyle(node);
+    return {border:parseFloat(style.borderTopWidth),background:style.backgroundColor,padding:parseFloat(style.paddingLeft)};
+  });
+  expect(card.border).toBeGreaterThan(0);
+  expect(card.background).toBe("rgb(255, 255, 255)");
+  expect(card.padding).toBeGreaterThanOrEqual(12);
+});

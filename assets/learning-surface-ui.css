@@ -99,7 +99,7 @@ body.meowde-practice-focus #lab #run-results:empty{display:none}
 body.meowde-practice-focus #lab .practice-primary .actions{margin-bottom:5px}
 body.meowde-practice-focus #lab #practice>h3{display:none}
 body.meowde-practice-focus #lab #practice .practice-criteria{display:none}
-body.meowde-practice-focus #lab .practice-primary{border:0;background:transparent;padding:0;box-shadow:none}
+body.meowde-practice-focus #lab .practice-primary{border:1.5px solid var(--line);border-radius:20px;background:#fff;padding:14px;box-shadow:0 7px 20px rgba(68,49,36,.06)}
 body.meowde-practice-focus #lab .practice-primary>p:not(.meta){font-size:15px;line-height:1.6;margin-bottom:11px}
 body.meowde-practice-focus #lab .practice-primary label[for="learner-code"]{display:block;margin:7px 0}
 body.meowde-practice-focus #lab .lesson h2{font-size:20px}
