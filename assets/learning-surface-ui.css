@@ -172,3 +172,6 @@ body:has(#lab) .lab-header-description{font-size:13px;margin-top:5px}
 .phase5-review .simple-head p{font-size:13px;line-height:1.5}
 /* Review mascot: half the displayed dimensions, without touching other cats. */
 .phase5-review .simple-head img{width:50%!important;height:auto!important;max-width:70px!important;object-fit:contain}
+
+/* Match active practice tab despite more specific shared surface selectors. */
+body:has(#lab) .meowde-lab-tabbar a[aria-current="page"]{color:#6d4d89;background:linear-gradient(135deg,#f0eaff,#e9f7f3)}
