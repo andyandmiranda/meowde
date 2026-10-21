@@ -28,4 +28,6 @@ jobs:
           cat /tmp/meowde-preview.log
           exit 1
       - name: Check incorrect-answer feedback
-        run: npx playwright test tests/issue-101-feedback-browser.spec.cjs --project=${{ matrix.browser }}
+        run: npx playwright test tests/issue-101-feedback-browser.spec.cjs
+        env:
+          MEOWDE_TEST_BROWSER: ${{ matrix.browser }}
