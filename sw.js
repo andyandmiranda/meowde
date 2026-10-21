@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v479-approved-png-icons-free-resume-v481";
+const CACHE_NAME = "meowde-v479-approved-png-icons-free-resume-oop-linux-v482";
 
 const REQUIRED_ASSETS = [
   "/assets/lesson-access-policy.js",
@@ -109,6 +109,7 @@ const REQUIRED_ASSETS = [
   "/v461-unit6-en.js",
   "/v462-unit6-integration.js",
   "/linux-home.html",
+  "/linux-loops-intro.html",
   "/linux-start.html",
   "/linux-crash-course.html",
   "/robotics.html",
