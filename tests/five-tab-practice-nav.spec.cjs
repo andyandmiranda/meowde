@@ -335,3 +335,37 @@ test("Practice mobile four-step flow and Review header remain aligned",async({pa
  const h=await page.locator(".phase5-review .simple-head h2").evaluate(el=>({size:getComputedStyle(el).fontSize,margin:getComputedStyle(el.closest(".simple-head")).paddingLeft}));
  expect(h.size).toBe("25px");expect(h.margin).toBe("18px");
 });
+
+// Exercise the actual UI worker message protocol without downloading Pyodide.
+// This checks the complete feedback/render/retry/storage path in both engines.
+test("Python grading shows failed criteria, allows retry, and preserves attempts",async({page})=>{
+ await page.addInitScript(()=>{
+  class FakeWorker{
+   constructor(){this.onmessage=null;this.onerror=null;}
+   postMessage({code,tests}){
+    const pass=code.includes("fixed");
+    const result={results:tests.map((t,i)=>({pass,label:t.label||t.name||"기준 "+(i+1),errorType:pass?"":"AssertionError",error:pass?"":"expected output",trace:pass?"":"AssertionError: expected output"})),output:pass?"fixed\\n":"wrong\\n",images:[]};
+    Promise.resolve().then(()=>this.onmessage?.({data:{stage:"complete",result}}));
+   }
+   terminate(){}
+  }
+  window.Worker=FakeWorker;
+ });
+ await page.goto(base+"/python-lab.html");
+ const editor=page.locator("#learner-code");
+ await expect(editor).toBeVisible();
+ await editor.fill("print('wrong')");
+ await page.locator('#practice [data-run="grade"]').click();
+ await expect(page.locator("#run-status")).toContainText("일부 기준");
+ await expect(page.locator("#run-results .result-fail").first()).toBeVisible();
+ const before=await page.evaluate(()=>JSON.parse(localStorage.getItem("meowde-python-lab-v1")));
+ expect(Object.values(before.units).some(u=>u.attempts===1&&u.lastPassed===false)).toBe(true);
+ await editor.fill("print('fixed')");
+ await page.locator('#practice [data-run="grade"]').click();
+ await expect(page.locator("#run-status")).toContainText("모든 기준 통과");
+ await expect(page.locator("#run-results .result-pass").first()).toBeVisible();
+ await page.reload();
+ await expect(page.locator("#learner-code")).toHaveValue("print('fixed')");
+ const after=await page.evaluate(()=>JSON.parse(localStorage.getItem("meowde-python-lab-v1")));
+ expect(Object.values(after.units).some(u=>u.attempts===2&&u.passed===true)).toBe(true);
+});
