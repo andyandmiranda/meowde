@@ -1,6 +1,12 @@
 name: Generate approved PNG install icons
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - integration/meowde-ux-review-20261019
+    paths:
+      - .github/workflows/generate-approved-pwa-icons.yml
+      - tools/generate-approved-pwa-icons.py
 permissions:
   contents: write
 jobs:
