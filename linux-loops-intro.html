@@ -23,6 +23,7 @@ done</pre><div id="transfer" data-answer="2 4" data-reason="반복은 목록에 
 for(const block of document.querySelectorAll('[data-answer]')){
   const buttons=[...block.querySelectorAll('button[data-value]')];
   for(const button of buttons)button.addEventListener('click',()=>{
+    for(const choice of buttons)choice.setAttribute('aria-pressed',String(choice===button));
     const correct=button.dataset.value===block.dataset.answer;
     const answer=buttons.find(x=>x.dataset.value===block.dataset.answer);
     const p=block.querySelector('[role=status]');
