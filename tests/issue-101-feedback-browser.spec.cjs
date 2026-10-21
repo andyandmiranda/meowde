@@ -126,6 +126,10 @@ test('practice task surfaces use distinct shared styles without changing storage
 test('Linux crash course uses shared cream and mint UI in Chromium and WebKit',async({page})=>{
  await page.goto(base+'/linux-crash-course.html');
  await expect(page.getByRole('navigation',{name:'학습 화면 이동'}).getByRole('link',{name:'전체 학습 지도'})).toHaveAttribute('href','/?tab=map');
+ const nav=page.getByRole('navigation',{name:'메인 메뉴'});
+ await expect(nav.getByRole('link')).toHaveCount(5);
+ await expect(nav.getByRole('link',{name:'학습'})).toHaveAttribute('aria-current','page');
+ await expect(nav.getByRole('link',{name:'복습'})).toHaveAttribute('href','/?tab=review');
  const colors=await page.evaluate(()=>({background:getComputedStyle(document.querySelector('.app')).backgroundColor,button:getComputedStyle(document.querySelector('#sim-run')).backgroundColor}));
  expect(colors.background).toBe('rgb(255, 249, 239)');
  expect(colors.button).toBe('rgb(83, 199, 160)');
