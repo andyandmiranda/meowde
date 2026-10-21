@@ -369,3 +369,27 @@ test("Python grading shows failed criteria, allows retry, and preserves attempts
  const after=await page.evaluate(()=>JSON.parse(localStorage.getItem("meowde-python-lab-v1")));
  expect(Object.values(after.units).some(u=>u.attempts===2&&u.passed===true)).toBe(true);
 });
+
+// Error-path regression: an execution-engine failure must not count as a wrong answer.
+test("Python worker runtime error keeps graded attempts unchanged",async({page})=>{
+ await page.addInitScript(()=>{
+  class BrokenWorker{
+   constructor(){this.onmessage=null;this.onerror=null;}
+   postMessage(){Promise.resolve().then(()=>this.onmessage?.({data:{stage:"error",message:"Pyodide unavailable"}}));}
+   terminate(){}
+  }
+  window.Worker=BrokenWorker;
+ });
+ await page.goto(base+"/python-lab.html");
+ const editor=page.locator("#learner-code");
+ await expect(editor).toBeVisible();
+ await editor.fill("print('keep my work')");
+ const before=await page.evaluate(()=>localStorage.getItem("meowde-python-lab-v1"));
+ await page.locator('#practice [data-run="grade"]').click();
+ await expect(page.locator("#run-status")).toContainText("실행기 오류");
+ await expect(page.locator("#run-status")).toContainText("진도는 변경하지 않았습니다");
+ await expect(page.locator('#practice [data-run="grade"]')).toBeEnabled();
+ expect(await page.evaluate(()=>localStorage.getItem("meowde-python-lab-v1"))).toBe(before);
+ await page.reload();
+ await expect(page.locator("#learner-code")).toHaveValue("print('keep my work')");
+});
