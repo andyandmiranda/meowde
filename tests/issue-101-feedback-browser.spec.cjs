@@ -75,3 +75,13 @@ test('measure first review entry phases in real browser',async({page})=>{
  expect(result.unchanged).toBe(true);
  expect(result.screen).toBe('review');
 });
+
+test('practice header back-to-learn opens actual map in both engines',async({page})=>{
+ await page.goto(base+'/python-lab.html');
+ const link=page.getByRole('link',{name:'학습으로 돌아가기'});
+ await expect(link).toHaveAttribute('href','/?tab=map');
+ await link.click();
+ await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+ await expect.poll(()=>page.evaluate(()=>S.screen)).toBe('map');
+ expect(new URL(page.url()).searchParams.get('tab')).toBe('map');
+});
