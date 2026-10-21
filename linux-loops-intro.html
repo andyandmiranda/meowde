@@ -27,7 +27,7 @@ for(const block of document.querySelectorAll('[data-answer]')){
     const answer=buttons.find(x=>x.dataset.value===block.dataset.answer);
     const p=block.querySelector('[role=status]');
     p.className=correct?'correct':'wrong';
-    p.textContent=(correct?'정답이에요.':'선택한 답: '+button.textContent+'. 정답: '+answer.textContent+'.')+' 이유: '+block.dataset.reason;
+    p.textContent=(correct?'정답이에요. 정답: '+answer.textContent+'.':'선택한 답: '+button.textContent+'. 정답: '+answer.textContent+'.')+' 이유: '+block.dataset.reason;
   });
 }
 </script></body></html>
