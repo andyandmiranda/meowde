@@ -135,3 +135,14 @@ test('Linux crash course uses shared cream and mint UI in Chromium and WebKit',a
  expect(colors.background).toBe('rgb(255, 249, 239)');
  expect(colors.button).toBe('rgb(83, 199, 160)');
 });
+
+test('practice top heading and four-step structure remain accessible',async({page})=>{
+ await page.goto(base+'/python-lab.html');
+ await expect(page.getByRole('banner',{name:'실습 화면 상단'}).getByRole('heading',{name:'실습'})).toBeVisible();
+ await expect(page.getByRole('link',{name:'학습으로 돌아가기'})).toHaveAttribute('href','/?tab=map');
+ await expect(page.locator('#practice')).toBeVisible();
+ await expect(page.locator('#practice #learner-code')).toBeVisible();
+ await expect(page.locator('#practice [data-run="grade"]')).toBeVisible();
+ expect(await page.locator('#practice').evaluate(el=>getComputedStyle(el.querySelector('.practice-kicker'),'::before').content)).toContain('01');
+ expect(await page.locator('#practice').evaluate(el=>getComputedStyle(el.querySelector('[data-run="grade"]'),'::before').content)).toContain('03');
+});
