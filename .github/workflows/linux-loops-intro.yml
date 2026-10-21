@@ -1,0 +1,20 @@
+name: Linux loop lesson isolated checks
+on:
+  pull_request:
+    paths:
+      - 'linux-loops-intro.html'
+      - 'tests/linux-loops-intro.test.cjs'
+      - '.github/workflows/linux-loops-intro.yml'
+  workflow_dispatch:
+jobs:
+  standalone-loop:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Standalone Bash loops lesson static regression
+        run: node --test tests/linux-loops-intro.test.cjs
