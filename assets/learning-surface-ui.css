@@ -136,7 +136,7 @@ body:has(#lab) #practice .feedback.bad{border-left-color:#B44551;background:#FFF
 body:has(#lab) #practice .feedback.good{border-left-color:#247B61;background:#ECF8F2;color:#205844}
 
 /* Shared main-tab heading: practice follows Home/Learn/My type and spacing. */
-body:has(#lab) .lab-header{max-width:430px;padding:20px 18px 6px;align-items:flex-start;gap:12px}
+body:has(#lab) .lab-header{max-width:430px;padding:12px 18px 4px;align-items:flex-start;gap:12px}
 body:has(#lab) .lab-header-main{min-width:0;flex:1}
 body:has(#lab) .lab-header-main>a:first-child{font-size:13px;font-weight:800;color:var(--surface-mint-dark);text-decoration:none;letter-spacing:.03em}
 body:has(#lab) .lab-header-eyebrow{font-size:10px;letter-spacing:.12em;font-weight:800;color:var(--surface-muted);margin:8px 0 2px}
