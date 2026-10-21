@@ -38,3 +38,18 @@ test('lesson close returns to learning map without clearing progress',async({pag
  expect(navigation.idx).toBe(0);
  expect(navigation.queue).toBe(1);
 });
+
+test('measure review tab navigation without changing learner state',async({page})=>{
+ await ready(page);
+ const result=await page.evaluate(()=>{
+  const before=JSON.stringify({done:S.done,xp:S.xp,churu:S.churu,queue:S.queue,idx:S.idx});
+  const started=performance.now();
+  renderReview();
+  const elapsedMs=Math.round((performance.now()-started)*10)/10;
+  const after=JSON.stringify({done:S.done,xp:S.xp,churu:S.churu,queue:S.queue,idx:S.idx});
+  return {elapsedMs,screen:S.screen,unchanged:before===after,hasTabs:!!document.querySelector('.tabbar')};
+ });
+ console.log('QA_REVIEW_RENDER_TIMING',JSON.stringify(result));
+ expect(result.unchanged).toBe(true);
+ expect(result.hasTabs).toBe(true);
+});
