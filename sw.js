@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v477-practice-tab-entry";
+const CACHE_NAME = "meowde-v478-approved-pwa-icons";
 
 const REQUIRED_ASSETS = [
   "/assets/linux-shared-navigation.js",
@@ -34,13 +34,8 @@ const REQUIRED_ASSETS = [
   "/assets/characters/v451/meowde-challenge.webp",
   "/assets/characters/v451/meowde-debug.webp",
   "/manifest.webmanifest",
-  "/meowde-icon-192.svg",
-  "/meowde-icon-512.svg",
-  "/icons/meowde-180.png",
-  "/icons/meowde-192.png",
-  "/icons/meowde-512.png",
-  "/icons/meowde-maskable-192.png",
-  "/icons/meowde-maskable-512.png",
+  "/icons/meowde-approved.svg",
+  "/icons/meowde-approved-maskable.svg",
   "/v412-hotfix.js",
   "/v413-core.js",
   "/v413-lesson.js",

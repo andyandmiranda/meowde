@@ -12,30 +12,33 @@
   "background_color": "#fff9ef",
   "theme_color": "#53c7a0",
   "prefer_related_applications": false,
-  "categories": ["education", "productivity"],
+  "categories": [
+    "education",
+    "productivity"
+  ],
   "icons": [
     {
-      "src": "/icons/meowde-192.png",
+      "src": "/icons/meowde-approved.svg",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "/icons/meowde-512.png",
+      "src": "/icons/meowde-approved.svg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "/icons/meowde-maskable-192.png",
+      "src": "/icons/meowde-approved-maskable.svg",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable"
     },
     {
-      "src": "/icons/meowde-maskable-512.png",
+      "src": "/icons/meowde-approved-maskable.svg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable"
     }
   ]
