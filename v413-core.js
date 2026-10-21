@@ -59,14 +59,14 @@
       const lessonIndex=start+index;
       const done=Array.isArray(S.done)&&S.done.includes(lessonIndex);
       const current=lessonIndex===S.next;
-      const locked=!done&&lessonIndex>S.next;
+      const locked=!window.MeowdeLessonAccess.select(lessons(),lessonIndex,S).ok;
       const x=XS[index],y=TOP+index*STEP;
       const inner=done?icon('check'):locked?icon('lock'):String(lessonIndex+1).padStart(2,'0');
       const action=locked?`toast(t('lockedToast'))`:`startLesson(${lessonIndex})`;
       return `<button class="node ${done?'done':''} ${current?'current':''} ${locked?'locked':''}" style="left:${x}%;top:${y}px" onclick="${action}" aria-label="${esc(lesson.title)}">${inner}</button><span class="node-label ${locked?'lk':''}" style="left:${x}%;top:${y+38}px">${esc(lesson.short)}</span>`;
     }).join('');
     const unitTabs=unitNames.slice(0,unitCount).map((name,index)=>`<button class="${S.unit===index?'on':''}" onclick="S.unit=${index};save();renderMap()">${name}</button>`).join('');
-    app.innerHTML=`<div class="screen">${learnBrand()}${stats()}<div class="scroll"><div class="map-head"><h2>${ko?'학습 경로':'Learning path'}</h2><p>${ko?'레슨은 권장 순서대로 열립니다. 완료한 레슨은 언제든 다시 복습할 수 있어요.':'Lessons unlock in the recommended order. Completed lessons can be reviewed anytime.'}</p></div><div class="unit-tabs">${unitTabs}</div><div class="trail" style="height:${H}px" data-learn-path="canonical">${nodes}</div></div>${learnTabs()}</div>`;
+    app.innerHTML=`<div class="screen">${learnBrand()}${stats()}<div class="scroll"><div class="map-head"><h2>${ko?'학습 경로':'Learning path'}</h2><p>${ko?'권장 순서를 참고하되 원하는 레슨부터 시작할 수 있어요. 진행 중인 학습은 레슨별로 보관돼요.':'Use the recommended order or start any available lesson. Unfinished lessons keep their own saved place.'}</p></div><div class="unit-tabs">${unitTabs}</div><div class="trail" style="height:${H}px" data-learn-path="canonical">${nodes}</div></div>${learnTabs()}</div>`;
     document.documentElement.dataset.learnRenderer='canonical-v413';
     document.documentElement.dataset.navigation='phase1-four-tabs';
   };

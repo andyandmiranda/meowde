@@ -1,7 +1,8 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v472-linux-five-tabs";
+const CACHE_NAME = "meowde-v473-free-lesson-resume";
 
 const REQUIRED_ASSETS = [
+  "/assets/lesson-access-policy.js",
   "/assets/linux-shared-navigation.js",
   "/assets/linux-shared-navigation.css",
   "/python-lab.html",

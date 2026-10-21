@@ -1,0 +1,39 @@
+name: Free lesson resume in WebKit
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'v414-state.js'
+      - 'v414-reward.js'
+      - 'v413-core.js'
+      - 'v412.html'
+      - 'assets/lesson-access-policy.js'
+      - 'tests/free-lesson-resume.spec.cjs'
+      - '.github/workflows/free-lesson-resume.yml'
+permissions:
+  contents: read
+concurrency:
+  group: free-lesson-resume-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  webkit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm exec playwright install --with-deps webkit
+      - run: pnpm exec playwright test tests/free-lesson-resume.spec.cjs
+        env:
+          MEOWDE_TEST_BROWSER: webkit
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: free-lesson-webkit
+          path: artifacts/
