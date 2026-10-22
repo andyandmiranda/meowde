@@ -155,7 +155,7 @@ test('two-print prediction feedback teaches execution order without revealing th
 });
 
 test('P2 concatenated wrong answer explains print line breaks without changing grading',()=>{
- const f=fixture();const ex={id:'start-field-p2',type:'predict',code:'print("첫째")\\nprint("둘째")',choices:['첫째 둘째','둘째 첫째','첫째둘째','에러'],answer:0};
+ const f=fixture();const ex={id:'start-field-p2',type:'predict',code:'print("첫째")\nprint("둘째")',choices:['첫째 둘째','둘째 첫째','첫째둘째','에러'],answer:0};
  const state={lang:'ko',sel:2,checked:true,correct:false};const original=JSON.stringify(state);
  const msg=f.api.message(ex,state,null);
  assert.match(msg,/선택한 답/);assert.match(msg,/줄을 바꿔/);
