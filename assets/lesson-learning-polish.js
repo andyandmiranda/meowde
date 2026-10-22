@@ -108,6 +108,13 @@ function message(ex,state,diagnosis){
  if(ex&&ex.id==='string-slice-w'&&/\bdef\s+first_three\s*\(\s*text\s*\)\s*:/.test(code)&&/\bprint\s*\(\s*text\s*\[\s*(?:0\s*:\s*3|:\s*3)\s*\]\s*\)/.test(code)&&!/\breturn\s+text\s*\[\s*(?:0\s*:\s*3|:\s*3)\s*\]/.test(code)){
    return ko?'슬라이싱은 맞아요. 하지만 함수 안의 print()는 화면에 출력만 하고 값을 반환하지 않아요. 다른 문자열로 검사할 때 반환값이 없어 실패했어요. 함수 안은 return text[:3], 마지막 호출은 print(first_three("python"))으로 바꿔보세요.':'Your slicing is correct, but print() inside the function displays text without returning it. The hidden test checks the returned value for another string. Use return text[:3] inside the function and print(first_three("python")) outside.';
  }
+ // Explain execution order, not the answer already revealed below.
+ if(ex&&ex.type==='predict'&&state&&Number.isInteger(state.sel)&&state.sel!==ex.answer){
+   const lines=String(ex.code||'').split(/\\r?\\n/).map(line=>line.trim()).filter(Boolean);
+   if(lines.length===2&&lines.every(line=>/^print\\s*\\(/.test(line))){
+     return ko?'Python은 코드를 위에서 아래로 한 줄씩 실행해요. 첫 번째 print()가 먼저 실행되고 두 번째 print()가 다음에 실행됩니다. 출력 순서를 고를 때는 코드의 줄 순서를 그대로 따라가 보세요.':'Python runs code one line at a time, from top to bottom. The first print() runs before the second. To predict output order, follow the order of the code lines.';
+   }
+ }
  if(diagnosis){
    const kind=diagnosis.kind;
    if(kind==='output'&&!output)return ko?'실행 결과가 비어 있어요. 결과를 화면에 보여주는 print()가 필요한지 확인해보세요.':'Nothing was printed. Check whether the task needs print() to show the result.';
