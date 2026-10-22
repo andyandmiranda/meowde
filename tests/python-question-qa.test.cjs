@@ -20,3 +20,15 @@ test('Python lesson model for welcome(name) is correct and executable in structu
  const source=fs.readFileSync('assets/lessons-ko.js','utf8');
  assert.ok(source.includes('def welcome(name):')); assert.ok(source.includes('welcome(\\\"Amy\\\")'));
 });
+
+test('compact report is mounted in the question bubble, not the constrained mobile header',()=>{
+ assert.match(report,/querySelector\('\.lesson-main \.bubble'\)/);
+ assert.doesNotMatch(report,/querySelector\('\.lesson-top'\)/);
+ assert.match(report,/max-width:min\(90vw,420px\)/);
+});
+test('existing grade, saved progress and exercise navigation functions remain present',()=>{
+ assert.match(html,/async function checkQ\(\)/);
+ assert.match(html,/function renderLesson\(\)/);
+ assert.match(html,/function nextQ\(\)/);
+ assert.match(html,/function save\(\)/);
+});
