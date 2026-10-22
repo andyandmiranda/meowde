@@ -115,6 +115,13 @@ function message(ex,state,diagnosis){
  // Explain execution order, not the answer already revealed below.
  if(ex&&ex.type==='predict'&&state&&Number.isInteger(state.sel)&&state.sel!==ex.answer){
    const lines=String(ex.code||'').split(/\r?\n/).map(line=>line.trim()).filter(Boolean);
+   if(String(ex.id||'').toLowerCase()==='start-field-p2'&&lines.length===2&&lines.every(line=>/^print\s*\(/.test(line))){
+     const chosen=String((ex.choices||[])[state.sel]||'').replace(/\s+/g,'');
+     const outputLines=lines.map(line=>{const match=line.match(/^print\s*\(\s*['"]([^'"]*)['"]\s*\)$/);return match?match[1]:null;});
+     if(outputLines.every(value=>value!==null)&&chosen===outputLines.join('')){
+       return ko?'선택한 답은 두 단어가 한 줄에 붙어 있어요. 하지만 print()는 실행할 때마다 줄을 바꿔요. 첫 번째 print()가 첫째를 출력하고 줄을 바꾼 뒤, 두 번째 print()가 둘째를 다음 줄에 출력해요.':'Your choice puts both words on one line. Each print() ends with a line break, so the second word appears on the next line.';
+     }
+   }
    if(lines.length===2&&lines.every(line=>/^print\s*\(/.test(line))){
      return ko?'Python은 코드를 위에서 아래로 한 줄씩 실행해요. 첫 번째 print()가 먼저 실행되고 두 번째 print()가 다음에 실행됩니다. 출력 순서를 고를 때는 코드의 줄 순서를 그대로 따라가 보세요.':'Python runs code one line at a time, from top to bottom. The first print() runs before the second. To predict output order, follow the order of the code lines.';
    }
