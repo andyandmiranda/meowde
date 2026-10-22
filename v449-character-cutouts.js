@@ -106,7 +106,25 @@
     const reward=document.querySelector(".reward-screen");
     if(reward){const value=accuracy(reward),pose=value>=85?"happy":value>=65?"smug":"meh",current=reward.querySelector(".v449-character,.meowde-approved-character,svg,img");if(current)updateImage(current,pose,"v449-feedback-character",english()?"Meowde result":"학습 결과 Meowde");else reward.insertAdjacentHTML("afterbegin",imageMarkup(pose,"v449-feedback-character",english()?"Meowde result":"학습 결과 Meowde"))}
     const feedback=document.querySelector(".feedback");
-    if(feedback){const pose=runtimeError()?"error":feedback.classList.contains("ok")?"happy":"surprised",current=feedback.querySelector(".v449-feedback-character");if(current)updateImage(current,pose,"v449-feedback-character","Meowde");else feedback.insertAdjacentHTML("afterbegin",imageMarkup(pose,"v449-feedback-character","Meowde"))}
+    if(feedback){
+      // The six existing companion images include distinct happy and debug poses.
+      // Use them for answer outcomes without modifying learner preferences or grading.
+      const pose=feedback.classList.contains("ok")?"happy":"debug";
+      const src=ROOM_ASSETS[pose],label=english()
+        ?(pose==="happy"?"Meowde celebrating a correct answer":"Meowde helping debug an answer")
+        :(pose==="happy"?"정답을 축하하는 먀오드":"다시 함께 살펴보는 먀오드");
+      const current=feedback.querySelector(":scope > .v449-feedback-character");
+      if(current&&current.tagName==="IMG"){
+        if(current.getAttribute("src")!==src)current.setAttribute("src",src);
+        current.alt=label;
+        current.className=`v449-character v449-pose-${pose} v449-feedback-character`;
+        current.dataset.v449Pose=pose;
+        current.dataset.characterVersion="4.51-feedback-outcome";
+      }else{
+        if(current)current.remove();
+        feedback.insertAdjacentHTML("afterbegin",`<img class="v449-character v449-pose-${pose} v449-feedback-character" src="${src}" alt="${label}" data-v449-pose="${pose}" data-character-version="4.51-feedback-outcome" decoding="async">`);
+      }
+    }
   }
   function setProfilePose(selector,pose,label){const slot=document.querySelector(selector);if(!slot)return;const current=slot.querySelector(":scope > .v449-character,:scope > .meowde-approved-character,:scope > svg,:scope > img");if(current)updateImage(current,pose,"v449-profile-pose",label);else slot.insertAdjacentHTML("afterbegin",imageMarkup(pose,"v449-profile-pose",label))}
   function decorateProfile(){
