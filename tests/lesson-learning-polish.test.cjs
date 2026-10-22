@@ -164,6 +164,6 @@ test('first print prediction explains quoted strings without repeating answer ch
  assert.ok(msg.includes('print("print")'));
  assert.doesNotMatch(msg,/선택:|실제 결과:/);
  assert.match(f.api.message(ex,{...state,lang:'en'},null),/quotes/);
- const next={...ex,id:'start-field-p2',code:'print("첫째")\\nprint("둘째")'};
+ const next={...ex,id:'start-field-p2',code:'print("첫째")\nprint("둘째")'};
  assert.match(f.api.message(next,state,null),/위에서 아래로/);
 });
