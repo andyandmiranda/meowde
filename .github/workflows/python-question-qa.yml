@@ -40,7 +40,7 @@ jobs:
             assert.ok(html.includes(path), 'missing HTML script: ' + path);
             assert.ok(paths.includes(path), 'missing PWA precache: ' + path);
           }
-          assert.match(sw, /cache\\.addAll\\(REQUIRED_ASSETS\\)/, 'atomic install missing');
+          assert.ok(sw.includes('cache.addAll(REQUIRED_ASSETS)'), 'atomic install missing');
           console.log('PWA precache static consistency PASS:', paths.length, 'entries');
           NODE
       - name: Check Python feedback, saved lesson resumes, scoring and rewards
