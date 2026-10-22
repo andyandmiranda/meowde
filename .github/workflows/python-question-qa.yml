@@ -1,0 +1,21 @@
+name: Python question QA isolated checks
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'assets/lesson-qa-report.js'
+      - 'tests/python-question-qa.test.cjs'
+      - '.github/workflows/python-question-qa.yml'
+  workflow_dispatch:
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check Python question reporting and answer disclosure
+        run: node --test tests/python-question-qa.test.cjs
