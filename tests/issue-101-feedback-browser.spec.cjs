@@ -20,7 +20,7 @@ for(const row of cases)test('wrong '+row.kind+' reveals correct example and reas
  await expect(disclosure).toBeVisible();
  await disclosure.locator('summary').click();
  await expect(disclosure).toContainText(row.answer);
- await expect(disclosure).toContainText(row.exercise.explain);
+ await expect(page.locator('.feedback.no')).toContainText(row.exercise.explain);
  expect(await page.evaluate(()=>({xp:S.xp,churu:S.churu,done:[...S.done]}))).toEqual(before);
 });
 
