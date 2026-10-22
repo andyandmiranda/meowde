@@ -135,3 +135,11 @@ test('technical traceback renderer keeps code untouched and adds a collapsed det
  assert.equal(con.S.checked,true);
  assert.equal(con.S.correct,false);
 });
+
+test('expanded concept styles are scoped, readable and mobile-safe',()=>{
+ const f=fixture();const css=f.headStyles[0].textContent;
+ assert.match(css,/\.meowde-inline-concept :is\(p,li\).*line-height:1\.7/);
+ assert.match(css,/\.meowde-inline-concept :is\(pre,\.code\).*white-space:pre-wrap/);
+ assert.match(css,/@media\(max-width:360px\).*\.meowde-inline-concept/);
+ assert.doesNotMatch(css,/\.feedback\.no :is\(p,li\)/);
+});
