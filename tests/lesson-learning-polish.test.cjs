@@ -44,6 +44,17 @@ test('actual string-slice miss identifies print omission, not already-correct re
  assert.doesNotMatch(msg,/return text\[:3\]/);
  assert.match(f.layout().replacedDiagnosis.textContent,/print\(first_three\("python"\)\)/);
 });
+test('slice screenshot: print inside function must explain missing return, not incorrect slicing',()=>{
+ const f=fixture();
+ const state={lang:'ko',write:'def first_three(text):\n    print(text[0:3])\nfirst_three("python")',output:'pyt'};
+ const message=f.api.message(f.ex,state,f.diagnosis);
+ assert.match(message,/슬라이싱은 맞아요/);
+ assert.match(message,/print\(\).*반환하지 않아요/);
+ assert.match(message,/return text\[:3\]/);
+ assert.doesNotMatch(message,/앞 세 글자를 실제 입력에서 잘라내지/);
+ const en=f.api.message(f.ex,{...state,lang:'en'},f.diagnosis);
+ assert.match(en,/slicing is correct/);
+});
 test('generic wrong answers display one concise explanation, without three labels',()=>{
  const f=fixture();
  const message=f.api.message({type:'write',expected:'ok'},{lang:'ko',write:'',output:'bad'},{
