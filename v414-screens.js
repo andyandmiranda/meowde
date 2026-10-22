@@ -43,13 +43,6 @@
     const label=S.lang==='ko'?'피드백 & 문의 ↗':'Feedback & Contact ↗';
     return `<div class="v451-contact"><a href="${FEEDBACK_URL}" target="_blank" rel="noopener noreferrer" aria-label="${esc(label.replace(' ↗',''))}">${label}</a></div>`;
   }
-  function reviewPoseMarkup(mistakes){
-    const hasMistakes=mistakes.length>0;
-    const pose=hasMistakes?'meh':'smug';
-    const src=hasMistakes?'/assets/meowde-approved-base.svg?v=450':'/assets/meowde-approved-glasses.svg?v=450';
-    const label=S.lang==='ko'?(hasMistakes?'복습할 내용을 확인하는 Meowde':'복습을 마친 자신만만한 Meowde'):(hasMistakes?'Meowde checking review items':'Confident Meowde after review');
-    return `<img class="v449-character v449-pose-${pose} v449-review-pose" src="${src}" alt="${esc(label)}" data-v449-pose="${pose}" data-character-version="4.50" decoding="async">`;
-  }
   function smartReviewCard(){
     try{return window.MeowSmartReview&&typeof MeowSmartReview.card==='function'?MeowSmartReview.card():''}catch(error){console.warn('Meowde Smart Review card could not render:',error);return ''}
   }
@@ -94,7 +87,7 @@
     const empty=ko?'완료한 레슨이 아직 없습니다.<br>첫 레슨을 끝내면 여기서 다시 연습할 수 있어요.':'No completed lessons yet.<br>Finish your first lesson to review it here.';
     const smart=smartReviewCard();
     const quality=learningQualityCard();
-    app.innerHTML=`<div class="screen phase5-review"><div class="scroll"><div class="simple-head v449-review-head"><div><h2>${ko?'복습':'Review'}</h2><p>${ko?'틀린 문제를 먼저 정리하고 완료한 레슨을 다시 연습하세요.':'Clear mistakes first, then replay completed lessons.'}</p></div>${reviewPoseMarkup(mistakes)}</div>${smart}${mistakeRows?`<div class="review-section-head"><h3>${ko?'오답':'Mistakes'}</h3><span>${mistakes.length}</span></div><div class="review-list">${mistakeRows}</div>`:''}<div class="review-section-head"><h3>${ko?'완료한 레슨':'Completed lessons'}</h3><span>${S.done.length}</span></div>${completed?`<div class="review-list">${completed}</div>${completedMore}`:`<div class="empty-state">${empty}</div>`}${quality?`<details class="review-disclosure"><summary>${ko?'학습 분석 보기':'Learning insights'}</summary><div class="review-extra">${quality}</div></details>`:''}</div>${canonicalTabs('review')}</div>`;
+    app.innerHTML=`<div class="screen phase5-review"><div class="scroll"><div class="simple-head v449-review-head"><div><h2>${ko?'복습':'Review'}</h2><p>${ko?'틀린 문제를 먼저 정리하고 완료한 레슨을 다시 연습하세요.':'Clear mistakes first, then replay completed lessons.'}</p></div></div>${smart}${mistakeRows?`<div class="review-section-head"><h3>${ko?'오답':'Mistakes'}</h3><span>${mistakes.length}</span></div><div class="review-list">${mistakeRows}</div>`:''}<div class="review-section-head"><h3>${ko?'완료한 레슨':'Completed lessons'}</h3><span>${S.done.length}</span></div>${completed?`<div class="review-list">${completed}</div>${completedMore}`:`<div class="empty-state">${empty}</div>`}${quality?`<details class="review-disclosure"><summary>${ko?'학습 분석 보기':'Learning insights'}</summary><div class="review-extra">${quality}</div></details>`:''}</div>${canonicalTabs('review')}</div>`;
     document.documentElement.dataset.reviewRenderer='canonical-v414';
     document.documentElement.dataset.navigation='phase1-four-tabs';
   };
