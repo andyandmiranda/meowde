@@ -1,8 +1,10 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v479-approved-png-icons-free-resume-oop-linux-v482";
+const CACHE_NAME = "meowde-v483-python-qa-precache";
 
 const REQUIRED_ASSETS = [
   "/assets/lesson-access-policy.js",
+  "/assets/lesson-learning-polish.js",
+  "/assets/lesson-qa-report.js",
   "/assets/linux-shared-navigation.js",
   "/assets/linux-shared-navigation.css",
   "/python-lab.html",
