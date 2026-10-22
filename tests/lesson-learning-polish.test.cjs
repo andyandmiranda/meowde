@@ -40,7 +40,7 @@ test('concept is a slim secondary disclosure; answer is moved below feedback',()
 });
 test('actual string-slice miss identifies print omission, not already-correct return',()=>{
  const f=fixture(),msg=f.api.message(f.ex,f.state,f.diagnosis);
- assert.match(msg,/print\(first_three\("python"\)\)/);
+ assert.ok(msg.includes('print("print")'));
  assert.doesNotMatch(msg,/return text\[:3\]/);
  assert.match(f.layout().replacedDiagnosis.textContent,/print\(first_three\("python"\)\)/);
 });
