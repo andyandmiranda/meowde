@@ -153,3 +153,17 @@ test('two-print prediction feedback teaches execution order without revealing th
  assert.doesNotMatch(msg,/실제 결과|둘째 첫째/);
  assert.match(f.api.message(ex,{...state,lang:'en'},null),/top to bottom/);
 });
+
+test('first print prediction explains quoted strings without repeating answer choices',()=>{
+ const f=fixture();
+ const ex={id:'start-field-p1',type:'predict',code:'print("안녕")',choices:['안녕','print','아무것도 안 보임'],answer:0};
+ const state={lang:'ko',sel:1,checked:true,correct:false};
+ const msg=f.api.message(ex,state,{kind:'predict',reason:'선택: print · 실제 결과: 안녕'});
+ assert.match(msg,/따옴표/);
+ assert.match(msg,/문자열/);
+ assert.match(msg,/print\\("print"\\)/);
+ assert.doesNotMatch(msg,/선택:|실제 결과:/);
+ assert.match(f.api.message(ex,{...state,lang:'en'},null),/quotes/);
+ const next={...ex,id:'start-field-p2',code:'print("첫째")\\nprint("둘째")'};
+ assert.match(f.api.message(next,state,null),/위에서 아래로/);
+});
