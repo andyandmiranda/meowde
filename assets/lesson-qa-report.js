@@ -3,7 +3,7 @@
 'use strict';
 const label='문제 신고';
 const css=document.createElement('style');
-css.textContent='.meowde-qa-report{font:600 11px/1.3 system-ui;border:1px solid #d7c7d0;border-radius:10px;background:#fff;color:#6c4458;padding:7px 10px;margin:10px 0 0;cursor:pointer}.meowde-qa-dialog{border:1px solid #d7c7d0;border-radius:16px;max-width:min(90vw,420px);padding:22px;background:white;color:#29232c}.meowde-qa-dialog::backdrop{background:#0006}.meowde-qa-dialog label{display:block;margin-top:12px}.meowde-qa-dialog select,.meowde-qa-dialog textarea{width:100%;box-sizing:border-box;padding:9px;margin-top:5px}.meowde-qa-dialog button{margin:8px 6px 0 0;padding:9px;border-radius:9px}';
+css.textContent='.meowde-qa-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;min-height:44px}.meowde-qa-actions>.hint{margin:0!important}.meowde-qa-report{display:inline-flex;align-items:center;justify-content:center;gap:4px;font:500 11px/1.3 system-ui;border:0;border-radius:10px;background:transparent;color:#77717b;padding:10px 6px;min-height:44px;min-width:44px;cursor:pointer;white-space:nowrap}.meowde-qa-report:focus-visible{outline:2px solid #6758a3;outline-offset:2px}.meowde-qa-dialog{border:1px solid #d7c7d0;border-radius:16px;max-width:min(90vw,420px);padding:22px;background:white;color:#29232c}.meowde-qa-dialog::backdrop{background:#0006}.meowde-qa-dialog label{display:block;margin-top:12px}.meowde-qa-dialog select,.meowde-qa-dialog textarea{width:100%;box-sizing:border-box;padding:9px;margin-top:5px}.meowde-qa-dialog button{margin:8px 6px 0 0;padding:9px;border-radius:9px}';
 document.head.append(css);
 function context(){
  if(typeof S==='undefined'||S.screen!=='lesson'||typeof cur!=='function'||typeof lessons!=='function')return null;
@@ -41,10 +41,11 @@ function mount(){
  if(!top||!info)return;
  const existing=top.querySelector('.meowde-qa-report');
  if(existing){existing.dataset.exerciseId=info.exerciseId;return;}
- const button=document.createElement('button');button.type='button';button.className='meowde-qa-report';button.textContent=label;
+ const button=document.createElement('button');button.type='button';button.className='meowde-qa-report';button.textContent='⚑ '+label;
  button.setAttribute('aria-label','현재 문제 신고 초안 만들기');
  button.onclick=()=>{const current=context();if(current)openDialog(current)};
- top.append(button);
+ const hint=top.querySelector('button.hint');
+ if(hint){const actions=document.createElement('div');actions.className='meowde-qa-actions';hint.before(actions);actions.append(hint,button);}else{const actions=document.createElement('div');actions.className='meowde-qa-actions';actions.style.justifyContent='flex-end';actions.append(button);top.append(actions);}
 }
 new MutationObserver(mount).observe(document.getElementById('app'),{childList:true,subtree:false});
 mount();
