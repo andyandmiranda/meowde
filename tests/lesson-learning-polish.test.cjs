@@ -143,3 +143,13 @@ test('expanded concept styles are scoped, readable and mobile-safe',()=>{
  assert.match(css,/@media\(max-width:360px\).*\.meowde-inline-concept/);
  assert.doesNotMatch(css,/\.feedback\.no :is\(p,li\)/);
 });
+
+test('two-print prediction feedback teaches execution order without revealing the answer twice',()=>{
+ const f=fixture();const ex={id:'start-field-p2',type:'predict',code:'print("첫째")\\nprint("둘째")',choices:['첫째 둘째','둘째 첫째'],answer:0};
+ const state={lang:'ko',sel:1,output:''};
+ const msg=f.api.message(ex,state,{kind:'predict',reason:'선택: 둘째 첫째 · 실제 결과: 첫째 둘째',action:'첫째 둘째'});
+ assert.match(msg,/위에서 아래로/);
+ assert.match(msg,/첫 번째 print\\(\\)/);
+ assert.doesNotMatch(msg,/실제 결과|둘째 첫째/);
+ assert.match(f.api.message(ex,{...state,lang:'en'},null),/top to bottom/);
+});
