@@ -110,8 +110,8 @@ function message(ex,state,diagnosis){
  }
  // Explain execution order, not the answer already revealed below.
  if(ex&&ex.type==='predict'&&state&&Number.isInteger(state.sel)&&state.sel!==ex.answer){
-   const lines=String(ex.code||'').split(/\\r?\\n/).map(line=>line.trim()).filter(Boolean);
-   if(lines.length===2&&lines.every(line=>/^print\\s*\\(/.test(line))){
+   const lines=String(ex.code||'').split(/\r?\n/).map(line=>line.trim()).filter(Boolean);
+   if(lines.length===2&&lines.every(line=>/^print\s*\(/.test(line))){
      return ko?'Python은 코드를 위에서 아래로 한 줄씩 실행해요. 첫 번째 print()가 먼저 실행되고 두 번째 print()가 다음에 실행됩니다. 출력 순서를 고를 때는 코드의 줄 순서를 그대로 따라가 보세요.':'Python runs code one line at a time, from top to bottom. The first print() runs before the second. To predict output order, follow the order of the code lines.';
    }
  }
