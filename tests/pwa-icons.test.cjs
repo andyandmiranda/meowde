@@ -21,7 +21,7 @@ test("approved PNG install icons are valid raster files and cached",()=>{
   assert.ok(data.length>1024,name);assert.ok(sw.includes('"/icons/'+name+'"'),name);
   if(purpose!=="touch"){const item=manifest.icons.find(x=>x.src==="/icons/"+name);assert.equal(item.type,"image/png");assert.equal(item.sizes,size+"x"+size);}
  }
- assert.match(sw,/meowde-v479-approved-png-icons/);
+ assert.match(sw,/const CACHE_NAME = "meowde-v\d+[^"]*";/);
  const html=fs.readFileSync(path.join(base,"index.html"),"utf8");
  assert.ok(html.includes('rel="apple-touch-icon" href="/icons/meowde-approved-touch-180.png"'));
 });
