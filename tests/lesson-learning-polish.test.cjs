@@ -40,7 +40,7 @@ test('concept is a slim secondary disclosure; answer is moved below feedback',()
 });
 test('actual string-slice miss identifies print omission, not already-correct return',()=>{
  const f=fixture(),msg=f.api.message(f.ex,f.state,f.diagnosis);
- assert.ok(msg.includes('print("print")'));
+ assert.match(msg,/print\(first_three\("python"\)\)/);
  assert.doesNotMatch(msg,/return text\[:3\]/);
  assert.match(f.layout().replacedDiagnosis.textContent,/print\(first_three\("python"\)\)/);
 });
@@ -161,7 +161,7 @@ test('first print prediction explains quoted strings without repeating answer ch
  const msg=f.api.message(ex,state,{kind:'predict',reason:'선택: print · 실제 결과: 안녕'});
  assert.match(msg,/따옴표/);
  assert.match(msg,/문자열/);
- assert.match(msg,/print\\("print"\\)/);
+ assert.ok(msg.includes('print("print")'));
  assert.doesNotMatch(msg,/선택:|실제 결과:/);
  assert.match(f.api.message(ex,{...state,lang:'en'},null),/quotes/);
  const next={...ex,id:'start-field-p2',code:'print("첫째")\\nprint("둘째")'};
