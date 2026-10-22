@@ -108,6 +108,10 @@ function message(ex,state,diagnosis){
  if(ex&&ex.id==='string-slice-w'&&/\bdef\s+first_three\s*\(\s*text\s*\)\s*:/.test(code)&&/\bprint\s*\(\s*text\s*\[\s*(?:0\s*:\s*3|:\s*3)\s*\]\s*\)/.test(code)&&!/\breturn\s+text\s*\[\s*(?:0\s*:\s*3|:\s*3)\s*\]/.test(code)){
    return ko?'슬라이싱은 맞아요. 하지만 함수 안의 print()는 화면에 출력만 하고 값을 반환하지 않아요. 다른 문자열로 검사할 때 반환값이 없어 실패했어요. 함수 안은 return text[:3], 마지막 호출은 print(first_three("python"))으로 바꿔보세요.':'Your slicing is correct, but print() inside the function displays text without returning it. The hidden test checks the returned value for another string. Use return text[:3] inside the function and print(first_three("python")) outside.';
  }
+ // Teach string output rather than repeating the selected and correct options.
+ if(ex&&String(ex.id||'').toLowerCase()==='start-field-p1'&&ex.type==='predict'&&state&&Number.isInteger(state.sel)&&state.sel!==ex.answer){
+   return ko?'print()는 괄호 안의 값을 화면에 보여줘요. 따옴표로 감싼 "안녕"은 문자열이라 그 글자만 출력됩니다. 반대로 print라는 글자 자체를 보여주려면 print("print")처럼 따옴표 안에 넣어야 해요.':'print() displays the value inside its parentheses. Quoted "안녕" is a string, so its text appears. To display the word print itself, put it in quotes: print("print").';
+ }
  // Explain execution order, not the answer already revealed below.
  if(ex&&ex.type==='predict'&&state&&Number.isInteger(state.sel)&&state.sel!==ex.answer){
    const lines=String(ex.code||'').split(/\r?\n/).map(line=>line.trim()).filter(Boolean);
