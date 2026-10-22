@@ -19,5 +19,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Check Python question reporting and answer disclosure
-        run: node --test tests/python-question-qa.test.cjs tests/lesson-learning-polish.test.cjs
+      - name: Check Python feedback, saved lesson resumes, scoring and rewards
+        run: node --test tests/python-question-qa.test.cjs tests/lesson-learning-polish.test.cjs tests/lesson-resume.test.cjs tests/first-attempt-accuracy.test.cjs tests/submission-guard.test.cjs
