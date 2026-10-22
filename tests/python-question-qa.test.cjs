@@ -32,3 +32,15 @@ test('existing grade, saved progress and exercise navigation functions remain pr
  assert.match(html,/function nextQ\(\)/);
  assert.match(html,/function save\(\)/);
 });
+
+test('mobile report row separates hint and report and preserves tap target',()=>{
+ assert.ok(report.includes("className='meowde-qa-actions'"));
+ assert.ok(report.includes('actions.append(hint,button)'));
+ assert.ok(report.includes('justify-content:space-between'));
+ assert.ok(report.includes('min-height:44px;min-width:44px'));
+ assert.ok(report.includes('focus-visible'));
+});
+test('report stays copy-only with no learner record mutations',()=>{
+ assert.ok(report.includes('navigator.clipboard.writeText'));
+ assert.ok(!/localStorage|sessionStorage|fetch\(|sendBeacon|XMLHttpRequest/.test(report));
+});
