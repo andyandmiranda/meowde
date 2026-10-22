@@ -96,6 +96,10 @@ function message(ex,state,diagnosis){
  if(ex&&ex.id==='string-slice-w'&&!output&&/\breturn\s+text\s*\[\s*(?:0\s*:\s*3|:\s*3)\s*\]/.test(code)&&/(?:^|\n)\s*first_three\s*\(\s*['"]python['"]\s*\)\s*;?\s*$/.test(code)&&!/\bprint\s*\(\s*first_three\s*\(/.test(code)){
    return ko?'반환값은 자동으로 출력되지 않아요. 마지막 줄을 print(first_three("python"))으로 바꿔보세요.':'Returning a value does not print it. Change the last line to print(first_three("python")).';
  }
+ // Printing inside first_three can match the visible example but fails the hidden return-value check.
+ if(ex&&ex.id==='string-slice-w'&&/\bdef\s+first_three\s*\(\s*text\s*\)\s*:/.test(code)&&/\bprint\s*\(\s*text\s*\[\s*(?:0\s*:\s*3|:\s*3)\s*\]\s*\)/.test(code)&&!/\breturn\s+text\s*\[\s*(?:0\s*:\s*3|:\s*3)\s*\]/.test(code)){
+   return ko?'슬라이싱은 맞아요. 하지만 함수 안의 print()는 화면에 출력만 하고 값을 반환하지 않아요. 다른 문자열로 검사할 때 반환값이 없어 실패했어요. 함수 안은 return text[:3], 마지막 호출은 print(first_three("python"))으로 바꿔보세요.':'Your slicing is correct, but print() inside the function displays text without returning it. The hidden test checks the returned value for another string. Use return text[:3] inside the function and print(first_three("python")) outside.';
+ }
  if(diagnosis){
    const kind=diagnosis.kind;
    if(kind==='output'&&!output)return ko?'실행 결과가 비어 있어요. 결과를 화면에 보여주는 print()가 필요한지 확인해보세요.':'Nothing was printed. Check whether the task needs print() to show the result.';
