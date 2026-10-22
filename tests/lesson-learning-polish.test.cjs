@@ -63,3 +63,64 @@ test('English copy, optional answer and concept use concise wording',()=>{
  assert.match(f.api.message(f.ex,state,f.diagnosis),/print\(first_three\("python"\)\)/);
  assert.doesNotMatch(f.api.message(f.ex,state,f.diagnosis),/원인|왜 틀렸/);
 });
+
+
+test('real founder SyntaxError screenshot: beginners see the specific line and two fixes, original traceback preserved',()=>{
+ const f=fixture();
+ const code='def has_cat(pets):\n    if "cat" in pets:\n        return "YES"\n    return "NO"\nprint(has_cat["dog","cat"]';
+ const raw='ERROR: Traceback (most recent call last):\n  File "<exec>", line 7, in <module>\n  File "<string>", line 6\n    print(has_cat["dog","cat"]\n         ^\nSyntaxError: \'(\' was never closed';
+ const ex={id:'membership-gate-w',type:'write'};
+ const snap={lang:'ko',write:code,output:raw,checked:true,correct:false,xp:30,churu:9,firstCorrect:1};
+ const original=JSON.stringify(snap);
+ const result=f.api.beginnerError(raw,code,'ko',ex);
+ assert.equal(result.type,'SyntaxError');
+ assert.equal(result.line,6);
+ assert.match(result.lead,/6번째 줄.*소괄호/);
+ assert.match(result.tip,/함수.*\( \).*print/);
+ assert.match(result.tip,/print\(has_cat\(\["dog", "cat"\]\)\)/);
+ assert.equal(result.raw,raw,'original technical detail must survive');
+ assert.equal(f.api.message(ex,snap,{}),result.tip);
+ assert.equal(JSON.stringify(snap),original,'only presentation may change, no grading/reward/storage');
+});
+test('unknown Python exceptions or successful output retain original console content',()=>{
+ const f=fixture();
+ assert.equal(f.api.beginnerError('YES','print("YES")','ko',{id:'x'}),null);
+ assert.equal(f.api.beginnerError('ERROR: internal renderer timeout','', 'ko',{id:'x'}),null);
+ assert.equal(f.api.beginnerError('Hello SyntaxError: in documentation','', 'ko',{id:'x'}),null);
+});
+test('plain syntax, indentation and named-variable errors get locale-specific guidance',()=>{
+ const f=fixture();
+ const samples=[
+  ['ERROR: SyntaxError: invalid syntax','ko',/문법/],
+  ['ERROR: IndentationError: expected an indented block','ko',/들여쓰기/],
+  ['ERROR: NameError: name \'foo\' is not defined','ko',/foo/],
+  ['ERROR: TypeError: \'function\' object is not subscriptable','ko',/대괄호/],
+  ['ERROR: SyntaxError: \'(\' was never closed','en',/parenthesis/]
+ ];
+ for(const [error,locale,expected] of samples){
+  const result=f.api.beginnerError(error,'print(foo)',locale,{id:'test'});
+  assert.ok(result,'parsed '+error);
+  assert.match(result.lead+' '+result.tip,expected);
+  assert.equal(result.raw,error);
+ }
+});
+test('technical traceback renderer keeps code untouched and adds a collapsed details control',()=>{
+ const f=fixture();
+ const original='ERROR: SyntaxError: \'(\' was never closed';
+ const output={textContent:original,classes:new Set(),classList:{contains(k){return output.classes.has(k)},add(k){output.classes.add(k)}},after(node){output.details=node}};
+ const pieces=[];
+ const root={querySelector:s=>s==='.lesson-main .console'?output:null};
+ const fakeDoc={createElement(tag){const node={tag,textContent:'',className:'',children:[],append(...children){this.children.push(...children)}};pieces.push(node);return node}};
+ // Temporarily redirect the fixture's standalone test helper to an isolated presentation-only DOM.
+ const src=fs.readFileSync('assets/lesson-learning-polish.js','utf8');
+ const con={document:{getElementById:()=>root,head:{append(){}},createElement:fakeDoc.createElement},MutationObserver:class{observe(){}},
+    S:{checked:true,correct:false,lang:'ko',write:'print(',output:original},cur:()=>({type:'write',id:'other'}),window:{}};
+ vm.runInNewContext(src,con);
+ assert.match(output.textContent,/소괄호/);
+ assert.equal(output.details.tag,'details');
+ assert.equal(output.details.children[0].textContent,'상세 오류 보기');
+ assert.equal(output.details.children[1].textContent,original);
+ assert.equal(con.S.output,original,'raw execution text must remain in state for stored retry');
+ assert.equal(con.S.checked,true);
+ assert.equal(con.S.correct,false);
+});
