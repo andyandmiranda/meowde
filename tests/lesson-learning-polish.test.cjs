@@ -154,6 +154,16 @@ test('two-print prediction feedback teaches execution order without revealing th
  assert.match(f.api.message(ex,{...state,lang:'en'},null),/top to bottom/);
 });
 
+test('P2 concatenated wrong answer explains print line breaks without changing grading',()=>{
+ const f=fixture();const ex={id:'start-field-p2',type:'predict',code:'print("첫째")\\nprint("둘째")',choices:['첫째 둘째','둘째 첫째','첫째둘째','에러'],answer:0};
+ const state={lang:'ko',sel:2,checked:true,correct:false};const original=JSON.stringify(state);
+ const msg=f.api.message(ex,state,null);
+ assert.match(msg,/선택한 답/);assert.match(msg,/줄을 바꿔/);
+ assert.equal(JSON.stringify(state),original);
+ assert.match(f.api.message(ex,{...state,sel:1},null),/위에서 아래로/);
+ assert.match(f.api.message(ex,{...state,lang:'en'},null),/line break/);
+});
+
 test('first print prediction explains quoted strings without repeating answer choices',()=>{
  const f=fixture();
  const ex={id:'start-field-p1',type:'predict',code:'print("안녕")',choices:['안녕','print','아무것도 안 보임'],answer:0};
