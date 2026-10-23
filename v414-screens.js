@@ -20,7 +20,7 @@
   }
   function dailyCard(){
     const ko=S.lang==='ko',done=dailyDone();
-    return `<section class="card daily-card phase1-compact-card ${done?'daily-done':''}"><button class="phase1-row-button" onclick="startDaily()"><span class="phase1-row-icon">${done?'✓':'☀️'}</span><span class="phase1-row-copy"><b>${done?(ko?'오늘의 연습 완료':'Daily practice complete'):(ko?'오늘의 연습':'Daily practice')}</b><small>${done?(ko?'+20 XP · 다시 풀어도 보상은 한 번만 받아요.':'+20 XP · Reward is granted once.'):(ko?'1문제 · 약 1분':'1 task · about 1 min')}</small></span><strong>→</strong></button></section>`;
+    return `<section class="card daily-card phase1-compact-card ${done?'daily-done':''}"><button class="phase1-row-button" onclick="startDaily()"><span class="phase1-row-icon">${done?'✓':'☀️'}</span><span class="phase1-row-copy"><b>${done?(ko?'1분 챌린지 완료':'1-minute challenge complete'):(ko?'1분 챌린지':'1-minute challenge')}</b><small>${done?(ko?'+20 XP · 다시 풀어도 보상은 한 번만 받아요.':'+20 XP · Reward is granted once.'):(ko?'배운 내용에서 1문제 · 약 1분 · 완료 시 +20 XP':'1 question from learned material · ~1 min · +20 XP on completion')}</small></span><strong>→</strong></button></section>`;
   }
   function unitCard(){
     const ko=S.lang==='ko',unit=currentUnit(),percent=unit.total?Math.round(unit.done/unit.total*100):0;
@@ -57,7 +57,7 @@
     const L=lessons()[lessonIndex]||lessons()[0];
     const action=hasProgress?'resumeLesson()':`startLesson(${lessonIndex})`;
     const ko=S.lang==='ko';
-    const actionLabel=hasProgress?(ko?'이어서 배우기':'Resume lesson'):(ko?'오늘 학습 시작':'Start learning');
+    const actionLabel=hasProgress?(ko?'학습 이어하기':'Resume learning'):(ko?'학습 시작하기':'Start learning');
     const sub=hasProgress?(ko?`문제 ${Math.min(S.idx+1,S.queue.length)} / ${S.queue.length}에서 이어집니다.`:`Resume at step ${Math.min(S.idx+1,S.queue.length)} of ${S.queue.length}.`):L.description;
     const unit=currentUnit();
     const streak=Math.max(0,Number(S.streak)||0);
