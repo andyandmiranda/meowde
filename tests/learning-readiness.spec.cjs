@@ -51,7 +51,7 @@ test("invented completion flags cannot bypass both learning tasks",async({page})
 test("Python subject navigation preserves an unfinished lesson and Linux records",async({page})=>{
  const errors=[];page.on("pageerror",e=>errors.push(e.message));
  await page.goto(base+"/");await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
- await expect(page.locator("[data-subject-navigation]")).toHaveCount(1);await page.getByRole("button",{name:/오늘 학습 시작|이어서 배우기|Start today|Resume lesson/}).first().click();
+ await expect(page.locator("[data-subject-navigation]")).toHaveCount(1);await page.getByRole("button",{name:/^(학습 시작하기|학습 이어하기|Start learning|Resume learning)$/}).first().click();
  await expect(page.locator(".lesson-top")).toBeVisible();
  const before=await page.evaluate(()=>JSON.parse(localStorage.getItem("meowde-v410-state")));
  await page.getByRole("combobox",{name:"학습 과목"}).selectOption("linux");await expect(page).toHaveURL(/linux-home.html/);
@@ -145,7 +145,7 @@ test("legacy records remain byte-identical after complete guided learning",async
 for(const width of [320,375,390,768])test("Python navigation and editor fit viewport "+width,async({page})=>{
  await page.setViewportSize({width,height:844});await page.goto(base+"/");await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
- await page.getByRole("button",{name:"오늘 학습 시작"}).click();await expect(page.getByRole("combobox",{name:"학습 과목"})).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await page.getByRole("button",{name:"학습 시작하기"}).click();await expect(page.getByRole("combobox",{name:"학습 과목"})).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
 test("keyboard-only Linux entry and task focus; review screenshots",async({page},testInfo)=>{
  await page.goto(base+"/linux-home.html");await page.locator("#guided-entry").focus();await page.keyboard.press("Enter");await expect(page.locator("#lesson-title")).toContainText("폴더");
@@ -156,7 +156,7 @@ test("keyboard-only Linux entry and task focus; review screenshots",async({page}
 });
 test("Python first lesson reaches actual browser Python execution",async({page})=>{
  test.setTimeout(120000);
- await page.goto(base+"/");await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");await page.getByRole("button",{name:"오늘 학습 시작"}).click();
+ await page.goto(base+"/");await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");await page.getByRole("button",{name:"학습 시작하기"}).click();
  // Fixed first-lesson fixtures exercise the real controls, never a mock Python engine.
  for(let i=0;i<8;i++){
   if(await page.locator("#code-editor").count())break;
@@ -177,7 +177,7 @@ test("Python retry completion renders 80% and keeps Linux storage across reload"
  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
  await page.evaluate(()=>localStorage.setItem("meowde-linux-guided-v1",'{"version":1,"step":0,"input":"","solutions":{},"hints":{"training":0,"travel":0}}'));
  const linuxBefore=await page.evaluate(()=>localStorage.getItem("meowde-linux-guided-v1"));
- await page.getByRole("button",{name:/오늘 학습 시작|이어서 배우기|Start today|Resume lesson/}).first().click();
+ await page.getByRole("button",{name:/^(학습 시작하기|학습 이어하기|Start learning|Resume learning)$/}).first().click();
  await page.evaluate(()=>{
   // Controlled persisted fixture: four first-attempt successes out of five,
   // with only the retry left. The browser still uses the shipped grader/UI.

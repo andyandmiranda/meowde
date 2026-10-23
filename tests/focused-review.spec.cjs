@@ -6,7 +6,7 @@ test('Python focus pilot keeps the original miss through concept, similar, appli
  page.setDefaultTimeout(15000);
  await page.setViewportSize({width:320,height:844});
  await page.goto(base+'/');await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
- await page.getByRole('button',{name:'오늘 학습 시작'}).click();
+ await page.getByRole('button',{name:'학습 시작하기'}).click();
  await page.evaluate(()=>{S.queue=[{...lessons()[0].exercises.find(e=>e.type==='write')}];S.idx=0;S.firstTotal=1;S.firstCorrect=0;S.checked=false;S.write='';renderLesson();});
  await page.locator('#code-editor').fill('print("wrong")');await page.locator('.lesson-foot .btn').click();await expect(page.locator('.feedback.no')).toBeVisible({timeout:60000});await page.locator('.feedback .btn').click();
  await page.locator('#code-editor').fill('print("야옹")');await page.locator('.lesson-foot .btn').click();await expect(page.locator('.feedback.ok')).toBeVisible();await page.locator('.feedback .btn').click();

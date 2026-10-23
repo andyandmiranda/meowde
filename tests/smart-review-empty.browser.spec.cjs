@@ -67,7 +67,7 @@ test('learner completes a lesson, starts Smart Review, and preserves course prog
   await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
 
   // Earn completion through shipped controls; do not seed S.done.
-  await page.getByRole('button',{name:'오늘 학습 시작'}).click();
+  await page.getByRole('button',{name:'학습 시작하기'}).click();
   for(let step=0;step<12;step++){
     if(!(await page.locator('.lesson-top').count()))break;
     const ex=await page.evaluate(()=>({type:cur().type,answer:cur().answer,buggy:cur().buggy,tokens:cur().tokens,model:cur().model}));
@@ -142,7 +142,7 @@ for(const denyRead of [false,true]){
     expect(await page.evaluate(()=>({xp:S.xp,churu:S.churu,done:S.done.slice(),next:S.next}))).toEqual(before);
     expect(await page.evaluate(key=>window.__qaReadReview?window.__qaReadReview():localStorage.getItem(key),key)).toBe(raw);
     await page.locator('.tabbar button[aria-label="홈"]').click();
-    await page.getByRole('button',{name:'오늘 학습 시작'}).click();
+    await page.getByRole('button',{name:'학습 시작하기'}).click();
     await expect(page.locator('.lesson-top')).toBeVisible();
     expect(await page.evaluate(key=>window.__qaReadReview?window.__qaReadReview():localStorage.getItem(key),key)).toBe(raw);
   });
