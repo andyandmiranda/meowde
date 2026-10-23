@@ -291,18 +291,22 @@ test("Learn tab opens roadmap with unfinished lesson and preserves explicit resu
   expect(await snapshot()).toEqual(previous);
 });
 
-test("Home current-course card matches daily card inset on mobile widths",async({page})=>{
+test("Home current-course card matches learning hero inset on mobile widths without daily challenge",async({page})=>{
   for(const width of [320,390,430]){
     await page.setViewportSize({width,height:840});
     await page.goto(base+"/?tab=home");
     await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+    await expect(page.locator(".phase1-hero")).toBeVisible();
+    await expect(page.locator(".phase1-unit-card")).toBeVisible();
+    await expect(page.locator(".daily-card")).toHaveCount(0);
     const bounds=await page.evaluate(()=>{
-      const daily=document.querySelector(".daily-card").getBoundingClientRect();
+      const hero=document.querySelector(".phase1-hero").getBoundingClientRect();
       const unit=document.querySelector(".phase1-unit-card").getBoundingClientRect();
-      return {dailyLeft:daily.left,dailyRight:daily.right,unitLeft:unit.left,unitRight:unit.right,viewport:document.documentElement.clientWidth};
+      return {heroLeft:hero.left,heroRight:hero.right,unitLeft:unit.left,unitRight:unit.right,viewport:document.documentElement.clientWidth};
     });
-    expect(Math.abs(bounds.dailyLeft-bounds.unitLeft)).toBeLessThan(2);
-    expect(Math.abs(bounds.dailyRight-bounds.unitRight)).toBeLessThan(2);
+    expect(Math.abs(bounds.heroLeft-bounds.unitLeft)).toBeLessThan(2);
+    expect(Math.abs(bounds.heroRight-bounds.unitRight)).toBeLessThan(2);
+    expect(bounds.unitLeft).toBeGreaterThanOrEqual(0);
     expect(bounds.unitRight).toBeLessThanOrEqual(bounds.viewport);
   }
 });
