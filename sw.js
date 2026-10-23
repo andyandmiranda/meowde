@@ -1,7 +1,10 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v472-linux-five-tabs";
+const CACHE_NAME = "meowde-v483-python-qa-precache";
 
 const REQUIRED_ASSETS = [
+  "/assets/lesson-access-policy.js",
+  "/assets/lesson-learning-polish.js",
+  "/assets/lesson-qa-report.js",
   "/assets/linux-shared-navigation.js",
   "/assets/linux-shared-navigation.css",
   "/python-lab.html",
@@ -34,13 +37,13 @@ const REQUIRED_ASSETS = [
   "/assets/characters/v451/meowde-challenge.webp",
   "/assets/characters/v451/meowde-debug.webp",
   "/manifest.webmanifest",
-  "/meowde-icon-192.svg",
-  "/meowde-icon-512.svg",
-  "/icons/meowde-180.png",
-  "/icons/meowde-192.png",
-  "/icons/meowde-512.png",
-  "/icons/meowde-maskable-192.png",
-  "/icons/meowde-maskable-512.png",
+  "/icons/meowde-approved.svg",
+  "/icons/meowde-approved-maskable.svg",
+  "/icons/meowde-approved-192.png",
+  "/icons/meowde-approved-512.png",
+  "/icons/meowde-approved-maskable-192.png",
+  "/icons/meowde-approved-maskable-512.png",
+  "/icons/meowde-approved-touch-180.png",
   "/v412-hotfix.js",
   "/v413-core.js",
   "/v413-lesson.js",
@@ -108,6 +111,7 @@ const REQUIRED_ASSETS = [
   "/v461-unit6-en.js",
   "/v462-unit6-integration.js",
   "/linux-home.html",
+  "/linux-loops-intro.html",
   "/linux-start.html",
   "/linux-crash-course.html",
   "/robotics.html",

@@ -56,25 +56,59 @@
     S.stdinValue='';
   }
 
+  // Additive snapshots live in the existing atomic state record. Unknown shapes
+  // are retained by save(), and block switching instead of discarding data.
+  S.lessonResumes=rawState.lessonResumes===undefined?{}:rawState.lessonResumes;
+  function resumeKey(index,mode,options={},queue=null){
+    return JSON.stringify([S.lang,index,mode,options.dailyKey||'',options.mistakeId||'',
+      Array.isArray(queue)?queue.map(e=>e.id||''):null]);
+  }
+  function currentResumeKey(){return S.v414ResumeKey||resumeKey(S.lessonIndex,normalizeMode(),{
+    dailyKey:S.v414DailyKey,mistakeId:S.v414MistakeId
+  },normalizeMode()==='lesson'||normalizeMode()==='review'?null:S.queue)}
+  S.v414ResumeKey=rawState.inProgress&&rawState.inProgress.resumeKey||'';
+  function snapshot(){
+    return {
+      lang:S.lang,lessonIndex:S.lessonIndex,idx:S.idx,queue:S.queue,
+      combo:S.combo,maxCombo:S.maxCombo,firstTotal:S.firstTotal,
+      firstCorrect:S.firstCorrect,xpEarned:S.xpEarned,daily:S.daily,
+      sel:S.sel,fill:S.fill,checked:S.checked,correct:S.correct,hint:S.hint,
+      output:S.output||'',write:S.write||'',stdinExerciseId:S.stdinExerciseId||'',
+      stdinValue:typeof S.stdinValue==='string'?S.stdinValue:'',
+      mode:normalizeMode(),dailyKey:S.v414DailyKey||'',mistakeId:S.v414MistakeId||'',
+      resumeKey:currentResumeKey()
+    };
+  }
+  function preserveBeforeSwitch(){
+    if(!S.lessonResumes||typeof S.lessonResumes!=='object'||Array.isArray(S.lessonResumes)){
+      toast(S.lang==='ko'?'저장된 재개 기록을 확인해야 해요. 현재 학습을 유지했어요.':'Saved lesson records need recovery. Your current lesson was kept.');
+      return false;
+    }
+    const previous=S.lessonResumes;
+    if(hasLessonProgress())S.lessonResumes=Object.assign({},previous,{[currentResumeKey()]:snapshot()});
+    // Verify the real write: older save layers may catch quota exceptions.
+    save();
+    try{
+      const stored=JSON.parse(localStorage.getItem('meowde-v410-state')||'null');
+      if(!stored||JSON.stringify(stored.lessonResumes)!==JSON.stringify(S.lessonResumes))throw new Error('Snapshot not saved');
+    }catch(error){
+      S.lessonResumes=previous;
+      toast(S.lang==='ko'?'학습을 보관하지 못해 전환하지 않았어요. 저장 공간을 확인해 주세요.':'Could not save your place. Check storage before switching lessons.');
+      return false;
+    }
+    return true;
+  }
+
   function v414Save(){
     const state={
       lang:S.lang,done:S.done,next:S.next,xp:S.xp,churu:S.churu,streak:S.streak,
       milk:S.milk,cat:S.cat,unit:S.unit,mistakes:S.mistakes,
-      dailyHistory:S.dailyHistory,activityDates:S.activityDates
+      dailyHistory:S.dailyHistory,activityDates:S.activityDates,lessonResumes:S.lessonResumes
     };
     if(hasLessonProgress()){
-      state.inProgress={
-        lang:S.lang,lessonIndex:S.lessonIndex,idx:S.idx,queue:S.queue,
-        combo:S.combo,maxCombo:S.maxCombo,firstTotal:S.firstTotal,
-        firstCorrect:S.firstCorrect,xpEarned:S.xpEarned,daily:S.daily,
-        sel:S.sel,fill:S.fill,checked:S.checked,correct:S.correct,
-        hint:S.hint,output:S.output||'',write:S.write||'',
-        stdinExerciseId:S.stdinExerciseId||'',stdinValue:typeof S.stdinValue==='string'?S.stdinValue:'',
-        mode:normalizeMode(),dailyKey:S.v414DailyKey||'',
-        mistakeId:S.v414MistakeId||''
-      };
+      state.inProgress=snapshot();
     }
-    try{localStorage.setItem('meowde-v410-state',JSON.stringify(state))}
+    try{if(typeof preserveDeferredLessonState==='function')preserveDeferredLessonState(state);localStorage.setItem('meowde-v410-state',JSON.stringify(state))}
     catch(error){console.warn('Meowde could not save progress:',error)}
   }
   save=v414Save;
@@ -98,7 +132,24 @@
   function removeMistake(key){S.mistakes=S.mistakes.filter(item=>item.key!==key)}
 
   function beginLesson(index,daily,queueOverride,options){
+    if(S.loading)return;
+    if(!preserveBeforeSwitch())return;
     const mode=options&&options.mode?options.mode:(daily?'daily':(S.done.includes(index)?'review':'lesson'));
+    const key=typeof options.resumeKey==='string'&&Object.prototype.hasOwnProperty.call(S.lessonResumes,options.resumeKey)
+      ?options.resumeKey:resumeKey(index,mode,options,queueOverride);
+    const saved=S.lessonResumes[key];
+    if(saved){
+      if(!Array.isArray(saved.queue)||!Number.isInteger(saved.idx)||saved.idx<0||saved.idx>=saved.queue.length||saved.lessonIndex!==index||saved.lang!==S.lang||saved.mode!==mode){
+        toast(S.lang==='ko'?'이 레슨의 저장 지점을 확인해야 해요. 기존 기록을 보존했어요.':'This saved lesson needs recovery. Existing records were kept.');
+        return;
+      }
+      const fields=['lessonIndex','idx','queue','combo','maxCombo','firstTotal','firstCorrect','xpEarned','daily','sel','fill','checked','correct','hint','output','write','stdinExerciseId','stdinValue'];
+      fields.forEach(field=>{S[field]=saved[field]});
+      S.v414Mode=saved.mode;S.v414DailyKey=saved.dailyKey||'';S.v414MistakeId=saved.mistakeId||'';
+      S.v414ResumeKey=key;S.loading=false;save();renderLesson();
+      return;
+    }
+    S.v414ResumeKey=key;
     S.v414Mode=mode;
     S.v414DailyKey=options&&options.dailyKey?options.dailyKey:'';
     S.v414MistakeId=options&&options.mistakeId?options.mistakeId:'';
@@ -129,13 +180,15 @@
     window.__v414PendingStart={index,daily,queueOverride,options};
     const title=S.lang==='ko'?'진행 중인 학습이 있어요':'A lesson is in progress';
     const copy=S.lang==='ko'
-      ?`${current?current.title:'현재 레슨'}의 저장 지점을 유지할까요? 새 학습을 시작하면 현재 지점이 교체됩니다.`
-      :`Keep your saved place in ${current?current.title:'the current lesson'}? Starting ${target?target.title:'a new lesson'} replaces it.`;
+      ?`${current?current.title:'현재 레슨'}의 저장 지점을 보관하고 다른 레슨을 열 수 있어요. 다시 선택하면 이어집니다.`
+      :`Keep your saved place in ${current?current.title:'the current lesson'}? Your place is kept when opening ${target?target.title:'a new lesson'}. Select the previous lesson to resume.`;
     overlay(`<div class="start-guard"><h3>${esc(title)}</h3><p>${esc(copy)}</p><button class="btn" onclick="resumeCurrentLesson()">${S.lang==='ko'?'현재 학습 이어하기':'Resume current lesson'}</button><button class="btn ghost" onclick="confirmPendingStart()">${S.lang==='ko'?'새 학습 시작':'Start new lesson'}</button></div>`);
   }
 
   startLesson=function(index,daily=false,queueOverride=null,options={}){
-    const safeIndex=Math.max(0,Math.min(Number(index)||0,lessons().length-1));
+    if(S.loading)return;
+    if(!window.MeowdeLessonAccess.select(lessons(),index,S).ok)return;
+    const safeIndex=index;
     const mode=options.mode||(daily?'daily':(S.done.includes(safeIndex)?'review':'lesson'));
     if(hasLessonProgress()&&!options.force){
       const currentMode=normalizeMode();

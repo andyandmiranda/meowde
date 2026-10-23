@@ -80,6 +80,13 @@
   async function loadEnhancementsInOrder(){
     const results=[];
     for(const item of ENHANCEMENTS)results.push(await loadEnhancement(item));
+    // Standalone practice links enter through /?tab=... . Apply the destination
+    // once, after every enhancement has installed its final screen renderer.
+    // Never infer a destination from saved lesson progress or reset that progress.
+    const requestedTab=new URLSearchParams(location.search).get("tab");
+    const entryScreens=new Map([["home","renderHome"],["map","renderMap"],["review","renderReview"],["my","renderProfile"]]);
+    const renderer=entryScreens.get(requestedTab);
+    if(renderer&&typeof window[renderer]==="function")window[renderer]();
     document.documentElement.dataset.enhancementLoader="ordered";
     return results;
   }

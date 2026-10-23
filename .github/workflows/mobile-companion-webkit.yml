@@ -1,0 +1,61 @@
+name: Verify mobile companion and review in WebKit
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'v443-single-companion.js'
+      - 'v443-single-companion.css'
+      - 'v420-profile.js'
+      - 'v420-profile.css'
+      - 'v417-review.js'
+      - 'tests/coach-character-preservation.spec.cjs'
+      - 'tests/compact-my.spec.cjs'
+      - 'tests/smart-review-empty.browser.spec.cjs'
+      - 'tests/learning-readiness.spec.cjs'
+      - 'tests/five-tab-practice-nav.spec.cjs'
+      - 'assets/python-lab.js'
+      - 'assets/python-lab.css'
+      - 'python-lab.html'
+      - 'v434-release.js'
+      - 'index.html'
+      - '.github/workflows/mobile-companion-webkit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mobile-webkit:
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Verify matching preinstalled WebKit executable
+        run: pnpm exec playwright --version && test -d /ms-playwright
+      - name: Verify mobile character, My and honest review in WebKit
+        run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/coach-character-preservation.spec.cjs tests/compact-my.spec.cjs tests/smart-review-empty.browser.spec.cjs
+      - name: Verify SecurityError storage preservation in WebKit
+        run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/learning-readiness.spec.cjs --grep 'SecurityError on storage'
+      - name: Verify mobile learning, keyboard and reload preservation in WebKit
+        run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/learning-readiness.spec.cjs --grep 'partial input, verified answer|keyboard-only Linux entry|Python subject navigation preserves'
+      - name: Verify mobile viewport, offline resume and legacy storage in WebKit
+        run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/learning-readiness.spec.cjs --grep 'Python navigation and editor fit viewport|root stays clean, old bootstrap works and offline Linux resumes|legacy records remain byte-identical after complete guided learning|Python retry completion renders 80%'
+      - name: Verify practice tab entry and learning tools in WebKit
+        run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/five-tab-practice-nav.spec.cjs --grep 'Practice links open the requested screen and preserve progress through reload|Practice starts with one task; learning details are in an optional tool sheet|Compact practice remains usable at large text and reduced visible height'
+      - name: Upload WebKit failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-webkit-diagnostics
+          path: artifacts/
+          retention-days: 7
