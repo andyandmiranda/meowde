@@ -28,7 +28,7 @@ css.textContent=[
 '.lesson-main .meowde-error-detail>summary:focus-visible{outline:2px solid #247b61;outline-offset:2px}',
 '.lesson-main .meowde-error-detail[open]>summary{list-style:disclosure-open inside}',
 '.lesson-main .meowde-error-detail pre{background:#29262f;color:#f6f2fa;border-radius:12px;padding:12px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:40vh;overflow:auto;font-size:11px;line-height:1.5}',
-'.feedback.no .meowde-feedback-message{font-size:13px;line-height:1.55;margin:3px 0 10px;overflow-wrap:anywhere;color:#514650}',
+'.feedback.no .meowde-feedback-message{font-size:14px;line-height:1.65;margin:3px 0 10px;overflow-wrap:anywhere;color:#514650}',
 '.feedback.no .meowde-answer-review{clear:both;margin:4px 0 12px;border:0;border-top:1px solid #ecdde0;border-radius:0;padding:0;background:transparent;box-shadow:none}',
 '.feedback.no .meowde-answer-review>summary{display:list-item;list-style:disclosure-closed inside;min-height:44px;line-height:44px;padding:0 4px;color:#5e5662;font-size:13px;font-weight:650;cursor:pointer}',
 '.feedback.no .meowde-answer-review[open]>summary{list-style:disclosure-open inside}',
