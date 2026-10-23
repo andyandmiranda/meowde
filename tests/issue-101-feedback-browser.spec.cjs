@@ -20,7 +20,9 @@ for(const row of cases)test('wrong '+row.kind+' reveals correct example and reas
  await expect(disclosure).toBeVisible();
  await disclosure.locator('summary').click();
  await expect(disclosure).toContainText(row.answer);
- await expect(page.locator('.feedback.no')).toContainText(row.exercise.explain);
+ if(row.kind==='bughunt')await expect(page.locator('.feedback.no')).toContainText('오류가 있는 줄: 2번');
+ if(row.kind==='write')await expect(page.locator('.feedback.no')).toContainText('기대 출력은 “2”');
+ if(row.kind==='predict'||row.kind==='fill')await expect(page.locator('.feedback.no')).toContainText(row.exercise.explain);
  expect(await page.evaluate(()=>({xp:S.xp,churu:S.churu,done:[...S.done]}))).toEqual(before);
 });
 
