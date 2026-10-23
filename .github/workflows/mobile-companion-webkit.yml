@@ -27,7 +27,9 @@ permissions:
 
 jobs:
   mobile-webkit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
@@ -38,10 +40,8 @@ jobs:
         with:
           version: 11.25.0
       - run: pnpm install --frozen-lockfile --ignore-scripts
-      - name: Ignore unrelated blocked Microsoft apt source on ephemeral runner
-        run: |
-          grep -rl 'packages.microsoft.com' /etc/apt/sources.list.d/ | while IFS= read -r source; do sudo mv "$source" "$source.disabled"; done
-      - run: pnpm exec playwright install --with-deps webkit
+      - name: Verify matching preinstalled WebKit executable
+        run: pnpm exec playwright --version && test -d /ms-playwright
       - name: Verify mobile character, My and honest review in WebKit
         run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/coach-character-preservation.spec.cjs tests/compact-my.spec.cjs tests/smart-review-empty.browser.spec.cjs
       - name: Verify SecurityError storage preservation in WebKit
