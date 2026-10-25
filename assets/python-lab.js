@@ -135,6 +135,7 @@
         tools.append(detail);
       };
       // Existing DOM handlers still bind by ID after the move.
+      move(article.querySelector("#values-bridge"),"연결 연습 · 기초에서 응용으로");
       move(article.querySelector(".practice-support"),"개념과 예제");
       // Open the existing concept section directly when requested; keep the original learning content intact.
       const conceptGroup=tools.querySelector(".practice-tools-group");
@@ -162,10 +163,6 @@
       document.body.classList.add("meowde-practice-focus");
 
     }
-    // Keep the optional bridge ahead of the focus-mode coding task after layout reordering.
-    const valuesBridge=root.querySelector("#values-bridge");
-    const codingTask=root.querySelector("#practice");
-    if(valuesBridge&&codingTask)codingTask.before(valuesBridge);
     renderFunctionStages();
     if(storageProblem)showStorageProblem();
     bind();
