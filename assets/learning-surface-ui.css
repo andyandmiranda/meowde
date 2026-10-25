@@ -66,7 +66,7 @@ body:has(#lab) .practice-primary{padding:12px;margin-top:8px}
 body:has(#lab) .practice-primary>h3{font-size:16px;margin:0 0 5px}
 body:has(#lab) .practice-primary>p:not(.meta){font-size:14px;margin:3px 0 8px}
 body:has(#lab) .practice-primary>label{font-size:13px;font-weight:700}
-body:has(#lab) textarea.code{min-height:124px;height:clamp(124px,19dvh,190px);padding:10px 12px;font-size:14px}
+body:has(#lab) textarea.code{min-height:124px;height:clamp(124px,16.5dvh,170px);padding:10px 12px;font-size:14px}
 body:has(#lab) .practice-primary .actions{gap:7px;margin:9px 0}
 body:has(#lab) .practice-primary .actions button{min-height:44px;font-size:13px;padding:8px 12px}
 body:has(#lab) .practice-primary .actions [data-run="grade"]{flex:1}
@@ -160,7 +160,7 @@ body:has(#lab) #practice #run-status:not(:empty)::before{content:"04 · 실행 �
 body:has(#lab) #practice textarea.code{color:#20342e!important;-webkit-text-fill-color:#20342e!important;caret-color:#20342e;background:#f8faf9!important;opacity:1}
 body:has(#lab) #practice textarea.code::placeholder{color:#596b64;opacity:1}
 body:has(#lab) #practice textarea.code:focus{outline:3px solid #39886d;outline-offset:2px}
-@media(max-width:479px){body:has(#lab) .lab-header{padding:8px 18px 0}body:has(#lab) .lab-header-eyebrow{margin:2px 0 0}body:has(#lab) .lab-header-description{margin:2px 0 0}body:has(#lab) #practice.practice-task{padding:14px}body:has(#lab) #practice textarea.code{min-height:160px}}
+@media(max-width:479px){body:has(#lab) .lab-header{padding:8px 18px 0}body:has(#lab) .lab-header-eyebrow{margin:2px 0 0}body:has(#lab) .lab-header-description{margin:2px 0 0}body:has(#lab) #practice.practice-task{padding:14px}body:has(#lab) #practice textarea.code{min-height:136px}}
 
 /* Founder iPhone QA: use the same clean header rhythm across Practice and Review. */
 body:has(#lab) .lab-header{padding:18px 18px 10px;max-width:430px}
