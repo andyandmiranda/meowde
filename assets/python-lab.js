@@ -310,21 +310,23 @@
   function renderOverview(){
     stop();
     const savedValues=progress.values?.valuesPath;
-    const hasValues=savedValues?.version===1&&Number.isInteger(savedValues.level);
+    const hasValues=savedValues?.version===1&&Number.isInteger(savedValues.level)&&savedValues.level>=1&&savedValues.level<=5;
     const other=data.units.find(u=>u.id!=="values"&&(typeof progress[u.id]?.draft==="string"||progress[u.id]?.attempts||typeof progress[u.id+":practice"]?.draft==="string"));
+    const legacyValues=typeof progress.values?.draft==="string"||progress.values?.attempts||progress.values?.passed;
     const resume=hasValues?{hash:"#values",title:"문자에서 계산으로 · Lv."+savedValues.level}
+      :legacyValues?{hash:"#values/challenge",title:"문자에서 계산으로 · 기존 코드 이어하기"}
       :other?{hash:"#"+other.id+(other.id==="function-slots"&&typeof progress["function-slots:practice"]?.draft==="string"?"/practice":""),title:other.title}
       :{hash:"#values",title:"문자에서 계산으로 · 처음부터"};
     const stages=[
       {title:"이해",description:"개념과 실행 예제를 살펴봐요",hash:"#function-slots/understand"},
-      {title:"연습",description:"한 문제씩 풀고 바로 해설을 확인해요",hash:"#values"},
+      {title:"연습",description:"함수 코드를 직접 완성하고 피드백을 받아요",hash:"#function-slots/practice"},
       {title:"응용",description:"새로운 입력과 실전 문제에 도전해요",hash:"#function-slots/challenge"}
     ];
     root.innerHTML='<section class="deepen-hub" aria-label="심화 학습 시작">'
       +'<p class="deepen-hub-kicker">PYTHON · 심화 학습</p><h2 id="unit-title" tabindex="-1">이해하고, 직접 풀고, 응용해요</h2>'
       +'<p class="deepen-hub-intro">개념부터 코딩까지 내 속도로 학습해요. 각 화면에서는 한 문제에 집중하고 채점 후 다음으로 이동할 수 있어요.</p>'
       +'<section class="deepen-resume"><h3>이어서 학습하기</h3><p>'+escape(resume.title)+'</p><a class="primary" href="'+resume.hash+'">학습 이어하기</a></section>'
-      +'<nav class="deepen-stage-list" aria-label="심화 학습 방식">'+stages.map((s,i)=>'<a href="'+s.hash+'"><span class="deepen-stage-number">0'+(i+1)+'</span><span><strong>'+s.title+'</strong><small>'+s.description+'</small></span><span aria-hidden="true">›</span></a>').join('')+'</nav>'
+      +'<p class="deepen-stage-caption">함수 심화 · 이해 → 연습 → 응용</p><nav class="deepen-stage-list" aria-label="함수 심화 학습 방식">'+stages.map((s,i)=>'<a href="'+s.hash+'"><span class="deepen-stage-number">0'+(i+1)+'</span><span><strong>'+s.title+'</strong><small>'+s.description+'</small></span><span aria-hidden="true">›</span></a>').join('')+'</nav>'
       +'<details class="deepen-unit-list"><summary>모든 심화 단원 보기 · '+data.units.length+'개</summary><nav aria-label="심화 단원 목록">'+data.units.map(u=>'<a href="#'+encodeURIComponent(u.id)+'">'+escape(u.title)+'</a>').join('')+'</nav></details></section>';
   }
   try{
