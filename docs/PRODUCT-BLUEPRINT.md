@@ -88,3 +88,33 @@ Success metrics: first start/resume success, grading correctness, first-attempt 
 This document records the **desired product design**, not current shipped status. PR #102 and related drafts must be inspected at their current exact SHAs; this blueprint alone authorizes no implementation or merge. GitHub Issue #78 owns the prioritized execution ledger and handoff. Existing tests and workflows must not be weakened merely to mark a gate green.
 
 **Documentation-only draft:** Changes to this document do not alter app code, production, learner data, costs, or permissions.
+
+
+## 11. Blueprint v2.1 implementation and release clarification (2026-10-25)
+
+This addendum refines delivery criteria without claiming features are shipped. Preserve the five-tab destination and all v2.0 data/rights constraints. Current Production already includes the function-deepening pilot; do not repeat it. Subsequent Preview work on PR #102 is not Production.
+
+### Navigation and learning ownership
+
+- **Home:** one visually dominant resume/start CTA. Deepen, review and subject links are secondary and never compete as equal primary actions. Restore the precise previous question/attempt on resume.
+- **Learn:** existing beginner concept → example → basic question stays accessible and revisitable. Add context-preserving '자세히 이해하기' only where a matched Deepen concept actually exists.
+- **Deepen:** the canonical learning path is 이해 → 연습 → 도전, with optional skipping/backtracking and separate assisted versus independent mastery. Existing Python practice, Linux practice, focused review and free coding remain accessible as subordinate destinations. Do not duplicate exercise engines, silently redirect old URLs, or change storage keys.
+- **Together:** do not expose a placeholder or fake participants. A solo focus timer can be tested separately; a public room is release-gated by actual multi-user functionality, accurate occupancy, opt-in participation, privacy controls and moderation readiness. Never imply that a solo timer is a public study room.
+- **My:** preserve all six original cats, coach independence, XP/churu, settings and detailed progress.
+
+### Answer feedback quality contract
+
+For an incorrect answer, show (1) the learner's actual attempted choice/output, (2) the specific mismatch and causal explanation, (3) a minimal correction or progressive hint without premature answer leakage, and (4) a retry action with unchanged grading and one-time reward semantics. Handle alternative valid code, whitespace-sensitive requirements, runtime errors, and 'cannot determine' states explicitly. Evaluate explanations against representative beginner misconceptions before general rollout.
+
+### Mobile, state and accessibility gates
+
+For every navigation or practice change, check 320px viewport without horizontal clipping, touch targets at least 44×44 CSS pixels, keyboard focus and labels, browser Back/Forward, direct URLs, PWA cached-version updates, draft persistence across refresh/navigation, independent attempt/reward accounting, and no reset of pre-existing learning records. Distinguish Chromium, WebKit simulation and physical Safari; mark any unrun check NOT RUN rather than PASS. Never overwrite real user storage for QA.
+
+### Evidence-driven staged releases
+
+- **Release A — Safe entry:** validate PR #102's actual current HEAD, Home primary CTA hierarchy, Deepen secondary entry links, Python/Linux practice and review destinations, Back behavior and persisted records. Block release on a broken link, lost draft, wrong grade, duplicate reward or unexpected redirect.
+- **Release B — Deepen integration:** one canonical Deepen destination with Understand/Practice/Challenge plus practice/review/free-code entry; retain legacy deep links and old keys. Pilot novice comprehension and hint independence before expanding units.
+- **Release C — Five-tab destination:** enable 홈·학습·심화·함께·마이 only when Together offers real, safe, non-deceptive functionality. If Together is not ready, keep existing working navigation instead of an empty fifth tab.
+- **Release D — Learning effectiveness:** evaluate first-attempt correctness, unfamiliar transfer, retries, hint reliance and delayed recall using privacy-respecting measurement; do not claim gains without data.
+
+Each release requires exact-SHA change evidence, focused regression, Preview readiness, clearly stated unverified devices, and a founder approval for main/Production/alias operations. Estimate delivery time only after blockers and test scope are verified. Issue #78 remains the owner ledger. Do not weaken old tests to fit an unshipped navigation target.
