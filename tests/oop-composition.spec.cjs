@@ -5,7 +5,7 @@ test("original OOP composition unit is navigable and preserves the existing prog
   const legacy='{"xp":31,"churu":12,"done":[0],"keep":"unchanged"}';
   await page.goto(base+"/python-lab.html#object-collaboration");
   await expect(page.locator("#unit-title")).toHaveText("클래스와 객체를 함께 사용하기");
-  await expect(page.locator("#unit-nav a")).toHaveCount(19);
+  await expect(page.locator("#unit-nav a")).toHaveCount(20);
   await expect(page.locator("#practice")).toContainText("TaskLog(label)");
   await expect(page.locator("#practice")).toContainText("LogSummary(logs)");
   await page.evaluate(value=>localStorage.setItem("meowde-v410-state",value),legacy);
