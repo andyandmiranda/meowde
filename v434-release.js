@@ -80,6 +80,21 @@
   async function loadEnhancementsInOrder(){
     const results=[];
     for(const item of ENHANCEMENTS)results.push(await loadEnhancement(item));
+    // Standalone practice links enter through /?tab=... . Apply the destination
+    // once, after every enhancement has installed its final screen renderer.
+    // Never infer a destination from saved lesson progress or reset that progress.
+    const requestedTab=new URLSearchParams(location.search).get("tab");
+    const entryScreens=new Map([["home","renderHome"],["map","renderMap"],["review","renderReview"],["my","renderProfile"]]);
+    const renderer=entryScreens.get(requestedTab);
+    // Roadmap deep links use the final installed selector, never the unguarded
+    // base-shell startLesson. Its existing switch guard persists any active work.
+    const slug=new URLSearchParams(location.search).get("lesson");
+    if(slug){
+      const index=slug.length<=80&&typeof lessons==="function"?lessons().findIndex(item=>item&&item.slug===slug):-1;
+      const policy=window.MeowdeLessonAccess;
+      if(index>=0&&policy&&policy.select(lessons(),index,S).ok&&typeof startLesson==="function")startLesson(index);
+      else if(typeof renderMap==="function")renderMap();
+    }else if(renderer&&typeof window[renderer]==="function")window[renderer]();
     document.documentElement.dataset.enhancementLoader="ordered";
     return results;
   }

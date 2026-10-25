@@ -1,4 +1,5 @@
 const fs=require('fs');
+const vm=require('node:vm');
 
 function read(path){return fs.readFileSync(path,'utf8')}
 function assert(condition,message){if(!condition)throw new Error(message)}
@@ -21,6 +22,22 @@ assert(!quests.includes('localStorage.setItem(KEY'),'Legacy quest storage must n
 
 assert(reward.includes("daily:ko?'오늘의 연습 완료':'Daily practice complete'"),'Daily completion copy must use Daily Practice naming.');
 assert(reward.includes('firstDailyCompletion'),'Daily Practice must keep once-per-day reward semantics.');
-assert(screens.includes("ko?'오늘의 연습':'Daily practice'"),'Home must expose a single Daily Practice entry point.');
+// Home now leads directly into the current lesson. Render it rather than
+// matching copy inside the retained, unused dailyCard() helper.
+for(const lang of ['ko','en'])for(const inProgress of [false,true]){
+  const state={lang,screen:'home',done:[0],next:1,lessonIndex:2,idx:0,
+    queue:[{id:'pending'}],xp:37,churu:9,dailyHistory:{previous:{xp:20}}};
+  const before=JSON.stringify(state);
+  const context={S:state,app:{innerHTML:''},document:{documentElement:{dataset:{}}},
+    lessons:()=>Array.from({length:10},(_,index)=>({title:'Lesson '+index,description:'Learn'})),
+    hasLessonProgress:()=>inProgress,save:()=>{},esc:String,icon:()=>'',t:()=>'',console};
+  context.window=context;
+  vm.runInNewContext(screens,context,{filename:'v414-screens.js'});
+  const html=context.app.innerHTML;
+  const action=inProgress?'resumeLesson()':'startLesson(1)';
+  assert(html.split('onclick="'+action+'"').length-1===1,'Home must expose exactly one current-lesson start/resume action.');
+  assert(!/onclick="startDaily\(/.test(html)&&!html.includes('daily-card'),'Home must not reintroduce the removed daily challenge entry.');
+  assert(JSON.stringify(state)===before,'Rendering Home must preserve progress, pending lessons and rewards.');
+}
 
 console.log('Phase 2 daily consolidation validation passed.');

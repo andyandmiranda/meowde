@@ -29,10 +29,18 @@
     const earned=grantsReward?rawEarned:0;
     const churuEarned=grantsReward?Math.max(1,Math.round(rawEarned/10)+Math.floor((Number(S.maxCombo)||0)/2)):0;
 
+    // Drop only the completed session, atomically with its completion/reward.
+    if(S.lessonResumes&&typeof S.lessonResumes==='object'&&!Array.isArray(S.lessonResumes)&&S.v414ResumeKey){
+      const pending=Object.assign({},S.lessonResumes);
+      delete pending[S.v414ResumeKey];
+      S.lessonResumes=pending;
+    }
+    S.v414ResumeKey='';
     if(firstLessonCompletion){
       S.done.push(finishedLessonIndex);
       S.done.sort((a,b)=>a-b);
-      S.next=Math.min(lessons().length-1,S.done.length);
+      S.next=lessons().findIndex((lesson,index)=>!S.done.includes(index));
+      if(S.next<0)S.next=lessons().length-1;
     }
     if(currentMode==='daily'){
       S.dailyHistory[key]=S.dailyHistory[key]||{

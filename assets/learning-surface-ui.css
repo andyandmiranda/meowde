@@ -66,7 +66,7 @@ body:has(#lab) .practice-primary{padding:12px;margin-top:8px}
 body:has(#lab) .practice-primary>h3{font-size:16px;margin:0 0 5px}
 body:has(#lab) .practice-primary>p:not(.meta){font-size:14px;margin:3px 0 8px}
 body:has(#lab) .practice-primary>label{font-size:13px;font-weight:700}
-body:has(#lab) textarea.code{min-height:124px;height:clamp(124px,19dvh,190px);padding:10px 12px;font-size:14px}
+body:has(#lab) textarea.code{min-height:124px;height:clamp(124px,16.5dvh,170px);padding:10px 12px;font-size:14px}
 body:has(#lab) .practice-primary .actions{gap:7px;margin:9px 0}
 body:has(#lab) .practice-primary .actions button{min-height:44px;font-size:13px;padding:8px 12px}
 body:has(#lab) .practice-primary .actions [data-run="grade"]{flex:1}
@@ -99,7 +99,7 @@ body.meowde-practice-focus #lab #run-results:empty{display:none}
 body.meowde-practice-focus #lab .practice-primary .actions{margin-bottom:5px}
 body.meowde-practice-focus #lab #practice>h3{display:none}
 body.meowde-practice-focus #lab #practice .practice-criteria{display:none}
-body.meowde-practice-focus #lab .practice-primary{border:0;background:transparent;padding:0;box-shadow:none}
+body.meowde-practice-focus #lab .practice-primary{border:1.5px solid var(--line);border-radius:20px;background:#fff;padding:14px;box-shadow:0 7px 20px rgba(68,49,36,.06)}
 body.meowde-practice-focus #lab .practice-primary>p:not(.meta){font-size:15px;line-height:1.6;margin-bottom:11px}
 body.meowde-practice-focus #lab .practice-primary label[for="learner-code"]{display:block;margin:7px 0}
 body.meowde-practice-focus #lab .lesson h2{font-size:20px}
@@ -126,3 +126,51 @@ body:has(#lab) .tap-code-tools>summary{cursor:pointer;font-weight:700;min-height
 body:has(#lab) .tap-code-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:10px}
 body:has(#lab) .tap-code-buttons button{min-height:44px;padding:8px 4px;font-family:ui-monospace,SFMono-Regular,monospace;font-size:13px;white-space:normal;overflow-wrap:anywhere}
 @media(max-width:360px){body:has(#lab) .tap-code-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Issue #101: distinguish task instructions, code entry, and grading without touching logic. */
+body:has(#lab) #practice.practice-task{border:2px solid var(--surface-line);background:#fff;padding:18px}
+body:has(#lab) #practice .practice-kicker{display:inline-block;padding:4px 10px;border-radius:999px;background:var(--surface-pale);color:var(--surface-mint-dark);font-weight:800}
+body:has(#lab) #practice textarea.code{background:#F8FAF9;border:2px solid #A7CDBD;box-shadow:inset 0 1px 3px rgba(45,42,40,.04)}
+body:has(#lab) #practice .feedback{border-left:4px solid var(--surface-mint-dark);padding:12px 14px;border-radius:10px;background:#F1F9F5}
+body:has(#lab) #practice .feedback.bad{border-left-color:#B44551;background:#FFF2F1;color:#90333F}
+body:has(#lab) #practice .feedback.good{border-left-color:#247B61;background:#ECF8F2;color:#205844}
+
+/* Shared main-tab heading: practice follows Home/Learn/My type and spacing. */
+body:has(#lab) .lab-header{max-width:430px;padding:12px 18px 4px;align-items:flex-start;gap:12px}
+body:has(#lab) .lab-header-main{min-width:0;flex:1}
+body:has(#lab) .lab-header-main>a:first-child{font-size:13px;font-weight:800;color:var(--surface-mint-dark);text-decoration:none;letter-spacing:.03em}
+body:has(#lab) .lab-header-eyebrow{font-size:10px;letter-spacing:.12em;font-weight:800;color:var(--surface-muted);margin:8px 0 2px}
+body:has(#lab) .lab-header h1{font-size:25px;line-height:1.35;letter-spacing:-.04em;margin:0;color:var(--surface-ink)}
+body:has(#lab) .lab-header-description{font-size:12px;color:var(--surface-muted);line-height:1.5;margin:5px 0 0}
+body:has(#lab) .lab-back-link{font-size:12px;white-space:nowrap;min-height:44px;display:flex;align-items:center}
+/* Four clearly separated practice steps; interactive elements remain unchanged. */
+body:has(#lab) #practice .practice-kicker::before{content:"01 · "}
+body:has(#lab) #practice label[for="learner-code"]{border-top:1px solid var(--surface-line);margin-top:18px;padding-top:15px}
+body:has(#lab) #practice label[for="learner-code"]::before{content:"02 · ";color:var(--surface-mint-dark)}
+body:has(#lab) #practice [data-run="grade"]::before{content:"03 · "}
+body:has(#lab) #practice #run-status:not(:empty){border-top:1px solid var(--surface-line);padding-top:13px;margin-top:14px}
+body:has(#lab) #practice #run-status:not(:empty)::before{content:"04 · 실행 결과  ";font-weight:800;color:var(--surface-mint-dark)}
+
+/* Keep Review screen heading aligned with Home/Learn/My without changing review state. */
+.phase5-review .simple-head{padding:20px 18px 12px;background:var(--surface-cream)}
+.phase5-review .simple-head h2{font-size:25px;line-height:1.35;letter-spacing:-.04em;margin:0;color:var(--surface-ink)}
+.phase5-review .simple-head p{font-size:12px;line-height:1.5;margin-top:5px;color:var(--surface-muted)}
+
+/* iPhone QA #101: make code readable and keep the first action within reach. */
+body:has(#lab) #practice textarea.code{color:#20342e!important;-webkit-text-fill-color:#20342e!important;caret-color:#20342e;background:#f8faf9!important;opacity:1}
+body:has(#lab) #practice textarea.code::placeholder{color:#596b64;opacity:1}
+body:has(#lab) #practice textarea.code:focus{outline:3px solid #39886d;outline-offset:2px}
+@media(max-width:479px){body:has(#lab) .lab-header{padding:8px 18px 0}body:has(#lab) .lab-header-eyebrow{margin:2px 0 0}body:has(#lab) .lab-header-description{margin:2px 0 0}body:has(#lab) #practice.practice-task{padding:14px}body:has(#lab) #practice textarea.code{min-height:136px}}
+
+/* Founder iPhone QA: use the same clean header rhythm across Practice and Review. */
+body:has(#lab) .lab-header{padding:18px 18px 10px;max-width:430px}
+body:has(#lab) .lab-header-main>a:first-child{font-family:Georgia,serif;font-size:24px;font-weight:800;letter-spacing:-.035em;color:var(--surface-ink)}
+body:has(#lab) .lab-header h1{font-size:29px;line-height:1.25;margin:12px 0 0}
+body:has(#lab) .lab-header-description{font-size:13px;margin-top:5px}
+.phase5-review .simple-head{background:transparent;padding:18px 18px 10px}
+.phase5-review .simple-head h2{font-size:29px;line-height:1.25;color:var(--surface-ink)}
+.phase5-review .simple-head p{font-size:13px;line-height:1.5}
+/* Review sunglasses mascot size is controlled by the actual .v449-review-pose rule in v449-character-cutouts.css (82px -> 41px). */
+
+/* Match active practice tab despite more specific shared surface selectors. */
+body:has(#lab) .meowde-lab-tabbar a[aria-current="page"]{color:#6d4d89;background:linear-gradient(135deg,#f0eaff,#e9f7f3)}

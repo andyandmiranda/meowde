@@ -1,0 +1,47 @@
+name: Python question QA isolated checks
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'sw.js'
+      - 'assets/lesson-qa-report.js'
+      - 'assets/lesson-learning-polish.js'
+      - 'tests/lesson-learning-polish.test.cjs'
+      - 'tests/python-question-qa.test.cjs'
+      - '.github/workflows/python-question-qa.yml'
+  workflow_dispatch:
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check PWA precache file consistency and offline install prerequisites
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const assert = require('node:assert/strict');
+          const sw = fs.readFileSync('sw.js', 'utf8');
+          const html = fs.readFileSync('index.html', 'utf8');
+          const list = sw.match(/const REQUIRED_ASSETS\s*=\s*\[([\s\S]*?)\];/);
+          assert.ok(list, 'required asset list missing');
+          const paths = [...list[1].matchAll(/"([^\"]+)"/g)].map(x => x[1]);
+          assert.equal(new Set(paths).size, paths.length, 'duplicate precache paths');
+          for (const path of paths) {
+            if (path === '/') continue;
+            assert.ok(fs.existsSync('.' + path), 'missing precache asset: ' + path);
+          }
+          for (const name of ['lesson-qa-report.js', 'lesson-learning-polish.js']) {
+            const path = '/assets/' + name;
+            assert.ok(html.includes(path), 'missing HTML script: ' + path);
+            assert.ok(paths.includes(path), 'missing PWA precache: ' + path);
+          }
+          assert.ok(sw.includes('cache.addAll(REQUIRED_ASSETS)'), 'atomic install missing');
+          console.log('PWA precache static consistency PASS:', paths.length, 'entries');
+          NODE
+      - name: Check Python feedback, saved lesson resumes, scoring and rewards
+        run: node --test tests/python-question-qa.test.cjs tests/lesson-learning-polish.test.cjs tests/lesson-resume.test.cjs tests/first-attempt-accuracy.test.cjs tests/submission-guard.test.cjs

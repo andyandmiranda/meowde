@@ -4,7 +4,7 @@ const base=process.env.MEOWDE_BASE_URL||'http://127.0.0.1:4173';
 test('reporting is opt-in; snapshot excludes answers and preserves Python state',async({page})=>{
  await page.setViewportSize({width:320,height:844});
  await page.goto(base+'/');await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
- await page.getByRole('button',{name:'오늘 학습 시작'}).click();
+ await page.getByRole('button',{name:'학습 시작하기'}).click();
  await expect(page.locator('[data-tester-report]')).toHaveCount(0);
  await page.goto(base+'/?tester=1&private=DO_NOT_COPY');
  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');

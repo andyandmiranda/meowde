@@ -89,7 +89,7 @@ test('corrected file-lines solution counts each non-empty line once in both lang
 
 test('in-flight and already checked Python submissions cannot duplicate credit',async({page})=>{
  await page.goto(base+'/');await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
- await page.getByRole('button',{name:'오늘 학습 시작'}).click();
+ await page.getByRole('button',{name:'학습 시작하기'}).click();
  await page.evaluate(()=>{
   S.queue=[{...lessons()[0].exercises.find(e=>e.type==='write')}];S.idx=0;S.checked=false;S.loading=false;S.firstCorrect=0;S.firstTotal=1;S.xpEarned=0;S.combo=0;
   window.qaRuns=0;runPython=()=>{qaRuns++;return new Promise(resolve=>window.qaResolve=resolve);};renderLesson();

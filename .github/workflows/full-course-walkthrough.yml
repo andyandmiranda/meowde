@@ -1,0 +1,47 @@
+name: Full 60-lesson walkthrough (isolated)
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/full-course-walkthrough.yml'
+      - 'tests/course-walkthrough.spec.cjs'
+
+permissions:
+  contents: read
+
+jobs:
+  full-course:
+    name: Full course / ${{ matrix.language }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ko, en]
+    env:
+      MEOWDE_FULL_COURSE: '1'
+      MEOWDE_TEST_BROWSER: chromium
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - name: Install isolated browser test dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Walk through all 60 lessons using isolated local preview
+        run: pnpm exec playwright test tests/course-walkthrough.spec.cjs --grep "all 60 ${{ matrix.language }} lessons can be completed"
+      - name: Preserve diagnostics and completion manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-course-${{ matrix.language }}
+          path: |
+            artifacts/
+          retention-days: 7

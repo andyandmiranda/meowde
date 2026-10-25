@@ -8,3 +8,9 @@ body main#lab{padding-bottom:100px}
 .meowde-lab-tabbar a:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
 @media(min-width:480px){.meowde-lab-tabbar{max-width:430px;margin-inline:auto;border-radius:16px 16px 0 0}}
 @media(max-width:360px){.meowde-lab-tabbar{padding-left:2px;padding-right:2px}.meowde-lab-tabbar a{font-size:10px}}
+
+/* iPhone QA: consistent navigation size, neutral icons and purple active tab. */
+.meowde-lab-tabbar{border-top-color:#ece8ef;box-shadow:0 -2px 12px rgba(38,33,48,.035)}
+.meowde-lab-tabbar a{color:#817b8b;border-radius:17px}
+.meowde-lab-tabbar a[aria-current="page"]{background:linear-gradient(135deg,#f0eaff,#e9f7f3);color:#6d4d89}
+.meowde-lab-tabbar .lab-nav-icon{font-size:23px;font-weight:650;min-height:27px;display:flex;align-items:center;justify-content:center}
