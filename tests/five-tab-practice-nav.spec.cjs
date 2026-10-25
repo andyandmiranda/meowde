@@ -128,7 +128,7 @@ test("Practice keeps the task, editor and main action visible without expanding 
   expect(positions.editor).toBeLessThan(positions.nav);
   expect(positions.action).toBeLessThan(positions.nav);
   await page.locator("#practice-tools-open").click();
-  await page.locator(".practice-tools-group").filter({hasText:"채점 기준"}).locator("summary").first().click();
+  await page.locator(".practice-tools-group > summary").filter({hasText:"채점 기준"}).click();
   await page.locator(".practice-criteria > summary").click();
   await expect(page.locator(".practice-criteria")).toBeVisible();
 });
