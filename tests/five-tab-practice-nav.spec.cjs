@@ -129,6 +129,7 @@ test("Practice keeps the task, editor and main action visible without expanding 
   expect(positions.action).toBeLessThan(positions.nav);
   await page.locator("#practice-tools-open").click();
   await page.locator(".practice-tools-group").filter({hasText:"채점 기준"}).locator("summary").first().click();
+  await page.locator(".practice-criteria > summary").click();
   await expect(page.locator(".practice-criteria")).toBeVisible();
 });
 
@@ -439,22 +440,15 @@ test("canonical home scopes Deepen to Python and preserves learning state",async
   await page.waitForFunction(()=>document.documentElement.dataset.homeRenderer==="canonical-v414");
   const entry=page.getByRole("region",{name:"심화 학습 진입"});
   await expect(entry).toBeVisible();
-  await expect(entry).toContainText("이해");
-  await expect(entry).toContainText("연습");
-  await expect(entry).toContainText("도전");
-  await expect(entry.locator('a[href="/python-lab.html"]')).toHaveCount(1);
+  await expect(entry).toContainText("코딩 실습 시작");
+  await expect(entry.locator('a[href="/python-lab.html#values"]')).toHaveCount(1);
+  await expect(entry.locator("button")).toHaveCount(0);
   await expect(entry.locator('a[href^="/linux-"]')).toHaveCount(0);
   await expect(page.getByRole("button",{name:/학습 이어하기|학습 시작하기/}).first()).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   const state=await page.evaluate(()=>({done:S.done,xp:S.xp,churu:S.churu}));
-  await entry.getByRole("button",{name:/이해/}).click();
-  await expect(page.locator(".phase1-home")).toHaveCount(0);
-  await page.evaluate(()=>renderHome());
-  await entry.getByRole("button",{name:/연습/}).click();
-  await expect(page.locator(".phase5-review")).toBeVisible();
-  await page.evaluate(()=>renderHome());
-  await entry.locator('a[href="/python-lab.html"]').click();
-  await expect(page).toHaveURL(/\/python-lab\.html$/);
+  await entry.locator('a[href="/python-lab.html#values"]').click();
+  await expect(page).toHaveURL(/\\/python-lab\\.html#values$/);
   await page.goBack();
   await page.waitForFunction(()=>document.documentElement.dataset.homeRenderer==="canonical-v414");
   expect(await page.evaluate(()=>({done:S.done,xp:S.xp,churu:S.churu}))).toEqual(state);
