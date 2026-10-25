@@ -432,3 +432,25 @@ test("iPhone QA: readable editor, compact header and matching practice navigatio
  await expect(page.locator(".meowde-lab-tabbar a[aria-current=page]")).toHaveCSS("color","rgb(109, 77, 137)");
  await expect(page.locator('#practice [data-run="grade"]')).toBeVisible();
 });
+
+test("canonical home exposes Deepen entry without losing navigation state",async({page})=>{
+  await page.setViewportSize({width:320,height:740});
+  await page.goto(base+"/");
+  await page.waitForFunction(()=>document.documentElement.dataset.homeRenderer==="canonical-v414");
+  const entry=page.getByRole("region",{name:"심화 학습 진입"});
+  await expect(entry).toBeVisible();
+  for(const path of ["/python-lab.html","/linux-review.html","/linux-home.html"]){
+    await expect(entry.locator('a[href="'+path+'"]')).toHaveCount(1);
+  }
+  await expect(page.getByRole("button",{name:/학습 이어하기|학습 시작하기/}).first()).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  const state=await page.evaluate(()=>({done:S.done,xp:S.xp,churu:S.churu}));
+  for(const path of ["/python-lab.html","/linux-review.html","/linux-home.html"]){
+    await entry.locator('a[href="'+path+'"]').click();
+    await expect(page).toHaveURL(new RegExp(path.replace(".","\\.")+"$"));
+    await page.goBack();
+    await page.waitForFunction(()=>document.documentElement.dataset.homeRenderer==="canonical-v414");
+    await expect(entry).toBeVisible();
+    expect(await page.evaluate(()=>({done:S.done,xp:S.xp,churu:S.churu}))).toEqual(state);
+  }
+});
