@@ -30,10 +30,31 @@ for(const lang of ['ko','en'])test(`free choice and per-lesson resume survive re
 });
 test('failed snapshot write keeps the active lesson and stored bytes',async({page})=>{
  await page.goto(base+'/');await ready(page);await select(page,0);
- const before=await page.evaluate(()=>localStorage.getItem('meowde-v410-state'));
- await page.evaluate(()=>{Storage.prototype.setItem=function(){throw new DOMException('Test quota','QuotaExceededError')};startLesson(59,false,null,{force:true});});
- expect(await page.evaluate(()=>S.lessonIndex)).toBe(0);
- expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(before);
+ // Capture the original bytes and inject the failure in the same browser task.
+ // A separate page.evaluate() permits unrelated async saves to update savedAt
+ // between the snapshot and quota injection, causing a false data-loss report.
+ const observed=await page.evaluate(()=>{
+  const key='meowde-v410-state',backup='meowde-v425-state-backup';
+  const before=localStorage.getItem(key),beforeBackup=localStorage.getItem(backup);
+  const counters=JSON.stringify({done:S.done,xp:S.xp,churu:S.churu});
+  const originalSetItem=Storage.prototype.setItem;
+  try{
+   Storage.prototype.setItem=function(){throw new DOMException('Test quota','QuotaExceededError')};
+   startLesson(59,false,null,{force:true});
+   return {
+    before,after:localStorage.getItem(key),
+    beforeBackup,afterBackup:localStorage.getItem(backup),
+    lessonIndex:S.lessonIndex,
+    countersBefore:counters,countersAfter:JSON.stringify({done:S.done,xp:S.xp,churu:S.churu}),
+    saveStatus:window.__MEOWDE_SAVE_STATUS__
+   };
+  }finally{Storage.prototype.setItem=originalSetItem;}
+ });
+ expect(observed.lessonIndex).toBe(0);
+ expect(observed.after).toBe(observed.before);
+ expect(observed.afterBackup).toBe(observed.beforeBackup);
+ expect(observed.countersAfter).toBe(observed.countersBefore);
+ expect(observed.saveStatus).toBe('failed');
  await expect(page.locator('.toast')).toContainText('저장');
 });
 test('switching a lesson around Smart Review preserves counters and grants its daily bonus once',async({page})=>{
