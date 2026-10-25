@@ -157,7 +157,7 @@
   function renderValuesJourney(){
     if(unit.id!=="values")return;
     const r=record(),article=root.querySelector(".lesson"),practice=root.querySelector("#practice");
-    const current=Math.max(1,Math.min(5,Number(r.guideLevel)||1));
+    const current=Math.max(1,Math.min(5,Number(r.guideLevel)||(r.independentPassed?5:r.passed?4:r.quizPassed?2:1)));
     const labels=["이해","반복","따라 코딩","독립 해결","응용"];
     const journey=document.createElement("section");
     journey.className="card values-journey";
@@ -170,8 +170,14 @@
     const feedback=journey.querySelector("#values-step-feedback");
     const advance=(next)=>{
       if(!save())return;
+      const previous={level:r.guideLevel,draft:r.draft,assisted:r.assisted,hints:r.hints};
       r.guideLevel=next;
-      if(!save()){r.guideLevel=current;showStorageProblem();return}
+      if(next===5){r.draft=unit.task.starter;r.assisted=false;r.hints=0}
+      if(!save()){
+        r.guideLevel=previous.level;r.draft=previous.draft;
+        r.assisted=previous.assisted;r.hints=previous.hints;
+        showStorageProblem();return;
+      }
       render();
       root.querySelector("#values-journey")?.scrollIntoView({block:"start"});
     };
@@ -371,8 +377,10 @@
             button.onclick=()=>{
               // Preserve the assisted pass and first-attempt history. Start the
               // independent stage with a fresh draft, never grant rewards here.
+              const previous={level:r.guideLevel,draft:r.draft,assisted:r.assisted,hints:r.hints};
               r.guideLevel=5;r.draft=unit.task.starter;r.assisted=false;r.hints=0;
               if(save())render();
+              else{r.guideLevel=previous.level;r.draft=previous.draft;r.assisted=previous.assisted;r.hints=previous.hints;showStorageProblem()}
             };
             action.replaceChildren(button);
           }
