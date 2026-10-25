@@ -185,6 +185,7 @@ body:has(#lab) .deepen-resume{background:#fff;border:1px solid var(--surface-lin
 body:has(#lab) .deepen-resume h3{font-size:16px;margin:0 0 8px}
 body:has(#lab) .deepen-resume p{font-size:14px;margin:0 0 14px;color:var(--surface-muted)}
 body:has(#lab) .deepen-resume a.primary{display:block;min-height:48px;text-align:center;text-decoration:none;background:var(--surface-mint);border:1px solid var(--surface-mint-dark);color:#193f33;border-radius:15px;padding:11px 14px;font-weight:800}
+body:has(#lab) .deepen-stage-caption{margin:0 0 10px;font-size:13px;font-weight:800;color:var(--surface-ink)}
 body:has(#lab) .deepen-stage-list{display:grid;gap:10px}
 body:has(#lab) .deepen-stage-list>a{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--surface-line);border-radius:18px;padding:16px;text-decoration:none;color:var(--surface-ink);min-height:82px}
 body:has(#lab) .deepen-stage-list>a>span:last-child{margin-left:auto;font-size:24px;color:var(--surface-mint-dark)}
