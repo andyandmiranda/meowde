@@ -11,7 +11,7 @@ const content=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/python-l
  const context=await browser.newContext({viewport:{width:1365,height:1000}}),page=await context.newPage();
  page.on('pageerror',e=>errors.push(e.message));
  const check=(name,value)=>{assert.ok(value,name);results.push({name,pass:true});console.log('PASS',name)};
- await page.goto(base+'/python-lab.html');await page.waitForSelector('#learner-code');
+ await page.goto(base+'/python-lab.html#values/challenge');await page.waitForSelector('#learner-code');
  check('20 navigable units',await page.locator('#unit-nav a').count()===20);
  check('Desktop unit menu fits viewport',await page.locator('#unit-nav').evaluate(e=>e.getBoundingClientRect().height<=innerHeight-20));
  await page.evaluate(()=>{
@@ -23,26 +23,12 @@ const content=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/python-l
  await page.reload();await page.waitForSelector('#learner-code');
  await page.evaluate(()=>localStorage.setItem('meowde-v410-state',JSON.stringify({lang:'ko',done:[0,1],next:2,xp:77,churu:120,cat:'a',custom:'preserve'})));
  const sentinel=await page.evaluate(()=>localStorage.getItem('meowde-v410-state'));
- check('First concept opens at guided Lv.1',await page.locator('#values-journey').textContent().then(t=>t.includes('Lv.1 / 5')));
+ await page.locator('#practice-tools-open').click();
+ await page.locator('.practice-tools-group > summary').filter({hasText:'이해 확인 문제'}).click();
  await page.locator('[data-choice="1"]').click();check('Wrong prediction explains selected mistake',(await page.locator('#quiz-feedback').textContent()).includes('int'));
- await page.locator('[data-choice="0"]').click();check('Correct prediction recorded',(await page.locator('#quiz-feedback').textContent()).includes('맞았습니다'));
- await page.locator('#values-step-action button').click();
- check('Correct prediction advances to Lv.2',await page.locator('#values-journey').textContent().then(t=>t.includes('Lv.2 / 5')));
- await page.locator('[data-value="5"]').click();
- check('Wrong repeated variant gives specific reason',(await page.locator('#values-step-feedback').textContent()).includes('몫'));
- await page.locator('[data-value="3"]').click();
- await page.locator('#values-step-action button').click();
- check('Lv.3 code completion is shown',await page.locator('#values-guided-code').isVisible());
- await page.locator('#values-guided-code').fill('left = count // capacity');
- await page.locator('#values-step-action button').click();
- check('Wrong operator explains remainder',(await page.locator('#values-step-feedback').textContent()).includes('나머지'));
- await page.locator('#values-guided-code').fill('left = count % capacity');
- await page.locator('#values-step-action button').click();
- await page.locator('#values-step-action button').click();
- check('Lv.4 reveals scaffold and real grader',await page.locator('#learner-code').isVisible()&&(await page.locator('#learner-code').inputValue()).includes('count = int(text)'));
- await page.reload();await page.waitForSelector('#learner-code');
- check('Guided stage and scaffold survive reload',(await page.locator('#values-journey').textContent()).includes('Lv.4 / 5'));
- await page.locator('#hint-button').click();check('First hint does not expose model',await page.locator('#hints p').count()===1&&!(await page.locator('#hints').textContent()).includes('return count'));
+ await page.locator('[data-choice="0"]').click();
+ await page.locator('.practice-tools-close').click();
+ await page.locator('#hint-button').click();
  await page.locator('#learner-code').fill('def pack(text, capacity):\n    return (3, 5)');
  await page.reload();await page.waitForSelector('#learner-code');check('Draft and hint survive reload',(await page.locator('#learner-code').inputValue()).includes('(3, 5)')&&await page.locator('#hints p').count()===1);
  async function execute(mode='grade'){
@@ -53,8 +39,9 @@ const content=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/python-l
  let status=await execute();check('Constant sample answer rejected',status.includes('일부 기준'));
  check('Boundary-specific feedback visible',(await page.locator('#run-results').textContent()).includes('0개'));
  await page.locator('#learner-code').fill(content.units[0].task.model);status=await execute();check('Helped solution passes with assisted label',status.includes('도움을 사용'));
- await page.locator('#values-step-action button').click();
- check('Lv.5 starts with fresh independent draft',await page.locator('#values-journey').textContent().then(t=>t.includes('Lv.5 / 5'))&&(await page.locator('#learner-code').inputValue())===content.units[0].task.starter);
+ await page.locator('#practice-tools-open').click();
+ await page.locator('.practice-tools-group > summary').filter({hasText:'복습과 다음 학습'}).click();
+ await page.locator('#independent-retry').click();
  await page.locator('#learner-code').fill(content.units[0].task.model);status=await execute();check('Independent retry tracked separately',status.includes('도움 없이'));
  check('Independent prediction + application label',(await page.locator('.lesson > .badge').textContent()).includes('혼자 적용'));
  await page.screenshot({path:path.join(out,'python-lab-desktop.png'),fullPage:true});
@@ -84,7 +71,7 @@ const content=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/python-l
  await page.locator('[data-run="grade"]').click();await page.waitForFunction(()=>document.querySelector('#stop-run').hidden,{timeout:150000});
  check('Infinite loop reaches automatic timeout',(await page.locator('#run-status').textContent()).includes('15초를 초과'));
  const mobile=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true}),mp=await mobile.newPage();
- await mp.goto(base+'/python-lab.html');await mp.waitForSelector('#learner-code');
+ await mp.goto(base+'/python-lab.html#values/challenge');await mp.waitForSelector('#learner-code');
  check('Mobile no horizontal overflow',await mp.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
  await mp.locator('#nav-toggle').click();await mp.locator('#unit-nav a[href="#copy"]').click();check('Mobile navigation changes unit',(await mp.locator('#unit-title').textContent()).includes('복사'));
  await mp.screenshot({path:path.join(out,'python-lab-mobile.png'),fullPage:true});
@@ -101,7 +88,7 @@ const content=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/python-l
  check('No unhandled browser errors',errors.length===0);
  // CDN failure is an infrastructure error, not a wrong answer.
  const failed=await browser.newContext(),fp=await failed.newPage();
- await fp.route('https://cdn.jsdelivr.net/**',r=>r.abort());await fp.goto(base+'/python-lab.html');await fp.waitForSelector('#learner-code');await fp.locator('[data-run="grade"]').click();
+ await fp.route('https://cdn.jsdelivr.net/**',r=>r.abort());await fp.goto(base+'/python-lab.html#values/challenge');await fp.waitForSelector('#learner-code');await fp.locator('[data-run="grade"]').click();
  await fp.waitForFunction(()=>document.querySelector('#stop-run').hidden,{timeout:30000});
  check('Runtime failure does not grade an attempt',(await fp.locator('#run-status').textContent()).includes('진도는 변경하지')&&await fp.evaluate(()=>!JSON.parse(localStorage.getItem('meowde-python-lab-v1')||'{"units":{}}').units.values?.attempts));
  fs.writeFileSync(path.join(out,'python-lab-browser-results.json'),JSON.stringify({results,errors},null,2));await browser.close();server?.kill();

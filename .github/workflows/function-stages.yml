@@ -24,6 +24,10 @@ jobs:
         run: pnpm exec playwright test tests/function-stages.spec.cjs tests/practice-update.spec.cjs
       - name: Function navigation and preservation in WebKit
         run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/function-stages.spec.cjs tests/practice-update.spec.cjs
+      - name: Real Python five-stage values path in Chromium
+        run: MEOWDE_VALUES_REAL=1 pnpm exec playwright test tests/values-path.spec.cjs --grep "real Python"
+      - name: Real Python five-stage values path in WebKit
+        run: MEOWDE_VALUES_REAL=1 MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/values-path.spec.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

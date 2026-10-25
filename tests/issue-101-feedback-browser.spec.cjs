@@ -79,7 +79,7 @@ test('measure first review entry phases in real browser',async({page})=>{
 });
 
 test('practice header back-to-learn opens actual map in both engines',async({page})=>{
- await page.goto(base+'/python-lab.html');
+ await page.goto(base+'/python-lab.html#values/challenge');
  const link=page.getByRole('link',{name:'학습으로 돌아가기'});
  await expect(link).toHaveAttribute('href','/?tab=map');
  await link.click();

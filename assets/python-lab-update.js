@@ -21,6 +21,10 @@
   }
   function showReady(){ready=true;notice("새 실습 화면이 준비됐어요. 지금 문제를 계속 풀거나, 저장한 코드를 유지하고 새 화면을 열 수 있어요.")}
   function safeToReload(){
+    if(window.MeowValuesPathSession){
+      if(window.MeowValuesPathSession.safeToReload())return true;
+      notice("새 연습의 답안이 저장되지 않았거나 코드가 실행 중이에요. 현재 탭에서 작업을 마친 뒤 다시 시도해 주세요.");return false;
+    }
     const running=document.getElementById("stop-run");
     if(running&&!running.hidden){notice("코드가 실행 중이에요. 결과를 기다리거나 실행을 중지한 뒤 새 화면을 열어주세요.");return false}
     const editor=document.getElementById("learner-code");

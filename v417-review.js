@@ -71,6 +71,14 @@
     }
     return count;
   }
+  function valuesReviewCard(){
+    try{
+      const stored=JSON.parse(localStorage.getItem('meowde-python-lab-v1'));
+      const path=stored?.version===1&&stored.units?.values?.valuesPath;
+      if(path?.version!==1||!path.complete||!Number.isFinite(path.reviewDueAt)||Date.now()<path.reviewDueAt)return '';
+      return '<section class="card values-review-card"><h3>문자에서 계산으로 · 기억 확인</h3><p>지난 연습을 새 입력으로 다시 풀어 보세요. 도움받은 결과와 혼자 해결한 결과를 따로 기록합니다.</p><a class="btn mint" href="/python-lab.html#values">새 문제로 기억 확인</a></section>';
+    }catch{return '';}
+  }
   function card(){
     if(!storageReadable)return '<section class="card v417-smart-card"><h3>'+(S.lang==='ko'?'맞춤 복습':'Smart review')+'</h3><p role="status">'+storageMessage()+'</p><button class="btn ghost" disabled aria-disabled="true">'+(S.lang==='ko'?'복습 기록 확인 필요':'Review records need attention')+'</button></section>';
     const ko=S.lang==='ko',list=recommendations(),wrong=mistakes().length,done=Boolean(R.days[dayKey()]);
@@ -78,7 +86,7 @@
       const lesson=lessons()[item.lessonIndex];
       return '<span>'+esc(lesson?lesson.title:'Meowde')+'</span>';
     }).join('');
-    return '<section class="card v417-smart-card '+(done?'done':'')+'">'
+    return valuesReviewCard()+'<section class="card v417-smart-card '+(done?'done':'')+'">'
       +'<div class="v417-smart-head"><div><div class="section-kicker">'+(ko?'맞춤 복습':'Smart review')+'</div><h3>'+(ko?'오늘의 추천 복습':'Today’s recommended review')+'</h3></div><span class="pill">'+(done?'✓':list.length+(ko?'문제':' tasks'))+'</span></div>'
       +'<p>'+(wrong?(ko?'자주 틀린 문제부터 자동으로 구성했습니다.':'Built automatically from your highest-priority mistakes.'):(list.length?(ko?'완료한 레슨에서 기억을 유지할 문제를 골랐습니다.':'Selected from completed lessons to keep the material fresh.'):(ko?'아직 복습할 문제가 없어요. 먼저 학습을 완료해 주세요.':'Nothing to review yet. Complete a lesson to unlock review.')))+'</p>'
       +'<div class="v417-review-tags">'+labels+'</div>'

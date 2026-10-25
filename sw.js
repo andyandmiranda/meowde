@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v485-practice-update-precache";
+const CACHE_NAME = "meowde-v486-values-path";
 
 const REQUIRED_ASSETS = [
   "/assets/lesson-access-policy.js",
@@ -11,6 +11,7 @@ const REQUIRED_ASSETS = [
   "/assets/python-lab-content.json",
   "/assets/python-lab.css",
   "/assets/python-lab.js",
+  "/assets/python-values-path.js",
   "/assets/python-lab-update.js",
   "/assets/python-lab-worker.js",
   "/assets/python-lab-entry.js",

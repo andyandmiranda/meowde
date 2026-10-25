@@ -34,3 +34,14 @@ test('existing recorded mistakes remain reviewable before completion',()=>{
   assert.equal(selected.length,1);
   assert.equal(selected[0].exercise.id,'e3');
 });
+test('values delayed review appears only when due and never writes or rewards',()=>{
+  const {api,records,context}=makeFixture();
+  const key='meowde-python-lab-v1';
+  for(const [complete,due,visible] of [[false,0,false],[true,Date.now()+86400000,false],[true,Date.now()-1000,true]]){
+    const raw=JSON.stringify({version:1,units:{values:{draft:'keep',valuesPath:{version:1,complete,reviewDueAt:due}}}});
+    records.set(key,raw);const state=JSON.stringify(context.S);
+    assert.equal(api.card().includes('values-review-card'),visible);
+    assert.equal(records.get(key),raw);assert.equal(JSON.stringify(context.S),state);
+  }
+  records.set(key,'{unreadable');assert.doesNotMatch(api.card(),/values-review-card/);assert.equal(records.get(key),'{unreadable');
+});

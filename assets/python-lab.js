@@ -4,7 +4,7 @@
   const escape=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const list=(items,ordered=false)=>`<${ordered?"ol":"ul"}>${items.map(item=>`<li>${escape(item)}</li>`).join("")}</${ordered?"ol":"ul"}>`;
   let data,progress={},unit,worker=null,timer=null,busy=false,storageProblem=false;
-  let runAssisted=false,storageReadBlocked=false,stage="understand";
+  let runAssisted=false,storageReadBlocked=false,stage="understand",pathStep="",valuesPath=null;
   try{
     const raw=localStorage.getItem(KEY);
     if(raw!==null){
@@ -23,6 +23,7 @@
   function stateLabel(u){const r=u.id===unit.id&&u.id==="function-slots"?record():record(u.id);return r.lastPassed===false?"최근 재시도 · 복습 권장":r.independentPassed&&r.quizPassed?"혼자 적용 확인":r.passed?"코드 통과 · 이해/독립 재도전 권장":r.attempts?"복습 권장":"학습 시작"}
   function navigation(){return data.units.map((u,i)=>`<a href="#${u.id}" ${u.id===unit.id?'aria-current="page"':''}>${i+1}. ${escape(u.title)}<small>${stateLabel(u)}</small></a>`).join("")}
   function stop(message){
+    if(valuesPath){valuesPath.stop();valuesPath=null;window.MeowValuesPathSession=null;}
     if(worker)worker.terminate();worker=null;clearTimeout(timer);busy=false;
     const status=document.getElementById("run-status");if(status&&message)status.textContent=message;
     root.querySelectorAll("[data-run]").forEach(b=>b.disabled=false);
@@ -31,6 +32,12 @@
   function render(){
     stop();
     const r=record(),u=unit,t=u.task;
+    // Existing coding drafts keep their editor; new learners take one path.
+    const hasCodingHistory=typeof r.draft==='string'||r.attempts||r.passed||r.independentPassed||Number(r.guideLevel)>=4;
+    if(u.id==='values'&&pathStep!=='challenge'&&(r.valuesPath||!hasCodingHistory||pathStep==='learn')&&window.MeowValuesPath){
+      valuesPath=window.MeowValuesPath.mount({root,record:r,save,escape,units:data.units,blocked:storageReadBlocked});
+      window.MeowValuesPathSession=valuesPath;return;
+    }
     root.innerHTML=`<section class="hero"><img src="/assets/meowde-approved-headphones.svg?v=450" alt=""><div><h1>${escape(data.title)}</h1><p>원리를 이해하고, 다른 입력에도 적용해보세요.</p><p class="meta">${escape(data.notice)}</p></div></section>
       <p id="storage-status" class="storage-warning" role="status"></p>
       <button class="nav-toggle" id="nav-toggle" aria-controls="unit-nav" aria-expanded="false">단원 목록 열기</button>
@@ -147,101 +154,9 @@
       document.body.classList.add("meowde-practice-focus");
 
     }
-    renderValuesJourney();
     renderFunctionStages();
     if(storageProblem)showStorageProblem();
     bind();
-  }
-  // A single guided path for the first Python concept. The existing grading
-  // worker, saved draft, question record and rewards remain the source of truth.
-  function renderValuesJourney(){
-    if(unit.id!=="values")return;
-    const r=record(),article=root.querySelector(".lesson"),practice=root.querySelector("#practice");
-    const current=Math.max(1,Math.min(5,Number(r.guideLevel)||(r.independentPassed?5:r.passed?4:r.quizPassed?2:1)));
-    const labels=["이해","반복","따라 코딩","독립 해결","응용"];
-    const journey=document.createElement("section");
-    journey.className="card values-journey";
-    journey.id="values-journey";
-    journey.setAttribute("aria-label","문자에서 계산으로 5단계 학습");
-    journey.innerHTML='<p class="practice-kicker">Lv.'+current+' / 5 · '+labels[current-1]+'</p><h3>'+labels[current-1]+'</h3><div id="values-step-body"></div><p id="values-step-feedback" class="feedback" role="status" aria-live="polite"></p><div id="values-step-action"></div>';
-    article.insertBefore(journey,practice);
-    const body=journey.querySelector("#values-step-body");
-    const action=journey.querySelector("#values-step-action");
-    const feedback=journey.querySelector("#values-step-feedback");
-    const advance=(next)=>{
-      if(!save())return;
-      const previous={level:r.guideLevel,draft:r.draft,assisted:r.assisted,hints:r.hints};
-      r.guideLevel=next;
-      if(next===5){r.draft=unit.task.starter;r.assisted=false;r.hints=0}
-      if(!save()){
-        r.guideLevel=previous.level;r.draft=previous.draft;
-        r.assisted=previous.assisted;r.hints=previous.hints;
-        showStorageProblem();return;
-      }
-      render();
-      root.querySelector("#values-journey")?.scrollIntoView({block:"start"});
-    };
-    const nextButton=(label,next)=>{
-      const button=document.createElement("button");button.type="button";
-      button.className="primary";button.textContent=label;
-      button.onclick=()=>advance(next);action.replaceChildren(button);
-    };
-    if(current===1){
-      practice.hidden=true;
-      body.innerHTML='<p>글자 "23"을 숫자로 바꾸면 23입니다. <code>//</code>는 몫, <code>%</code>는 나머지예요.</p><pre>count = int("23")\nprint(count // 6, count % 6)</pre><p>실행하면 <strong>3 5</strong>가 나옵니다. 이제 결과를 직접 예측해 보세요.</p>';
-      const quiz=root.querySelector("#quiz");
-      if(quiz){quiz.hidden=false;body.append(quiz)}
-      if(r.quizPassed)nextButton("다음 · 반복 연습",2);
-      else feedback.textContent="결과를 선택하면 이유를 확인하고 다음으로 넘어갈 수 있어요.";
-    }else if(current===2){
-      practice.hidden=true;
-      body.innerHTML='<p>29개를 8개씩 담으면 가득 찬 상자는 몇 개일까요?</p><pre>count = 29\ncapacity = 8\nprint(count // capacity)</pre><div class="values-options"><button type="button" data-value="3">3개</button><button type="button" data-value="5">5개</button><button type="button" data-value="8">8개</button></div>';
-      body.querySelectorAll("[data-value]").forEach(button=>button.onclick=()=>{
-        const correct=button.dataset.value==="3";
-        r.guideRepeatAttempts=(r.guideRepeatAttempts||0)+1;
-        if(correct)r.guideRepeatPassed=true;
-        if(!save())return;
-        feedback.textContent=correct?"맞아요. 29 // 8은 몫 3이고 5개가 남아요.":"29를 8로 나누면 8개짜리 묶음이 3개이고 5개가 남아요. //는 남은 수가 아닌 묶음 수예요.";
-        if(correct)nextButton("다음 · 코드 완성",3);
-      });
-      if(r.guideRepeatPassed)nextButton("다음 · 코드 완성",3);
-    }else if(current===3){
-      practice.hidden=true;
-      body.innerHTML='<p>이번에는 남은 개수를 구하는 한 줄을 직접 완성해 보세요.</p><pre>count = 17\ncapacity = 5</pre><label for="values-guided-code">남은 개수를 left에 저장하기</label><input id="values-guided-code" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="left = ..." value="'+escape(r.guideCode||"")+'">';
-      const input=body.querySelector("#values-guided-code");
-      input.oninput=()=>{r.guideCode=input.value;save()};
-      const check=document.createElement("button");check.type="button";check.className="primary";check.textContent="코드 확인";
-      check.onclick=()=>{
-        const normalized=input.value.replace(/#.*$/,"").replace(/\s+/g,"");
-        const correct=normalized==="left=count%capacity";
-        r.guideCodeAttempts=(r.guideCodeAttempts||0)+1;
-        if(correct)r.guideCodePassed=true;
-        if(!save())return;
-        feedback.textContent=correct?"맞아요. 17 % 5는 나머지 2를 계산해요.":"left는 남은 개수예요. //는 몫, %는 나머지이므로 left = count % capacity를 사용해 보세요.";
-        if(correct)nextButton("다음 · 함수 직접 수정",4);
-      };
-      action.append(check);
-      if(r.guideCodePassed)nextButton("다음 · 함수 직접 수정",4);
-    }else{
-      const title=practice.querySelector("h3");
-      if(title)title.textContent=current===4?"예제 코드를 수정해 완성하기":"새 입력에서도 혼자 해결하기";
-      const editor=practice.querySelector("#learner-code");
-      if(current===4){
-        body.innerHTML='<p>함수의 뼈대가 준비되어 있어요. <code>pass</code>를 몫·나머지를 반환하는 코드로 바꾸세요. 필요하면 힌트를 사용해도 괜찮아요.</p>';
-        if(!r.draft||r.draft===unit.task.starter){
-          const scaffold='def pack(text, capacity):\n    count = int(text)\n    # 몫과 나머지를 반환하세요\n    pass';
-          editor.value=scaffold;r.draft=scaffold;r.assisted=true;save();
-        }
-        if(r.guideScaffoldPassed)nextButton("다음 · 도움 없이 응용",5);
-      }else{
-        body.innerHTML='<p>이번에는 힌트 없이 새 입력에서도 동작하도록 직접 작성해 보세요. 통과 후에도 나중에 다시 풀어야 숙달을 확인할 수 있어요.</p>';
-        if(r.independentPassed)feedback.textContent="독립 실행 기준을 통과했어요. 시간이 지난 뒤 다른 입력으로 다시 풀어 보세요.";
-      }
-      practice.hidden=false;
-      practice.querySelector(".practice-kicker").textContent="Lv."+current+" · "+labels[current-1];
-      // The existing real Python worker grades both coding stages; no fake
-      // success, extra rewards, or automatic submissions are introduced.
-    }
   }
   function renderFunctionStages(){
     if(unit.id!=="function-slots")return;
@@ -288,7 +203,7 @@
       const index=Number(button.dataset.choice),correct=index===unit.quiz.answer,r=record();
       r.quizAttempts=(r.quizAttempts||0)+1;r.quizPassed=correct;r.lastQuizChoice=index;
       root.querySelectorAll("[data-choice]").forEach(b=>b.setAttribute("aria-pressed",String(b===button)));
-      const box=document.getElementById("quiz-feedback");box.className="feedback "+(correct?"good":"bad");box.textContent=(correct?"맞았습니다. ":"다시 생각해보세요. ")+unit.quiz.reasons[index];save();refreshProgress();if(unit.id==="values"&&correct&&Number(record().guideLevel||1)===1){const button=document.createElement("button");button.className="primary";button.textContent="다음 · 반복 연습";button.onclick=()=>{record().guideLevel=2;if(save())render()};document.getElementById("values-step-action")?.replaceChildren(button)}
+      const box=document.getElementById("quiz-feedback");box.className="feedback "+(correct?"good":"bad");box.textContent=(correct?"맞았습니다. ":"다시 생각해보세요. ")+unit.quiz.reasons[index];save();refreshProgress()
     });
     if(Number.isInteger(record().lastQuizChoice)){
       const index=record().lastQuizChoice;
@@ -369,28 +284,12 @@
         if(!r.attempts)r.firstAttemptPassed=passed;
         r.attempts=(r.attempts||0)+1;r.lastPassed=passed;r.lastFailed=result.results.filter(x=>!x.pass).map(x=>x.label);r.draft=code;
         if(passed){r.passed=true;if(!runAssisted)r.independentPassed=true;r.lastPassedWithHelp=runAssisted}
-        if(unit.id==="values"&&passed&&Number(r.guideLevel||1)===4){
-          r.guideScaffoldPassed=true;
-          const action=document.getElementById("values-step-action");
-          if(action){
-            const button=document.createElement("button");button.className="primary";button.textContent="다음 · 도움 없이 응용";
-            button.onclick=()=>{
-              // Preserve the assisted pass and first-attempt history. Start the
-              // independent stage with a fresh draft, never grant rewards here.
-              const previous={level:r.guideLevel,draft:r.draft,assisted:r.assisted,hints:r.hints};
-              r.guideLevel=5;r.draft=unit.task.starter;r.assisted=false;r.hints=0;
-              if(save())render();
-              else{r.guideLevel=previous.level;r.draft=previous.draft;r.assisted=previous.assisted;r.hints=previous.hints;showStorageProblem()}
-            };
-            action.replaceChildren(button);
-          }
-        }
         save();refreshProgress();
       }
       document.getElementById("run-status").textContent=mode==="example"?(passed?"예제 실행을 마쳤습니다. 예상 출력과 비교하세요.":"예제 실행 중 오류가 발생했습니다."):(passed?(runAssisted?"모든 기준 통과 · 도움을 사용한 학습으로 기록했습니다.":"모든 기준 통과 · 도움 없이 적용한 결과로 기록했습니다."):"일부 기준을 통과하지 못했습니다. 실패 이유를 확인하고 다시 작성하세요.");
       document.getElementById("run-results").innerHTML=`<ul class="results">${result.results.map((x,i)=>`<li class="${x.pass?"result-pass":"result-fail"}">${x.pass?"✓ 통과":"× 재시도"} · ${escape(x.label)}${x.pass?"":`<p>${escape(mode==="grade"?unit.task.tests[i].feedback:diagnosis(x))}</p><p>${escape(diagnosis(x))}</p><details><summary>오류 위치 확인</summary><pre>${escape(x.trace||x.error||x.errorType)}</pre></details>`}</li>`).join("")}</ul>${result.output?`<h4>실제 출력 · 최대 20,000자</h4><pre>${escape(result.output)}</pre>`:""}<div class="chart-output">${(result.images||[]).map(png=>`<img src="data:image/png;base64,${png}" alt="내 코드에서 생성한 차트. 데이터와 축 레이블은 위 코드 및 평가 기준과 함께 확인하세요.">`).join("")}</div>`;
       // Show the next learning action next to the submitted feedback, not only inside the tools sheet.
-      if(mode==="grade"&&passed&&!(unit.id==="values"&&Number(r.guideLevel||1)===4)){
+      if(mode==="grade"&&passed){
         const nextIndex=data.units.findIndex(candidate=>candidate.id===unit.id)+1;
         const upcoming=data.units[nextIndex];
         const destination=unit.id==="function-slots"&&stage==="practice"
@@ -410,7 +309,7 @@
   try{
     const response=await fetch("/assets/python-lab-content.json?v=2");if(!response.ok)throw new Error("학습 내용 응답 "+response.status);
     data=await response.json();if(data.version!==1||!Array.isArray(data.units)||!data.units.length)throw new Error("지원하지 않는 학습 내용 형식");
-    function route(focus){const [id,step]=location.hash.slice(1).split("/");const source=data.units.find(u=>u.id===id)||data.units[0];stage=["understand","practice","challenge"].includes(step)?step:"understand";unit=source.id==="function-slots"&&stage==="practice"?{...source,task:source.practiceTask}:source;render();if(focus){document.getElementById("unit-title").focus();window.scrollTo(0,0)}}
+    function route(focus){const [id,step]=location.hash.slice(1).split("/");pathStep=step||"";const source=data.units.find(u=>u.id===id)||data.units[0];stage=["understand","practice","challenge"].includes(step)?step:"understand";unit=source.id==="function-slots"&&stage==="practice"?{...source,task:source.practiceTask}:source;render();if(focus){document.getElementById("unit-title").setAttribute("tabindex","-1");document.getElementById("unit-title").focus();window.scrollTo(0,0)}}
     window.addEventListener("hashchange",()=>route(true));window.addEventListener("pagehide",()=>stop());route(false);
   }catch(error){root.innerHTML=`<div class="error-panel" role="alert"><h1>학습 내용을 열지 못했습니다</h1><p>${escape(error.message)}</p><a href="/python-lab.html">다시 시도</a> · <a href="/">먀오드 홈으로</a></div>`}
 })();

@@ -9,3 +9,18 @@
 .function-understanding .primary{display:inline-block;padding:1rem;margin:.6rem 0}
 .function-next{margin-top:1.2rem}
 .practice-task[hidden]{display:none!important}
+/* One first-concept task, with optional help and a single submit/next action. */
+.values-path{max-width:600px;margin:12px auto;padding:18px;scroll-margin-top:12px}
+.values-path h2{font-size:21px;margin:0 0 6px}
+.values-path .values-level{font-size:14px;color:#6d4d89;margin:0 0 12px}
+.values-path pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:16px}
+.values-path .code{height:150px;min-height:100px;max-width:100%;font-size:16px}
+.values-options{display:flex;flex-wrap:wrap;gap:8px}
+.values-options button{min-width:64px;min-height:44px}
+.values-options button[aria-pressed=true]{border-color:#6d4d89;background:#f0eaff}
+.values-path #values-feedback:empty{display:none}
+.values-path #values-feedback{padding:12px;background:#eef9f4;border-radius:12px}
+.values-path #values-action>.primary{width:100%;min-height:46px;margin-top:12px}
+.values-hint{margin-top:10px}.values-hint summary{min-height:44px;display:flex;align-items:center}
+.values-units{max-width:600px;margin:8px auto}.values-units summary{min-height:44px;cursor:pointer}
+.values-units nav{display:grid;gap:8px;max-height:40vh;overflow:auto}.values-units a{min-height:44px}

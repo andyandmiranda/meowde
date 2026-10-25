@@ -3,7 +3,7 @@ const base=process.env.MEOWDE_BASE_URL||"http://127.0.0.1:4173";
 test("Python practice keeps all five tabs visible on narrow phones",async({page})=>{
   for(const width of [320,375,390]){
     await page.setViewportSize({width,height:740});
-    await page.goto(base+"/python-lab.html");
+    await page.goto(base+"/python-lab.html#values/challenge");
     const nav=page.getByRole("navigation",{name:"메인 메뉴"});
     await expect(nav).toBeVisible();
     await expect(nav.locator("a")).toHaveCount(5);
@@ -82,7 +82,7 @@ test("Five global tabs keep the same physical order on every screen",async({page
     const labels=await page.locator(".tabbar[data-phase1-navigation='five-tabs'] button").evaluateAll(nodes=>nodes.map(el=>el.getAttribute("aria-label")));
     expect(labels).toEqual(expected);
   }
-  await page.goto(base+"/python-lab.html");
+  await page.goto(base+"/python-lab.html#values/challenge");
   const labels=await page.locator(".meowde-lab-tabbar a").evaluateAll(nodes=>nodes.map(el=>el.getAttribute("aria-label")));
   expect(labels).toEqual(expected);
 });
@@ -117,7 +117,7 @@ test("Review exposes recent lessons first and preserves older completed items",a
 
 test("Practice keeps the task, editor and main action visible without expanding help",async({page})=>{
   await page.setViewportSize({width:390,height:844});
-  await page.goto(base+"/python-lab.html#function-slots/practice");
+  await page.goto(base+"/python-lab.html#values/challenge");
   await expect(page.locator("#learner-code")).toBeVisible();
   await expect(page.locator("#practice [data-run=grade]")).toBeVisible();
   await expect(page.locator(".practice-criteria")).not.toBeVisible();
@@ -169,7 +169,7 @@ for(const [label,raw] of [
   ['invalid unit record',JSON.stringify({version:1,units:{values:null}})],
 ]){
   test(`Practice preserves ${label} after input, hint and reload`,async({page})=>{
-    await page.goto(base+'/python-lab.html');
+    await page.goto(base+'/python-lab.html#values/challenge');
     await page.evaluate(({key,raw})=>localStorage.setItem(key,raw),{key,raw});
     await page.reload();
     await expect(page.locator('#learner-code')).toBeVisible();
@@ -184,7 +184,7 @@ for(const [label,raw] of [
 }
 
 test('Valid practice records retain other units while drafts persist',async({page})=>{
-  await page.goto(base+'/python-lab.html');
+  await page.goto(base+'/python-lab.html#values/challenge');
   const other={draft:'preserve other unit',passed:true,attempts:3};
   await page.evaluate(({key,other})=>localStorage.setItem(key,JSON.stringify({version:1,units:{other}})),{key,other});
   await page.reload();
@@ -279,7 +279,7 @@ test("Learn tab opens roadmap with unfinished lesson and preserves explicit resu
   }));
   const previous=await snapshot();
   expect(previous.progress).toBe(true);
-  await page.goto(base+"/python-lab.html");
+  await page.goto(base+"/python-lab.html#values/challenge");
   await page.getByRole("navigation",{name:"메인 메뉴"}).getByRole("link",{name:"학습",exact:true}).click();
   await expect(page).toHaveURL(/tab=map/);
   await expect(page.locator("[data-learn-path=canonical]")).toBeVisible();
@@ -315,7 +315,7 @@ test("Home current-course card matches learning hero inset on mobile widths with
 });
 test("Practice question is distinguishable as its own card in focus mode",async({page})=>{
   await page.setViewportSize({width:390,height:844});
-  await page.goto(base+"/python-lab.html");
+  await page.goto(base+"/python-lab.html#values/challenge");
   await expect(page.locator("#learner-code")).toBeVisible();
   const card=await page.locator("#practice.practice-primary").evaluate(node=>{
     const style=getComputedStyle(node);
@@ -328,7 +328,7 @@ test("Practice question is distinguishable as its own card in focus mode",async(
 
 test("Practice mobile four-step flow and Review header remain aligned",async({page})=>{
  await page.setViewportSize({width:390,height:844});
- await page.goto(base+"/python-lab.html");
+ await page.goto(base+"/python-lab.html#values/challenge");
  const task=page.locator("#practice");
  await expect(page.getByRole("banner",{name:"실습 화면 상단"}).getByRole("heading",{name:"실습"})).toBeVisible();
  await expect(task.locator(".practice-kicker")).toBeVisible();
@@ -358,7 +358,7 @@ test("Python grading shows failed criteria, allows retry, and preserves attempts
   }
   window.Worker=FakeWorker;
  });
- await page.goto(base+"/python-lab.html");
+ await page.goto(base+"/python-lab.html#values/challenge");
  const editor=page.locator("#learner-code");
  await expect(editor).toBeVisible();
  await editor.fill("print('wrong')");
@@ -387,7 +387,7 @@ test("Python worker runtime error keeps graded attempts unchanged",async({page})
   }
   window.Worker=BrokenWorker;
  });
- await page.goto(base+"/python-lab.html");
+ await page.goto(base+"/python-lab.html#values/challenge");
  const editor=page.locator("#learner-code");
  await expect(editor).toBeVisible();
  await editor.fill("print('keep my work')");
@@ -406,7 +406,7 @@ test("Python worker runtime error keeps graded attempts unchanged",async({page})
 test("real Pyodide: wrong answer, correction and saved attempts",async({page})=>{
  test.skip(process.env.MEOWDE_REAL_PYODIDE!=="1","Real CDN-backed Pyodide integration is opt-in");
  test.setTimeout(240000);
- await page.goto(base+"/python-lab.html");
+ await page.goto(base+"/python-lab.html#values/challenge");
  const editor=page.locator("#learner-code");
  await expect(editor).toBeVisible();
  const original=await editor.inputValue();
@@ -427,7 +427,7 @@ test("real Pyodide: wrong answer, correction and saved attempts",async({page})=>
 
 test("iPhone QA: readable editor, compact header and matching practice navigation",async({page})=>{
  await page.setViewportSize({width:390,height:844});
- await page.goto(base+"/python-lab.html");
+ await page.goto(base+"/python-lab.html#values/challenge");
  const editor=page.locator("#learner-code");await expect(editor).toBeVisible();
  const c=await editor.evaluate(el=>{const s=getComputedStyle(el);return {color:s.color,fill:s.webkitTextFillColor,background:s.backgroundColor,height:el.getBoundingClientRect().height}});
  expect(c.color).toBe("rgb(32, 52, 46)");expect(c.fill).toBe("rgb(32, 52, 46)");expect(c.height).toBeLessThanOrEqual(200);
