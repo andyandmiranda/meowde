@@ -70,4 +70,21 @@ rejected('numpy-random',random_model.replace('    rng =', '    np.random.seed(se
 time_model=next(u['task']['model'] for u in data['units'] if u['id']=='pandas-time')
 rejected('pandas-time',time_model.replace('regex=False','regex=True'),'검색어 문자 그대로')
 rejected('pandas-time',time_model.replace('previous == 0','False'),'0 분모와 감소')
+# Independently authored function pilot: guided model and behavioral mutations.
+pilot=next(u for u in data['units'] if u['id']=='function-slots')
+practice=pilot['practiceTask']
+for case in practice['tests']:
+    ns={};exec(practice['model'],ns);exec(case['code'],ns)
+for source in ['def remaining(capacity, used):\n    print(capacity - used)', 'def remaining(capacity, used):\n    return capacity - used', 'def remaining(capacity, used):\n    return 5']:
+    failures=0
+    for case in practice['tests']:
+        try:
+            ns={};exec(source,ns);exec(case['code'],ns)
+        except Exception:failures+=1
+    assert failures, 'Incorrect guided implementation accepted'
+rejected('function-slots','def free_slots(capacity, bookings):\n    return capacity - sum(bookings)','정원 경계')
+rejected('function-slots','def free_slots(capacity, bookings):\n    return max(0, capacity - bookings[0])','빈 예약')
+rejected('function-slots','def free_slots(capacity, bookings):\n    print(max(0, capacity - sum(bookings)))','출력 대신 반환')
+rejected('function-slots','def free_slots(capacity, bookings):\n    result = max(0, capacity - sum(bookings))\n    bookings.clear()\n    return result','입력과 호출 독립성')
+print('PASS function pilot: four guided criteria, three guided mutations, four challenge mutations')
 print(json.dumps({'units':len(seen),'reference_model_checks':checks,'mutation_rejections':9,'examples':len(seen),'existing_contracts_preserved':len(baseline)},ensure_ascii=False))

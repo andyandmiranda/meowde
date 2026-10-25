@@ -1,0 +1,32 @@
+name: Verify function deepen journey
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  function-journey:
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Real Pyodide journey in Chromium
+        run: pnpm exec playwright test tests/function-stages.spec.cjs
+      - name: Function navigation and preservation in WebKit
+        run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/function-stages.spec.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: function-stage-browser-evidence
+          path: artifacts/
+          retention-days: 7

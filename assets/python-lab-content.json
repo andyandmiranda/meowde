@@ -563,6 +563,152 @@
       }
     },
     {
+      "id": "function-slots",
+      "title": "함수 심화 · 남은 자리 계산",
+      "prerequisites": [
+        "functions"
+      ],
+      "goals": [
+        "입력에서 반환값까지 실행 흐름을 설명한다.",
+        "연습한 함수를 새로운 예약 문제에 적용한다."
+      ],
+      "concept": "매개변수는 함수가 받는 입력이고 return은 호출한 쪽으로 돌려주는 값입니다. print는 화면에 표시할 뿐, 계산 결과를 대신 돌려주지 않습니다. 먼저 하나의 사용 수를 계산하고, 다음에는 여러 예약을 합쳐 같은 규칙을 적용해봅니다. 각 단계는 건너뛰거나 다시 열 수 있습니다.",
+      "glossary": {
+        "입력 계약": "정원과 인원은 0 이상의 정수라고 정합니다.",
+        "반환값": "호출한 코드가 다른 계산에 사용할 수 있는 값입니다.",
+        "경계값": "0명, 가득 찬 공간, 초과 예약처럼 규칙이 바뀌는 지점입니다."
+      },
+      "example": "def remaining(capacity, used):\n    return max(0, capacity - used)\nvalue = remaining(6, 2)\nprint(value + 1)",
+      "output": "5",
+      "flow": [
+        "6과 2가 각각 capacity와 used에 연결됩니다.",
+        "함수는 남은 자리 4를 반환합니다.",
+        "호출한 쪽에서 1을 더한 5를 출력합니다."
+      ],
+      "pitfalls": [
+        "함수 안에서 print만 하고 return을 생략하면 반환값은 None입니다.",
+        "예제의 숫자를 외워서 반환하면 다른 입력과 경계값을 해결하지 못합니다."
+      ],
+      "quiz": {
+        "type": "predict",
+        "difficulty": "이해 · 반환값 추적",
+        "goal": "print와 return의 차이를 실행 순서로 설명한다.",
+        "criteria": "화면 출력과 반환값을 구분한다.",
+        "code": "def show_left():\n    print(4)\nvalue = show_left()\nprint(value)",
+        "choices": [
+          "4만 출력",
+          "4 다음 줄에 None",
+          "None 다음 줄에 4"
+        ],
+        "answer": 1,
+        "reasons": [
+          "함수 안에서 4를 출력한 뒤 바깥 print도 실행됩니다.",
+          "함수 안 print는 4를 표시합니다. return이 없어 value는 None이고, 바깥 print가 None을 표시합니다.",
+          "호출한 함수의 본문이 먼저 실행되므로 4가 먼저 표시됩니다."
+        ]
+      },
+      "practiceTask": {
+        "type": "코드 작성",
+        "difficulty": "기초 · 빈 부분 완성",
+        "prompt": "remaining(capacity, used)를 완성하세요. capacity와 used는 0 이상의 정수입니다. 남은 자리를 정수로 반환하되, 사용 수가 정원을 넘으면 0을 반환하세요. 화면에 출력하는 대신 값을 돌려줘야 합니다. 예: remaining(8, 3) → 5. 아래 빈 부분을 채워보세요.",
+        "starter": "def remaining(capacity, used):\n    left = capacity - used\n    # left가 음수일 때와 아닐 때 무엇을 반환할까요?\n",
+        "model": "def remaining(capacity, used):\n    left = capacity - used\n    if left < 0:\n        return 0\n    return left",
+        "tests": [
+          {
+            "label": "일반 입력",
+            "code": "assert remaining(8, 3) == 5",
+            "feedback": "정원에서 사용 수를 빼고 return으로 반환하세요."
+          },
+          {
+            "label": "정확히 가득 참",
+            "code": "assert remaining(4, 4) == 0",
+            "feedback": "사용 수와 정원이 같으면 남은 자리는 0입니다."
+          },
+          {
+            "label": "초과 사용",
+            "code": "assert remaining(2, 5) == 0",
+            "feedback": "음수인 남은 자리 수는 0으로 바꿔야 합니다."
+          },
+          {
+            "label": "빈 공간과 다른 입력",
+            "code": "assert remaining(0, 0) == 0; assert remaining(11, 0) == 11; assert remaining(19, 7) == 12",
+            "feedback": "예제의 숫자를 그대로 반환하지 말고 인자를 계산하세요."
+          }
+        ],
+        "hints": [
+          "capacity - used의 결과가 음수인지 먼저 확인하세요.",
+          "음수인 분기에서는 0을 return하고 나머지는 left를 return하세요.",
+          "if left < 0: 아래에 return 0을 들여쓰고, 분기 밖에는 return left를 쓰세요."
+        ],
+        "steps": [
+          "차이를 계산합니다.",
+          "음수이면 0을 돌려줍니다.",
+          "다른 경우 계산한 값을 돌려줍니다."
+        ],
+        "mistake": "print(left)만 쓰면 호출한 쪽은 계산값 대신 None을 받습니다.",
+        "alternative": "max(0, capacity - used)도 같은 계약을 구현합니다.",
+        "criteria": [
+          "일반 입력",
+          "정확히 가득 참",
+          "초과 사용",
+          "빈 공간과 다른 입력"
+        ]
+      },
+      "task": {
+        "type": "코드 작성",
+        "difficulty": "전이 · 새로운 상황에 적용",
+        "prompt": "free_slots(capacity, bookings)를 작성하세요. 스터디 공간의 정원 capacity는 0 이상의 정수이고, bookings는 각 모임의 예약 인원(0 이상의 정수)을 담은 리스트입니다. 예약 인원의 합을 정원에서 빼서 남은 자리 수를 정수로 반환하세요. 초과 예약이면 0, 예약이 없으면 정원을 반환합니다. 입력 리스트를 변경하지 마세요. 예: free_slots(12, [2, 3]) → 7. 구현 방법은 자유입니다.",
+        "starter": "def free_slots(capacity, bookings):\n    pass",
+        "model": "def free_slots(capacity, bookings):\n    total = 0\n    for count in bookings:\n        total += count\n    return max(0, capacity - total)",
+        "tests": [
+          {
+            "label": "여러 모임의 예약",
+            "code": "assert free_slots(12, [2, 3]) == 7; assert free_slots(20, [1, 4, 2]) == 13",
+            "feedback": "예약 한 개가 아니라 모든 모임의 인원을 합하세요."
+          },
+          {
+            "label": "빈 예약",
+            "code": "assert free_slots(9, []) == 9; assert free_slots(0, []) == 0",
+            "feedback": "빈 리스트의 예약 합계는 0입니다."
+          },
+          {
+            "label": "정원 경계",
+            "code": "assert free_slots(5, [2, 3]) == 0; assert free_slots(5, [2, 4]) == 0",
+            "feedback": "가득 찬 경우와 넘친 경우 모두 0을 반환해야 합니다."
+          },
+          {
+            "label": "입력과 호출 독립성",
+            "code": "a = [3, 1]; assert free_slots(10, a) == 6; assert a == [3, 1]; assert free_slots(7, [1]) == 6; assert free_slots(7, []) == 7",
+            "feedback": "입력을 지우거나 호출 사이에 합계를 재사용하지 마세요."
+          },
+          {
+            "label": "출력 대신 반환",
+            "code": "value = free_slots(31, [4, 6, 1]); assert type(value) is int and value == 20",
+            "feedback": "계산 결과를 정수로 return하세요. print만 하면 None이 됩니다."
+          }
+        ],
+        "hints": [
+          "여러 예약을 먼저 하나의 사용 인원으로 모으면 연습 문제와 연결됩니다.",
+          "합계를 0에서 시작하고 반복문으로 더해보세요. sum(bookings)를 사용해도 됩니다.",
+          "예약 합계를 정원에서 뺀 값과 0 중 큰 값을 반환하세요."
+        ],
+        "steps": [
+          "예약 리스트를 바꾸지 않고 합계를 구합니다.",
+          "정원에서 예약 합계를 뺍니다.",
+          "0보다 작은 결과를 0으로 바꾸고 반환합니다."
+        ],
+        "mistake": "첫 번째 예약만 빼면 두 번째 모임부터 계산에서 빠집니다.",
+        "alternative": "sum과 max를 사용하거나 반복문과 조건문으로 구현해도 동일한 입력·출력 기준으로 평가합니다.",
+        "criteria": [
+          "여러 모임의 예약",
+          "빈 예약",
+          "정원 경계",
+          "입력과 호출 독립성",
+          "출력 대신 반환"
+        ]
+      }
+    },
+    {
       "id": "files",
       "title": "모듈·파일·예외의 책임",
       "prerequisites": [

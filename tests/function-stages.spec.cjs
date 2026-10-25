@@ -1,0 +1,68 @@
+const {test,expect}=require('playwright/test');
+const content=require('../assets/python-lab-content.json');
+const pilot=content.units.find(u=>u.id==='function-slots');
+const base=process.env.MEOWDE_BASE_URL||'http://127.0.0.1:4173';
+const key='meowde-python-lab-v1';
+test('function journey preserves separate drafts, records, retries and legacy data',async({page})=>{
+ test.setTimeout(240000);
+ await page.goto(base+'/python-lab.html#function-slots');
+ await expect(page.locator('.function-stages [aria-current="step"]')).toHaveText('1. 이해');
+ await expect(page.locator('#practice')).toBeHidden();
+ await expect(page.locator('#quiz')).toBeVisible();
+ await page.evaluate(key=>{
+  localStorage.setItem('meowde-v410-state','{"xp":77,"churu":120,"done":[0,1],"custom":"preserve"}');
+  localStorage.setItem(key,JSON.stringify({version:1,units:{functions:{draft:'old draft',independentPassed:true},unknown:{custom:'future'}}}));
+ },key);
+ const legacy=await page.evaluate(()=>localStorage.getItem('meowde-v410-state'));
+ await page.reload();
+ await page.locator('[data-choice="0"]').click();
+ await expect(page.locator('#quiz-feedback')).toContainText('바깥 print');
+ await page.locator('[data-choice="1"]').click();
+ await page.reload();
+ await expect(page.locator('[data-choice="1"]')).toHaveAttribute('aria-pressed','true');
+ await expect(page.locator('#quiz-feedback')).toContainText('return이 없어');
+ await page.locator('.function-stages a[href$="/practice"]').click();
+ await page.locator('#hint-button').click();
+ await page.locator('#learner-code').fill(pilot.practiceTask.model);
+ async function run(){
+  await page.locator('[data-run="grade"]').click();
+  await expect(page.locator('#run-status')).toContainText(/모든 기준 통과|일부 기준/, {timeout:150000});
+ }
+ await run();await expect(page.locator('#run-status')).toContainText('도움을 사용');
+ await page.locator('.function-stages a[href$="/challenge"]').click();
+ await expect(page.locator('#learner-code')).toHaveValue(pilot.task.starter);
+ await page.locator('#learner-code').fill('def free_slots(capacity, bookings):\n    print(max(0, capacity - sum(bookings)))');
+ await run();await expect(page.locator('#run-status')).toContainText('일부 기준');
+ await expect(page.locator('#run-results')).toContainText('정수로 return');
+ await page.reload();
+ await expect(page.locator('#learner-code')).toHaveValue(/print/);
+ await page.goBack();
+ await expect(page.locator('#learner-code')).toHaveValue(pilot.practiceTask.model);
+ await expect(page.locator('#hints p')).toHaveCount(1);
+ await page.goForward();
+ await page.locator('#learner-code').fill('def free_slots(capacity, bookings):\n    return max(capacity - sum(bookings), 0)');
+ await run();await expect(page.locator('#run-status')).toContainText('도움 없이');
+ await page.reload();
+ const records=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).units,key);
+ expect(records['function-slots:practice']).toMatchObject({passed:true,lastPassedWithHelp:true,firstAttemptPassed:true,attempts:1});
+ expect(records['function-slots:practice'].independentPassed).toBeUndefined();
+ expect(records['function-slots']).toMatchObject({passed:true,independentPassed:true,firstAttemptPassed:false,attempts:2,quizPassed:true});
+ expect(records.functions).toEqual({draft:'old draft',independentPassed:true});
+ expect(records.unknown).toEqual({custom:'future'});
+ expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(legacy);
+ await page.locator('.lab-back-link').click();
+ await expect(page).toHaveURL(/tab=map/);
+});
+test('function stages fit narrow viewport and preserve unreadable storage',async({page})=>{
+ await page.setViewportSize({width:320,height:740});
+ await page.addInitScript(()=>localStorage.setItem('meowde-python-lab-v1','{unreadable'));
+ await page.goto(base+'/python-lab.html#function-slots/practice');
+ await page.locator('#learner-code').fill('draft to copy');
+ await expect(page.locator('#storage-status')).toContainText('덮어쓰지 않았습니다');
+ expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe('{unreadable');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
+ await page.locator('.function-stages a[href$="/challenge"]').focus();
+ await page.keyboard.press('Enter');
+ await expect(page.locator('#unit-title')).toBeFocused();
+ await expect(page.locator('.function-stages [aria-current="step"]')).toHaveText('3. 도전');
+});

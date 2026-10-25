@@ -2,7 +2,7 @@
 const fs=require("node:fs"),assert=require("node:assert/strict"),path=require("node:path");
 const root=path.resolve(__dirname,".."),read=p=>fs.readFileSync(path.join(root,p),"utf8");
 const content=JSON.parse(read("assets/python-lab-content.json")),coverage=JSON.parse(read("docs/python-learning-coverage.json")),ids=new Set();
-assert.equal(content.units.length,19);
+assert.equal(content.units.length,20);
 for(const unit of content.units){
  assert.ok(!ids.has(unit.id),"Unique unit id");
  for(const id of unit.prerequisites)assert.ok(ids.has(id),"Prerequisite is already introduced: "+id);
@@ -21,9 +21,9 @@ for(const row of coverage.rows){if(row.unit)assert.ok(ids.has(row.unit));assert.
 for(const asset of ["python-lab.html","assets/python-lab.js","assets/python-lab.css","assets/python-lab-worker.js","assets/python-lab-entry.js","assets/python-lab-content.json"])assert.ok(read("sw.js").includes('"/'+asset+'"'),"Precache includes "+asset);
 assert.ok(read("v434-release.js").includes('script:"assets/python-lab-entry.js"'));
 assert.ok(!read("assets/python-lab.js").includes("localStorage.clear"));
-assert.equal(content.units.reduce((n,u)=>n+u.task.tests.length,0),86);
+assert.equal(content.units.reduce((n,u)=>n+u.task.tests.length,0),91);
 const oop=content.units.find(unit=>unit.id==="object-collaboration");
 assert.deepEqual(oop.prerequisites,["objects"]);
 assert.equal(oop.task.tests.length,6);
 assert.ok(oop.task.tests.some(t=>t.code.includes("source.append(b)")),"Composition reference-vs-list-copy regression");
-console.log("PASS: 19 learning units, 39 activities, 86 criteria, 15 source files / 51 scope mappings, additive storage and offline assets");
+console.log("PASS: 20 learning units, function stages, 91 challenge criteria, 15 source files / 51 scope mappings, additive storage and offline assets");

@@ -12,7 +12,7 @@ const content=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/python-l
  page.on('pageerror',e=>errors.push(e.message));
  const check=(name,value)=>{assert.ok(value,name);results.push({name,pass:true});console.log('PASS',name)};
  await page.goto(base+'/python-lab.html');await page.waitForSelector('#learner-code');
- check('19 navigable units',await page.locator('#unit-nav a').count()===19);
+ check('20 navigable units',await page.locator('#unit-nav a').count()===20);
  check('Desktop unit menu fits viewport',await page.locator('#unit-nav').evaluate(e=>e.getBoundingClientRect().height<=innerHeight-20));
  await page.evaluate(()=>{
    const p=JSON.parse(localStorage.getItem('meowde-python-lab-v1')||'{"version":1,"units":{}}');

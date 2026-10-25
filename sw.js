@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v483-python-qa-precache";
+const CACHE_NAME = "meowde-v484-function-stages-precache";
 
 const REQUIRED_ASSETS = [
   "/assets/lesson-access-policy.js",

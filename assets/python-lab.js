@@ -4,7 +4,7 @@
   const escape=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const list=(items,ordered=false)=>`<${ordered?"ol":"ul"}>${items.map(item=>`<li>${escape(item)}</li>`).join("")}</${ordered?"ol":"ul"}>`;
   let data,progress={},unit,worker=null,timer=null,busy=false,storageProblem=false;
-  let runAssisted=false,storageReadBlocked=false;
+  let runAssisted=false,storageReadBlocked=false,stage="understand";
   try{
     const raw=localStorage.getItem(KEY);
     if(raw!==null){
@@ -14,13 +14,13 @@
       progress=stored.units;
     }
   }catch{storageProblem=true;storageReadBlocked=true}
-  function record(id=unit.id){
+  function record(id=(unit.id==="function-slots"&&stage==="practice"?"function-slots:practice":unit.id)){
     if(!progress[id]||typeof progress[id]!=="object"||Array.isArray(progress[id]))progress[id]={};
     return progress[id];
   }
   function save(){if(storageReadBlocked){showStorageProblem();return false}try{localStorage.setItem(KEY,JSON.stringify({version:1,units:progress}));return true}catch{storageProblem=true;showStorageProblem();return false}}
   function showStorageProblem(){const notice=document.getElementById("storage-status");if(notice)notice.textContent=storageReadBlocked?"기존 기록을 안전하게 읽을 수 없어 덮어쓰지 않았습니다. 현재 탭에서 연습할 수 있지만 새 작업은 저장되지 않으니 코드를 별도로 복사해두세요.":"이 브라우저에 기록을 저장하지 못했습니다. 현재 탭에서는 계속할 수 있지만 새로고침하면 사라질 수 있습니다."}
-  function stateLabel(u){const r=record(u.id);return r.lastPassed===false?"최근 재시도 · 복습 권장":r.independentPassed&&r.quizPassed?"혼자 적용 확인":r.passed?"코드 통과 · 이해/독립 재도전 권장":r.attempts?"복습 권장":"학습 시작"}
+  function stateLabel(u){const r=u.id===unit.id&&u.id==="function-slots"?record():record(u.id);return r.lastPassed===false?"최근 재시도 · 복습 권장":r.independentPassed&&r.quizPassed?"혼자 적용 확인":r.passed?"코드 통과 · 이해/독립 재도전 권장":r.attempts?"복습 권장":"학습 시작"}
   function navigation(){return data.units.map((u,i)=>`<a href="#${u.id}" ${u.id===unit.id?'aria-current="page"':''}>${i+1}. ${escape(u.title)}<small>${stateLabel(u)}</small></a>`).join("")}
   function stop(message){
     if(worker)worker.terminate();worker=null;clearTimeout(timer);busy=false;
@@ -33,6 +33,7 @@
     const r=record(),u=unit,t=u.task;
     root.innerHTML=`<section class="hero"><img src="/assets/meowde-approved-headphones.svg?v=450" alt=""><div><h1>${escape(data.title)}</h1><p>원리를 이해하고, 다른 입력에도 적용해보세요.</p><p class="meta">${escape(data.notice)}</p></div></section>
       <p id="storage-status" class="storage-warning" role="status"></p>
+      <p class="function-pilot-entry"><a href="#function-slots/understand">함수 심화 · 이해 → 연습 → 도전 시작하기</a></p>
       <button class="nav-toggle" id="nav-toggle" aria-controls="unit-nav" aria-expanded="false">단원 목록 열기</button>
       <div class="layout"><nav id="unit-nav" class="unit-nav" data-collapsed="true" aria-label="학습 단원">${navigation()}</nav>
       <article class="lesson" aria-labelledby="unit-title"><h2 id="unit-title" tabindex="-1">${escape(u.title)}</h2><p class="badge">${stateLabel(u)}</p>
@@ -146,11 +147,40 @@
       document.body.classList.add("meowde-practice-focus");
 
     }
+    renderFunctionStages();
     if(storageProblem)showStorageProblem();
     bind();
   }
+  function renderFunctionStages(){
+    if(unit.id!=="function-slots")return;
+    const article=root.querySelector(".lesson"),practice=root.querySelector("#practice");
+    const steps=document.createElement("nav");
+    steps.className="function-stages";steps.setAttribute("aria-label","함수 심화 단계");
+    steps.innerHTML=[["understand","1. 이해"],["practice","2. 연습"],["challenge","3. 도전"]].map(([id,label])=>`<a href="#function-slots/${id}" ${stage===id?'aria-current="step"':''}>${label}</a>`).join("");
+    article.querySelector(".badge").after(steps);
+    const introduction=document.createElement("p");introduction.className="meta";
+    introduction.textContent="이해 → 연습 → 도전 · 순서는 자유입니다. 연습과 도전은 따로 이어갈 수 있습니다. 도움받은 통과와 혼자 푼 결과를 구분해 복습합니다.";
+    steps.after(introduction);
+    if(stage==="understand"){
+      practice.hidden=true;
+      const understanding=document.createElement("section");understanding.className="function-understanding";
+      const support=root.querySelector(".practice-support");
+      if(support){support.open=true;understanding.append(support)}
+      const quiz=root.querySelector("#quiz");if(quiz)understanding.append(quiz);
+      const status=root.querySelector("#run-status"),results=root.querySelector("#run-results"),cancel=root.querySelector("#stop-run");
+      if(status&&results&&cancel)understanding.append(cancel,status,results);
+      const next=document.createElement("a");next.className="primary";next.href="#function-slots/practice";next.textContent="반환값을 직접 만들어보기 → 연습";
+      understanding.append(next);introduction.after(understanding);
+    }else{
+      const label=stage==="practice"?"2. 연습 · 하나의 사용 수 계산":"3. 도전 · 여러 예약에 적용";
+      practice.querySelector(".practice-kicker").textContent=label;
+      const next=document.createElement("p");next.className="function-next";
+      next.innerHTML=stage==="practice"?'<a href="#function-slots/challenge">새로운 예약 문제에 적용하기 → 도전</a>':'<a href="#function-slots/understand">반환값 개념 다시 확인하기</a> · <a href="/?tab=map">학습으로 돌아가기</a>';
+      practice.append(next);
+    }
+  }
   function recommendation(){
-    const r=record(),index=data.units.indexOf(unit),next=data.units[index+1];
+    const r=record(),index=data.units.findIndex(u=>u.id===unit.id),next=data.units[index+1];
     const weak=unit.prerequisites.filter(id=>!record(id).independentPassed);
     const text=r.lastPassed===false?`최근 실패한 기준: ${(r.lastFailed||[]).join(" / ")}. 이 단원의 실행 흐름과 흔한 오해를 다시 읽고 한 기준씩 수정해보세요.`:r.passed?(r.independentPassed?"테스트 기준을 통과했습니다. 설명을 읽고 결과 예측도 확인한 뒤 다음 개념으로 연결해보세요.":"도움을 사용한 뒤 코드 기준을 통과했습니다. 풀이를 접고 다시 작성해 적용을 확인하세요."):"실패한 평가 기준과 관련된 실행 흐름을 다시 읽고, 힌트 한 단계만 적용해 재시도하세요.";
     return `<p>${escape(text)}</p><div class="next">${weak.map(id=>`<a href="#${id}">선수 복습: ${escape(data.units.find(x=>x.id===id).title)}</a>`).join("")}${next?`<a href="#${next.id}">다음: ${escape(next.title)}</a>`:'<a href="#values">처음부터 다시 적용하기</a>'}</div>`;
@@ -168,6 +198,11 @@
       root.querySelectorAll("[data-choice]").forEach(b=>b.setAttribute("aria-pressed",String(b===button)));
       const box=document.getElementById("quiz-feedback");box.className="feedback "+(correct?"good":"bad");box.textContent=(correct?"맞았습니다. ":"다시 생각해보세요. ")+unit.quiz.reasons[index];save();refreshProgress();
     });
+    if(Number.isInteger(record().lastQuizChoice)){
+      const index=record().lastQuizChoice;
+      const selected=root.querySelector(`[data-choice="${index}"]`);
+      if(selected){selected.setAttribute("aria-pressed","true");const correct=index===unit.quiz.answer;const box=document.getElementById("quiz-feedback");box.className="feedback "+(correct?"good":"bad");box.textContent=(correct?"맞았습니다. ":"다시 생각해보세요. ")+unit.quiz.reasons[index];}
+    }
     // Optional no-keyboard code assembly: reusable snippets keep the real editor and grader intact.
     const editorArea=document.getElementById("learner-code");
     if(editorArea){
@@ -239,6 +274,7 @@
       const result=message.result;stop();
       const passed=result.results.every(x=>x.pass),r=record();
       if(mode==="grade"){
+        if(!r.attempts)r.firstAttemptPassed=passed;
         r.attempts=(r.attempts||0)+1;r.lastPassed=passed;r.lastFailed=result.results.filter(x=>!x.pass).map(x=>x.label);r.draft=code;
         if(passed){r.passed=true;if(!runAssisted)r.independentPassed=true;r.lastPassedWithHelp=runAssisted}
         save();refreshProgress();
@@ -249,9 +285,9 @@
     worker.postMessage({code,tests:mode==="grade"?unit.task.tests:[]});
   }
   try{
-    const response=await fetch("/assets/python-lab-content.json?v=1");if(!response.ok)throw new Error("학습 내용 응답 "+response.status);
+    const response=await fetch("/assets/python-lab-content.json?v=2");if(!response.ok)throw new Error("학습 내용 응답 "+response.status);
     data=await response.json();if(data.version!==1||!Array.isArray(data.units)||!data.units.length)throw new Error("지원하지 않는 학습 내용 형식");
-    function route(focus){const id=location.hash.slice(1);unit=data.units.find(u=>u.id===id)||data.units[0];render();if(focus){document.getElementById("unit-title").focus();window.scrollTo(0,0)}}
+    function route(focus){const [id,step]=location.hash.slice(1).split("/");const source=data.units.find(u=>u.id===id)||data.units[0];stage=["understand","practice","challenge"].includes(step)?step:"understand";unit=source.id==="function-slots"&&stage==="practice"?{...source,task:source.practiceTask}:source;render();if(focus){document.getElementById("unit-title").focus();window.scrollTo(0,0)}}
     window.addEventListener("hashchange",()=>route(true));window.addEventListener("pagehide",()=>stop());route(false);
   }catch(error){root.innerHTML=`<div class="error-panel" role="alert"><h1>학습 내용을 열지 못했습니다</h1><p>${escape(error.message)}</p><a href="/python-lab.html">다시 시도</a> · <a href="/">먀오드 홈으로</a></div>`}
 })();
