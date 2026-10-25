@@ -162,6 +162,10 @@
       document.body.classList.add("meowde-practice-focus");
 
     }
+    // Keep the optional bridge ahead of the focus-mode coding task after layout reordering.
+    const valuesBridge=root.querySelector("#values-bridge");
+    const codingTask=root.querySelector("#practice");
+    if(valuesBridge&&codingTask)codingTask.before(valuesBridge);
     renderFunctionStages();
     if(storageProblem)showStorageProblem();
     bind();
