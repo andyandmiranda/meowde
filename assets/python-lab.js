@@ -59,15 +59,19 @@
       // Five optional learning levels; original independent challenge and grading remain untouched.
       const levels=document.createElement("div");
       levels.className="values-levels";
-      levels.innerHTML='<h4>Lv.1~5 · 문자에서 계산으로</h4><p class="meta">각 단계는 도움 연습입니다. 완료·숙련도·보상으로 기록하지 않습니다. Lv.5는 아래 기존 실습에서 독립적으로 제출하세요.</p><details><summary>Lv.1 · 코드 결과 예측</summary><p>int("23") // 6의 결과를 위에서 선택하세요. 몫과 나머지를 구분해 보세요.</p></details><details><summary>Lv.2 · 한 줄 수정</summary><p>아래 코드에서 빈칸에 들어갈 연산자를 선택하세요: full = count __ capacity</p><button type="button" data-level-answer="2:correct">//</button> <button type="button" data-level-answer="2:wrong">%</button><p data-level-feedback="2" role="status"></p></details><details><summary>Lv.3 · 새 입력 응용</summary><p>책 29권을 한 상자에 8권씩 담으면 가득 찬 상자와 남은 책은?</p><button type="button" data-level-answer="3:correct">(3, 5)</button> <button type="button" data-level-answer="3:wrong">(4, 0)</button><p data-level-feedback="3" role="status"></p></details><details><summary>Lv.4 · 복합 오류 찾기</summary><pre>def pack(text, capacity):\n    count = int(text)\n    full = count % capacity\n    left = count // capacity\n    print(full, left)</pre><p>어떤 수정이 필요한가요?</p><button type="button" data-level-answer="4:correct">몫·나머지 연산자를 교환하고 return 사용</button> <button type="button" data-level-answer="4:wrong">print만 return으로 변경</button><p data-level-feedback="4" role="status"></p></details><details><summary>Lv.5 · 독립 구현</summary><p>학습 도구를 닫고 기존 코딩 실습에서 pack(text, capacity)를 직접 구현해 보세요. 기존 채점 기준과 저장된 초안은 그대로 유지됩니다.</p></details>';
-      levels.querySelectorAll("[data-level-answer]").forEach(button=>button.addEventListener("click",()=>{
-        const [level,answer]=button.dataset.levelAnswer.split(":");
-        const messages={
-          "2":["맞아요. //는 가득 찬 상자의 개수인 몫을 구합니다.","%는 남은 수를 구합니다. 가득 찬 상자 개수에는 //가 필요합니다."],
-          "3":["맞아요. 29 // 8 = 3, 29 % 8 = 5입니다.","8권씩 4상자는 32권이 필요합니다. 29권으로는 3상자만 채울 수 있습니다."],
-          "4":["맞아요. full은 //, left는 %로 계산하고 두 값을 return해야 합니다.","연산자도 뒤바뀌어 있습니다. 출력과 반환뿐 아니라 몫·나머지를 함께 확인하세요."]
-        };
-        levels.querySelector('[data-level-feedback="'+level+'"]').textContent=messages[level][answer==="correct"?0:1];
+      levels.innerHTML='<h4>Lv.1~5 · 문자에서 계산으로</h4><p class="meta">선택형 대신 직접 코드를 입력해 보세요. 이 연습은 저장·채점·보상에 반영되지 않으며 기존 Lv.5 실습은 그대로 유지됩니다.</p><details><summary>Lv.1 · 코드 결과 예측</summary><p>int("23") // 6의 결과를 위에서 선택하세요. 몫과 나머지를 구분해 보세요.</p></details><details><summary>Lv.2 · 한 줄 코드 수정</summary><label for="values-level-2">가득 찬 상자 개수를 계산하는 한 줄을 직접 작성하세요.</label><pre>count = 23\ncapacity = 6</pre><input id="values-level-2" type="text" autocomplete="off" spellcheck="false" placeholder="full = ..." aria-describedby="values-feedback-2"><button type="button" data-check-level="2">코드 확인</button><p id="values-feedback-2" role="status" aria-live="polite"></p></details><details><summary>Lv.3 · 새 입력에 응용</summary><label for="values-level-3">29권을 8권씩 포장할 때 남은 책을 구하는 Python 한 줄을 작성하세요.</label><pre>count = 29\ncapacity = 8</pre><input id="values-level-3" type="text" autocomplete="off" spellcheck="false" placeholder="left = ..." aria-describedby="values-feedback-3"><button type="button" data-check-level="3">코드 확인</button><p id="values-feedback-3" role="status" aria-live="polite"></p></details><details><summary>Lv.4 · 복합 오류 해결</summary><p>아래 함수는 몫과 나머지가 뒤바뀌었고 반환 대신 출력합니다. 세 줄을 모두 올바르게 고쳐 보세요.</p><pre>def pack(text, capacity):\n    count = int(text)\n    full = count % capacity\n    left = count // capacity\n    print(full, left)</pre><label for="values-level-4">full, left, return 세 줄을 입력하세요.</label><textarea id="values-level-4" rows="4" spellcheck="false" aria-describedby="values-feedback-4" placeholder="full = ...&#10;left = ...&#10;return ..."></textarea><button type="button" data-check-level="4">코드 확인</button><p id="values-feedback-4" role="status" aria-live="polite"></p></details><details><summary>Lv.5 · 독립 구현</summary><p>학습 도구를 닫고 기존 코딩 실습에서 pack(text, capacity)를 직접 구현해 보세요. 기존 채점 기준과 저장된 초안은 그대로 유지됩니다.</p></details>';
+      levels.querySelectorAll("[data-check-level]").forEach(button=>button.addEventListener("click",()=>{
+        const level=button.dataset.checkLevel;
+        const raw=levels.querySelector("#values-level-"+level).value;
+        const lines=raw.split(/\\r?\\n/).map(line=>line.replace(/#.*$/,"").trim().replace(/\\s+/g,"")).filter(Boolean);
+        const feedback=levels.querySelector("#values-feedback-"+level);
+        const expected=level==="2"?["full=count//capacity"]:level==="3"?["left=count%capacity"]:["full=count//capacity","left=count%capacity","return(full,left)"];
+        if(level==="4"){
+          const canonical=lines.map(line=>line.startsWith("return")?line.replace(/^return\\((full,left)\\)$/,"return$1"):line);
+          feedback.textContent=expected.every(line=>canonical.includes(line))&&canonical.length===3?"맞아요. 몫과 나머지를 바로잡고 두 값을 반환했습니다.":"세 줄을 확인하세요. full에는 //, left에는 %, 마지막에는 return (full, left)가 필요합니다.";
+        }else{
+          feedback.textContent=lines.length===1&&lines[0]===expected[0]?"맞아요. 직접 작성한 코드가 올바릅니다.":"다시 확인하세요. "+(level==="2"?"가득 찬 개수는 //로 계산합니다.":"남은 개수는 %로 계산합니다.")+" 변수 이름과 연산자를 확인해 보세요.";
+        }
       }));
       bridge.append(levels);
       bridge.querySelectorAll("[data-bridge-choice]").forEach(button=>button.addEventListener("click",()=>{
