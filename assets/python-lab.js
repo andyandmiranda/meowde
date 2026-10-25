@@ -389,6 +389,21 @@
       }
       document.getElementById("run-status").textContent=mode==="example"?(passed?"예제 실행을 마쳤습니다. 예상 출력과 비교하세요.":"예제 실행 중 오류가 발생했습니다."):(passed?(runAssisted?"모든 기준 통과 · 도움을 사용한 학습으로 기록했습니다.":"모든 기준 통과 · 도움 없이 적용한 결과로 기록했습니다."):"일부 기준을 통과하지 못했습니다. 실패 이유를 확인하고 다시 작성하세요.");
       document.getElementById("run-results").innerHTML=`<ul class="results">${result.results.map((x,i)=>`<li class="${x.pass?"result-pass":"result-fail"}">${x.pass?"✓ 통과":"× 재시도"} · ${escape(x.label)}${x.pass?"":`<p>${escape(mode==="grade"?unit.task.tests[i].feedback:diagnosis(x))}</p><p>${escape(diagnosis(x))}</p><details><summary>오류 위치 확인</summary><pre>${escape(x.trace||x.error||x.errorType)}</pre></details>`}</li>`).join("")}</ul>${result.output?`<h4>실제 출력 · 최대 20,000자</h4><pre>${escape(result.output)}</pre>`:""}<div class="chart-output">${(result.images||[]).map(png=>`<img src="data:image/png;base64,${png}" alt="내 코드에서 생성한 차트. 데이터와 축 레이블은 위 코드 및 평가 기준과 함께 확인하세요.">`).join("")}</div>`;
+      // Show the next learning action next to the submitted feedback, not only inside the tools sheet.
+      if(mode==="grade"&&passed&&!(unit.id==="values"&&Number(r.guideLevel||1)===4)){
+        const nextIndex=data.units.findIndex(candidate=>candidate.id===unit.id)+1;
+        const upcoming=data.units[nextIndex];
+        const destination=unit.id==="function-slots"&&stage==="practice"
+          ?{hash:"#function-slots/challenge",label:"다음 문제 · 도전"}
+          :upcoming?{hash:"#"+upcoming.id,label:"다음 문제 · "+upcoming.title}:null;
+        if(destination){
+          const link=document.createElement("a");
+          link.className="primary practice-next-action";
+          link.href=destination.hash;
+          link.textContent=destination.label;
+          document.getElementById("run-results").append(link);
+        }
+      }
     };
     worker.postMessage({code,tests:mode==="grade"?unit.task.tests:[]});
   }
