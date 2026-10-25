@@ -28,7 +28,7 @@ test("Practice links open the requested screen and preserve progress through rel
   expect(await page.evaluate(()=>MeowAchievements.state.unlocked["first-step"]))
     .toMatchObject({xp:20,churu:5});
   const achievements=await page.evaluate(()=>localStorage.getItem("meowde-v419-achievements"));
-  await page.goto(base+"/python-lab.html");
+  await page.goto(base+"/python-lab.html#function-slots/practice");
   await page.locator("#learner-code").fill("print('draft preserved')");
   const draft=await page.evaluate(()=>localStorage.getItem("meowde-python-lab-v1"));
   for(const [label,tab,surface] of [
@@ -50,6 +50,8 @@ test("Practice links open the requested screen and preserve progress through rel
     expect(await progress()).toEqual(before);
     expect(await page.evaluate(()=>localStorage.getItem("meowde-v419-achievements"))).toBe(achievements);
     await page.getByRole("button",{name:"실습",exact:true}).click();
+     await expect(page).toHaveURL(/python-lab/);
+     await page.goto(base+"/python-lab.html#function-slots/practice");
     await expect(page.locator("#learner-code")).toHaveValue("print('draft preserved')");
     expect(await page.evaluate(()=>localStorage.getItem("meowde-python-lab-v1"))).toBe(draft);
   }
