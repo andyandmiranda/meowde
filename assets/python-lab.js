@@ -48,40 +48,6 @@
       ${u.reflection?`<section class="card"><h3>분석 판단 · 자기 점검</h3><p>${escape(u.reflection.prompt)}</p>${list(u.reflection.criteria)}<label for="reflection">내 판단과 추가 자료</label><textarea class="reflection" id="reflection">${escape(r.reflection||"")}</textarea><button id="reflection-save">자기 점검 메모 저장</button><p id="reflection-status" role="status"></p><details><summary>판단 비교하기 · 자동 채점 없음</summary><p>${escape(u.reflection.guidance)}</p></details></section>`:""}
       <section class="card"><h3>복습과 다음 학습</h3><div id="recommendation">${recommendation()}</div><button id="independent-retry">도움 없이 다시 작성하기</button><p class="meta">저장한 코드를 비우고 힌트를 접습니다. 기존 통과 이력은 유지하며 다음 제출은 독립 적용으로 다시 확인합니다.</p></section>
       </article></div>`;
-    // Optional, stateless bridge for the verified values-unit difficulty jump.
-    // No answer is copied to the editor and no learning/reward record is written.
-    if(u.id==="values"){
-      const bridge=document.createElement("section");
-      bridge.className="card";
-      bridge.id="values-bridge";
-      bridge.setAttribute("aria-label","기초에서 응용으로 연결 연습");
-      bridge.innerHTML='<h3>연결 연습 · 기초에서 응용으로</h3><p>먼저 확인: int("23")은 글자 "23"을 숫자 23으로 바꿉니다. 23 // 6은 몫 3, 23 % 6은 나머지 5입니다. print는 보여주고 return은 함수의 결과를 돌려줍니다.</p><p><strong>1. 예측</strong> · int("23") // 6은 얼마일까요?</p><div><button type="button" data-bridge-choice="2">2</button> <button type="button" data-bridge-choice="3">3</button> <button type="button" data-bridge-choice="5">5</button></div><p id="bridge-predict-feedback" role="status"></p><p><strong>2. 빈칸 완성</strong> · 아래 함수가 (3, 5)를 반환하려면 무엇을 넣어야 할까요?</p><pre>def pack(text, capacity):\n    count = int(text)\n    return (____, ____)</pre><div><button type="button" data-bridge-fill="right">count // capacity, count % capacity</button> <button type="button" data-bridge-fill="wrong">print(count), capacity</button></div><p id="bridge-fill-feedback" role="status"></p><p class="meta">이 연습은 저장·채점·보상에 반영되지 않습니다. 원래 실습 코드는 아래에 그대로 남습니다.</p>';
-      // Five optional learning levels; original independent challenge and grading remain untouched.
-      const levels=document.createElement("div");
-      levels.className="values-levels";
-      levels.innerHTML='<h4>Lv.1~5 · 문자에서 계산으로</h4><p class="meta">선택형 대신 직접 코드를 입력해 보세요. 이 연습은 저장·채점·보상에 반영되지 않으며 기존 Lv.5 실습은 그대로 유지됩니다.</p><details><summary>Lv.1 · 코드 결과 예측</summary><p>int("23") // 6의 결과를 위에서 선택하세요. 몫과 나머지를 구분해 보세요.</p></details><details><summary>Lv.2 · 한 줄 코드 수정</summary><label for="values-level-2">가득 찬 상자 개수를 계산하는 한 줄을 직접 작성하세요.</label><pre>count = 23\ncapacity = 6</pre><input id="values-level-2" type="text" autocomplete="off" spellcheck="false" placeholder="full = ..." aria-describedby="values-feedback-2"><button type="button" data-check-level="2">코드 확인</button><p id="values-feedback-2" role="status" aria-live="polite"></p></details><details><summary>Lv.3 · 새 입력에 응용</summary><label for="values-level-3">29권을 8권씩 포장할 때 남은 책을 구하는 Python 한 줄을 작성하세요.</label><pre>count = 29\ncapacity = 8</pre><input id="values-level-3" type="text" autocomplete="off" spellcheck="false" placeholder="left = ..." aria-describedby="values-feedback-3"><button type="button" data-check-level="3">코드 확인</button><p id="values-feedback-3" role="status" aria-live="polite"></p></details><details><summary>Lv.4 · 복합 오류 해결</summary><p>아래 함수는 몫과 나머지가 뒤바뀌었고 반환 대신 출력합니다. 세 줄을 모두 올바르게 고쳐 보세요.</p><pre>def pack(text, capacity):\n    count = int(text)\n    full = count % capacity\n    left = count // capacity\n    print(full, left)</pre><label for="values-level-4">full, left, return 세 줄을 입력하세요.</label><textarea id="values-level-4" rows="4" spellcheck="false" aria-describedby="values-feedback-4" placeholder="full = ...&#10;left = ...&#10;return ..."></textarea><button type="button" data-check-level="4">코드 확인</button><p id="values-feedback-4" role="status" aria-live="polite"></p></details><details><summary>Lv.5 · 독립 구현</summary><p>학습 도구를 닫고 기존 코딩 실습에서 pack(text, capacity)를 직접 구현해 보세요. 기존 채점 기준과 저장된 초안은 그대로 유지됩니다.</p></details>';
-      levels.querySelectorAll("[data-check-level]").forEach(button=>button.addEventListener("click",()=>{
-        const level=button.dataset.checkLevel;
-        const raw=levels.querySelector("#values-level-"+level).value;
-        const lines=raw.split(/\r?\n/).map(line=>line.replace(/#.*$/,"").trim().replace(/\s+/g,"")).filter(Boolean);
-        const feedback=levels.querySelector("#values-feedback-"+level);
-        const expected=level==="2"?["full=count//capacity"]:level==="3"?["left=count%capacity"]:["full=count//capacity","left=count%capacity","return(full,left)"];
-        if(level==="4"){
-          const canonical=lines;
-          feedback.textContent=expected.every(line=>canonical.includes(line))&&canonical.length===3?"맞아요. 몫과 나머지를 바로잡고 두 값을 반환했습니다.":"세 줄을 확인하세요. full에는 //, left에는 %, 마지막에는 return (full, left)가 필요합니다.";
-        }else{
-          feedback.textContent=lines.length===1&&lines[0]===expected[0]?"맞아요. 직접 작성한 코드가 올바릅니다.":"다시 확인하세요. "+(level==="2"?"가득 찬 개수는 //로 계산합니다.":"남은 개수는 %로 계산합니다.")+" 변수 이름과 연산자를 확인해 보세요.";
-        }
-      }));
-      bridge.append(levels);
-      bridge.querySelectorAll("[data-bridge-choice]").forEach(button=>button.addEventListener("click",()=>{
-        bridge.querySelector("#bridge-predict-feedback").textContent=button.dataset.bridgeChoice==="3"?"맞아요. 문자열을 숫자로 바꾸고 몫을 구하면 3입니다.":"다시 확인해 보세요. 23을 6으로 나누면 3묶음이 꽉 차고 5가 남습니다.";
-      }));
-      bridge.querySelectorAll("[data-bridge-fill]").forEach(button=>button.addEventListener("click",()=>{
-        bridge.querySelector("#bridge-fill-feedback").textContent=button.dataset.bridgeFill==="right"?"맞아요. //는 몫, %는 나머지입니다. return으로 두 값을 돌려줍니다. 이제 아래 원래 문제에 도전해 보세요.":"print는 값을 화면에 보여줄 뿐 함수의 반환값이 아닙니다. 몫과 나머지를 각각 계산해 return하세요.";
-      }));
-      root.querySelector("#practice")?.before(bridge);
-    }
     // Keep all existing learning aids but place the hands-on task first.
     // This is a presentation-only move: IDs, inputs, grading and storage are unchanged.
     const article=root.querySelector(".lesson"),practice=root.querySelector("#practice");
@@ -181,9 +147,95 @@
       document.body.classList.add("meowde-practice-focus");
 
     }
+    renderValuesJourney();
     renderFunctionStages();
     if(storageProblem)showStorageProblem();
     bind();
+  }
+  // A single guided path for the first Python concept. The existing grading
+  // worker, saved draft, question record and rewards remain the source of truth.
+  function renderValuesJourney(){
+    if(unit.id!=="values")return;
+    const r=record(),article=root.querySelector(".lesson"),practice=root.querySelector("#practice");
+    const current=Math.max(1,Math.min(5,Number(r.guideLevel)||1));
+    const labels=["이해","반복","따라 코딩","독립 해결","응용"];
+    const journey=document.createElement("section");
+    journey.className="card values-journey";
+    journey.id="values-journey";
+    journey.setAttribute("aria-label","문자에서 계산으로 5단계 학습");
+    journey.innerHTML='<p class="practice-kicker">Lv.'+current+' / 5 · '+labels[current-1]+'</p><h3>'+labels[current-1]+'</h3><div id="values-step-body"></div><p id="values-step-feedback" class="feedback" role="status" aria-live="polite"></p><div id="values-step-action"></div>';
+    article.insertBefore(journey,practice);
+    const body=journey.querySelector("#values-step-body");
+    const action=journey.querySelector("#values-step-action");
+    const feedback=journey.querySelector("#values-step-feedback");
+    const advance=(next)=>{
+      if(!save())return;
+      r.guideLevel=next;
+      if(!save()){r.guideLevel=current;showStorageProblem();return}
+      render();
+      root.querySelector("#values-journey")?.scrollIntoView({block:"start"});
+    };
+    const nextButton=(label,next)=>{
+      const button=document.createElement("button");button.type="button";
+      button.className="primary";button.textContent=label;
+      button.onclick=()=>advance(next);action.replaceChildren(button);
+    };
+    if(current===1){
+      practice.hidden=true;
+      body.innerHTML='<p>글자 "23"을 숫자로 바꾸면 23입니다. <code>//</code>는 몫, <code>%</code>는 나머지예요.</p><pre>count = int("23")\nprint(count // 6, count % 6)</pre><p>실행하면 <strong>3 5</strong>가 나옵니다. 이제 결과를 직접 예측해 보세요.</p>';
+      const quiz=root.querySelector("#quiz");
+      if(quiz){quiz.hidden=false;body.append(quiz)}
+      if(r.quizPassed)nextButton("다음 · 반복 연습",2);
+      else feedback.textContent="결과를 선택하면 이유를 확인하고 다음으로 넘어갈 수 있어요.";
+    }else if(current===2){
+      practice.hidden=true;
+      body.innerHTML='<p>29개를 8개씩 담으면 가득 찬 상자는 몇 개일까요?</p><pre>count = 29\ncapacity = 8\nprint(count // capacity)</pre><div class="values-options"><button type="button" data-value="3">3개</button><button type="button" data-value="5">5개</button><button type="button" data-value="8">8개</button></div>';
+      body.querySelectorAll("[data-value]").forEach(button=>button.onclick=()=>{
+        const correct=button.dataset.value==="3";
+        r.guideRepeatAttempts=(r.guideRepeatAttempts||0)+1;
+        if(correct)r.guideRepeatPassed=true;
+        if(!save())return;
+        feedback.textContent=correct?"맞아요. 29 // 8은 몫 3이고 5개가 남아요.":"29를 8로 나누면 8개짜리 묶음이 3개이고 5개가 남아요. //는 남은 수가 아닌 묶음 수예요.";
+        if(correct)nextButton("다음 · 코드 완성",3);
+      });
+      if(r.guideRepeatPassed)nextButton("다음 · 코드 완성",3);
+    }else if(current===3){
+      practice.hidden=true;
+      body.innerHTML='<p>이번에는 남은 개수를 구하는 한 줄을 직접 완성해 보세요.</p><pre>count = 17\ncapacity = 5</pre><label for="values-guided-code">남은 개수를 left에 저장하기</label><input id="values-guided-code" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="left = ..." value="'+escape(r.guideCode||"")+'">';
+      const input=body.querySelector("#values-guided-code");
+      input.oninput=()=>{r.guideCode=input.value;save()};
+      const check=document.createElement("button");check.type="button";check.className="primary";check.textContent="코드 확인";
+      check.onclick=()=>{
+        const normalized=input.value.replace(/#.*$/,"").replace(/\s+/g,"");
+        const correct=normalized==="left=count%capacity";
+        r.guideCodeAttempts=(r.guideCodeAttempts||0)+1;
+        if(correct)r.guideCodePassed=true;
+        if(!save())return;
+        feedback.textContent=correct?"맞아요. 17 % 5는 나머지 2를 계산해요.":"left는 남은 개수예요. //는 몫, %는 나머지이므로 left = count % capacity를 사용해 보세요.";
+        if(correct)nextButton("다음 · 함수 직접 수정",4);
+      };
+      action.append(check);
+      if(r.guideCodePassed)nextButton("다음 · 함수 직접 수정",4);
+    }else{
+      const title=practice.querySelector("h3");
+      if(title)title.textContent=current===4?"예제 코드를 수정해 완성하기":"새 입력에서도 혼자 해결하기";
+      const editor=practice.querySelector("#learner-code");
+      if(current===4){
+        body.innerHTML='<p>함수의 뼈대가 준비되어 있어요. <code>pass</code>를 몫·나머지를 반환하는 코드로 바꾸세요. 필요하면 힌트를 사용해도 괜찮아요.</p>';
+        if(!r.draft||r.draft===unit.task.starter){
+          const scaffold='def pack(text, capacity):\n    count = int(text)\n    # 몫과 나머지를 반환하세요\n    pass';
+          editor.value=scaffold;r.draft=scaffold;r.assisted=true;save();
+        }
+        if(r.guideScaffoldPassed)nextButton("다음 · 도움 없이 응용",5);
+      }else{
+        body.innerHTML='<p>이번에는 힌트 없이 새 입력에서도 동작하도록 직접 작성해 보세요. 통과 후에도 나중에 다시 풀어야 숙달을 확인할 수 있어요.</p>';
+        if(r.independentPassed)feedback.textContent="독립 실행 기준을 통과했어요. 시간이 지난 뒤 다른 입력으로 다시 풀어 보세요.";
+      }
+      practice.hidden=false;
+      practice.querySelector(".practice-kicker").textContent="Lv."+current+" · "+labels[current-1];
+      // The existing real Python worker grades both coding stages; no fake
+      // success, extra rewards, or automatic submissions are introduced.
+    }
   }
   function renderFunctionStages(){
     if(unit.id!=="function-slots")return;
@@ -230,7 +282,7 @@
       const index=Number(button.dataset.choice),correct=index===unit.quiz.answer,r=record();
       r.quizAttempts=(r.quizAttempts||0)+1;r.quizPassed=correct;r.lastQuizChoice=index;
       root.querySelectorAll("[data-choice]").forEach(b=>b.setAttribute("aria-pressed",String(b===button)));
-      const box=document.getElementById("quiz-feedback");box.className="feedback "+(correct?"good":"bad");box.textContent=(correct?"맞았습니다. ":"다시 생각해보세요. ")+unit.quiz.reasons[index];save();refreshProgress();
+      const box=document.getElementById("quiz-feedback");box.className="feedback "+(correct?"good":"bad");box.textContent=(correct?"맞았습니다. ":"다시 생각해보세요. ")+unit.quiz.reasons[index];save();refreshProgress();if(unit.id==="values"&&correct&&Number(record().guideLevel||1)===1){const button=document.createElement("button");button.className="primary";button.textContent="다음 · 반복 연습";button.onclick=()=>{record().guideLevel=2;if(save())render()};document.getElementById("values-step-action")?.replaceChildren(button)}
     });
     if(Number.isInteger(record().lastQuizChoice)){
       const index=record().lastQuizChoice;
@@ -311,6 +363,20 @@
         if(!r.attempts)r.firstAttemptPassed=passed;
         r.attempts=(r.attempts||0)+1;r.lastPassed=passed;r.lastFailed=result.results.filter(x=>!x.pass).map(x=>x.label);r.draft=code;
         if(passed){r.passed=true;if(!runAssisted)r.independentPassed=true;r.lastPassedWithHelp=runAssisted}
+        if(unit.id==="values"&&passed&&Number(r.guideLevel||1)===4){
+          r.guideScaffoldPassed=true;
+          const action=document.getElementById("values-step-action");
+          if(action){
+            const button=document.createElement("button");button.className="primary";button.textContent="다음 · 도움 없이 응용";
+            button.onclick=()=>{
+              // Preserve the assisted pass and first-attempt history. Start the
+              // independent stage with a fresh draft, never grant rewards here.
+              r.guideLevel=5;r.draft=unit.task.starter;r.assisted=false;r.hints=0;
+              if(save())render();
+            };
+            action.replaceChildren(button);
+          }
+        }
         save();refreshProgress();
       }
       document.getElementById("run-status").textContent=mode==="example"?(passed?"예제 실행을 마쳤습니다. 예상 출력과 비교하세요.":"예제 실행 중 오류가 발생했습니다."):(passed?(runAssisted?"모든 기준 통과 · 도움을 사용한 학습으로 기록했습니다.":"모든 기준 통과 · 도움 없이 적용한 결과로 기록했습니다."):"일부 기준을 통과하지 못했습니다. 실패 이유를 확인하고 다시 작성하세요.");
