@@ -448,7 +448,7 @@ test("canonical home scopes Deepen to Python and preserves learning state",async
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   const state=await page.evaluate(()=>({done:S.done,xp:S.xp,churu:S.churu}));
   await entry.locator('a[href="/python-lab.html#values"]').click();
-  await expect(page).toHaveURL(/\\/python-lab\\.html#values$/);
+  await expect(page).toHaveURL(/\/python-lab\.html#values$/);
   await page.goBack();
   await page.waitForFunction(()=>document.documentElement.dataset.homeRenderer==="canonical-v414");
   expect(await page.evaluate(()=>({done:S.done,xp:S.xp,churu:S.churu}))).toEqual(state);
