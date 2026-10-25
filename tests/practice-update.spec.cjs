@@ -21,6 +21,13 @@ test.beforeAll(async()=>{
 test.afterAll(async()=>{await new Promise(resolve=>server.close(resolve))});
 async function cachedVisit(page){
  phase='old';
+ // Model a learner who completed the existing values challenge. Their editor
+ // remains accessible in the new five-stage UI without resetting progress.
+ await page.addInitScript(()=>{
+  if(sessionStorage.getItem('cached-values-seeded'))return;
+  localStorage.setItem('meowde-python-lab-v1',JSON.stringify({version:1,units:{values:{independentPassed:true}}}));
+  sessionStorage.setItem('cached-values-seeded','1');
+ });
  await page.goto(base+'/python-lab.html#values');
  await expect(page.locator('#learner-code')).toBeVisible();
  // Real old worker/cache, not a mocked controller event. Old content lacks the pilot.
@@ -31,7 +38,7 @@ async function cachedVisit(page){
  });
  await page.evaluate(()=>{
   localStorage.setItem('meowde-v410-state','{"done":[0,1],"xp":77,"churu":120,"draft":"legacy"}');
-  localStorage.setItem('meowde-python-lab-v1',JSON.stringify({version:1,units:{functions:{draft:'prior function draft'},unknown:{custom:'future'}}}));
+  localStorage.setItem('meowde-python-lab-v1',JSON.stringify({version:1,units:{values:{independentPassed:true},functions:{draft:'prior function draft'},unknown:{custom:'future'}}}));
  });
  phase='new';
  await page.goto(base+'/python-lab.html#function-slots/practice');
