@@ -31,7 +31,7 @@
     }
     let prompt,starter,solution,expected,reason;
     if(s.level===3){
-      if(mode===0){prompt='예제의 int("8")에서 배웠던 변환이에요. 빈칸을 채워 count에 수를 저장하세요.';starter='count = ___(text)';solution='count = int(text)';expected=['count'];reason='___를 int로 바꾸세요. int(text)의 결과를 count에 저장하면 계산할 수 있어요.';}
+      if(mode===0){prompt='예제의 int("8")에서 배운 변환이에요. 코드의 밑줄 ___ 세 개를 전부 지우고 int를 입력해 count에 수를 저장하세요. 밑줄을 남겨 두지 마세요.';starter='count = ___(text)';solution='count = int(text)';expected=['count'];reason='밑줄 ___ 전체를 int로 교체하세요. 밑줄을 남겨 __int_(text)처럼 쓰면 안 돼요. count = int(text)로 작성하면 수를 저장할 수 있어요.';}
       else if(mode===1){prompt='상자 수를 구하는 코드예요. 나머지 %를 몫 연산으로 바꾸세요.';starter='count = int(text)\nboxes = count % capacity';solution='count = int(text)\nboxes = count // capacity';expected=['boxes'];reason='boxes는 가득 찬 상자 수예요. 두 번째 줄의 %를 //로 바꾸세요.';}
       else{prompt='몫이 아닌 남은 개수를 구하도록 마지막 줄을 수정하세요.';starter='count = int(text)\nleft = count // capacity';solution='count = int(text)\nleft = count % capacity';expected=['left'];reason='left에는 나머지가 필요해요. 마지막 줄의 //를 %로 바꾸세요.';}
     }else if(s.level===4){
