@@ -18,7 +18,7 @@ for(const unit of content.units){
 assert.equal(new Set(coverage.rows.map(r=>r.source)).size,15,"All supplied sources mapped");
 assert.equal(coverage.rows.length,51);
 for(const row of coverage.rows){if(row.unit)assert.ok(ids.has(row.unit));assert.ok(coverage.definitions[row.status]);if(row.status!=="보강")assert.ok(row.gap)}
-for(const asset of ["python-lab.html","assets/python-lab.js","assets/python-lab.css","assets/python-lab-worker.js","assets/python-lab-entry.js","assets/python-lab-content.json"])assert.ok(read("sw.js").includes('"/'+asset+'"'),"Precache includes "+asset);
+for(const asset of ["python-lab.html","assets/python-lab.js","assets/python-lab-update.js","assets/python-lab.css","assets/python-lab-worker.js","assets/python-lab-entry.js","assets/python-lab-content.json"])assert.ok(read("sw.js").includes('"/'+asset+'"'),"Precache includes "+asset);
 assert.ok(read("v434-release.js").includes('script:"assets/python-lab-entry.js"'));
 assert.ok(!read("assets/python-lab.js").includes("localStorage.clear"));
 assert.equal(content.units.reduce((n,u)=>n+u.task.tests.length,0),91);

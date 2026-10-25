@@ -21,9 +21,9 @@ jobs:
           version: 11.25.0
       - run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Real Pyodide journey in Chromium
-        run: pnpm exec playwright test tests/function-stages.spec.cjs
+        run: pnpm exec playwright test tests/function-stages.spec.cjs tests/practice-update.spec.cjs
       - name: Function navigation and preservation in WebKit
-        run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/function-stages.spec.cjs
+        run: MEOWDE_TEST_BROWSER=webkit pnpm exec playwright test tests/function-stages.spec.cjs tests/practice-update.spec.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
