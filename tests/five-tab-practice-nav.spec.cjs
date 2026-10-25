@@ -86,7 +86,7 @@ test("Five global tabs keep the same physical order on every screen",async({page
 });
 
 test("Practice uses the same cream and mint palette as the main app",async({page})=>{
-  await page.goto(base+"/python-lab.html");
+  await page.goto(base+"/python-lab.html#function-slots/practice");
   await expect(page.locator("#learner-code")).toBeVisible();
   const info=await page.evaluate(()=>{
     const body=getComputedStyle(document.body),button=getComputedStyle(document.querySelector("#practice button.primary"));
@@ -115,7 +115,7 @@ test("Review exposes recent lessons first and preserves older completed items",a
 
 test("Practice keeps the task, editor and main action visible without expanding help",async({page})=>{
   await page.setViewportSize({width:390,height:844});
-  await page.goto(base+"/python-lab.html");
+  await page.goto(base+"/python-lab.html#function-slots/practice");
   await expect(page.locator("#learner-code")).toBeVisible();
   await expect(page.locator("#practice [data-run=grade]")).toBeVisible();
   await expect(page.locator(".practice-criteria")).not.toBeVisible();
@@ -135,7 +135,7 @@ test("Practice keeps the task, editor and main action visible without expanding 
 
 test("Compact practice remains usable at large text and reduced visible height",async({page})=>{
   await page.setViewportSize({width:375,height:560});
-  await page.goto(base+"/python-lab.html");
+  await page.goto(base+"/python-lab.html#function-slots/practice");
   await page.addStyleTag({content:"html{font-size:20px!important} body:has(#lab){font-size:19px!important}"});
   const editor=page.locator("#learner-code"),action=page.locator("#practice [data-run=grade]");
   await expect(editor).toBeVisible();
@@ -194,7 +194,7 @@ test('Valid practice records retain other units while drafts persist',async({pag
 
 test("Practice starts with one task; learning details are in an optional tool sheet",async({page})=>{
   await page.setViewportSize({width:390,height:844});
-  await page.goto(base+"/python-lab.html");
+  await page.goto(base+"/python-lab.html#function-slots/practice");
   await expect(page.locator("#learner-code")).toBeVisible();
   await expect(page.locator(".practice-tools-sheet")).not.toBeVisible();
   await expect(page.locator("#practice-tools-open")).toBeVisible();
