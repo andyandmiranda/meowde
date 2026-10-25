@@ -35,6 +35,9 @@ async function cachedVisit(page){
  });
  phase='new';
  await page.goto(base+'/python-lab.html#function-slots/practice');
+ // A hash-only change keeps the old document. Reload to fetch the new HTML,
+ // exactly as the observed stale-cache reproduction did before visiting Home.
+ await page.reload();
  await expect(page.locator('#unit-title')).toHaveText('문자에서 계산으로');
  await expect(page.locator('#practice-update-open')).toBeVisible({timeout:30000});
 }

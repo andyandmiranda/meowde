@@ -19,3 +19,5 @@ NOT RUN local browser (known browser executable download failure), physical iPho
 ## Rollback / next
 
 Remove the added HTML script reference and updater/cache entries together, or keep the existing Production unchanged. No learner storage migration/deletion is needed. Recheck HEAD before leased branch update; verify exact new CI/Preview, correct actual failures. Current Production c829e2fc / dpl_FzJtVEcT697KzmEkRMAa8DGH2pPv is preserved. This follow-up does not reuse prior one-off Production approval; a new release awaits concrete approval after verification.
+
+First CI1f542971: original function tests PASS, cached-update tests FAIL because the fixture changed only the hash, leaving the old HTML without the new checker loaded. Corrected setup explicitly reloads the document (the actual observed reproduction included reload). Assertions and product code unchanged. Pure hash changes in an already running old document cannot load a newly deployed script; the correction applies when the new practice HTML is fetched.
