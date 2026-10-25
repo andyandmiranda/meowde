@@ -48,6 +48,22 @@
       ${u.reflection?`<section class="card"><h3>분석 판단 · 자기 점검</h3><p>${escape(u.reflection.prompt)}</p>${list(u.reflection.criteria)}<label for="reflection">내 판단과 추가 자료</label><textarea class="reflection" id="reflection">${escape(r.reflection||"")}</textarea><button id="reflection-save">자기 점검 메모 저장</button><p id="reflection-status" role="status"></p><details><summary>판단 비교하기 · 자동 채점 없음</summary><p>${escape(u.reflection.guidance)}</p></details></section>`:""}
       <section class="card"><h3>복습과 다음 학습</h3><div id="recommendation">${recommendation()}</div><button id="independent-retry">도움 없이 다시 작성하기</button><p class="meta">저장한 코드를 비우고 힌트를 접습니다. 기존 통과 이력은 유지하며 다음 제출은 독립 적용으로 다시 확인합니다.</p></section>
       </article></div>`;
+    // Optional, stateless bridge for the verified values-unit difficulty jump.
+    // No answer is copied to the editor and no learning/reward record is written.
+    if(u.id==="values"){
+      const bridge=document.createElement("section");
+      bridge.className="card";
+      bridge.id="values-bridge";
+      bridge.setAttribute("aria-label","기초에서 응용으로 연결 연습");
+      bridge.innerHTML='<h3>연결 연습 · 기초에서 응용으로</h3><p>먼저 확인: int("23")은 글자 "23"을 숫자 23으로 바꿉니다. 23 // 6은 몫 3, 23 % 6은 나머지 5입니다. print는 보여주고 return은 함수의 결과를 돌려줍니다.</p><p><strong>1. 예측</strong> · int("23") // 6은 얼마일까요?</p><div><button type="button" data-bridge-choice="2">2</button> <button type="button" data-bridge-choice="3">3</button> <button type="button" data-bridge-choice="5">5</button></div><p id="bridge-predict-feedback" role="status"></p><p><strong>2. 빈칸 완성</strong> · 아래 함수가 (3, 5)를 반환하려면 무엇을 넣어야 할까요?</p><pre>def pack(text, capacity):\n    count = int(text)\n    return (____, ____)</pre><div><button type="button" data-bridge-fill="right">count // capacity, count % capacity</button> <button type="button" data-bridge-fill="wrong">print(count), capacity</button></div><p id="bridge-fill-feedback" role="status"></p><p class="meta">이 연습은 저장·채점·보상에 반영되지 않습니다. 원래 실습 코드는 아래에 그대로 남습니다.</p>';
+      bridge.querySelectorAll("[data-bridge-choice]").forEach(button=>button.addEventListener("click",()=>{
+        bridge.querySelector("#bridge-predict-feedback").textContent=button.dataset.bridgeChoice==="3"?"맞아요. 문자열을 숫자로 바꾸고 몫을 구하면 3입니다.":"다시 확인해 보세요. 23을 6으로 나누면 3묶음이 꽉 차고 5가 남습니다.";
+      }));
+      bridge.querySelectorAll("[data-bridge-fill]").forEach(button=>button.addEventListener("click",()=>{
+        bridge.querySelector("#bridge-fill-feedback").textContent=button.dataset.bridgeFill==="right"?"맞아요. //는 몫, %는 나머지입니다. return으로 두 값을 돌려줍니다. 이제 아래 원래 문제에 도전해 보세요.":"print는 값을 화면에 보여줄 뿐 함수의 반환값이 아닙니다. 몫과 나머지를 각각 계산해 return하세요.";
+      }));
+      root.querySelector("#practice")?.before(bridge);
+    }
     // Keep all existing learning aids but place the hands-on task first.
     // This is a presentation-only move: IDs, inputs, grading and storage are unchanged.
     const article=root.querySelector(".lesson"),practice=root.querySelector("#practice");
