@@ -31,9 +31,11 @@
     }
     let prompt,starter,solution,expected,reason;
     if(s.level===3){
-      if(mode===0){prompt='예제의 int("8")에서 배운 변환이에요. 코드의 밑줄 ___ 세 개를 전부 지우고 int를 입력해 count에 수를 저장하세요. 밑줄을 남겨 두지 마세요.';starter='count = ___(text)';solution='count = int(text)';expected=['count'];reason='밑줄 ___ 전체를 int로 교체하세요. 밑줄을 남겨 __int_(text)처럼 쓰면 안 돼요. count = int(text)로 작성하면 수를 저장할 수 있어요.';}
-      else if(mode===1){prompt='상자 수를 구하는 코드예요. 나머지 %를 몫 연산으로 바꾸세요.';starter='count = int(text)\nboxes = count % capacity';solution='count = int(text)\nboxes = count // capacity';expected=['boxes'];reason='boxes는 가득 찬 상자 수예요. 두 번째 줄의 %를 //로 바꾸세요.';}
-      else{prompt='몫이 아닌 남은 개수를 구하도록 마지막 줄을 수정하세요.';starter='count = int(text)\nleft = count // capacity';solution='count = int(text)\nleft = count % capacity';expected=['left'];reason='left에는 나머지가 필요해요. 마지막 줄의 //를 %로 바꾸세요.';}
+      let code,answer,choices,solution;
+      if(mode===0){prompt='예제의 int("8")에서 배운 변환이에요. 빈칸의 밑줄을 모두 지우고 int를 골라 count에 수를 저장하세요.';code='count = ___(text)';solution='count = int(text)';answer='int';choices=['str','int','print'];expected=['count'];reason='밑줄 전체를 int로 바꾸세요. count = int(text)로 쓰면 숫자 글자가 수로 바뀌어요.';}
+      else if(mode===1){prompt='가득 찬 상자 수를 구해요. 빈칸에 몫 연산자를 고르세요.';code='count = int(text)\nboxes = count ___ capacity';solution='count = int(text)\nboxes = count // capacity';answer='//';choices=['%','/','//'];expected=['boxes'];reason='boxes는 가득 찬 상자 수이므로 몫 연산자 //를 사용해요.';}
+      else{prompt='묶고 남은 개수를 구해요. 빈칸에 나머지 연산자를 고르세요.';code='count = int(text)\nleft = count ___ capacity';solution='count = int(text)\nleft = count % capacity';answer='%';choices=['+','%','//'];expected=['left'];reason='left는 묶고 남은 수이므로 나머지 연산자 %를 사용해요.';}
+      return {...common,type:'choice',prompt,code,solution,answer,choices,expected,reason,scaffold:true};
     }else if(s.level===4){
       const target=mode===0?'count':mode===1?'boxes':'left';
       prompt=mode===0?'text를 정수로 바꿔 count에 저장하세요.':mode===1?'text개의 물건을 capacity개씩 담아요. 가득 찬 상자 수를 boxes에 저장하세요.':'text개의 물건을 capacity개씩 담고 남은 수를 left에 저장하세요.';
@@ -45,7 +47,7 @@
       solution='count = int(text)\nboxes = count // capacity\nleft = count % capacity';expected=['boxes','left'];
       reason='boxes는 몫 //, left는 나머지 %예요. text를 int로 바꾼 뒤 각각 저장하세요. 예시 숫자를 고정하면 다른 인원이나 용량에서 틀립니다.';
     }
-    return {...common,type:'code',prompt,starter,solution,expected,reason,scaffold:s.level===3};
+    return {...common,type:'code',prompt,starter,solution,expected,reason,scaffold:false};
   }
   function payload(q,code){
     const inputs=[[q.n,q.cap],[0,q.cap],[q.cap*3,q.cap],[q.cap-1,q.cap+1]];
@@ -108,7 +110,10 @@
         const records=Object.values(state.items),independent=records.filter(x=>x.independentPassed).length,helped=records.filter(x=>x.lastPassed&&x.lastPassedWithHelp).length;
         content.innerHTML=`<h3>이번 연습을 마쳤어요</h3><p>첫 시도에 도움 없이 해결 ${independent}개 · 도움받아 해결 ${helped}개</p><p>완료가 곧 숙달은 아니에요. 하루 뒤 새 입력으로 다시 풀며 기억을 확인해요.</p>`;
         if(Date.now()>=state.reviewDueAt)button('새 문제로 기억 확인',()=>{const before=JSON.parse(JSON.stringify(state));review(state);if(!persist()&&!blocked&&!unsupported){state=before;record.valuesPath=state;warn();return;}draw();});
-        else{const a=document.createElement('a');a.href='/?tab=map';a.className='primary';a.textContent='학습으로 돌아가기';actions.append(a);}
+        else{
+          const nextUnit=units[units.findIndex(u=>u.id==='values')+1];
+          const a=document.createElement('a');a.href=nextUnit?'#'+nextUnit.id:'/?tab=map';a.className='primary';a.textContent=nextUnit?'다음 개념 · '+nextUnit.title:'학습으로 돌아가기';actions.append(a);
+        }
         warn();return;
       }
       content.innerHTML=`<p>${escape(q.prompt)}</p>`;
@@ -128,17 +133,18 @@
       }
       const done=(pass,detail='')=>{
         stop();mark(state,pass);persist();draw();
-        status((pass?(state.items[id].lastPassedWithHelp?'도움받아 해결했어요. ':'도움 없이 해결했어요. '):'다시 해봐요. ')+q.reason+(detail?' '+detail:''));warn();
+        const feedback=(pass?(state.items[id].lastPassedWithHelp?'도움받아 해결했어요. ':'도움 없이 해결했어요. '):'다시 해봐요. ')+(detail||q.reason);
+        state.items[id].feedbackText=feedback;persist();status(feedback);warn();
       };
       if(r.lastPassed){status((r.lastPassedWithHelp?'도움받아 해결했어요. ':'도움 없이 해결했어요. ')+q.reason);next();}
       else{
-        if(r.feedbackUsed)status('다시 해봐요. '+q.reason);
+        if(r.feedbackUsed)status(r.feedbackText||'다시 해봐요. '+q.reason);
         const check=button(q.type==='choice'?'답 확인':'코드 확인',()=>{
           if(busy)return;
           const item=state.items[id]||(state.items[id]={});
           if(q.type==='choice'){if(item.choice===undefined){status('답을 하나 선택해 주세요.');return;}done(item.choice===q.answer);return;}
           const code=content.querySelector('#values-code').value;item.draft=code;persist();warn();
-          busy=true;check.disabled=true;status('코드를 실행하고 있어요. 첫 실행은 시간이 걸릴 수 있어요.');
+          busy=true;check.disabled=true;content.querySelector('#values-code').readOnly=true;status('코드를 실행하고 있어요. 첫 실행은 시간이 걸릴 수 있어요.');
           const fail=message=>{stop();draw();status(message+' 답안과 시도 횟수는 그대로예요.');};
           try{worker=new Worker('/assets/python-lab-worker.js?v=1');}catch{fail('실행기를 열지 못했어요.');return;}
           timer=setTimeout(()=>fail('실행기를 불러오지 못했어요. 연결을 확인하고 다시 시도해 주세요.'),120000);
@@ -150,7 +156,7 @@
               const results=m.result?.results;
               if(!Array.isArray(results)||results.length!==4){fail('실행 결과를 확인하지 못했어요.');return;}
               const failed=results.find(x=>!x.pass);
-              const detail=failed?(failed.errorType==='SyntaxError'?'괄호·따옴표와 빈칸 표시를 확인해 주세요.':failed.errorType==='NameError'?'변수 이름을 확인하고 값을 먼저 저장해 주세요.':failed.label+'에서 결과가 달라요.') :'';
+              const detail=failed?(failed.errorType==='SyntaxError'?'문법 오류예요. 괄호와 빈칸을 확인해 주세요.':failed.errorType==='NameError'?`정의되지 않은 이름을 사용했어요 (${(failed.error||'').match(/name '([^']+)'/)?.[1]||'이름 확인'}). 함수 이름 int와 변수 이름을 확인해 주세요.`:failed.label+'에서 기대한 결과와 달라요. 먼저 text를 int(text)로 바꾸고, 몫은 //, 나머지는 %를 쓰세요.') :'';
               done(!failed,detail);
             }
           };

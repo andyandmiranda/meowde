@@ -63,6 +63,19 @@ test('unsupported nested progress stays byte-identical while session-only practi
  await page.getByRole('button',{name:'다음 연습',exact:true}).click();
  expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(raw);
 });
+test('running submission locks its draft until cancellation, without counting an attempt',async({page})=>{
+ await seed(page,{...path.initial(),level:4});
+ await page.addInitScript(()=>{window.Worker=class{postMessage(){}terminate(){}};});
+ await page.goto(base+'/python-lab.html');
+ await page.locator('#values-code').fill('count = int(text)');
+ await page.getByRole('button',{name:'코드 확인',exact:true}).click();
+ await expect(page.locator('#values-code')).toHaveAttribute('readonly','');
+ await expect(page.getByRole('button',{name:'코드 확인',exact:true})).toBeDisabled();
+ await page.getByRole('button',{name:'실행 중지',exact:true}).click();
+ await expect(page.locator('#values-code')).toBeEditable();
+ await expect(page.locator('#values-code')).toHaveValue('count = int(text)');
+ expect((await read(page)).items['0:4:0'].attempts).toBeUndefined();
+});
 test('worker outage preserves attempt counts and draft',async({page})=>{
  await seed(page,{...path.initial(),level:4});
  await page.addInitScript(()=>{window.Worker=class{postMessage(){queueMicrotask(()=>this.onmessage({data:{stage:'error'}}));}terminate(){}};});
