@@ -63,11 +63,11 @@
       levels.querySelectorAll("[data-check-level]").forEach(button=>button.addEventListener("click",()=>{
         const level=button.dataset.checkLevel;
         const raw=levels.querySelector("#values-level-"+level).value;
-        const lines=raw.split(/\\r?\\n/).map(line=>line.replace(/#.*$/,"").trim().replace(/\\s+/g,"")).filter(Boolean);
+        const lines=raw.split(/\r?\n/).map(line=>line.replace(/#.*$/,"").trim().replace(/\s+/g,"")).filter(Boolean);
         const feedback=levels.querySelector("#values-feedback-"+level);
         const expected=level==="2"?["full=count//capacity"]:level==="3"?["left=count%capacity"]:["full=count//capacity","left=count%capacity","return(full,left)"];
         if(level==="4"){
-          const canonical=lines.map(line=>line.startsWith("return")?line.replace(/^return\\((full,left)\\)$/,"return$1"):line);
+          const canonical=lines.map(line=>line.startsWith("return")?line.replace(/^return\((full,left)\)$/,"return$1"):line);
           feedback.textContent=expected.every(line=>canonical.includes(line))&&canonical.length===3?"맞아요. 몫과 나머지를 바로잡고 두 값을 반환했습니다.":"세 줄을 확인하세요. full에는 //, left에는 %, 마지막에는 return (full, left)가 필요합니다.";
         }else{
           feedback.textContent=lines.length===1&&lines[0]===expected[0]?"맞아요. 직접 작성한 코드가 올바릅니다.":"다시 확인하세요. "+(level==="2"?"가득 찬 개수는 //로 계산합니다.":"남은 개수는 %로 계산합니다.")+" 변수 이름과 연산자를 확인해 보세요.";
