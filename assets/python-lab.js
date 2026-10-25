@@ -239,6 +239,9 @@
         if(r.independentPassed)feedback.textContent="독립 실행 기준을 통과했어요. 시간이 지난 뒤 다른 입력으로 다시 풀어 보세요.";
       }
       practice.hidden=false;
+      journey.classList.remove("card");
+      journey.classList.add("practice-stage-intro");
+      practice.prepend(journey);
       practice.querySelector(".practice-kicker").textContent=current+"단계 · "+labels[current-1];
       // The existing real Python worker grades both coding stages; no fake
       // success, extra rewards, or automatic submissions are introduced.
@@ -249,7 +252,7 @@
     const article=root.querySelector(".lesson"),practice=root.querySelector("#practice");
     const steps=document.createElement("nav");
     steps.className="function-stages";steps.setAttribute("aria-label","함수 심화 단계");
-    steps.innerHTML=[["understand","1. 이해"],["practice","2. 연습"],["challenge","3. 도전"]].map(([id,label])=>`<a href="#function-slots/${id}" ${stage===id?'aria-current="step"':''}>${label}</a>`).join("");
+    steps.innerHTML=[["understand","이해"],["practice","연습"],["challenge","도전"]].map(([id,label])=>`<a href="#function-slots/${id}" ${stage===id?'aria-current="step"':''}>${label}</a>`).join("");
     article.querySelector(".badge").after(steps);
     const introduction=document.createElement("p");introduction.className="meta";
     introduction.textContent="이해 → 연습 → 도전 · 순서는 자유입니다. 연습과 도전은 따로 이어갈 수 있습니다. 도움받은 통과와 혼자 푼 결과를 구분해 복습합니다.";
@@ -265,10 +268,10 @@
       const next=document.createElement("a");next.className="primary";next.href="#function-slots/practice";next.textContent="반환값을 직접 만들어보기 → 연습";
       understanding.append(next);introduction.after(understanding);
     }else{
-      const label=stage==="practice"?"2. 연습 · 하나의 사용 수 계산":"3. 도전 · 여러 예약에 적용";
+      const label=stage==="practice"?"연습 · 하나의 사용 수 계산":"도전 · 여러 예약에 적용";
       practice.querySelector(".practice-kicker").textContent=label;
       const next=document.createElement("p");next.className="function-next";
-      next.innerHTML=stage==="practice"?'<a href="#function-slots/challenge">새로운 예약 문제에 적용하기 → 도전</a>':'<a href="#function-slots/understand">반환값 개념 다시 확인하기</a> · <a href="/?tab=map">학습으로 돌아가기</a>';
+      next.innerHTML=stage==="practice"?'<span>코드를 통과하면 아래의 다음 단계 버튼으로 이동할 수 있어요.</span>':'<a href="#function-slots/understand">반환값 개념 다시 확인하기</a> · <a href="/?tab=map">학습으로 돌아가기</a>';
       practice.append(next);
     }
   }
@@ -276,10 +279,11 @@
     const practice=root.querySelector("#practice");
     if(!practice||practice.hidden)return;
     const r=record();
+    if(unit.id==="values"&&Number(r.guideLevel||1)===4)return;
     const destination=unit.id==="function-slots"&&stage==="practice"?"#function-slots/challenge":(()=>{const index=data.units.findIndex(u=>u.id===unit.id);return data.units[index+1]?"#"+data.units[index+1].id:"/?tab=map"})();
     const label=unit.id==="function-slots"&&stage==="practice"?"다음 단계로":destination==="/?tab=map"?"학습으로 돌아가기":"다음 문제로";
     const action=document.createElement("a");action.className="primary practice-next-action";action.href=destination;action.textContent=label;
-    action.hidden=!r.lastPassed;
+    action.hidden=unit.id==="values"&&Number(r.guideLevel||1)===5?!r.independentPassed:!r.lastPassed;
     action.setAttribute("aria-label",label);
     practice.append(action);
   }
@@ -397,8 +401,8 @@
             action.replaceChildren(button);
           }
         }
-        save();refreshProgress();
-        const next=root.querySelector(".practice-next-action");if(next&&passed)next.hidden=false;
+        const saved=save();refreshProgress();
+        const next=root.querySelector(".practice-next-action");if(next&&passed&&saved&&!(unit.id==="values"&&Number(r.guideLevel||1)===5&&!r.independentPassed))next.hidden=false;
       }
       document.getElementById("run-status").textContent=mode==="example"?(passed?"예제 실행을 마쳤습니다. 예상 출력과 비교하세요.":"예제 실행 중 오류가 발생했습니다."):(passed?(runAssisted?"모든 기준 통과 · 도움을 사용한 학습으로 기록했습니다.":"모든 기준 통과 · 도움 없이 적용한 결과로 기록했습니다."):"일부 기준을 통과하지 못했습니다. 실패 이유를 확인하고 다시 작성하세요.");
       document.getElementById("run-results").innerHTML=`<ul class="results">${result.results.map((x,i)=>`<li class="${x.pass?"result-pass":"result-fail"}">${x.pass?"✓ 통과":"× 재시도"} · ${escape(x.label)}${x.pass?"":`<p>${escape(mode==="grade"?unit.task.tests[i].feedback:diagnosis(x))}</p><p>${escape(diagnosis(x))}</p><details><summary>오류 위치 확인</summary><pre>${escape(x.trace||x.error||x.errorType)}</pre></details>`}</li>`).join("")}</ul>${result.output?`<h4>실제 출력 · 최대 20,000자</h4><pre>${escape(result.output)}</pre>`:""}<div class="chart-output">${(result.images||[]).map(png=>`<img src="data:image/png;base64,${png}" alt="내 코드에서 생성한 차트. 데이터와 축 레이블은 위 코드 및 평가 기준과 함께 확인하세요.">`).join("")}</div>`;
