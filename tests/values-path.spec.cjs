@@ -95,14 +95,17 @@ test('real Python: all five stages, helped retry, independent transfer and delay
  for(let guard=0;guard<35;guard++){
   const s=await read(page);if(s.complete)break;
   const q=path.question(s);
-  if(q.type==='choice')await page.locator(`[data-answer="${q.answer}"]`).click();
-  else{
+  if(q.type==='choice'){
    if(q.level===3&&!wrong){
-    await page.locator('#values-code').fill('count = 999');
-    await page.getByRole('button',{name:'코드 확인',exact:true}).click();
-    await expect(page.locator('#values-feedback')).toContainText('다시 해봐요',{timeout:150000});wrong=true;
-    await page.reload();await expect(page.locator('#values-code')).toHaveValue('count = 999');
+    const wrongAnswer=q.choices.find(x=>x!==q.answer);
+    await page.locator(`[data-answer="${wrongAnswer}"]`).click();
+    await page.getByRole('button',{name:'답 확인',exact:true}).click();
+    await expect(page.locator('#values-feedback')).toContainText('다시 해봐요');wrong=true;
+    await page.reload();await expect(page.locator(`[data-answer="${wrongAnswer}"]`)).toHaveAttribute('aria-pressed','true');
    }
+   await page.locator(`[data-answer="${q.answer}"]`).click();
+  }
+  else{
    await page.locator('#values-code').fill(q.solution);
   }
   await page.getByRole('button',{name:q.type==='choice'?'답 확인':'코드 확인',exact:true}).click();
