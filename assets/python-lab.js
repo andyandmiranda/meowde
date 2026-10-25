@@ -56,6 +56,20 @@
       bridge.id="values-bridge";
       bridge.setAttribute("aria-label","기초에서 응용으로 연결 연습");
       bridge.innerHTML='<h3>연결 연습 · 기초에서 응용으로</h3><p>먼저 확인: int("23")은 글자 "23"을 숫자 23으로 바꿉니다. 23 // 6은 몫 3, 23 % 6은 나머지 5입니다. print는 보여주고 return은 함수의 결과를 돌려줍니다.</p><p><strong>1. 예측</strong> · int("23") // 6은 얼마일까요?</p><div><button type="button" data-bridge-choice="2">2</button> <button type="button" data-bridge-choice="3">3</button> <button type="button" data-bridge-choice="5">5</button></div><p id="bridge-predict-feedback" role="status"></p><p><strong>2. 빈칸 완성</strong> · 아래 함수가 (3, 5)를 반환하려면 무엇을 넣어야 할까요?</p><pre>def pack(text, capacity):\n    count = int(text)\n    return (____, ____)</pre><div><button type="button" data-bridge-fill="right">count // capacity, count % capacity</button> <button type="button" data-bridge-fill="wrong">print(count), capacity</button></div><p id="bridge-fill-feedback" role="status"></p><p class="meta">이 연습은 저장·채점·보상에 반영되지 않습니다. 원래 실습 코드는 아래에 그대로 남습니다.</p>';
+      // Five optional learning levels; original independent challenge and grading remain untouched.
+      const levels=document.createElement("div");
+      levels.className="values-levels";
+      levels.innerHTML='<h4>Lv.1~5 · 문자에서 계산으로</h4><p class="meta">각 단계는 도움 연습입니다. 완료·숙련도·보상으로 기록하지 않습니다. Lv.5는 아래 기존 실습에서 독립적으로 제출하세요.</p><details><summary>Lv.1 · 코드 결과 예측</summary><p>int("23") // 6의 결과를 위에서 선택하세요. 몫과 나머지를 구분해 보세요.</p></details><details><summary>Lv.2 · 한 줄 수정</summary><p>아래 코드에서 빈칸에 들어갈 연산자를 선택하세요: full = count __ capacity</p><button type="button" data-level-answer="2:correct">//</button> <button type="button" data-level-answer="2:wrong">%</button><p data-level-feedback="2" role="status"></p></details><details><summary>Lv.3 · 새 입력 응용</summary><p>책 29권을 한 상자에 8권씩 담으면 가득 찬 상자와 남은 책은?</p><button type="button" data-level-answer="3:correct">(3, 5)</button> <button type="button" data-level-answer="3:wrong">(4, 0)</button><p data-level-feedback="3" role="status"></p></details><details><summary>Lv.4 · 복합 오류 찾기</summary><pre>def pack(text, capacity):\n    count = int(text)\n    full = count % capacity\n    left = count // capacity\n    print(full, left)</pre><p>어떤 수정이 필요한가요?</p><button type="button" data-level-answer="4:correct">몫·나머지 연산자를 교환하고 return 사용</button> <button type="button" data-level-answer="4:wrong">print만 return으로 변경</button><p data-level-feedback="4" role="status"></p></details><details><summary>Lv.5 · 독립 구현</summary><p>학습 도구를 닫고 기존 코딩 실습에서 pack(text, capacity)를 직접 구현해 보세요. 기존 채점 기준과 저장된 초안은 그대로 유지됩니다.</p></details>';
+      levels.querySelectorAll("[data-level-answer]").forEach(button=>button.addEventListener("click",()=>{
+        const [level,answer]=button.dataset.levelAnswer.split(":");
+        const messages={
+          "2":["맞아요. //는 가득 찬 상자의 개수인 몫을 구합니다.","%는 남은 수를 구합니다. 가득 찬 상자 개수에는 //가 필요합니다."],
+          "3":["맞아요. 29 // 8 = 3, 29 % 8 = 5입니다.","8권씩 4상자는 32권이 필요합니다. 29권으로는 3상자만 채울 수 있습니다."],
+          "4":["맞아요. full은 //, left는 %로 계산하고 두 값을 return해야 합니다.","연산자도 뒤바뀌어 있습니다. 출력과 반환뿐 아니라 몫·나머지를 함께 확인하세요."]
+        };
+        levels.querySelector('[data-level-feedback="'+level+'"]').textContent=messages[level][answer==="correct"?0:1];
+      }));
+      bridge.append(levels);
       bridge.querySelectorAll("[data-bridge-choice]").forEach(button=>button.addEventListener("click",()=>{
         bridge.querySelector("#bridge-predict-feedback").textContent=button.dataset.bridgeChoice==="3"?"맞아요. 문자열을 숫자로 바꾸고 몫을 구하면 3입니다.":"다시 확인해 보세요. 23을 6으로 나누면 3묶음이 꽉 차고 5가 남습니다.";
       }));
