@@ -18,7 +18,7 @@ test('Python focus pilot keeps the original miss through concept, similar, appli
  expect(await page.evaluate(()=>cur().focusStage)).toBe('missed');
  await page.locator('#code-editor').fill('print("야옹")');await page.locator('.lesson-foot .btn').click();await expect(page.locator('.feedback.ok')).toBeVisible();await page.locator('.feedback .btn').click();
  await expect(page.locator('.card')).toContainText('코드');await page.locator('.lesson-foot .btn').click();
- await page.locator('.choice').first().click();await page.locator('.lesson-foot .btn').click();await page.locator('.feedback .btn').click();
+ await page.locator('.choice').first().click();await expect(page.locator('.feedback.ok')).toBeVisible();await page.locator('.feedback .btn').click();
  await page.reload();await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');expect(await page.evaluate(()=>cur().focusStage)).toBe('application');
  await page.locator('#code-editor').fill('print("Hello")');await page.locator('.lesson-foot .btn').click();await expect(page.locator('.feedback.no')).toBeVisible({timeout:60000});await expect(page.locator('[data-focus-answer]')).toContainText('MEOWDE');await page.locator('.feedback .btn').click();
  await page.getByRole('button',{name:'print',exact:true}).click();await page.locator('.lesson-foot .btn').click();await page.locator('.feedback .btn').click();
@@ -44,7 +44,7 @@ test('English focused review uses English copy and the same real Python grading'
   if(ex.type==='write')await page.locator('#code-editor').fill(ex.model);
   if(ex.type==='predict')await page.locator('.choice').nth(ex.answer).click();
   if(ex.type==='fill')await page.locator('.token').nth(ex.tokens.indexOf(ex.answer)).click();
-  await page.locator('.lesson-foot .btn').click();await expect(page.locator('.feedback.ok')).toBeVisible({timeout:60000});await page.locator('.feedback .btn').click();
+  if(!(await page.locator('.feedback.ok').count()))await page.locator('.lesson-foot .btn').click();await expect(page.locator('.feedback.ok')).toBeVisible({timeout:60000});await page.locator('.feedback .btn').click();
  }
  await expect(page.locator('.reward-screen h2')).toHaveText('Focused review complete');expect(await page.evaluate(()=>S.xp)).toBe(0);expect(await page.evaluate(()=>S.done)).toEqual([]);
 });
