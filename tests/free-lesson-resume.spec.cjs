@@ -29,6 +29,20 @@ for(const lang of ['ko','en'])test(`free choice and per-lesson resume survive re
  expect(await page.evaluate(()=>({done:S.done,xp:S.xp,churu:S.churu}))).toEqual({done:[],xp:17,churu:8});
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
+test('instant wrong choice keeps feedback usable if lesson storage is full',async({page})=>{
+ await page.goto(base+'/');await ready(page);await select(page,0);
+ await page.locator('.lesson-foot .btn').click();
+ await expect(page.locator('.choices')).toBeVisible();
+ const before=await page.evaluate(()=>localStorage.getItem('meowde-v410-state'));
+ await page.evaluate(()=>{const original=Storage.prototype.setItem;window.__restoreChoiceStorage=()=>{Storage.prototype.setItem=original};Storage.prototype.setItem=function(k,v){if(k==='meowde-v410-state')throw new DOMException('full','QuotaExceededError');return original.call(this,k,v)};});
+ const wrong=await page.evaluate(()=>(cur().answer+1)%cur().choices.length);
+ await page.locator('.choice').nth(wrong).click();
+ await expect(page.locator('.feedback.no')).toBeVisible();
+ await expect(page.getByRole('alert')).toContainText('저장하지 못했어요');
+ await expect(page.locator('.feedback.no .btn')).toBeVisible();
+ expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(before);
+ await page.evaluate(()=>window.__restoreChoiceStorage());
+});
 test('failed snapshot write keeps the active lesson and stored bytes',async({page})=>{
  await page.goto(base+'/');await ready(page);await select(page,0);
  // Capture the original bytes and inject the failure in the same browser task.
