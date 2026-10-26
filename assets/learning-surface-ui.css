@@ -198,3 +198,32 @@ body:has(#lab) .deepen-unit-list summary{font-size:14px;min-height:48px}
 body:has(#lab) .deepen-unit-list nav{display:grid;gap:2px;max-height:310px;overflow:auto}
 body:has(#lab) .deepen-unit-list nav a{font-size:14px;padding:11px 8px;min-height:44px;border-top:1px solid var(--surface-line);color:var(--surface-ink)}
 body:has(#lab) .deepen-hub a:focus-visible{outline:3px solid var(--surface-mint-dark);outline-offset:2px}
+
+/* Home / Deepen visual alignment: no changes to navigation, lessons or saved state. */
+.phase1-home .card[aria-label="심화 학습 진입"],
+.phase1-home .card[aria-label="Deepen learning entry"]{display:flex;flex-direction:column;gap:10px;padding:20px 18px}
+.phase1-home .card[aria-label="심화 학습 진입"] .section-title,
+.phase1-home .card[aria-label="Deepen learning entry"] .section-title{margin:0}
+.phase1-home .card[aria-label="심화 학습 진입"] .section-title h3,
+.phase1-home .card[aria-label="Deepen learning entry"] .section-title h3{font-family:var(--surface-font);font-size:16px;line-height:1.4;letter-spacing:-.02em;font-weight:800}
+.phase1-home .card[aria-label="심화 학습 진입"]>p,
+.phase1-home .card[aria-label="Deepen learning entry"]>p{font-family:var(--surface-font);font-size:13px;line-height:1.6;color:var(--surface-muted);margin:0}
+.phase1-home .card[aria-label="심화 학습 진입"]>.btn,
+.phase1-home .card[aria-label="Deepen learning entry"]>.btn{margin-top:4px;min-height:48px;font-size:14px;text-decoration:none}
+
+/* Practice shell follows the same compact, rounded Home visual language. */
+body:has(#lab){background:#f8f8fa;color:var(--surface-ink)}
+body:has(#lab) .lab-header,
+body:has(#lab) main#lab{background:#fff}
+body:has(#lab) .lab-header{margin:20px auto 0;padding:18px 18px 10px;border-radius:26px 26px 0 0}
+body:has(#lab) .lab-header-main>a:first-child{font-family:var(--surface-font);font-size:23px;letter-spacing:-.04em;font-weight:850}
+body:has(#lab) .lab-header h1{font-family:var(--surface-font);font-size:23px;line-height:1.35;letter-spacing:-.04em;margin:8px 0 0;font-weight:850}
+body:has(#lab) .lab-header-description{font-size:13px;line-height:1.55;color:var(--surface-muted)}
+body:has(#lab) main#lab{min-height:calc(100dvh - 170px);padding:8px 16px 112px}
+body:has(#lab) .deepen-hub{padding:0 0 20px}
+body:has(#lab) .deepen-hub h2{font-size:21px}
+body:has(#lab) .deepen-unit-list{border-radius:18px}
+body:has(#lab) .deepen-unit-list nav{max-height:240px}
+body:has(#lab) .deepen-unit-list nav a{font-size:13px;line-height:1.45;text-decoration:none}
+body:has(#lab) .meowde-lab-tabbar{background:#fff;border-top-color:#ece8ef}
+@media(max-width:479px){body:has(#lab) .lab-header{margin-top:0;border-radius:0}body:has(#lab) main#lab{min-height:calc(100dvh - 145px)}}
