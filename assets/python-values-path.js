@@ -87,7 +87,7 @@
       record.valuesPath=state;unsaved=!save();return !unsaved;
     };
     const status=message=>{const node=root.querySelector('#values-feedback');if(node)node.textContent=message;};
-    const warn=()=>{const node=root.querySelector('#storage-status');if(node)node.textContent=unsaved||blocked||unsupported?'새 작업이 저장되지 않았어요. 이 탭을 유지하고 코드를 복사해 두세요. 기존 기록은 덮어쓰지 않습니다.':'';};
+    const warn=()=>{const node=root.querySelector('#storage-status');if(!node)return;node.textContent=unsaved||blocked||unsupported?'새 작업이 저장되지 않았어요. 이 탭을 유지하고 코드를 복사해 두세요. 기존 기록은 덮어쓰지 않습니다.':'';if(unsaved&&!blocked&&!unsupported){const retry=document.createElement('button');retry.type='button';retry.textContent='저장 다시 시도';retry.onclick=()=>{persist();warn();};node.append(retry);}};
     const stop=()=>{if(worker)worker.terminate();worker=null;clearTimeout(timer);busy=false;};
     const safeToReload=()=>{
       if(busy||unsaved)return false;
