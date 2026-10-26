@@ -212,7 +212,7 @@ body:has(#lab) .deepen-hub a:focus-visible{outline:3px solid var(--surface-mint-
 .phase1-home .card[aria-label="Deepen learning entry"]>.btn{margin-top:4px;min-height:48px;font-size:14px;text-decoration:none}
 
 /* Practice shell follows the same compact, rounded Home visual language. */
-body:has(#lab){background:#f8f8fa;color:var(--surface-ink)}
+body:has(#lab){background:#fff9ef;color:var(--surface-ink)}
 body:has(#lab) .lab-header,
 body:has(#lab) main#lab{background:#fff}
 body:has(#lab) .lab-header{margin:20px auto 0;padding:18px 18px 10px;border-radius:26px 26px 0 0}
