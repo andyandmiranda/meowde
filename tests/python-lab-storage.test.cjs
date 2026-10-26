@@ -6,13 +6,13 @@ const vm=require('node:vm');
 const source=fs.readFileSync('assets/python-lab.js','utf8');
 const storageSource=source.slice(0,source.indexOf('  function stateLabel'))+'globalThis.storageTest={save,record,showStorageProblem};})();';
 function boot(raw,{readError=false,writeError=false}={}){
-  let value=raw,writes=0;const notice={textContent:''};
+  let value=raw,writes=0,failWrite=writeError;const notice={textContent:''};
   const context={document:{getElementById:()=>notice},localStorage:{
     getItem(){if(readError)throw Error('unavailable');return value;},
-    setItem(key,next){writes++;if(writeError)throw Error('quota');value=next;}
+    setItem(key,next){writes++;if(failWrite)throw Error('quota');value=next;}
   }};
   vm.runInNewContext(storageSource,context);
-  return {api:context.storageTest,notice,value:()=>value,writes:()=>writes};
+  return {api:context.storageTest,notice,value:()=>value,writes:()=>writes,setWriteFailure:flag=>{failWrite=flag}};
 }
 for(const raw of ['{bad','', 'null', '{}', '{"version":2,"units":{}}','{"version":1,"units":[]}','{"version":1,"units":{"values":null}}']){
   test('preserve unreadable or unsupported original: '+raw,()=>{
@@ -34,4 +34,14 @@ test('write failure preserves original and reports unsaved work',()=>{
   const raw='{"version":1,"units":{}}',s=boot(raw,{writeError:true});
   s.api.record('values').draft='new';assert.equal(s.api.save(),false);assert.equal(s.value(),raw);
   assert.match(s.notice.textContent,/저장하지 못했습니다/);
+});
+
+test('recovered storage clears stale warning without losing quiz choices',()=>{
+  const raw='{"version":1,"units":{}}',s=boot(raw,{writeError:true});
+  const quiz=s.api.record('function-slots');quiz.lastQuizChoice=1;quiz.quizAttempts=1;quiz.quizPassed=false;
+  assert.equal(s.api.save(),false);assert.equal(s.value(),raw);
+  assert.match(s.notice.textContent,/저장하지 못했습니다/);
+  s.setWriteFailure(false);assert.equal(s.api.save(),true);
+  assert.equal(s.notice.textContent,'');
+  assert.deepEqual(JSON.parse(s.value()).units['function-slots'],{lastQuizChoice:1,quizAttempts:1,quizPassed:false});
 });
