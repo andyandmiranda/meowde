@@ -77,7 +77,7 @@ test('learner completes a lesson, starts Smart Review, and preserves course prog
       if(ex.type==='fill')await page.locator('.tokens .token').nth(ex.tokens.indexOf(ex.answer)).click();
       if(ex.type==='bughunt')await page.locator('.linebtn').nth(ex.buggy).click();
       if(ex.type==='write')await page.locator('#code-editor').fill(ex.model);
-      await page.locator('.lesson-foot .btn').click();
+      if(!(await page.locator('.feedback.ok').count()))await page.locator('.lesson-foot .btn').click();
       await expect(page.locator('.feedback.ok')).toBeVisible({timeout:60000});
       await page.locator('.feedback .btn').click();
     }
@@ -101,7 +101,7 @@ test('learner completes a lesson, starts Smart Review, and preserves course prog
       if(ex.type==='fill')await page.locator('.tokens .token').nth(ex.tokens.indexOf(ex.answer)).click();
       if(ex.type==='bughunt')await page.locator('.linebtn').nth(ex.buggy).click();
       if(ex.type==='write')await page.locator('#code-editor').fill(ex.model);
-      await page.locator('.lesson-foot .btn').click();
+      if(!(await page.locator('.feedback.ok').count()))await page.locator('.lesson-foot .btn').click();
       await expect(page.locator('.feedback.ok')).toBeVisible({timeout:60000});
       await page.locator('.feedback .btn').click();
     }
