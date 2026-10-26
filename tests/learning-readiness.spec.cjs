@@ -166,7 +166,7 @@ test("Python first lesson reaches actual browser Python execution",async({page})
    if(type==="predict")await page.locator(".choice").first().click();
    if(type==="fill")await page.getByRole("button",{name:"print",exact:true}).click();
    if(type==="bughunt")await page.locator(".linebtn").nth(1).click();
-   await page.locator(".lesson-foot .btn").click();await expect(page.locator(".feedback.ok")).toBeVisible();await page.locator(".feedback .btn").click();
+   if(!(await page.locator(".feedback.ok").count()))await page.locator(".lesson-foot .btn").click();await expect(page.locator(".feedback.ok")).toBeVisible();await page.locator(".feedback .btn").click();
   }
  }
  await expect(page.locator("#code-editor")).toBeVisible();await page.locator("#code-editor").fill('print("야옹")');await page.getByRole("button",{name:"코드 실행",exact:true}).click();await expect(page.locator(".feedback.ok")).toBeVisible({timeout:60000});await expect(page.locator(".console")).toContainText("야옹");
@@ -188,7 +188,6 @@ test("Python retry completion renders 80% and keeps Linux storage across reload"
  await page.reload();
  await expect(page.locator(".lesson-top")).toBeVisible();
  await page.locator(".choice").first().click();
- await page.locator(".lesson-foot .btn").click();
  await expect(page.locator(".feedback.ok")).toBeVisible();
  await page.locator(".feedback .btn").click();
  await expect(page.locator(".reward-screen")).toContainText("80%");
