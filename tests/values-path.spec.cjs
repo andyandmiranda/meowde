@@ -36,6 +36,21 @@ test('new learners start with one selectable task, restore wrong answers and add
  const geometry=await page.locator('#values-content .values-options').evaluate(el=>({bottom:el.getBoundingClientRect().bottom,nav:document.querySelector('.meowde-lab-tabbar').getBoundingClientRect().top,width:document.documentElement.scrollWidth,viewport:innerWidth}));
  expect(geometry.width).toBeLessThanOrEqual(geometry.viewport);expect(geometry.bottom).toBeLessThan(geometry.nav);
 });
+test('failed next-step save restores the same solved item and keeps stored bytes',async({page})=>{
+ await page.goto(base+'/python-lab.html');
+ await page.locator('[data-answer="19"]').click();
+ await expect(page.getByRole('button',{name:'다음 연습',exact:true})).toBeVisible();
+ const original=await page.evaluate(key=>localStorage.getItem(key),key);
+ await page.evaluate(key=>{const set=Storage.prototype.setItem;window.__restoreValuesStorage=()=>Storage.prototype.setItem=set;Storage.prototype.setItem=function(k,v){if(k===key)throw new DOMException('full','QuotaExceededError');return set.call(this,k,v)};},key);
+ await page.getByRole('button',{name:'다음 연습',exact:true}).click();
+ await expect(page.locator('[data-answer="19"]')).toHaveAttribute('aria-pressed','true');
+ await expect(page.getByRole('button',{name:'다음 연습',exact:true})).toBeVisible();
+ await expect(page.locator('#storage-status')).toContainText('저장되지');
+ expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(original);
+ await page.evaluate(()=>window.__restoreValuesStorage());
+ await page.getByRole('button',{name:'다음 연습',exact:true}).click();
+ expect((await read(page)).index).toBe(1);
+});
 test('existing coding draft resumes without any write, and the legacy URL stays usable',async({page})=>{
  const raw=JSON.stringify({version:1,units:{values:{draft:'saved function draft',guideLevel:4,assisted:true},unknown:{custom:'keep'}}});
  await page.addInitScript(({key,raw})=>localStorage.setItem(key,raw),{key,raw});
