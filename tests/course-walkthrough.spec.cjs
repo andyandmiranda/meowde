@@ -49,7 +49,7 @@ for(const lang of ['ko','en'])test('all 60 '+lang+' lessons can be completed thr
    if(ex.type==='fill')await page.locator('.tokens .token').nth(ex.tokens.indexOf(ex.answer)).click();
    if(ex.type==='bughunt')await page.locator('.linebtn').nth(ex.buggy).click();
    if(ex.type==='write')await page.locator('#code-editor').fill(ex.model);
-   await page.locator('.lesson-foot .btn').click();await expect(page.locator('.feedback.ok'),lang+':'+ex.id).toBeVisible({timeout:60000});await page.locator('.feedback .btn').click();
+   if(!(await page.locator('.feedback.ok').count()))await page.locator('.lesson-foot .btn').click();await expect(page.locator('.feedback.ok'),lang+':'+ex.id).toBeVisible({timeout:60000});await page.locator('.feedback .btn').click();
   }
   await expect(page.locator('.reward-screen')).toContainText('100%');record.push({...current,questions,status:'PASS'});
   if((lesson+1)%10===0)console.log(lang+' walkthrough: '+(lesson+1)+'/60 completed');
