@@ -56,6 +56,23 @@ test('failed next-step save restores the same solved item and keeps stored bytes
  await page.getByRole('button',{name:'다음 연습',exact:true}).click();
  expect((await read(page)).index).toBe(1);
 });
+test('failed instant grading can retry storage without counting another attempt',async({page})=>{
+ await page.goto(base+'/python-lab.html');
+ const original=await page.evaluate(key=>localStorage.getItem(key),key);
+ await page.evaluate(key=>{const set=Storage.prototype.setItem;window.__restoreChoiceStorage=()=>Storage.prototype.setItem=set;Storage.prototype.setItem=function(k,v){if(k===key)throw new DOMException('full','QuotaExceededError');return set.call(this,k,v)};},key);
+ await page.locator('[data-answer="172"]').click();
+ await expect(page.locator('#values-feedback')).toContainText('정답: 19');
+ await expect(page.getByRole('button',{name:'저장 다시 시도'})).toBeVisible();
+ expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(original);
+ expect(await page.evaluate(()=>MeowValuesPathSession.safeToReload())).toBe(false);
+ await page.evaluate(()=>window.__restoreChoiceStorage());
+ await page.getByRole('button',{name:'저장 다시 시도'}).click();
+ await expect(page.getByRole('button',{name:'저장 다시 시도'})).toHaveCount(0);
+ expect((await read(page)).items['0:1:0'].attempts).toBe(1);
+ await page.reload();
+ await expect(page.locator('#values-feedback')).toContainText('정답: 19');
+ expect((await read(page)).items['0:1:0'].attempts).toBe(1);
+});
 test('existing coding draft resumes without any write, and the legacy URL stays usable',async({page})=>{
  const raw=JSON.stringify({version:1,units:{values:{draft:'saved function draft',guideLevel:4,assisted:true},unknown:{custom:'keep'}}});
  await page.addInitScript(({key,raw})=>localStorage.setItem(key,raw),{key,raw});
