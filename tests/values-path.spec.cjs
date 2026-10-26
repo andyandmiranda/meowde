@@ -119,6 +119,17 @@ test('running submission locks its draft until cancellation, without counting an
  await expect(page.locator('#values-code')).toHaveValue('count = int(text)');
  expect((await read(page)).items['0:4:0'].attempts).toBeUndefined();
 });
+test('worker submission exception unlocks code and preserves attempt count',async({page})=>{
+ await seed(page,{...path.initial(),level:4});
+ await page.addInitScript(()=>{window.Worker=class{postMessage(){throw new DOMException('unavailable','DataCloneError')}terminate(){}};});
+ await page.goto(base+'/python-lab.html');
+ await page.locator('#values-code').fill('count = int(text)');
+ await page.getByRole('button',{name:'코드 확인',exact:true}).click();
+ await expect(page.locator('#values-feedback')).toContainText('시도 횟수는 그대로');
+ await expect(page.locator('#values-code')).toBeEditable();
+ await expect(page.locator('#values-code')).toHaveValue('count = int(text)');
+ expect((await read(page)).items['0:4:0'].attempts).toBeUndefined();
+});
 test('worker outage preserves attempt counts and draft',async({page})=>{
  await seed(page,{...path.initial(),level:4});
  await page.addInitScript(()=>{window.Worker=class{postMessage(){queueMicrotask(()=>this.onmessage({data:{stage:'error'}}));}terminate(){}};});
