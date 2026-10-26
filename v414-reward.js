@@ -56,7 +56,7 @@
     S.v414Mode='';
     S.v414DailyKey='';
     S.v414MistakeId='';
-    save();
+    const completionSaved=save()!==false;
 
     const ko=S.lang==='ko';
     const treatLabel=ko?'츄르':'Churu';
@@ -80,7 +80,7 @@
     else if(currentMode==='review'||currentMode==='mistake'||currentMode==='focused-review')note=ko?'재학습은 진도와 보상을 중복 지급하지 않아요.':'Review practice does not duplicate progress or rewards.';
     else note=ko?'츄르는 학습을 막는 재화가 아니라 완료 보상이에요.':'Churu is a completion reward, not an energy gate.';
 
-    app.innerHTML=`<div class="screen"><div class="reward-screen">${catSVG(S.cat,'happy',116)}<h2>${titles[currentMode]||titles.lesson}</h2><p class="pill">${esc(doneLabel)}</p><div class="stats3"><div class="stat3"><b>+${earned}</b><p>XP</p></div><div class="stat3"><b>+${churuEarned}</b><p>${treatLabel}</p></div><div class="stat3"><b>${accuracy}%</b><p>${t('accuracy')}</p></div></div><p class="reward-note">${esc(note)}</p></div><div class="lesson-foot"><button class="btn" onclick="${nextAction}">${nextLabel}</button></div></div>`;
+    app.innerHTML=`<div class="screen"><div class="reward-screen">${catSVG(S.cat,'happy',116)}<h2>${titles[currentMode]||titles.lesson}</h2><p class="pill">${esc(doneLabel)}</p><div class="stats3"><div class="stat3"><b>+${earned}</b><p>XP</p></div><div class="stat3"><b>+${churuEarned}</b><p>${treatLabel}</p></div><div class="stat3"><b>${accuracy}%</b><p>${t('accuracy')}</p></div></div><p class="reward-note">${esc(note)}</p></div>${completionSaved?'':'<div id="lesson-reward-save-alert" class="feedback no" role="alert">진도와 보상을 저장하지 못했어요. 이 화면을 유지하고 저장을 다시 시도해 주세요. <button class="btn" onclick="retryFinishedSave()">저장 다시 시도</button></div>'}<div class="lesson-foot"><button id="lesson-reward-continue" class="btn" ${completionSaved?'':'disabled'} onclick="${nextAction}">${nextLabel}</button></div></div>`;
   };
 
   document.title='Meowde v4.14 — Practice Memory';
