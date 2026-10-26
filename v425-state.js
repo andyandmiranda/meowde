@@ -112,13 +112,17 @@
     normalizeRuntimeState();
 
     try{
-      baseSave();
+      if(baseSave()===false)throw new Error("Primary lesson progress save failed");
       mergeDeferredProgressIntoStorage();
       enrichPersistedState();
       window.__MEOWDE_SAVE_STATUS__="saved";
+      lessonSaveFailed=false;
+      return true;
     }catch(error){
       window.__MEOWDE_SAVE_STATUS__="failed";
+      lessonSaveFailed=true;
       console.warn("Meowde v4.25 could not persist progress:",error);
+      return false;
     }
   }
 
