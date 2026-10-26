@@ -119,7 +119,7 @@
       content.innerHTML=`<p>${escape(q.prompt)}</p>`;
       if(q.type==='choice'){
         content.insertAdjacentHTML('beforeend',`<pre>${escape(q.code)}</pre><div class="values-options" role="group" aria-label="답 선택">${q.choices.map(choice=>`<button type="button" data-answer="${escape(choice)}" aria-pressed="${r.choice===choice}">${escape(choice)}</button>`).join('')}</div>`);
-        content.querySelectorAll('[data-answer]').forEach(b=>{b.disabled=!!r.lastPassed;b.onclick=()=>{const item=state.items[id]||(state.items[id]={});item.choice=b.dataset.answer;persist();content.querySelectorAll('[data-answer]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));warn();};});
+        content.querySelectorAll('[data-answer]').forEach(b=>{b.disabled=!!r.lastPassed;b.onclick=()=>{const item=state.items[id]||(state.items[id]={});item.choice=b.dataset.answer;content.querySelectorAll('[data-answer]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));done(item.choice===q.answer);};});
       }else{
         content.insertAdjacentHTML('beforeend',`<p class="meta">준비된 값 · text = "${q.n}", capacity = ${q.cap}</p><label for="values-code">내 코드</label><textarea id="values-code" class="code" spellcheck="false" autocapitalize="off" autocomplete="off">${escape(typeof r.draft==='string'?r.draft:q.starter)}</textarea>`);
         const editor=content.querySelector('#values-code');editor.readOnly=!!r.lastPassed;
@@ -139,7 +139,7 @@
       if(r.lastPassed){status((r.lastPassedWithHelp?'도움받아 해결했어요. ':'도움 없이 해결했어요. ')+q.reason);next();}
       else{
         if(r.feedbackUsed)status(r.feedbackText||'다시 해봐요. '+q.reason);
-        const check=button(q.type==='choice'?'답 확인':'코드 확인',()=>{
+        const check=q.type==='choice'?null:button('코드 확인',()=>{
           if(busy)return;
           const item=state.items[id]||(state.items[id]={});
           if(q.type==='choice'){if(item.choice===undefined){status('답을 하나 선택해 주세요.');return;}done(item.choice===q.answer);return;}
