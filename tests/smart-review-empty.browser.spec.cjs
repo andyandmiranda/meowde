@@ -134,6 +134,7 @@ for(const denyRead of [false,true]){
     },key);
     await page.reload();
     await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+    await page.getByRole('button',{name:'학습',exact:true}).click();
     await page.locator('.learn-review-entry button').click();
     const card=page.locator('.v417-smart-card');
     await expect(card).toContainText('원본을 보존');
