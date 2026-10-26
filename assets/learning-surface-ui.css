@@ -190,6 +190,7 @@ body:has(#lab) .deepen-stage-list{display:grid;gap:10px}
 body:has(#lab) .deepen-stage-list>a{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--surface-line);border-radius:18px;padding:16px;text-decoration:none;color:var(--surface-ink);min-height:82px}
 body:has(#lab) .deepen-stage-list>a>span:last-child{margin-left:auto;font-size:24px;color:var(--surface-mint-dark)}
 body:has(#lab) .deepen-stage-number{display:flex;align-items:center;justify-content:center;width:42px;height:42px;flex-shrink:0;border-radius:15px;background:var(--surface-pale);font-weight:800;color:var(--surface-mint-dark)}
+body:has(#lab) .deepen-stage-list>a>span:nth-child(2){min-width:0;flex:1;overflow-wrap:anywhere}
 body:has(#lab) .deepen-stage-list strong{display:block;font-size:16px;line-height:1.45}
 body:has(#lab) .deepen-stage-list small{display:block;font-size:12px;line-height:1.55;color:var(--surface-muted)}
 body:has(#lab) .deepen-unit-list{background:#fff;border:1px solid var(--surface-line);border-radius:18px;padding:4px 15px;margin:16px 0}
