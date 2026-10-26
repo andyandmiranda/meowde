@@ -1,14 +1,17 @@
 (function(){
 'use strict';
+if(!document.querySelector('link[href="/assets/linux-learning-ui.css"]')){
+ const design=document.createElement('link');design.rel='stylesheet';design.href='/assets/linux-learning-ui.css';document.head.append(design);
+}
 const path=location.pathname,params=new URLSearchParams(location.search);
 const library=path.endsWith('/linux-crash-course.html');
-let active=library?'learn':path.endsWith('/linux-review.html')?'review':path.endsWith('/linux-start.html')?'learn':params.get('tab')==='my'?'my':'home';
+let active=library||path.endsWith('/linux-review.html')?'deepen':path.endsWith('/linux-start.html')||path.endsWith('/linux-home.html')?'learn':params.get('tab')==='my'?'my':'home';
 const nav=document.createElement('nav');nav.className='linux-tabbar';nav.setAttribute('aria-label','메인 메뉴');
-const tabs=[['home','홈','⌂','/linux-home.html'],['learn','학습','▦','/linux-crash-course.html?view=concept'],['practice','실습','⌘','/linux-crash-course.html?view=practice'],['review','복습','↻','/linux-review.html'],['my','마이','♧','/linux-home.html?tab=my']];
+const tabs=[['home','홈','⌂','/?tab=home'],['learn','학습','▦','/linux-home.html'],['deepen','심화','‹/›','/linux-crash-course.html?view=concept'],['together','함께','✧','/together.html'],['my','마이','♧','/?tab=my']];
 for(const [id,label,icon,href] of tabs){const a=document.createElement('a');a.href=href;a.dataset.tab=id;a.setAttribute('aria-label',label);const symbol=document.createElement('span');symbol.textContent=icon;symbol.setAttribute('aria-hidden','true');a.append(symbol,document.createTextNode(label));nav.append(a);}
 document.body.append(nav);document.body.classList.add('linux-five-tabs');
 function select(id){active=id;nav.querySelectorAll('a').forEach(a=>{if(a.dataset.tab===id)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});}
-if(active==='my'){
+if(active==='my'&&path.endsWith('/linux-home.html')){
  const main=document.querySelector('main');const title=document.createElement('h1');title.textContent='마이 · Linux';
  const description=document.createElement('p');description.textContent='학습 기록은 이 브라우저에 저장됩니다.';
  const records=document.createElement('p');records.setAttribute('role','status');
@@ -38,12 +41,18 @@ if(library){
  }catch{writable=false;warning();}
  let practiceMode=['terminal','condition','bash'].includes(previous.mode)?previous.mode:'terminal';
  const openPractice=window.MeowdeOpenPractice;
- window.MeowdeOpenPractice=function(value){openPractice(value);select(value==='concept'?'learn':'practice');if(value!=='concept')practiceMode=value;};
+ window.MeowdeOpenPractice=function(value){openPractice(value);select('deepen');if(value!=='concept')practiceMode=value;};
  function show(value){window.MeowdeOpenPractice(value);}
- function save(){if(!writable){warning();return;}try{sessionStorage.setItem(KEY,JSON.stringify({version:1,mode:practiceMode,terminal:window.MeowdeTerminalSession.snapshot(),fields:Object.fromEntries(fields.map(id=>[id,document.getElementById(id).value])),outputs:Object.fromEntries(outputs.map(id=>[id,document.getElementById(id).textContent]))}));}catch{warning();}}
+ function save(){if(!writable){warning();return;}try{
+  const terminal={...(previous.terminal&&typeof previous.terminal==='object'&&!Array.isArray(previous.terminal)?previous.terminal:{}),...window.MeowdeTerminalSession.snapshot()};
+  const fieldValues={...(previous.fields&&typeof previous.fields==='object'&&!Array.isArray(previous.fields)?previous.fields:{}),...Object.fromEntries(fields.map(id=>[id,document.getElementById(id).value]))};
+  const outputValues={...(previous.outputs&&typeof previous.outputs==='object'&&!Array.isArray(previous.outputs)?previous.outputs:{}),...Object.fromEntries(outputs.map(id=>[id,document.getElementById(id).textContent]))};
+  previous={...previous,version:1,mode:practiceMode,terminal,fields:fieldValues,outputs:outputValues};
+  sessionStorage.setItem(KEY,JSON.stringify(previous));
+ }catch{warning();}}
  show(params.get('view')==='practice'?practiceMode:'concept');if(!writable)warning();
- mode.addEventListener('change',()=>{select(mode.value==='concept'?'learn':'practice');if(mode.value!=='concept')practiceMode=mode.value;save();history.replaceState(null,'',`?view=${mode.value==='concept'?'concept':'practice'}`);});
- nav.addEventListener('click',event=>{const link=event.target.closest('a');if(!link)return;if(['learn','practice'].includes(link.dataset.tab)){event.preventDefault();show(link.dataset.tab==='learn'?'concept':practiceMode);history.pushState(null,'',link.href);save();window.scrollTo(0,0);}else save();});
+ mode.addEventListener('change',()=>{select('deepen');if(mode.value!=='concept')practiceMode=mode.value;save();history.replaceState(null,'',`?view=${mode.value==='concept'?'concept':'practice'}`);});
+ nav.addEventListener('click',save);
  window.addEventListener('popstate',()=>show(new URLSearchParams(location.search).get('view')==='practice'?practiceMode:'concept'));
  for(const event of ['input','change','click','keyup'])document.querySelector('main').addEventListener(event,save);
  window.addEventListener('pagehide',save);

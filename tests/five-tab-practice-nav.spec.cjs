@@ -219,10 +219,10 @@ test("Practice starts with one task; learning details are in an optional tool sh
 
 const linuxNav=page=>page.getByRole('navigation',{name:'메인 메뉴',exact:true});
 test('Linux destinations keep five ordered reachable tabs on narrow screens',async({page})=>{
- for(const [url,active] of [['/linux-home.html','홈'],['/linux-start.html','학습'],['/linux-crash-course.html?view=concept','학습'],['/linux-crash-course.html?view=practice','실습'],['/linux-review.html','복습'],['/linux-home.html?tab=my','마이']]){
+ for(const [url,active] of [['/linux-home.html','학습'],['/linux-start.html','학습'],['/linux-crash-course.html?view=concept','심화'],['/linux-crash-course.html?view=practice','심화'],['/linux-review.html','심화']]){
   await page.setViewportSize({width:320,height:640});await page.goto(base+url);
   const nav=linuxNav(page);await expect(nav.locator('a')).toHaveCount(5);
-  expect(await nav.locator('a').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('aria-label')))).toEqual(['홈','학습','실습','복습','마이']);
+  expect(await nav.locator('a').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('aria-label')))).toEqual(['홈','학습','심화','함께','마이']);
   await expect(nav.locator('[aria-current=page]')).toHaveAttribute('aria-label',active);
   const geometry=await nav.evaluate(n=>({bottom:n.getBoundingClientRect().bottom,width:document.documentElement.scrollWidth,viewport:innerWidth,height:innerHeight}));
   expect(geometry.width).toBeLessThanOrEqual(geometry.viewport);expect(Math.abs(geometry.bottom-geometry.height)).toBeLessThan(2);
@@ -238,10 +238,9 @@ test('Linux practice survives every tab, reload, retries and explicit mission ch
  await input.fill('mkdir training');await input.press('Enter');
  await input.fill('touch training/hello.txt');
  const legacy=await page.evaluate(()=>({...localStorage}));
- for(const tab of ['학습','홈','복습','마이']){
-  await linuxNav(page).getByRole('link',{name:tab,exact:true}).click();
-  await expect(linuxNav(page).locator('[aria-current=page]')).toHaveAttribute('aria-label',tab);
-  await linuxNav(page).getByRole('link',{name:'실습',exact:true}).click();
+ for(const tab of ['홈','학습','함께','마이']){
+  await expect(linuxNav(page).getByRole('link',{name:tab,exact:true})).toBeVisible();
+  await page.goto(base+'/linux-crash-course.html?view=practice');
   await expect(input).toHaveValue('touch training/hello.txt');
  }
  await page.reload();await expect(input).toHaveValue('touch training/hello.txt');
@@ -254,24 +253,24 @@ test('Linux practice survives every tab, reload, retries and explicit mission ch
 
 test('Linux concept selection and Bash draft remain independent',async({page})=>{
  await page.goto(base+'/linux-crash-course.html?view=concept');await page.locator('#nav button').nth(4).click();
- await linuxNav(page).getByRole('link',{name:'실습',exact:true}).click();await page.locator('#library-mode').selectOption('bash');
+ await page.locator('#library-mode').selectOption('bash');
  await page.locator('#bash-source').fill('unfinished bash draft');
- await linuxNav(page).getByRole('link',{name:'학습',exact:true}).click();await expect(page.locator('#lesson h2')).toContainText('E5');
- await linuxNav(page).getByRole('link',{name:'복습',exact:true}).click();await linuxNav(page).getByRole('link',{name:'실습',exact:true}).click();
+ await page.locator('#library-mode').selectOption('concept');await expect(page.locator('#lesson h2')).toContainText('E5');
+ await page.locator('#library-mode').selectOption('bash');
  await expect(page.locator('#library-mode')).toHaveValue('bash');await expect(page.locator('#bash-source')).toHaveValue('unfinished bash draft');
  await page.reload();await expect(page.locator('#bash-source')).toHaveValue('unfinished bash draft');
 });
 
 test('Linux corrupt practice session is preserved instead of overwritten',async({page})=>{
  await page.goto(base+'/linux-home.html');await page.evaluate(()=>sessionStorage.setItem('meowde-linux-practice-session-v1','{broken'));
- await linuxNav(page).getByRole('link',{name:'실습',exact:true}).click();await page.locator('#sim-input').fill('pwd');await page.locator('#sim-run').click();
+ await page.goto(base+'/linux-crash-course.html?view=practice');await page.locator('#sim-input').fill('pwd');await page.locator('#sim-run').click();
  expect(await page.evaluate(()=>sessionStorage.getItem('meowde-linux-practice-session-v1'))).toBe('{broken');
  await expect(page.locator('#practice-session-status')).toContainText('저장하지 못했습니다');
 });
 
-test('Linux quiz feedback uses the bottom practice tab without another entry button',async({page})=>{
- await page.goto(base+'/linux-crash-course.html');await page.locator('#lesson .answers button').first().click();
- await expect(page.locator('[data-practice-note]')).toContainText('하단 실습 탭');await expect(page.locator('[data-quiz-guide]')).toHaveCount(0);
+test('Linux quiz feedback explains an error and keeps retry in the same flow',async({page})=>{
+ await page.goto(base+'/linux-crash-course.html');await page.getByRole('button',{name:'4. 도전'}).click();await page.locator('#lesson .answers button').nth(1).click();
+ await expect(page.locator('.linux-feedback.bad')).toContainText('ps는');await expect(page.locator('#lesson .answers button').first()).toBeEnabled();
 });
 
 

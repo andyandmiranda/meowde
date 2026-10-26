@@ -5,7 +5,8 @@ test('all nine Linux concept quizzes reject a distractor and retain completion a
  await page.goto(base+'/linux-crash-course.html');
  for(let i=0;i<9;i++){
   await page.locator('#nav button').nth(i).click();
-  await page.locator('#lesson .answers button').nth(1).click();await expect(page.locator('#lesson [role="status"]')).toContainText('다시 생각');
+  await page.getByRole('button',{name:'4. 도전'}).click();
+  await page.locator('#lesson .answers button').nth(1).click();await expect(page.locator('#lesson [role="status"]')).toContainText('아직 아니');
   await page.locator('#lesson .answers button').first().click();await expect(page.locator('#lesson [role="status"]')).toContainText('정답!');
  }
  await page.reload();await expect(page.locator('#progress')).toContainText('9 / 9');

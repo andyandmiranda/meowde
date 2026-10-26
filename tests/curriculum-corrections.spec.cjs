@@ -104,8 +104,9 @@ test('in-flight and already checked Python submissions cannot duplicate credit',
 test('Linux bottom tab opens practice and quizzes disclose theory-only units',async({page})=>{
  await page.goto(base+'/linux-crash-course.html');
  await page.locator('#nav button').nth(1).click();
+ await page.getByRole('button',{name:'4. 도전'}).click();
  await page.locator('#lesson .answers button').first().click();
- await page.getByRole('navigation',{name:'메인 메뉴'}).getByRole('link',{name:'실습',exact:true}).click();
+ await page.locator('#library-mode').selectOption('terminal');
  await page.locator('#sim-missions button').nth(4).click();
  await expect(page.locator('#sim-goal')).toContainText('마지막 두 줄');
  await page.locator('#sim-input').fill('head -n 2 app.log');await page.locator('#sim-run').click();await page.locator('#sim-check').click();
@@ -114,9 +115,8 @@ test('Linux bottom tab opens practice and quizzes disclose theory-only units',as
  await expect(page.locator('#sim-next')).toBeVisible();await page.locator('#sim-next').click();
  await expect(page.locator('#cond-case')).toBeVisible();
  await page.locator('#library-mode').selectOption('concept');
- await page.locator('#nav button').nth(4).click();await page.locator('#lesson .answers button').first().click();
- await expect(page.locator('[data-quiz-guide]')).toHaveCount(0);await expect(page.locator('[data-practice-note]')).toContainText('개념 퀴즈만');
- await page.locator('#nav button').nth(7).click();await page.locator('#lesson .answers button').first().click();await page.getByRole('navigation',{name:'메인 메뉴'}).getByRole('link',{name:'실습',exact:true}).click();await page.locator('#library-mode').selectOption('condition');await expect(page.locator('#cond-case')).toBeVisible();
+ await page.locator('#nav button').nth(4).click();await page.getByRole('button',{name:'3. 연습'}).click();await expect(page.locator('.linux-stage-panel')).toContainText('실행하지 않아요');
+ await page.locator('#nav button').nth(7).click();await page.locator('#library-mode').selectOption('condition');await expect(page.locator('#cond-case')).toBeVisible();
 });
 
 test('unreadable Python and Linux quiz progress is preserved after opening or answering',async({page})=>{
@@ -132,7 +132,7 @@ test('unreadable Python and Linux quiz progress is preserved after opening or an
  expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(raw);
  expect(await page.evaluate(()=>localStorage.getItem('meowde-v425-state-backup'))).toBe('existing backup');
  await page.goto(base+'/linux-crash-course.html');
- await page.locator('#lesson .answers button').first().click();
+ await page.getByRole('button',{name:'4. 도전'}).click();await page.locator('#lesson .answers button').first().click();
  await expect(page.locator('#library-storage-status')).toContainText('원본은 보존');
  expect(await page.evaluate(()=>localStorage.getItem('meowde-linux-cram-v1'))).toBe(raw);
 });
