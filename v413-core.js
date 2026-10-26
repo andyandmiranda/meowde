@@ -11,7 +11,7 @@
   tabs=function(active){
     const ko=S.lang==='ko';
     const item=(name,activeKey,handler,iconName,label)=>`<button class="${active===activeKey?'on':''}" onclick="${handler}" aria-label="${label}">${icon(iconName)}<span>${label}</span></button>`;
-    return `<div class="tabbar" data-phase1-navigation="five-tabs">${item('home','home','renderHome()','home',ko?'홈':'Home')}${item('study','study','renderMap()','map',ko?'학습':'Learn')}${item('lab','lab',"location.href='/python-lab.html'",'code',ko?'실습':'Practice')}${item('review','review','renderReview()','spark',ko?'복습':'Review')}${item('my','my','renderProfile()','cat',ko?'마이':'My')}</div>`;
+    return `<div class="tabbar" data-phase1-navigation="five-tabs">${item('home','home','renderHome()','home',ko?'홈':'Home')}${item('study',active==='review'?'review':'study','renderMap()','map',ko?'학습':'Learn')}${item('lab','lab',"location.href='/python-lab.html'",'code',ko?'심화':'Deepen')}${item('together','together',"location.href='/together.html'",'spark',ko?'함께':'Together')}${item('my','my','renderProfile()','cat',ko?'마이':'My')}</div>`;
   };
 
   function learnBrand(){
@@ -66,7 +66,7 @@
       return `<button class="node ${done?'done':''} ${current?'current':''} ${locked?'locked':''}" style="left:${x}%;top:${y}px" onclick="${action}" aria-label="${esc(lesson.title)}">${inner}</button><span class="node-label ${locked?'lk':''}" style="left:${x}%;top:${y+38}px">${esc(lesson.short)}</span>`;
     }).join('');
     const unitTabs=unitNames.slice(0,unitCount).map((name,index)=>`<button class="${S.unit===index?'on':''}" onclick="S.unit=${index};save();renderMap()">${name}</button>`).join('');
-    app.innerHTML=`<div class="screen">${learnBrand()}${stats()}<div class="scroll"><div class="map-head"><h2>${ko?'학습 경로':'Learning path'}</h2><p>${ko?'권장 순서를 참고하되 원하는 레슨부터 시작할 수 있어요. 진행 중인 학습은 레슨별로 보관돼요.':'Use the recommended order or start any available lesson. Unfinished lessons keep their own saved place.'}</p></div><div class="unit-tabs">${unitTabs}</div><div class="trail" style="height:${H}px" data-learn-path="canonical">${nodes}</div></div>${learnTabs()}</div>`;
+    app.innerHTML=`<div class="screen">${learnBrand()}${stats()}<div class="scroll"><div class="map-head"><h2>${ko?'학습 경로':'Learning path'}</h2><p>${ko?'권장 순서를 참고하되 원하는 레슨부터 시작할 수 있어요. 진행 중인 학습은 레슨별로 보관돼요.':'Use the recommended order or start any available lesson. Unfinished lessons keep their own saved place.'}</p></div><div class="learn-review-entry"><button type="button" onclick="renderReview()">${icon('spark')} ${ko?'복습 · 오답 다시 풀기':'Review · Retry mistakes'} →</button></div><div class="unit-tabs">${unitTabs}</div><div class="trail" style="height:${H}px" data-learn-path="canonical">${nodes}</div></div>${learnTabs()}</div>`;
     document.documentElement.dataset.learnRenderer='canonical-v413';
     document.documentElement.dataset.navigation='phase1-four-tabs';
   };
