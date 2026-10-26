@@ -37,9 +37,9 @@ test('instant wrong choice keeps feedback usable if lesson storage is full',asyn
  await page.evaluate(()=>{const original=Storage.prototype.setItem;window.__restoreChoiceStorage=()=>{Storage.prototype.setItem=original};Storage.prototype.setItem=function(k,v){if(k==='meowde-v410-state')throw new DOMException('full','QuotaExceededError');return original.call(this,k,v)};});
  const wrong=await page.evaluate(()=>(cur().answer+1)%cur().choices.length);
  await page.locator('.choice').nth(wrong).click();
- await expect(page.locator('.feedback.no')).toBeVisible();
+ await expect(page.locator('.feedback.no:not(.lesson-save-warning)')).toBeVisible();
  await expect(page.getByRole('alert')).toContainText('저장하지 못했어요');
- await expect(page.locator('.feedback.no .btn')).toBeVisible();
+ await expect(page.locator('.lesson-save-warning .btn')).toBeVisible();
  expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(before);
  await page.evaluate(()=>window.__restoreChoiceStorage());
 });
@@ -69,7 +69,7 @@ test('unsaved instant choice has retry save without another graded attempt',asyn
  await page.evaluate(()=>{const set=Storage.prototype.setItem;window.__restoreLessonStorage=()=>Storage.prototype.setItem=set;Storage.prototype.setItem=function(k,v){if(k==='meowde-v410-state')throw new DOMException('full','QuotaExceededError');return set.call(this,k,v)};});
  const wrong=await page.evaluate(()=>(cur().answer+1)%cur().choices.length);
  await page.locator('.choice').nth(wrong).click();
- await expect(page.locator('.feedback.no')).toBeVisible();
+ await expect(page.locator('.feedback.no:not(.lesson-save-warning)')).toBeVisible();
  await expect(page.getByRole('button',{name:'저장 다시 시도'})).toBeVisible();
  expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(initial);
  const graded=await page.evaluate(()=>({idx:S.idx,queue:S.queue.length,checked:S.checked,firstCorrect:S.firstCorrect}));
@@ -78,7 +78,7 @@ test('unsaved instant choice has retry save without another graded attempt',asyn
  await expect(page.getByRole('button',{name:'저장 다시 시도'})).toHaveCount(0);
  expect(await page.evaluate(()=>({idx:S.idx,queue:S.queue.length,checked:S.checked,firstCorrect:S.firstCorrect}))).toEqual(graded);
  await page.reload();await ready(page);
- await expect(page.locator('.feedback.no')).toBeVisible();
+ await expect(page.locator('.feedback.no:not(.lesson-save-warning)')).toBeVisible();
 });
 test('failed snapshot write keeps the active lesson and stored bytes',async({page})=>{
  await page.goto(base+'/');await ready(page);await select(page,0);
