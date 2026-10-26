@@ -19,11 +19,16 @@ test('new learners start with one selectable task, restore wrong answers and add
  await expect(page.getByRole('button',{name:'답 확인',exact:true})).toHaveCount(0);
  await page.locator('[data-answer="172"]').click();
  
+ await expect(page.locator('#values-feedback')).toContainText('정답: 19');
  await expect(page.locator('#values-feedback')).toContainText('int');
+ expect((await read(page)).items['0:1:0'].attempts).toBe(1);
  await page.reload();
+ await expect(page.locator('#values-feedback')).toContainText('정답: 19');
  await expect(page.locator('[data-answer="172"]')).toHaveAttribute('aria-pressed','true');
  await page.locator('[data-answer="19"]').click();
  let state=await read(page);expect(state.items['0:1:0']).toMatchObject({firstAttemptPassed:false,attempts:2,independentPassed:false,lastPassedWithHelp:true});
+ await expect(page.getByRole('button',{name:'답 확인',exact:true})).toHaveCount(0);
+ await expect(page.getByRole('button',{name:'다음 연습',exact:true})).toBeVisible();
  expect(path.count(state)).toBe(4);
  await page.getByRole('button',{name:'다음 연습',exact:true}).click();
  await expect(page.locator('#values-content pre')).toContainText('11 // 3');
@@ -60,6 +65,7 @@ test('unsupported nested progress stays byte-identical while session-only practi
  await page.goto(base+'/python-lab.html');
  await page.locator('[data-answer="19"]').click();
  await expect(page.locator('#values-feedback')).toContainText('해결');
+ expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(raw);
  await page.getByRole('button',{name:'다음 연습',exact:true}).click();
  expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(raw);
 });
