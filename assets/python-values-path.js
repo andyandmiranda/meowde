@@ -160,7 +160,7 @@
             }
           };
           const cancel=document.createElement('button');cancel.type='button';cancel.textContent='실행 중지';cancel.onclick=()=>{stop();draw();status('실행을 중지했어요. 답안은 그대로예요.');};actions.append(cancel);
-          worker.postMessage(payload(q,code));
+          try{worker.postMessage(payload(q,code));}catch{fail('실행 요청을 보내지 못했어요.');}
         });
       }
       warn();
