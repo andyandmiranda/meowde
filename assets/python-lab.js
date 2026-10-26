@@ -199,16 +199,17 @@
   }
   function bind(){
     document.getElementById("nav-toggle").onclick=event=>{const nav=document.getElementById("unit-nav"),open=nav.dataset.collapsed==="true";nav.dataset.collapsed=String(!open);event.currentTarget.setAttribute("aria-expanded",String(open));event.currentTarget.textContent=open?"단원 목록 접기":"단원 목록 열기"};
+    const quizFeedback=index=>{const correct=index===unit.quiz.answer;const answer=unit.quiz.choices[unit.quiz.answer];return (correct?"맞았습니다. ":"다시 생각해보세요. 정답: "+answer+". ")+unit.quiz.reasons[index]+(correct?"":" "+unit.quiz.reasons[unit.quiz.answer]);};
     root.querySelectorAll("[data-choice]").forEach(button=>button.onclick=()=>{
       const index=Number(button.dataset.choice),correct=index===unit.quiz.answer,r=record();
       r.quizAttempts=(r.quizAttempts||0)+1;r.quizPassed=correct;r.lastQuizChoice=index;
       root.querySelectorAll("[data-choice]").forEach(b=>b.setAttribute("aria-pressed",String(b===button)));
-      const box=document.getElementById("quiz-feedback");box.className="feedback "+(correct?"good":"bad");box.textContent=(correct?"맞았습니다. ":"다시 생각해보세요. ")+unit.quiz.reasons[index];save();refreshProgress()
+      const box=document.getElementById("quiz-feedback");box.className="feedback "+(correct?"good":"bad");box.textContent=quizFeedback(index);save();refreshProgress()
     });
     if(Number.isInteger(record().lastQuizChoice)){
       const index=record().lastQuizChoice;
       const selected=root.querySelector(`[data-choice="${index}"]`);
-      if(selected){selected.setAttribute("aria-pressed","true");const correct=index===unit.quiz.answer;const box=document.getElementById("quiz-feedback");box.className="feedback "+(correct?"good":"bad");box.textContent=(correct?"맞았습니다. ":"다시 생각해보세요. ")+unit.quiz.reasons[index];}
+      if(selected){selected.setAttribute("aria-pressed","true");const correct=index===unit.quiz.answer;const box=document.getElementById("quiz-feedback");box.className="feedback "+(correct?"good":"bad");box.textContent=quizFeedback(index);}
     }
     // Optional no-keyboard code assembly: reusable snippets keep the real editor and grader intact.
     const editorArea=document.getElementById("learner-code");
