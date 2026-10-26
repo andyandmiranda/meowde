@@ -133,7 +133,7 @@
       }
       const done=(pass,detail='')=>{
         stop();mark(state,pass);persist();draw();
-        const feedback=(pass?(state.items[id].lastPassedWithHelp?'도움받아 해결했어요. ':'도움 없이 해결했어요. '):'다시 해봐요. ')+(detail||q.reason);
+        const feedback=(pass?(state.items[id].lastPassedWithHelp?'도움받아 해결했어요. ':'도움 없이 해결했어요. '):'다시 해봐요. ')+(q.type==='choice'&&!pass?' 정답: '+q.answer+'. ':'')+(detail||q.reason);
         state.items[id].feedbackText=feedback;persist();status(feedback);warn();
       };
       if(r.lastPassed){status((r.lastPassedWithHelp?'도움받아 해결했어요. ':'도움 없이 해결했어요. ')+q.reason);next();}
