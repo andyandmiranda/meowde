@@ -16,19 +16,19 @@ test('new learners start with one selectable task, restore wrong answers and add
  await page.goto(base+'/python-lab.html');
  await expect(page.locator('.values-level')).toContainText('Lv.1');
  await expect(page.locator('#learner-code')).toHaveCount(0);
- await expect(page.locator('#values-action .primary')).toHaveCount(1);
+ await expect(page.getByRole('button',{name:'답 확인',exact:true})).toHaveCount(0);
  await page.locator('[data-answer="172"]').click();
- await page.getByRole('button',{name:'답 확인',exact:true}).click();
+ 
  await expect(page.locator('#values-feedback')).toContainText('int');
  await page.reload();
  await expect(page.locator('[data-answer="172"]')).toHaveAttribute('aria-pressed','true');
- await page.locator('[data-answer="19"]').click();await page.getByRole('button',{name:'답 확인',exact:true}).click();
+ await page.locator('[data-answer="19"]').click();
  let state=await read(page);expect(state.items['0:1:0']).toMatchObject({firstAttemptPassed:false,attempts:2,independentPassed:false,lastPassedWithHelp:true});
  expect(path.count(state)).toBe(4);
  await page.getByRole('button',{name:'다음 연습',exact:true}).click();
  await expect(page.locator('#values-content pre')).toContainText('11 // 3');
  await page.reload();expect((await read(page)).index).toBe(1);
- const geometry=await page.locator('#values-action .primary').evaluate(el=>({bottom:el.getBoundingClientRect().bottom,nav:document.querySelector('.meowde-lab-tabbar').getBoundingClientRect().top,width:document.documentElement.scrollWidth,viewport:innerWidth}));
+ const geometry=await page.locator('#values-content .values-options').evaluate(el=>({bottom:el.getBoundingClientRect().bottom,nav:document.querySelector('.meowde-lab-tabbar').getBoundingClientRect().top,width:document.documentElement.scrollWidth,viewport:innerWidth}));
  expect(geometry.width).toBeLessThanOrEqual(geometry.viewport);expect(geometry.bottom).toBeLessThan(geometry.nav);
 });
 test('existing coding draft resumes without any write, and the legacy URL stays usable',async({page})=>{
@@ -58,7 +58,7 @@ test('unsupported nested progress stays byte-identical while session-only practi
  const raw=JSON.stringify({version:1,units:{values:{valuesPath:{version:99,secret:'keep'}}}});
  await page.addInitScript(({key,raw})=>localStorage.setItem(key,raw),{key,raw});
  await page.goto(base+'/python-lab.html');
- await page.locator('[data-answer="19"]').click();await page.getByRole('button',{name:'답 확인',exact:true}).click();
+ await page.locator('[data-answer="19"]').click();
  await expect(page.locator('#values-feedback')).toContainText('해결');
  await page.getByRole('button',{name:'다음 연습',exact:true}).click();
  expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(raw);
@@ -99,7 +99,7 @@ test('real Python: all five stages, helped retry, independent transfer and delay
    if(q.level===3&&!wrong){
     const wrongAnswer=q.choices.find(x=>x!==q.answer);
     await page.locator(`[data-answer="${wrongAnswer}"]`).click();
-    await page.getByRole('button',{name:'답 확인',exact:true}).click();
+    
     await expect(page.locator('#values-feedback')).toContainText('다시 해봐요');wrong=true;
     await page.reload();await expect(page.locator(`[data-answer="${wrongAnswer}"]`)).toHaveAttribute('aria-pressed','true');
    }
@@ -108,7 +108,7 @@ test('real Python: all five stages, helped retry, independent transfer and delay
   else{
    await page.locator('#values-code').fill(q.solution);
   }
-  await page.getByRole('button',{name:q.type==='choice'?'답 확인':'코드 확인',exact:true}).click();
+  if(q.type==='code')await page.getByRole('button',{name:'코드 확인',exact:true}).click();
   await expect(page.locator('#values-action .primary')).toHaveText(/다음 연습|다음 단계|연습 마치기/,{timeout:150000});
   await page.locator('#values-action .primary').click();
  }
