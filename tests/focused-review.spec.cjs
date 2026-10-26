@@ -12,7 +12,7 @@ test('Python focus pilot keeps the original miss through concept, similar, appli
  await page.locator('#code-editor').fill('print("야옹")');await page.locator('.lesson-foot .btn').click();await expect(page.locator('.feedback.ok')).toBeVisible();await page.locator('.feedback .btn').click();
  const before=await page.evaluate(()=>({xp:S.xp,done:S.done.slice(),first:MeowPythonFocusedReview.history.state.records[0].firstMissedAt,linux:localStorage.getItem('meowde-linux-focused-review-v1')}));
  console.log('Python focus: future miss and retry recorded');
- await page.locator('.lesson-foot .btn').click();await page.locator('.tabbar button[aria-label="복습"]').click();
+ await page.locator('.lesson-foot .btn').click();await page.getByRole('button',{name:'학습',exact:true}).click();await page.locator('.learn-review-entry button').click();
  await page.locator('[data-focused-review] button').click();
  console.log('Python focus: pilot started');
  expect(await page.evaluate(()=>cur().focusStage)).toBe('missed');
