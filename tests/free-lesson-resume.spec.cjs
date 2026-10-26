@@ -43,6 +43,25 @@ test('instant wrong choice keeps feedback usable if lesson storage is full',asyn
  expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(before);
  await page.evaluate(()=>window.__restoreChoiceStorage());
 });
+test('completion warns and retries storage without losing reward state',async({page})=>{
+ await page.goto(base+'/');await ready(page);await select(page,0);
+ const before=await page.evaluate(()=>{
+  const key='meowde-v410-state',old=localStorage.getItem(key),original=Storage.prototype.setItem;
+  S.xpEarned=10;S.firstTotal=1;S.firstCorrect=1;
+  try{
+   Storage.prototype.setItem=function(k,v){if(k===key)throw new DOMException('full','QuotaExceededError');return original.call(this,k,v)};
+   finish();
+   return {old,now:localStorage.getItem(key)};
+  }finally{Storage.prototype.setItem=original}
+ });
+ expect(before.now).toBe(before.old);
+ await expect(page.locator('#lesson-reward-save-alert')).toContainText('저장하지 못했어요');
+ await expect(page.locator('#lesson-reward-continue')).toBeDisabled();
+ await page.getByRole('button',{name:'저장 다시 시도'}).click();
+ await expect(page.locator('#lesson-reward-save-alert')).toHaveCount(0);
+ await expect(page.locator('#lesson-reward-continue')).toBeEnabled();
+ expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('meowde-v410-state')).done.includes(0))).toBe(true);
+});
 test('failed snapshot write keeps the active lesson and stored bytes',async({page})=>{
  await page.goto(base+'/');await ready(page);await select(page,0);
  // Capture the original bytes and inject the failure in the same browser task.
