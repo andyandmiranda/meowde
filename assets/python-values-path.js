@@ -142,7 +142,6 @@
         const check=q.type==='choice'?null:button('코드 확인',()=>{
           if(busy)return;
           const item=state.items[id]||(state.items[id]={});
-          if(q.type==='choice'){if(item.choice===undefined){status('답을 하나 선택해 주세요.');return;}done(item.choice===q.answer);return;}
           const code=content.querySelector('#values-code').value;item.draft=code;persist();warn();
           busy=true;check.disabled=true;content.querySelector('#values-code').readOnly=true;status('코드를 실행하고 있어요. 첫 실행은 시간이 걸릴 수 있어요.');
           const fail=message=>{stop();draw();status(message+' 답안과 시도 횟수는 그대로예요.');};
