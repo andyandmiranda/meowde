@@ -125,7 +125,8 @@ test('switching a lesson around Smart Review preserves counters and grants its d
  }});
  await page.goto(base+'/');await ready(page);
  async function openSmart(){
-  await page.locator('.tabbar button').filter({hasText:/^복습$/}).click();
+  await page.getByRole('button',{name:'학습',exact:true}).click();
+   await page.locator('.learn-review-entry button').click();
   await page.locator('.v417-smart-card .btn').click();
   if(await page.locator('.start-guard').count())await page.locator('.start-guard button').last().click();
  }
