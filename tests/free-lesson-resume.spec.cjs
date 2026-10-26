@@ -18,8 +18,9 @@ for(const lang of ['ko','en'])test(`free choice and per-lesson resume survive re
  await page.locator('.lesson-foot .btn').click();
  await expect(page.locator('.choices')).toBeVisible();
  const wrong=await page.evaluate(()=>(cur().answer+1)%cur().choices.length);
- await page.locator('.choice').nth(wrong).click();await page.locator('.lesson-foot .btn').click();
+ await page.locator('.choice').nth(wrong).click();
  await expect(page.locator('.feedback.no')).toBeVisible();
+ await expect(page.locator('.lesson-foot .btn')).toHaveCount(0);
  const saved=await page.evaluate(()=>({idx:S.idx,queue:S.queue,sel:S.sel,checked:S.checked,correct:S.correct,firstCorrect:S.firstCorrect}));
  await page.locator('.close').click();await select(page,59);
  await page.reload();await ready(page);expect(await page.evaluate(()=>S.lessonIndex)).toBe(59);
