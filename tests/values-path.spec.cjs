@@ -16,20 +16,62 @@ test('new learners start with one selectable task, restore wrong answers and add
  await page.goto(base+'/python-lab.html');
  await expect(page.locator('.values-level')).toContainText('Lv.1');
  await expect(page.locator('#learner-code')).toHaveCount(0);
- await expect(page.locator('#values-action .primary')).toHaveCount(1);
+ await expect(page.getByRole('button',{name:'답 확인',exact:true})).toHaveCount(0);
  await page.locator('[data-answer="172"]').click();
- await page.getByRole('button',{name:'답 확인',exact:true}).click();
+ 
+ await expect(page.locator('#values-feedback')).toContainText('정답: 19');
  await expect(page.locator('#values-feedback')).toContainText('int');
+ expect((await read(page)).items['0:1:0'].attempts).toBe(1);
  await page.reload();
+ await expect(page.locator('#values-feedback')).toContainText('정답: 19');
  await expect(page.locator('[data-answer="172"]')).toHaveAttribute('aria-pressed','true');
- await page.locator('[data-answer="19"]').click();await page.getByRole('button',{name:'답 확인',exact:true}).click();
+ await page.locator('[data-answer="19"]').click();
  let state=await read(page);expect(state.items['0:1:0']).toMatchObject({firstAttemptPassed:false,attempts:2,independentPassed:false,lastPassedWithHelp:true});
+ const savedFeedback=state.items['0:1:0'].feedbackText;
+ await expect(page.locator('#values-feedback')).toHaveText(savedFeedback);
+ await page.reload();
+ await expect(page.locator('#values-feedback')).toHaveText(savedFeedback);
+ expect((await read(page)).items['0:1:0'].attempts).toBe(2);
+ await expect(page.getByRole('button',{name:'답 확인',exact:true})).toHaveCount(0);
+ await expect(page.getByRole('button',{name:'다음 연습',exact:true})).toBeVisible();
  expect(path.count(state)).toBe(4);
  await page.getByRole('button',{name:'다음 연습',exact:true}).click();
  await expect(page.locator('#values-content pre')).toContainText('11 // 3');
  await page.reload();expect((await read(page)).index).toBe(1);
- const geometry=await page.locator('#values-action .primary').evaluate(el=>({bottom:el.getBoundingClientRect().bottom,nav:document.querySelector('.meowde-lab-tabbar').getBoundingClientRect().top,width:document.documentElement.scrollWidth,viewport:innerWidth}));
+ const geometry=await page.locator('#values-content .values-options').evaluate(el=>({bottom:el.getBoundingClientRect().bottom,nav:document.querySelector('.meowde-lab-tabbar').getBoundingClientRect().top,width:document.documentElement.scrollWidth,viewport:innerWidth}));
  expect(geometry.width).toBeLessThanOrEqual(geometry.viewport);expect(geometry.bottom).toBeLessThan(geometry.nav);
+});
+test('failed next-step save restores the same solved item and keeps stored bytes',async({page})=>{
+ await page.goto(base+'/python-lab.html');
+ await page.locator('[data-answer="19"]').click();
+ await expect(page.getByRole('button',{name:'다음 연습',exact:true})).toBeVisible();
+ const original=await page.evaluate(key=>localStorage.getItem(key),key);
+ await page.evaluate(key=>{const set=Storage.prototype.setItem;window.__restoreValuesStorage=()=>Storage.prototype.setItem=set;Storage.prototype.setItem=function(k,v){if(k===key)throw new DOMException('full','QuotaExceededError');return set.call(this,k,v)};},key);
+ await page.getByRole('button',{name:'다음 연습',exact:true}).click();
+ await expect(page.locator('[data-answer="19"]')).toHaveAttribute('aria-pressed','true');
+ await expect(page.getByRole('button',{name:'다음 연습',exact:true})).toBeVisible();
+ await expect(page.locator('#storage-status')).toContainText('저장되지');
+ expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(original);
+ await page.evaluate(()=>window.__restoreValuesStorage());
+ await page.getByRole('button',{name:'다음 연습',exact:true}).click();
+ expect((await read(page)).index).toBe(1);
+});
+test('failed instant grading can retry storage without counting another attempt',async({page})=>{
+ await page.goto(base+'/python-lab.html');
+ const original=await page.evaluate(key=>localStorage.getItem(key),key);
+ await page.evaluate(key=>{const set=Storage.prototype.setItem;window.__restoreChoiceStorage=()=>Storage.prototype.setItem=set;Storage.prototype.setItem=function(k,v){if(k===key)throw new DOMException('full','QuotaExceededError');return set.call(this,k,v)};},key);
+ await page.locator('[data-answer="172"]').click();
+ await expect(page.locator('#values-feedback')).toContainText('정답: 19');
+ await expect(page.getByRole('button',{name:'저장 다시 시도'})).toBeVisible();
+ expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(original);
+ expect(await page.evaluate(()=>MeowValuesPathSession.safeToReload())).toBe(false);
+ await page.evaluate(()=>window.__restoreChoiceStorage());
+ await page.getByRole('button',{name:'저장 다시 시도'}).click();
+ await expect(page.getByRole('button',{name:'저장 다시 시도'})).toHaveCount(0);
+ expect((await read(page)).items['0:1:0'].attempts).toBe(1);
+ await page.reload();
+ await expect(page.locator('#values-feedback')).toContainText('정답: 19');
+ expect((await read(page)).items['0:1:0'].attempts).toBe(1);
 });
 test('existing coding draft resumes without any write, and the legacy URL stays usable',async({page})=>{
  const raw=JSON.stringify({version:1,units:{values:{draft:'saved function draft',guideLevel:4,assisted:true},unknown:{custom:'keep'}}});
@@ -58,8 +100,9 @@ test('unsupported nested progress stays byte-identical while session-only practi
  const raw=JSON.stringify({version:1,units:{values:{valuesPath:{version:99,secret:'keep'}}}});
  await page.addInitScript(({key,raw})=>localStorage.setItem(key,raw),{key,raw});
  await page.goto(base+'/python-lab.html');
- await page.locator('[data-answer="19"]').click();await page.getByRole('button',{name:'답 확인',exact:true}).click();
+ await page.locator('[data-answer="19"]').click();
  await expect(page.locator('#values-feedback')).toContainText('해결');
+ expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(raw);
  await page.getByRole('button',{name:'다음 연습',exact:true}).click();
  expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(raw);
 });
@@ -72,6 +115,17 @@ test('running submission locks its draft until cancellation, without counting an
  await expect(page.locator('#values-code')).toHaveAttribute('readonly','');
  await expect(page.getByRole('button',{name:'코드 확인',exact:true})).toBeDisabled();
  await page.getByRole('button',{name:'실행 중지',exact:true}).click();
+ await expect(page.locator('#values-code')).toBeEditable();
+ await expect(page.locator('#values-code')).toHaveValue('count = int(text)');
+ expect((await read(page)).items['0:4:0'].attempts).toBeUndefined();
+});
+test('worker submission exception unlocks code and preserves attempt count',async({page})=>{
+ await seed(page,{...path.initial(),level:4});
+ await page.addInitScript(()=>{window.Worker=class{postMessage(){throw new DOMException('unavailable','DataCloneError')}terminate(){}};});
+ await page.goto(base+'/python-lab.html');
+ await page.locator('#values-code').fill('count = int(text)');
+ await page.getByRole('button',{name:'코드 확인',exact:true}).click();
+ await expect(page.locator('#values-feedback')).toContainText('시도 횟수는 그대로');
  await expect(page.locator('#values-code')).toBeEditable();
  await expect(page.locator('#values-code')).toHaveValue('count = int(text)');
  expect((await read(page)).items['0:4:0'].attempts).toBeUndefined();
@@ -99,7 +153,7 @@ test('real Python: all five stages, helped retry, independent transfer and delay
    if(q.level===3&&!wrong){
     const wrongAnswer=q.choices.find(x=>x!==q.answer);
     await page.locator(`[data-answer="${wrongAnswer}"]`).click();
-    await page.getByRole('button',{name:'답 확인',exact:true}).click();
+    
     await expect(page.locator('#values-feedback')).toContainText('다시 해봐요');wrong=true;
     await page.reload();await expect(page.locator(`[data-answer="${wrongAnswer}"]`)).toHaveAttribute('aria-pressed','true');
    }
@@ -108,7 +162,7 @@ test('real Python: all five stages, helped retry, independent transfer and delay
   else{
    await page.locator('#values-code').fill(q.solution);
   }
-  await page.getByRole('button',{name:q.type==='choice'?'답 확인':'코드 확인',exact:true}).click();
+  if(q.type==='code')await page.getByRole('button',{name:'코드 확인',exact:true}).click();
   await expect(page.locator('#values-action .primary')).toHaveText(/다음 연습|다음 단계|연습 마치기/,{timeout:150000});
   await page.locator('#values-action .primary').click();
  }

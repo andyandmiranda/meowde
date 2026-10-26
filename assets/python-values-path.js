@@ -87,7 +87,7 @@
       record.valuesPath=state;unsaved=!save();return !unsaved;
     };
     const status=message=>{const node=root.querySelector('#values-feedback');if(node)node.textContent=message;};
-    const warn=()=>{const node=root.querySelector('#storage-status');if(node)node.textContent=unsaved||blocked||unsupported?'새 작업이 저장되지 않았어요. 이 탭을 유지하고 코드를 복사해 두세요. 기존 기록은 덮어쓰지 않습니다.':'';};
+    const warn=()=>{const node=root.querySelector('#storage-status');if(!node)return;node.textContent=unsaved||blocked||unsupported?'새 작업이 저장되지 않았어요. 이 탭을 유지하고 코드를 복사해 두세요. 기존 기록은 덮어쓰지 않습니다.':'';if(unsaved&&!blocked&&!unsupported){const retry=document.createElement('button');retry.type='button';retry.textContent='저장 다시 시도';retry.onclick=()=>{persist();warn();};node.append(retry);}};
     const stop=()=>{if(worker)worker.terminate();worker=null;clearTimeout(timer);busy=false;};
     const safeToReload=()=>{
       if(busy||unsaved)return false;
@@ -103,13 +103,13 @@
       const button=(text,handler)=>{const b=document.createElement('button');b.className='primary';b.type='button';b.textContent=text;b.onclick=handler;actions.replaceChildren(b);return b;};
       const next=()=>button(state.index+1<count(state)?'다음 연습':state.level<5?'다음 단계 · '+labels[state.level]:'연습 마치기',()=>{
         const before=JSON.parse(JSON.stringify(state));advance(state);
-        if(!persist()&&!blocked&&!unsupported){state=before;record.valuesPath=state;warn();return;}
+        if(!persist()&&!blocked&&!unsupported){state=before;record.valuesPath=state;draw();return;}
         draw();root.querySelector('#unit-title').scrollIntoView({block:'start'});
       });
       if(state.complete){
         const records=Object.values(state.items),independent=records.filter(x=>x.independentPassed).length,helped=records.filter(x=>x.lastPassed&&x.lastPassedWithHelp).length;
         content.innerHTML=`<h3>이번 연습을 마쳤어요</h3><p>첫 시도에 도움 없이 해결 ${independent}개 · 도움받아 해결 ${helped}개</p><p>완료가 곧 숙달은 아니에요. 하루 뒤 새 입력으로 다시 풀며 기억을 확인해요.</p>`;
-        if(Date.now()>=state.reviewDueAt)button('새 문제로 기억 확인',()=>{const before=JSON.parse(JSON.stringify(state));review(state);if(!persist()&&!blocked&&!unsupported){state=before;record.valuesPath=state;warn();return;}draw();});
+        if(Date.now()>=state.reviewDueAt)button('새 문제로 기억 확인',()=>{const before=JSON.parse(JSON.stringify(state));review(state);if(!persist()&&!blocked&&!unsupported){state=before;record.valuesPath=state;draw();return;}draw();});
         else{
           const nextUnit=units[units.findIndex(u=>u.id==='values')+1];
           const a=document.createElement('a');a.href=nextUnit?'#'+nextUnit.id:'/?tab=map';a.className='primary';a.textContent=nextUnit?'다음 개념 · '+nextUnit.title:'학습으로 돌아가기';actions.append(a);
@@ -119,7 +119,7 @@
       content.innerHTML=`<p>${escape(q.prompt)}</p>`;
       if(q.type==='choice'){
         content.insertAdjacentHTML('beforeend',`<pre>${escape(q.code)}</pre><div class="values-options" role="group" aria-label="답 선택">${q.choices.map(choice=>`<button type="button" data-answer="${escape(choice)}" aria-pressed="${r.choice===choice}">${escape(choice)}</button>`).join('')}</div>`);
-        content.querySelectorAll('[data-answer]').forEach(b=>{b.disabled=!!r.lastPassed;b.onclick=()=>{const item=state.items[id]||(state.items[id]={});item.choice=b.dataset.answer;persist();content.querySelectorAll('[data-answer]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));warn();};});
+        content.querySelectorAll('[data-answer]').forEach(b=>{b.disabled=!!r.lastPassed;b.onclick=()=>{const item=state.items[id]||(state.items[id]={});item.choice=b.dataset.answer;content.querySelectorAll('[data-answer]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));done(item.choice===q.answer);};});
       }else{
         content.insertAdjacentHTML('beforeend',`<p class="meta">준비된 값 · text = "${q.n}", capacity = ${q.cap}</p><label for="values-code">내 코드</label><textarea id="values-code" class="code" spellcheck="false" autocapitalize="off" autocomplete="off">${escape(typeof r.draft==='string'?r.draft:q.starter)}</textarea>`);
         const editor=content.querySelector('#values-code');editor.readOnly=!!r.lastPassed;
@@ -132,17 +132,16 @@
         }
       }
       const done=(pass,detail='')=>{
-        stop();mark(state,pass);persist();draw();
-        const feedback=(pass?(state.items[id].lastPassedWithHelp?'도움받아 해결했어요. ':'도움 없이 해결했어요. '):'다시 해봐요. ')+(detail||q.reason);
-        state.items[id].feedbackText=feedback;persist();status(feedback);warn();
+        stop();mark(state,pass);
+        const feedback=(pass?(state.items[id].lastPassedWithHelp?'도움받아 해결했어요. ':'도움 없이 해결했어요. '):'다시 해봐요. ')+(q.type==='choice'&&!pass?' 정답: '+q.answer+'. ':'')+(detail||q.reason);
+        state.items[id].feedbackText=feedback;persist();draw();status(feedback);warn();
       };
-      if(r.lastPassed){status((r.lastPassedWithHelp?'도움받아 해결했어요. ':'도움 없이 해결했어요. ')+q.reason);next();}
+      if(r.lastPassed){status(r.feedbackText||((r.lastPassedWithHelp?'도움받아 해결했어요. ':'도움 없이 해결했어요. ')+q.reason));next();}
       else{
         if(r.feedbackUsed)status(r.feedbackText||'다시 해봐요. '+q.reason);
-        const check=button(q.type==='choice'?'답 확인':'코드 확인',()=>{
+        const check=q.type==='choice'?null:button('코드 확인',()=>{
           if(busy)return;
           const item=state.items[id]||(state.items[id]={});
-          if(q.type==='choice'){if(item.choice===undefined){status('답을 하나 선택해 주세요.');return;}done(item.choice===q.answer);return;}
           const code=content.querySelector('#values-code').value;item.draft=code;persist();warn();
           busy=true;check.disabled=true;content.querySelector('#values-code').readOnly=true;status('코드를 실행하고 있어요. 첫 실행은 시간이 걸릴 수 있어요.');
           const fail=message=>{stop();draw();status(message+' 답안과 시도 횟수는 그대로예요.');};
@@ -161,7 +160,7 @@
             }
           };
           const cancel=document.createElement('button');cancel.type='button';cancel.textContent='실행 중지';cancel.onclick=()=>{stop();draw();status('실행을 중지했어요. 답안은 그대로예요.');};actions.append(cancel);
-          worker.postMessage(payload(q,code));
+          try{worker.postMessage(payload(q,code));}catch{fail('실행 요청을 보내지 못했어요.');}
         });
       }
       warn();

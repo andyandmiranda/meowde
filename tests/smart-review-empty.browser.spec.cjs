@@ -77,7 +77,7 @@ test('learner completes a lesson, starts Smart Review, and preserves course prog
       if(ex.type==='fill')await page.locator('.tokens .token').nth(ex.tokens.indexOf(ex.answer)).click();
       if(ex.type==='bughunt')await page.locator('.linebtn').nth(ex.buggy).click();
       if(ex.type==='write')await page.locator('#code-editor').fill(ex.model);
-      await page.locator('.lesson-foot .btn').click();
+      if(!(await page.locator('.feedback.ok').count()))await page.locator('.lesson-foot .btn').click();
       await expect(page.locator('.feedback.ok')).toBeVisible({timeout:60000});
       await page.locator('.feedback .btn').click();
     }
@@ -87,7 +87,7 @@ test('learner completes a lesson, starts Smart Review, and preserves course prog
   expect(course.done).toContain(0);
 
   await page.locator('.lesson-foot .btn').click();
-  await page.locator('.tabbar button[aria-label="복습"]').click();
+  await page.locator('.learn-review-entry button').click();
   const card=page.locator('.v417-smart-card');
   await expect(card).toContainText('완료한 레슨에서 기억을 유지할 문제');
   await card.getByRole('button',{name:/Smart Review 시작/}).click();
@@ -101,7 +101,7 @@ test('learner completes a lesson, starts Smart Review, and preserves course prog
       if(ex.type==='fill')await page.locator('.tokens .token').nth(ex.tokens.indexOf(ex.answer)).click();
       if(ex.type==='bughunt')await page.locator('.linebtn').nth(ex.buggy).click();
       if(ex.type==='write')await page.locator('#code-editor').fill(ex.model);
-      await page.locator('.lesson-foot .btn').click();
+      if(!(await page.locator('.feedback.ok').count()))await page.locator('.lesson-foot .btn').click();
       await expect(page.locator('.feedback.ok')).toBeVisible({timeout:60000});
       await page.locator('.feedback .btn').click();
     }
@@ -134,7 +134,8 @@ for(const denyRead of [false,true]){
     },key);
     await page.reload();
     await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
-    await page.locator('.tabbar button[aria-label="복습"]').click();
+    await page.getByRole('button',{name:'학습',exact:true}).click();
+    await page.locator('.learn-review-entry button').click();
     const card=page.locator('.v417-smart-card');
     await expect(card).toContainText('원본을 보존');
     await expect(card.getByRole('button',{name:'복습 기록 확인 필요'})).toBeDisabled();

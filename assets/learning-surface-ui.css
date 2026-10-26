@@ -174,3 +174,63 @@ body:has(#lab) .lab-header-description{font-size:13px;margin-top:5px}
 
 /* Match active practice tab despite more specific shared surface selectors. */
 body:has(#lab) .meowde-lab-tabbar a[aria-current="page"]{color:#6d4d89;background:linear-gradient(135deg,#f0eaff,#e9f7f3)}
+
+
+/* Deepen entry reuses Home/Learn typography, cream canvas, mint actions and cards. */
+body:has(#lab) .deepen-hub{max-width:430px;margin:0 auto;padding:2px 0 18px;font-family:var(--surface-font)}
+body:has(#lab) .deepen-hub-kicker{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--surface-mint-dark);margin:8px 0}
+body:has(#lab) .deepen-hub h2{font-size:23px;line-height:1.32;letter-spacing:-.04em;margin:0;color:var(--surface-ink)}
+body:has(#lab) .deepen-hub-intro{font-size:14px;line-height:1.65;color:var(--surface-muted);margin:9px 0 16px}
+body:has(#lab) .deepen-resume{background:#fff;border:1px solid var(--surface-line);border-radius:20px;padding:18px;margin:0 0 16px}
+body:has(#lab) .deepen-resume h3{font-size:16px;margin:0 0 8px}
+body:has(#lab) .deepen-resume p{font-size:14px;margin:0 0 14px;color:var(--surface-muted)}
+body:has(#lab) .deepen-resume a.primary{display:block;min-height:48px;text-align:center;text-decoration:none;background:var(--surface-mint);border:1px solid var(--surface-mint-dark);color:#193f33;border-radius:15px;padding:11px 14px;font-weight:800}
+body:has(#lab) .deepen-stage-caption{margin:0 0 10px;font-size:13px;font-weight:800;color:var(--surface-ink)}
+body:has(#lab) .deepen-stage-list{display:grid;gap:10px}
+body:has(#lab) .deepen-stage-list>a{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--surface-line);border-radius:18px;padding:16px;text-decoration:none;color:var(--surface-ink);min-height:82px}
+body:has(#lab) .deepen-stage-list>a>span:last-child{margin-left:auto;font-size:24px;color:var(--surface-mint-dark)}
+body:has(#lab) .deepen-stage-number{display:flex;align-items:center;justify-content:center;width:42px;height:42px;flex-shrink:0;border-radius:15px;background:var(--surface-pale);font-weight:800;color:var(--surface-mint-dark)}
+body:has(#lab) .deepen-stage-list>a>span:nth-child(2){min-width:0;flex:1;overflow-wrap:anywhere}
+body:has(#lab) .deepen-stage-list strong{display:block;font-size:16px;line-height:1.45}
+body:has(#lab) .deepen-stage-list small{display:block;font-size:12px;line-height:1.55;color:var(--surface-muted)}
+body:has(#lab) .deepen-unit-list{background:#fff;border:1px solid var(--surface-line);border-radius:18px;padding:4px 15px;margin:16px 0}
+body:has(#lab) .deepen-unit-list summary{font-size:14px;min-height:48px}
+body:has(#lab) .deepen-unit-list nav{display:grid;gap:2px;max-height:310px;overflow:auto}
+body:has(#lab) .deepen-unit-list nav a{font-size:14px;padding:11px 8px;min-height:44px;border-top:1px solid var(--surface-line);color:var(--surface-ink)}
+body:has(#lab) .deepen-hub a:focus-visible{outline:3px solid var(--surface-mint-dark);outline-offset:2px}
+
+/* Home / Deepen visual alignment: no changes to navigation, lessons or saved state. */
+.phase1-home .card[aria-label="심화 학습 진입"],
+.phase1-home .card[aria-label="Deepen learning entry"]{display:flex;flex-direction:column;gap:10px;padding:20px 18px}
+.phase1-home .card[aria-label="심화 학습 진입"] .section-title,
+.phase1-home .card[aria-label="Deepen learning entry"] .section-title{margin:0}
+.phase1-home .card[aria-label="심화 학습 진입"] .section-title h3,
+.phase1-home .card[aria-label="Deepen learning entry"] .section-title h3{font-family:var(--surface-font);font-size:16px;line-height:1.4;letter-spacing:-.02em;font-weight:800}
+.phase1-home .card[aria-label="심화 학습 진입"]>p,
+.phase1-home .card[aria-label="Deepen learning entry"]>p{font-family:var(--surface-font);font-size:13px;line-height:1.6;color:var(--surface-muted);margin:0}
+.phase1-home .card[aria-label="심화 학습 진입"]>.btn,
+.phase1-home .card[aria-label="Deepen learning entry"]>.btn{margin-top:4px;min-height:48px;font-size:14px;text-decoration:none}
+
+/* Practice shell follows the same compact, rounded Home visual language. */
+body:has(#lab){background:#fff9ef;color:var(--surface-ink)}
+body:has(#lab) .lab-header,
+body:has(#lab) main#lab{background:#fff}
+body:has(#lab) .lab-header{margin:20px auto 0;padding:18px 18px 10px;border-radius:26px 26px 0 0}
+body:has(#lab) .lab-header-main>a:first-child{font-family:var(--surface-font);font-size:23px;letter-spacing:-.04em;font-weight:850}
+body:has(#lab) .lab-header h1{font-family:var(--surface-font);font-size:23px;line-height:1.35;letter-spacing:-.04em;margin:8px 0 0;font-weight:850}
+body:has(#lab) .lab-header-description{font-size:13px;line-height:1.55;color:var(--surface-muted)}
+body:has(#lab) main#lab{min-height:calc(100dvh - 170px);padding:8px 16px 112px}
+body:has(#lab) .deepen-hub{padding:0 0 20px}
+body:has(#lab) .deepen-hub h2{font-size:21px}
+body:has(#lab) .deepen-unit-list{border-radius:18px}
+body:has(#lab) .deepen-unit-list nav{max-height:240px}
+body:has(#lab) .deepen-unit-list nav a{font-size:13px;line-height:1.45;text-decoration:none}
+body:has(#lab) .meowde-lab-tabbar{background:#fff;border-top-color:#ece8ef}
+@media(max-width:479px){body:has(#lab) .lab-header{margin-top:0;border-radius:0}body:has(#lab) main#lab{min-height:calc(100dvh - 145px)}}
+
+/* Review remains a learning action rather than a global navigation tab. */
+.learn-review-entry{padding:0 18px 12px}
+.learn-review-entry button{width:100%;min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid #bdebd8;border-radius:15px;background:#e7f8f0;color:#247b61;font:800 14px/1.4 var(--surface-font);cursor:pointer}
+.learn-review-entry button .ico{width:18px;height:18px}
+.review-back{padding:4px 18px 10px}
+.review-back button{min-height:44px;color:#247b61;font-size:13px;font-weight:750}

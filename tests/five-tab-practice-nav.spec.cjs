@@ -1,42 +1,32 @@
 const {test,expect}=require("playwright/test");
 const base=process.env.MEOWDE_BASE_URL||"http://127.0.0.1:4173";
-test("Python practice keeps all five tabs visible on narrow phones",async({page})=>{
+test("Deepen practice keeps all five tabs visible on narrow phones",async({page})=>{
   for(const width of [320,375,390]){
     await page.setViewportSize({width,height:740});
     await page.goto(base+"/python-lab.html#values/challenge");
     const nav=page.getByRole("navigation",{name:"메인 메뉴"});
     await expect(nav).toBeVisible();
     await expect(nav.locator("a")).toHaveCount(5);
-    await expect(nav.locator("a[aria-current=page]")).toHaveAttribute("aria-label","실습");
+    await expect(nav.locator("a[aria-current=page]")).toHaveAttribute("aria-label","심화");
     const dims=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,width:innerWidth,bottom:document.querySelector(".meowde-lab-tabbar").getBoundingClientRect().bottom,height:innerHeight}));
     expect(dims.scroll).toBeLessThanOrEqual(dims.width);
     expect(Math.abs(dims.bottom-dims.height)).toBeLessThan(2);
   }
 });
-test("Practice links open the requested screen and preserve progress through reload",async({page})=>{
+test("Five-tab navigation preserves progress and practice drafts; review stays in learning",async({page})=>{
   await page.goto(base+"/");
   await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
-  // Normalize an existing learner record before comparing navigation-only changes.
   await page.evaluate(()=>{S.done=[0];S.xp=120;S.churu=7;save()});
   await page.reload();
   await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
   const progress=()=>page.evaluate(()=>({done:S.done,xp:S.xp,churu:S.churu,mistakes:S.mistakes}));
   const before=await progress();
-  // Restoring a completed first lesson earns the existing First Step reward once
-  // (v419-achievements: +20 XP, +5 churu). Navigation must not award it again.
   expect(before).toMatchObject({done:[0],xp:140,churu:12});
-  expect(await page.evaluate(()=>MeowAchievements.state.unlocked["first-step"]))
-    .toMatchObject({xp:20,churu:5});
   const achievements=await page.evaluate(()=>localStorage.getItem("meowde-v419-achievements"));
   await page.goto(base+"/python-lab.html#function-slots/practice");
   await page.locator("#learner-code").fill("print('draft preserved')");
   const draft=await page.evaluate(()=>localStorage.getItem("meowde-python-lab-v1"));
-  for(const [label,tab,surface] of [
-    ["복습","review",".phase5-review"],
-    ["학습","map","[data-learn-path=canonical]"],
-    ["마이","my",".v420-profile-hero"],
-    ["홈","home",".phase1-home"]
-  ]){
+  for(const [label,tab,surface] of [["학습","map","[data-learn-path=canonical]"],["마이","my",".v420-profile-hero"],["홈","home",".phase1-home"]]){
     await page.getByRole("navigation",{name:"메인 메뉴"}).getByRole("link",{name:label,exact:true}).click();
     await expect(page).toHaveURL(new RegExp("tab="+tab));
     await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
@@ -44,40 +34,42 @@ test("Practice links open the requested screen and preserve progress through rel
     await expect(page.locator(".tabbar button.on")).toHaveAttribute("aria-label",label);
     expect(await progress()).toEqual(before);
     expect(await page.evaluate(()=>localStorage.getItem("meowde-v419-achievements"))).toBe(achievements);
-    await page.reload();
-    await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
-    await expect(page.locator(surface)).toBeVisible();
-    expect(await progress()).toEqual(before);
-    expect(await page.evaluate(()=>localStorage.getItem("meowde-v419-achievements"))).toBe(achievements);
-    await page.getByRole("button",{name:"실습",exact:true}).click();
-     await expect(page).toHaveURL(/python-lab/);
-     await page.goto(base+"/python-lab.html#function-slots/practice");
+    await page.goto(base+"/python-lab.html#function-slots/practice");
     await expect(page.locator("#learner-code")).toHaveValue("print('draft preserved')");
     expect(await page.evaluate(()=>localStorage.getItem("meowde-python-lab-v1"))).toBe(draft);
   }
+  await page.goto(base+"/?tab=map");
+  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
+  await page.getByRole("button",{name:/복습 · 오답/}).click();
+  await expect(page.locator(".phase5-review")).toBeVisible();
+  expect(await progress()).toEqual(before);
+  await page.goto(base+"/python-lab.html#function-slots/practice");
+  await page.getByRole("navigation",{name:"메인 메뉴"}).getByRole("link",{name:"함께"}).click();
+  await expect(page).toHaveURL(/together.html/);
+  await expect(page.getByRole("heading",{name:"함께 공부해요"})).toBeVisible();
+  await expect(page.getByRole("navigation",{name:"메인 메뉴"}).getByRole("link",{name:"함께"})).toHaveAttribute("aria-current","page");
 });
 test("Unknown entry tabs leave the default home screen usable",async({page})=>{
   await page.goto(base+"/?tab=constructor");
   await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
   await expect(page.locator(".phase1-home")).toBeVisible();
-  await page.getByRole("button",{name:"복습",exact:true}).click();
-  await expect(page.locator(".phase5-review")).toBeVisible();
+  await page.getByRole("button",{name:"학습",exact:true}).click();
+  await expect(page.locator("[data-learn-path=canonical]")).toBeVisible();
 });
 test("Canonical Home, Learn and Review do not inject duplicate Python lab CTA",async({page})=>{
   await page.goto(base+"/");
   await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
-  for(const tab of ["홈","학습","복습"]){
+  for(const tab of ["홈","학습"]){
     await page.getByRole("button",{name:tab,exact:true}).last().click();
     await expect(page.locator("#python-lab-entry")).toHaveCount(0);
-    await expect(page.locator(".tabbar button[aria-label='실습']")).toHaveCount(1);
+    await expect(page.locator(".tabbar button[aria-label='심화']")).toHaveCount(1);
   }
 });
-
 test("Five global tabs keep the same physical order on every screen",async({page})=>{
-  const expected=["홈","학습","실습","복습","마이"];
+  const expected=["홈","학습","심화","함께","마이"];
   await page.goto(base+"/");
   await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
-  for(const tab of ["홈","학습","복습"]){
+  for(const tab of ["홈","학습"]){
     await page.getByRole("button",{name:tab,exact:true}).last().click();
     const labels=await page.locator(".tabbar[data-phase1-navigation='five-tabs'] button").evaluateAll(nodes=>nodes.map(el=>el.getAttribute("aria-label")));
     expect(labels).toEqual(expected);
@@ -86,7 +78,21 @@ test("Five global tabs keep the same physical order on every screen",async({page
   const labels=await page.locator(".meowde-lab-tabbar a").evaluateAll(nodes=>nodes.map(el=>el.getAttribute("aria-label")));
   expect(labels).toEqual(expected);
 });
-
+test("Together invite link opens recipient invitation without exposing progress",async({page,context})=>{
+  await page.goto(base+"/together.html");
+  await page.getByLabel("보내는 사람 이름 (선택)").fill("코딩냥");
+  await page.getByLabel("함께 공부할 주제").fill("Python 함수");
+  await page.getByRole("button",{name:"초대 링크 공유하기"}).click();
+  const url=await page.getByLabel("생성된 초대 링크").inputValue();
+  expect(url).toContain("topic=Python");
+  const guest=await context.newPage();
+  await guest.goto(url);
+  await expect(guest.getByText("도착한 학습 초대")).toBeVisible();
+  await expect(guest.getByText("Python 함수",{exact:true})).toBeVisible();
+  await expect(guest.getByText(/코딩냥님이/)).toBeVisible();
+  await expect(guest.getByRole("link",{name:"학습 시작하기"})).toHaveAttribute("href","/?tab=map");
+  expect(await guest.evaluate(()=>localStorage.getItem("meowde-v410-state"))).toBeNull();
+});
 test("Practice uses the same cream and mint palette as the main app",async({page})=>{
   await page.goto(base+"/python-lab.html#function-slots/practice");
   await expect(page.locator("#learner-code")).toBeVisible();

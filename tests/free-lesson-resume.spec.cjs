@@ -18,8 +18,9 @@ for(const lang of ['ko','en'])test(`free choice and per-lesson resume survive re
  await page.locator('.lesson-foot .btn').click();
  await expect(page.locator('.choices')).toBeVisible();
  const wrong=await page.evaluate(()=>(cur().answer+1)%cur().choices.length);
- await page.locator('.choice').nth(wrong).click();await page.locator('.lesson-foot .btn').click();
+ await page.locator('.choice').nth(wrong).click();
  await expect(page.locator('.feedback.no')).toBeVisible();
+ await expect(page.locator('.lesson-foot .btn')).toHaveCount(0);
  const saved=await page.evaluate(()=>({idx:S.idx,queue:S.queue,sel:S.sel,checked:S.checked,correct:S.correct,firstCorrect:S.firstCorrect}));
  await page.locator('.close').click();await select(page,59);
  await page.reload();await ready(page);expect(await page.evaluate(()=>S.lessonIndex)).toBe(59);
@@ -27,6 +28,61 @@ for(const lang of ['ko','en'])test(`free choice and per-lesson resume survive re
  expect(await page.evaluate(()=>({idx:S.idx,queue:S.queue,sel:S.sel,checked:S.checked,correct:S.correct,firstCorrect:S.firstCorrect}))).toEqual(saved);
  expect(await page.evaluate(()=>({done:S.done,xp:S.xp,churu:S.churu}))).toEqual({done:[],xp:17,churu:8});
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+test('instant wrong choice keeps feedback usable if lesson storage is full',async({page})=>{
+ await page.goto(base+'/');await ready(page);await select(page,0);
+ await page.locator('.lesson-foot .btn').click();
+ await expect(page.locator('.choices')).toBeVisible();
+ const before=await page.evaluate(()=>localStorage.getItem('meowde-v410-state'));
+ await page.evaluate(()=>{const original=Storage.prototype.setItem;window.__restoreChoiceStorage=()=>{Storage.prototype.setItem=original};Storage.prototype.setItem=function(k,v){if(k==='meowde-v410-state')throw new DOMException('full','QuotaExceededError');return original.call(this,k,v)};});
+ const wrong=await page.evaluate(()=>(cur().answer+1)%cur().choices.length);
+ await page.locator('.choice').nth(wrong).click();
+ await expect(page.locator('.feedback.no:not(.lesson-save-warning)')).toBeVisible();
+ await expect(page.getByRole('alert')).toContainText('저장하지 못했어요');
+ await expect(page.locator('.lesson-save-warning .btn')).toBeVisible();
+ expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(before);
+ await page.evaluate(()=>window.__restoreChoiceStorage());
+});
+test('completion warns and retries storage without losing reward state',async({page})=>{
+ await page.goto(base+'/');await ready(page);await select(page,0);
+ const before=await page.evaluate(()=>{
+  const key='meowde-v410-state',old=localStorage.getItem(key),original=Storage.prototype.setItem;
+  S.xpEarned=10;S.firstTotal=1;S.firstCorrect=1;
+  try{
+   Storage.prototype.setItem=function(k,v){if(k===key)throw new DOMException('full','QuotaExceededError');return original.call(this,k,v)};
+   finish();
+   return {old,now:localStorage.getItem(key)};
+  }finally{Storage.prototype.setItem=original}
+ });
+ expect(before.now).toBe(before.old);
+ await expect(page.locator('#lesson-reward-save-alert')).toContainText('저장하지 못했어요');
+ await expect(page.locator('#lesson-reward-continue')).toBeDisabled();
+ await page.getByRole('button',{name:'저장 다시 시도'}).click();
+ await expect(page.locator('#lesson-reward-save-alert')).toHaveCount(0);
+ await expect(page.locator('#lesson-reward-continue')).toBeEnabled();
+ expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('meowde-v410-state')).done.includes(0))).toBe(true);
+});
+test('unsaved instant choice has retry save without another graded attempt',async({page})=>{
+ await page.goto(base+'/');await ready(page);await select(page,0);
+ await page.locator('.lesson-foot .btn').click();
+ const initial=await page.evaluate(()=>{
+  const key='meowde-v410-state',set=Storage.prototype.setItem,before=localStorage.getItem(key);
+  window.__restoreLessonStorage=()=>Storage.prototype.setItem=set;
+  Storage.prototype.setItem=function(k,v){if(k===key)throw new DOMException('full','QuotaExceededError');return set.call(this,k,v)};
+  return before;
+ });
+ const wrong=await page.evaluate(()=>(cur().answer+1)%cur().choices.length);
+ await page.locator('.choice').nth(wrong).click();
+ await expect(page.locator('.feedback.no:not(.lesson-save-warning)')).toBeVisible();
+ await expect(page.getByRole('button',{name:'저장 다시 시도'})).toBeVisible();
+ expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(initial);
+ const graded=await page.evaluate(()=>({idx:S.idx,queue:S.queue.length,checked:S.checked,firstCorrect:S.firstCorrect}));
+ await page.evaluate(()=>window.__restoreLessonStorage());
+ await page.getByRole('button',{name:'저장 다시 시도'}).click();
+ await expect(page.getByRole('button',{name:'저장 다시 시도'})).toHaveCount(0);
+ expect(await page.evaluate(()=>({idx:S.idx,queue:S.queue.length,checked:S.checked,firstCorrect:S.firstCorrect}))).toEqual(graded);
+ await page.reload();await ready(page);
+ await expect(page.locator('.feedback.no:not(.lesson-save-warning)')).toBeVisible();
 });
 test('failed snapshot write keeps the active lesson and stored bytes',async({page})=>{
  await page.goto(base+'/');await ready(page);await select(page,0);
@@ -69,13 +125,14 @@ test('switching a lesson around Smart Review preserves counters and grants its d
  }});
  await page.goto(base+'/');await ready(page);
  async function openSmart(){
-  await page.locator('.tabbar button').filter({hasText:/^복습$/}).click();
+  await page.getByRole('button',{name:'학습',exact:true}).click();
+   await page.locator('.learn-review-entry button').click();
   await page.locator('.v417-smart-card .btn').click();
   if(await page.locator('.start-guard').count())await page.locator('.start-guard button').last().click();
  }
  await openSmart();
  const answer=await page.evaluate(()=>cur().answer);
- await page.locator('.choice').nth(answer).click();await page.locator('.lesson-foot .btn').click();
+ await page.locator('.choice').nth(answer).click();
  await expect(page.locator('.feedback.ok')).toBeVisible();
  const active=await page.evaluate(()=>({active:MeowSmartReview.state.active,idx:S.idx,checked:S.checked,queue:S.queue}));
  await page.locator('.close').click();await select(page,59);
@@ -90,7 +147,8 @@ test('switching a lesson around Smart Review preserves counters and grants its d
    if(ex.type==='fill')await page.locator('.token').nth(ex.tokens.indexOf(ex.answer)).click();
    if(ex.type==='bughunt')await page.locator('.linebtn').nth(ex.buggy).click();
    if(ex.type==='write')await page.locator('#code-editor').fill(ex.model);
-   await page.locator('.lesson-foot .btn').click();await expect(page.locator('.feedback.ok')).toBeVisible({timeout:60000});
+   if(!(await page.locator('.feedback.ok').count()))await page.locator('.lesson-foot .btn').click();
+   await expect(page.locator('.feedback.ok')).toBeVisible({timeout:60000});
   }
   await expect(page.locator('.reward-screen')).toBeVisible();
  }

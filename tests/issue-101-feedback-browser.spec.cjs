@@ -14,7 +14,7 @@ for(const row of cases)test('wrong '+row.kind+' reveals correct example and reas
  if(row.kind==='predict'||row.kind==='bughunt')await page.locator('.choice, .linebtn').first().click();
  if(row.kind==='fill')await page.locator('.token').first().click();
  if(row.kind==='write')await page.locator('#code-editor').fill('print(0)');
- await page.locator('.lesson-foot .btn').click();
+ if(!(await page.locator('.feedback.no').count()))await page.locator('.lesson-foot .btn').click();
  await expect(page.locator('.feedback.no')).toBeVisible();
  const disclosure=page.locator('[data-answer-review]');
  await expect(disclosure).toBeVisible();

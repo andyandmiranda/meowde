@@ -12,7 +12,7 @@ test('organic first lesson retains the initial miss after retry, reload and cour
   if(ex.type==='predict')await page.locator('.choice').nth(ex.answer).click();
   if(ex.type==='fill')await page.locator('.tokens .token').nth(ex.tokens.indexOf(ex.answer)).click();
   if(ex.type==='bughunt')await page.locator('.linebtn').nth(ex.buggy).click();
-  await page.locator('.lesson-foot .btn').click();await expect(page.locator('.feedback.ok')).toBeVisible();await page.locator('.feedback .btn').click();
+  if(!(await page.locator('.feedback.ok').count()))await page.locator('.lesson-foot .btn').click();await expect(page.locator('.feedback.ok')).toBeVisible();await page.locator('.feedback .btn').click();
  }
  await page.locator('#code-editor').fill('print("틀림")');await page.locator('.lesson-foot .btn').click();
  await expect(page.locator('.feedback.no')).toContainText('야옹',{timeout:60000});await page.locator('.feedback .btn').click();
@@ -49,7 +49,7 @@ for(const lang of ['ko','en'])test('all 60 '+lang+' lessons can be completed thr
    if(ex.type==='fill')await page.locator('.tokens .token').nth(ex.tokens.indexOf(ex.answer)).click();
    if(ex.type==='bughunt')await page.locator('.linebtn').nth(ex.buggy).click();
    if(ex.type==='write')await page.locator('#code-editor').fill(ex.model);
-   await page.locator('.lesson-foot .btn').click();await expect(page.locator('.feedback.ok'),lang+':'+ex.id).toBeVisible({timeout:60000});await page.locator('.feedback .btn').click();
+   if(!(await page.locator('.feedback.ok').count()))await page.locator('.lesson-foot .btn').click();await expect(page.locator('.feedback.ok'),lang+':'+ex.id).toBeVisible({timeout:60000});await page.locator('.feedback .btn').click();
   }
   await expect(page.locator('.reward-screen')).toContainText('100%');record.push({...current,questions,status:'PASS'});
   if((lesson+1)%10===0)console.log(lang+' walkthrough: '+(lesson+1)+'/60 completed');
@@ -86,7 +86,6 @@ test('a wrong answer can reveal the expected solution and explanation without ch
  await page.locator('.lesson-foot .btn').click();
  const correct=await page.evaluate(()=>cur().answer);
  await page.locator('.choice').nth(correct===0?1:0).click();
- await page.locator('.lesson-foot .btn').click();
  await expect(page.locator('.feedback.no')).toBeVisible();
  const before=await page.evaluate(()=>({idx:S.idx,correct:S.correct,checked:S.checked,storage:(()=>{const state=JSON.parse(localStorage.getItem('meowde-v410-state'));delete state.savedAt;return state;})()}));
  const answer=page.locator('[data-answer-review]');

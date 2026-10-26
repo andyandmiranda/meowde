@@ -18,7 +18,7 @@
     if(!progress[id]||typeof progress[id]!=="object"||Array.isArray(progress[id]))progress[id]={};
     return progress[id];
   }
-  function save(){if(storageReadBlocked){showStorageProblem();return false}try{localStorage.setItem(KEY,JSON.stringify({version:1,units:progress}));return true}catch{storageProblem=true;showStorageProblem();return false}}
+  function save(){if(storageReadBlocked){showStorageProblem();return false}try{localStorage.setItem(KEY,JSON.stringify({version:1,units:progress}));storageProblem=false;const notice=document.getElementById("storage-status");if(notice)notice.textContent="";return true}catch{storageProblem=true;showStorageProblem();return false}}
   function showStorageProblem(){const notice=document.getElementById("storage-status");if(notice)notice.textContent=storageReadBlocked?"기존 기록을 안전하게 읽을 수 없어 덮어쓰지 않았습니다. 현재 탭에서 연습할 수 있지만 새 작업은 저장되지 않으니 코드를 별도로 복사해두세요.":"이 브라우저에 기록을 저장하지 못했습니다. 현재 탭에서는 계속할 수 있지만 새로고침하면 사라질 수 있습니다."}
   function stateLabel(u){const r=u.id===unit.id&&u.id==="function-slots"?record():record(u.id);return r.lastPassed===false?"최근 재시도 · 복습 권장":r.independentPassed&&r.quizPassed?"혼자 적용 확인":r.passed?"코드 통과 · 이해/독립 재도전 권장":r.attempts?"복습 권장":"학습 시작"}
   function navigation(){return data.units.map((u,i)=>`<a href="#${u.id}" ${u.id===unit.id?'aria-current="page"':''}>${i+1}. ${escape(u.title)}<small>${stateLabel(u)}</small></a>`).join("")}
@@ -199,16 +199,17 @@
   }
   function bind(){
     document.getElementById("nav-toggle").onclick=event=>{const nav=document.getElementById("unit-nav"),open=nav.dataset.collapsed==="true";nav.dataset.collapsed=String(!open);event.currentTarget.setAttribute("aria-expanded",String(open));event.currentTarget.textContent=open?"단원 목록 접기":"단원 목록 열기"};
+    const quizFeedback=index=>{const correct=index===unit.quiz.answer;const answer=unit.quiz.choices[unit.quiz.answer];return (correct?"맞았습니다. ":"다시 생각해보세요. 정답: "+answer+". ")+unit.quiz.reasons[index]+(correct?"":" "+unit.quiz.reasons[unit.quiz.answer]);};
     root.querySelectorAll("[data-choice]").forEach(button=>button.onclick=()=>{
       const index=Number(button.dataset.choice),correct=index===unit.quiz.answer,r=record();
       r.quizAttempts=(r.quizAttempts||0)+1;r.quizPassed=correct;r.lastQuizChoice=index;
       root.querySelectorAll("[data-choice]").forEach(b=>b.setAttribute("aria-pressed",String(b===button)));
-      const box=document.getElementById("quiz-feedback");box.className="feedback "+(correct?"good":"bad");box.textContent=(correct?"맞았습니다. ":"다시 생각해보세요. ")+unit.quiz.reasons[index];save();refreshProgress()
+      const box=document.getElementById("quiz-feedback");box.className="feedback "+(correct?"good":"bad");box.textContent=quizFeedback(index);save();refreshProgress()
     });
     if(Number.isInteger(record().lastQuizChoice)){
       const index=record().lastQuizChoice;
       const selected=root.querySelector(`[data-choice="${index}"]`);
-      if(selected){selected.setAttribute("aria-pressed","true");const correct=index===unit.quiz.answer;const box=document.getElementById("quiz-feedback");box.className="feedback "+(correct?"good":"bad");box.textContent=(correct?"맞았습니다. ":"다시 생각해보세요. ")+unit.quiz.reasons[index];}
+      if(selected){selected.setAttribute("aria-pressed","true");const correct=index===unit.quiz.answer;const box=document.getElementById("quiz-feedback");box.className="feedback "+(correct?"good":"bad");box.textContent=quizFeedback(index);}
     }
     // Optional no-keyboard code assembly: reusable snippets keep the real editor and grader intact.
     const editorArea=document.getElementById("learner-code");
@@ -306,10 +307,35 @@
     };
     worker.postMessage({code,tests:mode==="grade"?unit.task.tests:[]});
   }
+  // Read-only entry hub: learning records remain untouched until the learner opens a unit.
+  function renderOverview(){
+    stop();
+    const savedValues=progress.values?.valuesPath;
+    const hasValues=!!(window.MeowValuesPath?.valid(savedValues));
+    const valuesCompleted=hasValues&&savedValues.complete===true;
+    const other=data.units.find(u=>u.id!=="values"&&(typeof progress[u.id]?.draft==="string"||progress[u.id]?.attempts||typeof progress[u.id+":practice"]?.draft==="string"));
+    const legacyValues=typeof progress.values?.draft==="string"||progress.values?.attempts||progress.values?.passed;
+    const hasHistory=!!(hasValues||legacyValues||other);
+    const resume=hasValues?{hash:"#values",title:valuesCompleted?"문자에서 계산으로 · 학습 완료":"문자에서 계산으로 · Lv."+savedValues.level}
+      :legacyValues?{hash:"#values/challenge",title:"문자에서 계산으로 · 기존 코드 이어하기"}
+      :other?{hash:"#"+other.id+(other.id==="function-slots"&&typeof progress["function-slots:practice"]?.draft==="string"?"/practice":""),title:other.title}
+      :{hash:"#values",title:"문자에서 계산으로 · 처음부터"};
+    const stages=[
+      {title:"이해",description:"개념과 실행 예제를 살펴봐요",hash:"#function-slots/understand"},
+      {title:"연습",description:"함수 코드를 직접 완성하고 피드백을 받아요",hash:"#function-slots/practice"},
+      {title:"응용",description:"새로운 입력과 실전 문제에 도전해요",hash:"#function-slots/challenge"}
+    ];
+    root.innerHTML='<section class="deepen-hub" aria-label="심화 학습 시작">'
+      +'<p class="deepen-hub-kicker">PYTHON · 심화 학습</p><h2 id="unit-title" tabindex="-1">이해하고, 직접 풀고, 응용해요</h2>'
+      +'<p class="deepen-hub-intro">개념부터 코딩까지 내 속도로 학습해요. 각 화면에서는 한 문제에 집중하고 채점 후 다음으로 이동할 수 있어요.</p>'
+      +'<section class="deepen-resume"><h3>'+(valuesCompleted?'학습 완료 · 복습 확인':hasHistory?'이어서 학습하기':'첫 심화 학습 시작')+'</h3><p>'+escape(resume.title)+'</p><a class="primary" href="'+resume.hash+'">'+(valuesCompleted?'복습 시점 확인':hasHistory?'학습 이어하기':'학습 시작하기')+'</a></section>'
+      +'<p class="deepen-stage-caption">함수 심화 · 이해 → 연습 → 응용</p><nav class="deepen-stage-list" aria-label="함수 심화 학습 방식">'+stages.map((s,i)=>'<a href="'+s.hash+'"><span class="deepen-stage-number">0'+(i+1)+'</span><span><strong>'+s.title+'</strong><small>'+s.description+'</small></span><span aria-hidden="true">›</span></a>').join('')+'</nav>'
+      +'<details class="deepen-unit-list"><summary>모든 심화 단원 보기 · '+data.units.length+'개</summary><nav aria-label="심화 단원 목록">'+data.units.map(u=>'<a href="#'+encodeURIComponent(u.id)+'">'+escape(u.title)+'</a>').join('')+'</nav></details></section>';
+  }
   try{
     const response=await fetch("/assets/python-lab-content.json?v=2");if(!response.ok)throw new Error("학습 내용 응답 "+response.status);
     data=await response.json();if(data.version!==1||!Array.isArray(data.units)||!data.units.length)throw new Error("지원하지 않는 학습 내용 형식");
-    function route(focus){const [id,step]=location.hash.slice(1).split("/");pathStep=step||"";const source=data.units.find(u=>u.id===id)||data.units[0];stage=["understand","practice","challenge"].includes(step)?step:"understand";unit=source.id==="function-slots"&&stage==="practice"?{...source,task:source.practiceTask}:source;render();if(focus){document.getElementById("unit-title").setAttribute("tabindex","-1");document.getElementById("unit-title").focus();window.scrollTo(0,0)}}
+    function route(focus){if(!location.hash&&new URLSearchParams(location.search).get("view")==="overview"){renderOverview();if(focus){document.getElementById("unit-title")?.focus();window.scrollTo(0,0);}return;}const [id,step]=location.hash.slice(1).split("/");pathStep=step||"";const source=data.units.find(u=>u.id===id)||data.units[0];stage=["understand","practice","challenge"].includes(step)?step:"understand";unit=source.id==="function-slots"&&stage==="practice"?{...source,task:source.practiceTask}:source;render();if(focus){document.getElementById("unit-title").setAttribute("tabindex","-1");document.getElementById("unit-title").focus();window.scrollTo(0,0)}}
     window.addEventListener("hashchange",()=>route(true));window.addEventListener("pagehide",()=>stop());route(false);
   }catch(error){root.innerHTML=`<div class="error-panel" role="alert"><h1>학습 내용을 열지 못했습니다</h1><p>${escape(error.message)}</p><a href="/python-lab.html">다시 시도</a> · <a href="/">먀오드 홈으로</a></div>`}
 })();
