@@ -103,13 +103,13 @@
       const button=(text,handler)=>{const b=document.createElement('button');b.className='primary';b.type='button';b.textContent=text;b.onclick=handler;actions.replaceChildren(b);return b;};
       const next=()=>button(state.index+1<count(state)?'다음 연습':state.level<5?'다음 단계 · '+labels[state.level]:'연습 마치기',()=>{
         const before=JSON.parse(JSON.stringify(state));advance(state);
-        if(!persist()&&!blocked&&!unsupported){state=before;record.valuesPath=state;warn();return;}
+        if(!persist()&&!blocked&&!unsupported){state=before;record.valuesPath=state;draw();return;}
         draw();root.querySelector('#unit-title').scrollIntoView({block:'start'});
       });
       if(state.complete){
         const records=Object.values(state.items),independent=records.filter(x=>x.independentPassed).length,helped=records.filter(x=>x.lastPassed&&x.lastPassedWithHelp).length;
         content.innerHTML=`<h3>이번 연습을 마쳤어요</h3><p>첫 시도에 도움 없이 해결 ${independent}개 · 도움받아 해결 ${helped}개</p><p>완료가 곧 숙달은 아니에요. 하루 뒤 새 입력으로 다시 풀며 기억을 확인해요.</p>`;
-        if(Date.now()>=state.reviewDueAt)button('새 문제로 기억 확인',()=>{const before=JSON.parse(JSON.stringify(state));review(state);if(!persist()&&!blocked&&!unsupported){state=before;record.valuesPath=state;warn();return;}draw();});
+        if(Date.now()>=state.reviewDueAt)button('새 문제로 기억 확인',()=>{const before=JSON.parse(JSON.stringify(state));review(state);if(!persist()&&!blocked&&!unsupported){state=before;record.valuesPath=state;draw();return;}draw();});
         else{
           const nextUnit=units[units.findIndex(u=>u.id==='values')+1];
           const a=document.createElement('a');a.href=nextUnit?'#'+nextUnit.id:'/?tab=map';a.className='primary';a.textContent=nextUnit?'다음 개념 · '+nextUnit.title:'학습으로 돌아가기';actions.append(a);
@@ -132,9 +132,9 @@
         }
       }
       const done=(pass,detail='')=>{
-        stop();mark(state,pass);persist();draw();
+        stop();mark(state,pass);
         const feedback=(pass?(state.items[id].lastPassedWithHelp?'도움받아 해결했어요. ':'도움 없이 해결했어요. '):'다시 해봐요. ')+(q.type==='choice'&&!pass?' 정답: '+q.answer+'. ':'')+(detail||q.reason);
-        state.items[id].feedbackText=feedback;persist();status(feedback);warn();
+        state.items[id].feedbackText=feedback;persist();draw();status(feedback);warn();
       };
       if(r.lastPassed){status((r.lastPassedWithHelp?'도움받아 해결했어요. ':'도움 없이 해결했어요. ')+q.reason);next();}
       else{
