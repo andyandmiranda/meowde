@@ -97,7 +97,7 @@ test('Linux loop feedback shows the correct answer even after a correct choice',
  await expect(nav.getByRole('link',{name:'심화'})).toHaveAttribute('aria-current','page');
  await expect(nav.getByRole('link',{name:'함께'})).toHaveAttribute('href','/together.html?subject=linux');
  const palette=await page.evaluate(()=>({link:getComputedStyle(document.querySelector('main a')).color,buttonBorder:getComputedStyle(document.querySelector('#guided button')).borderTopColor}));
- expect(palette.link).toBe('rgb(140, 36, 81)');
+ expect(palette.link).toBe('rgb(128, 85, 106)');
  expect(palette.buttonBorder).toBe('rgb(232, 167, 197)');
  const guided=page.locator('#guided');
  await expect(guided.locator('button[aria-pressed="false"]')).toHaveCount(3);
