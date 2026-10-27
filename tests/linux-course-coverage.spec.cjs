@@ -1,6 +1,6 @@
 const {test,expect}=require('playwright/test');
 const base=process.env.MEOWDE_BASE_URL||'http://127.0.0.1:4173';
-async function openChallenge(page){await page.getByRole('button',{name:'예제 보기 →'}).click();await page.getByRole('button',{name:'직접 연습하기 →'}).click();const input=page.getByRole('textbox',{name:'연습 명령어'});await input.fill(await input.getAttribute('placeholder'));await page.getByRole('button',{name:'명령어 확인'}).click();await page.getByRole('button',{name:'도전 문제 풀기 →'}).click();}
+async function openChallenge(page){await page.getByRole('button',{name:'예제 보기 →'}).click();await page.getByRole('button',{name:'직접 연습하기 →'}).click();const input=page.getByRole('textbox',{name:/^(연습 명령어|Bash 조건문 연습 코드)$/});const label=await input.getAttribute('aria-label');const sample=label==='Bash 조건문 연습 코드'?['if [ "$battery" -lt 30 ]; then','echo "충전이 필요해요"','else','echo "계속 사용할 수 있어요"','fi'].join('\n'):await input.getAttribute('placeholder');await input.fill(sample);await page.getByRole('button',{name:'명령어 확인'}).click();await page.getByRole('button',{name:'도전 문제 풀기 →'}).click();}
 
 test('all nine Linux concept quizzes reject a distractor and retain completion after reload',async({page})=>{
  await page.goto(base+'/linux-crash-course.html');
