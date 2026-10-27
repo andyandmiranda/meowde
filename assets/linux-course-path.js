@@ -76,7 +76,7 @@ function renderPath(focus=false){
    if(i===lesson.answer){
     done[index]=true;wrongAttempts=0;persist();feedback.className="linux-feedback good";feedback.textContent="정답이에요. "+lesson.why;
     answers.querySelectorAll("button").forEach(x=>x.disabled=true);
-    const next=make("button",index<8?"다음 단원 →":"처음부터 복습 →","linux-next");next.onclick=()=>{index=(index+1)%9;stage=0;saved.stageByLesson={...(saved.stageByLesson||{}),[index]:0};persist();show();window.scrollTo(0,0);};feedback.after(next);
+    const next=make("button",index<8?"다음 단원 →":"학습 지도로 →","linux-next");next.onclick=()=>{if(index===8){location.href="/linux-home.html?tab=learn";return;}index++;stage=0;saved.stageByLesson={...(saved.stageByLesson||{}),[index]:0};persist();show();window.scrollTo(0,0);};feedback.after(next);
    }else{
     wrongAttempts++;feedback.className="linux-feedback bad";feedback.textContent="아직 아니에요. "+meta.wrong[Math.max(0,i-(i>lesson.answer?1:0))]+(wrongAttempts>1?" 위 개념과 예제를 다시 확인해 보세요.":" 다시 선택할 수 있어요.");
    }
