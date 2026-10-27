@@ -27,9 +27,21 @@ test("Linux learning path declares honest L0-L3 goals and one-stage UI",()=>{
  assert.doesNotMatch(source,/L4|L5/);
  assert.match(source,/학습 목표/);
  assert.match(source,/다시 선택할 수 있어요/);
+ assert.doesNotMatch(source,/function stageButton/);
+ assert.match(source,/make\("li",\(i\+1\)\+"\. "\+name\)/);
  const css=fs.readFileSync(path.join(root,"assets/linux-learning-ui.css"),"utf8");
  assert.match(css,/--surface-mint:#53C7A0/);
  assert.match(css,/\.linux-stage-path/);
+});
+
+test("Linux entry keeps one primary action and hides secondary routes by default",()=>{
+ const home=fs.readFileSync(path.join(root,"linux-home.html"),"utf8");
+ assert.equal((home.match(/class="primary"/g)||[]).length,1);
+ assert.match(home,/<details class="more-links">/);
+ assert.doesNotMatch(home,/meowde-subject-overview/);
+ const library=fs.readFileSync(path.join(root,"assets/linux-library-view.js"),"utf8");
+ assert.doesNotMatch(library,/library-mode/);
+ assert.match(library,/section\.hidden=i!==modes\[mode\]\[1\]/);
 });
 
 test("Linux navigation uses the approved five-tab product structure",()=>{

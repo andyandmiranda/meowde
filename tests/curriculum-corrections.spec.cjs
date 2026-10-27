@@ -1,5 +1,6 @@
 const {test,expect}=require('playwright/test');
 const base=process.env.MEOWDE_BASE_URL||'http://127.0.0.1:4173';
+async function openLinuxChallenge(page){await page.getByRole('button',{name:'예제 보기 →'}).click();await page.getByRole('button',{name:'직접 연습하기 →'}).click();const input=page.getByRole('textbox',{name:'연습 명령어'});await input.fill(await input.getAttribute('placeholder'));await page.getByRole('button',{name:'명령어 확인'}).click();await page.getByRole('button',{name:'도전 문제 풀기 →'}).click();}
 
 for(const lang of ['ko','en']){
  test(`comparison fill has exactly one True-producing choice (${lang})`,async({page})=>{
@@ -103,10 +104,10 @@ test('in-flight and already checked Python submissions cannot duplicate credit',
 
 test('Linux bottom tab opens practice and quizzes disclose theory-only units',async({page})=>{
  await page.goto(base+'/linux-crash-course.html');
- await page.locator('#nav button').nth(1).click();
- await page.getByRole('button',{name:'4. 도전'}).click();
+ await page.evaluate(()=>document.querySelectorAll('#nav button')[1].click());
+ await openLinuxChallenge(page);
  await page.locator('#lesson .answers button').first().click();
- await page.locator('#library-mode').selectOption('terminal');
+ await page.goto(base+'/linux-crash-course.html?view=terminal');
  await page.locator('#sim-missions button').nth(4).click();
  await expect(page.locator('#sim-goal')).toContainText('마지막 두 줄');
  await page.locator('#sim-input').fill('head -n 2 app.log');await page.locator('#sim-run').click();await page.locator('#sim-check').click();
@@ -114,9 +115,9 @@ test('Linux bottom tab opens practice and quizzes disclose theory-only units',as
  await page.locator('#sim-input').fill('tail -n 2 app.log');await page.locator('#sim-run').click();await page.locator('#sim-check').click();
  await expect(page.locator('#sim-next')).toBeVisible();await page.locator('#sim-next').click();
  await expect(page.locator('#cond-case')).toBeVisible();
- await page.locator('#library-mode').selectOption('concept');
- await page.locator('#nav button').nth(4).click();await page.getByRole('button',{name:'3. 연습'}).click();await expect(page.locator('.linux-stage-panel')).toContainText('실행하지 않아요');
- await page.locator('#nav button').nth(7).click();await page.locator('#library-mode').selectOption('condition');await expect(page.locator('#cond-case')).toBeVisible();
+ await page.goto(base+'/linux-crash-course.html?view=concept');await page.evaluate(()=>document.querySelectorAll('#nav button')[4].click());
+ await page.getByRole('button',{name:'예제 보기 →'}).click();await page.getByRole('button',{name:'직접 연습하기 →'}).click();await expect(page.locator('.linux-stage-panel')).toContainText('실행하지 않아요');
+ await page.goto(base+'/linux-crash-course.html?view=condition');await expect(page.locator('#cond-case')).toBeVisible();
 });
 
 test('unreadable Python and Linux quiz progress is preserved after opening or answering',async({page})=>{
@@ -132,16 +133,16 @@ test('unreadable Python and Linux quiz progress is preserved after opening or an
  expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(raw);
  expect(await page.evaluate(()=>localStorage.getItem('meowde-v425-state-backup'))).toBe('existing backup');
  await page.goto(base+'/linux-crash-course.html');
- await page.getByRole('button',{name:'4. 도전'}).click();await page.locator('#lesson .answers button').first().click();
+ await openLinuxChallenge(page);await page.locator('#lesson .answers button').first().click();
  await expect(page.locator('#library-storage-status')).toContainText('원본은 보존');
  expect(await page.evaluate(()=>localStorage.getItem('meowde-linux-cram-v1'))).toBe(raw);
 });
 
-test('the overview recognizes the shipped nested in-progress shape without changing records',async({page})=>{
+test('the Linux home keeps the primary action focused without changing Python records',async({page})=>{
  await page.goto(base+'/linux-home.html');
  const before=JSON.stringify({done:[0],inProgress:{queue:[{id:'saved'}],idx:0,lessonIndex:1}});
  await page.evaluate(value=>localStorage.setItem('meowde-v410-state',value),before);
  await page.reload();
- await expect(page.locator('.meowde-subject-overview')).toContainText('1개 레슨 완료 · 이어하기');
+ await expect(page.locator('.primary')).toHaveCount(1);await expect(page.locator('.more-links')).not.toHaveAttribute('open','');
  expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(before);
 });

@@ -1,5 +1,6 @@
 const {test,expect}=require("playwright/test");
 const base=process.env.MEOWDE_BASE_URL||"http://127.0.0.1:4173";
+async function openChallenge(page){await page.getByRole("button",{name:"예제 보기 →"}).click();await page.getByRole("button",{name:"직접 연습하기 →"}).click();const input=page.getByRole("textbox",{name:"연습 명령어"});await input.fill(await input.getAttribute("placeholder"));await page.getByRole("button",{name:"명령어 확인"}).click();await page.getByRole("button",{name:"도전 문제 풀기 →"}).click();}
 test.use({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
 test("focused lesson from home to independent transfer and completion",async({page})=>{
  const errors=[];page.on("pageerror",e=>errors.push(e.message));
@@ -14,7 +15,7 @@ test("focused lesson from home to independent transfer and completion",async({pa
  await input.fill("mkdir training");await input.press("Enter");await expect(page.locator("#lesson-feedback")).toContainText("폴더가 생겼어요");await action.click();
  await input.fill("mkdir travel");await action.click();await action.click();
  await expect(page.locator("#lesson-title")).toHaveText("첫 폴더 만들기, 성공!");await expect(page.locator("#lesson-progress")).toHaveAttribute("aria-valuenow","4");
- await action.click();await expect(page.locator("#library-mode")).toBeVisible();expect(errors).toEqual([]);
+ await action.click();await expect(page.getByRole("heading",{name:"단계별 학습"})).toBeVisible();expect(errors).toEqual([]);
 });
 test("blank and unsupported inputs cannot advance; back remains usable",async({page})=>{
  await page.goto(base+"/linux-start.html");const action=page.locator("#lesson-action");await action.click();await action.click();
@@ -30,14 +31,14 @@ test("legacy URL is read-only and prior records survive new learning",async({pag
  expect(await page.evaluate(()=>localStorage.getItem("meowde-v410-state"))).toBe('{"xp":17}');expect(await page.evaluate(()=>localStorage.getItem("meowde-linux-cram-v1"))).toBe('{"index":2,"done":{"0":true}}');
 });
 test("library shows one tool at a time and grades search results",async({page})=>{
- await page.goto(base+"/linux-crash-course.html#more-learning");await expect(page.locator("#micro-e1")).toBeHidden();await expect(page.locator("#lesson")).toBeVisible();await expect(page.locator("#sim-input")).toBeHidden();
- await page.locator("#library-mode").selectOption("terminal");await expect(page.locator("#lesson")).toBeHidden();await page.locator("#sim-missions button").nth(3).click();
+ await page.goto(base+"/linux-crash-course.html");await expect(page.locator("#micro-e1")).toBeHidden();await expect(page.locator("#lesson")).toBeVisible();await expect(page.locator("#sim-input")).toBeHidden();
+ await page.goto(base+"/linux-crash-course.html?view=terminal");await expect(page.locator("#lesson")).toBeHidden();await page.locator("#sim-missions button").nth(3).click();
  for(const [command,success] of [["grep INFO app.log",false],["grep -n ERROR app.log",true]]){await page.locator("#sim-input").fill(command);await page.locator("#sim-run").click();await page.locator("#sim-check").click();if(success)await expect(page.locator("#sim-next")).toBeVisible();else await expect(page.locator("#sim-next")).toBeHidden();}
- await page.locator("#library-mode").selectOption("bash");await expect(page.locator("#sim-input")).toBeHidden();await expect(page.locator("#bash-source")).toBeVisible();
+ await page.goto(base+"/linux-crash-course.html?view=bash");await expect(page.locator("#sim-input")).toBeHidden();await expect(page.locator("#bash-source")).toBeVisible();
 });
 test("quiz progress survives reload and opens the selected practice tool",async({page})=>{
- await page.goto(base+"/linux-crash-course.html");await page.getByRole("button",{name:"4. 도전"}).click();await page.locator("#lesson .answers button").first().click();await page.reload();await expect(page.locator("#progress")).toContainText("1 / 9");
- await page.locator("#library-mode").selectOption("terminal");await expect(page.locator("#sim-input")).toBeVisible();await expect(page.locator("#lesson")).toBeHidden();
+ await page.goto(base+"/linux-crash-course.html");await openChallenge(page);await page.locator("#lesson .answers button").first().click();await page.reload();await expect(page.locator("#progress")).toContainText("1 / 9");
+ await page.goto(base+"/linux-crash-course.html?view=terminal");await expect(page.locator("#sim-input")).toBeVisible();await expect(page.locator("#lesson")).toBeHidden();
 });
 for(const width of [320,375,390,768])test("screens fit viewport "+width,async({page})=>{
  await page.setViewportSize({width,height:844});for(const route of ["linux-home.html","linux-start.html","robotics.html","content-notice.html"]){await page.goto(base+"/"+route);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await expect(page.getByText(/NVIDIA AI Campus/)).toHaveCount(0);}
