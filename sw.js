@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v486-values-path";
+const CACHE_NAME = "meowde-v487-linux-learning";
 
 const REQUIRED_ASSETS = [
   "/assets/lesson-access-policy.js",
@@ -7,6 +7,9 @@ const REQUIRED_ASSETS = [
   "/assets/lesson-qa-report.js",
   "/assets/linux-shared-navigation.js",
   "/assets/linux-shared-navigation.css",
+  "/assets/linux-learning-ui.css",
+  "/assets/linux-command-practice.js",
+  "/assets/linux-course-path.js",
   "/python-lab.html",
   "/assets/python-lab-content.json",
   "/assets/python-lab.css",
