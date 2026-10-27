@@ -18,7 +18,19 @@ test("limited Linux command practice grades outcomes and accepts equivalent quot
  assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(1,"tail -n 2 './app.log'").ok,true);
  assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(2,"grep -n 'ERROR' ./app.log").ok,true);
  assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(2,"grep ERROR app.log").ok,false);
- assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(4,"chmod 600 secret.txt").supported,false);
+ assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(4,"chmod 600 secret.txt").ok,true);
+ assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(4,"chmod 777 secret.txt").ok,false);
+ for(const [index,valid,invalid] of [
+  [3,"cat ./names.txt | sort","cat names.txt > sort"],
+  [5,"ps aux","kill 1234"],
+  [6,"apt-cache search tree","sudo apt install tree"],
+  [7,'echo "$name"',"echo name="]
+ ]){
+  assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(index,valid).ok,true);
+  assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(index,invalid).ok,false);
+  assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(index,valid).verified,"syntax");
+ }
+ assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(8,'echo "충전이 필요해요"').supported,false);
 });
 
 test("Linux learning path declares honest L0-L3 goals and one-stage UI",()=>{
