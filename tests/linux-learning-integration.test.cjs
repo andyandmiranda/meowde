@@ -47,8 +47,8 @@ test("Linux learning path declares honest L0-L3 goals and one-stage UI",()=>{
  assert.match(source,/MeowdeBashPractice\.grade\("battery",raw\)/);
  assert.match(source,/index===8\?"textarea":"input"/);
  const css=fs.readFileSync(path.join(root,"assets/linux-learning-ui.css"),"utf8");
- assert.match(css,/--surface-mint:#F45B98/);
- assert.match(css,/--surface-mint-dark:#8C2451/);
+ assert.match(css,/--surface-mint:#F5DDE5/);
+ assert.match(css,/--surface-mint-dark:#80556A/);
  assert.doesNotMatch(css,/--surface-mint:#53C7A0/);
  assert.match(css,/\.linux-stage-path/);
 });
