@@ -86,6 +86,7 @@ function renderPath(focus=false){
  area.append(panel);byId("progress").textContent=Object.keys(done).filter(k=>done[k]===true&&/^[0-8]$/.test(k)).length+" / 9단원 개념 확인 완료";
  if(focus)panel.querySelector("h3")?.setAttribute("tabindex","-1"),panel.querySelector("h3")?.focus();
 }
+const requestedLesson=Number(new URLSearchParams(location.search).get("lesson"));if(Number.isInteger(requestedLesson)&&requestedLesson>=1&&requestedLesson<=9){index=requestedLesson-1;persist();}
 const originalShow=show;
 show=function(){originalShow();stage=Number(saved.stageByLesson?.[index]);if(!Number.isInteger(stage)||stage<0||stage>3)stage=0;wrongAttempts=0;renderPath();};
 show();
