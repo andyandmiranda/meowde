@@ -45,3 +45,18 @@ body.linux-five-tabs,body.linux-five-tabs .shell,body.linux-five-tabs .app{backg
 @media(prefers-reduced-motion:reduce){.linux-journey-stop:nth-child(n){transform:none}}
 
 body.linux-map-page,body.linux-map-page .shell,body.linux-map-page #linux-learning-map{background:#fff}
+
+/* Compact mobile route: one tappable stop, less scrolling, same saved progress. */
+body.linux-map-page #linux-learning-map{padding:16px 14px;border-radius:20px;box-shadow:none}
+body.linux-map-page #linux-learning-map h2{margin:0 0 6px;font-size:23px}
+body.linux-map-page #linux-learning-map>.muted{margin:0 0 12px;font-size:13px;line-height:1.5}
+body.linux-map-page #linux-learning-map>.primary{min-height:48px;margin-bottom:10px}
+.linux-journey-map{padding:0 2px 8px}
+.linux-journey-region{margin:12px 0 16px}
+.linux-journey-region-title{margin:0 0 9px;font-size:13px}
+.linux-journey-trail{gap:9px;padding:3px 4px}
+.linux-journey-stop{width:68%;min-height:60px;flex-direction:row;flex-wrap:wrap;justify-content:flex-start;gap:4px 8px;padding:8px 10px;border-radius:16px;text-align:left}
+.linux-journey-pin{min-width:34px;height:34px;border-width:2px;flex-shrink:0;font-size:12px}
+.linux-journey-title{flex:1;min-width:0;font-size:13px}
+.linux-journey-stop small{width:100%;padding-left:42px;font-size:11px;line-height:1.2}
+@media(max-width:360px){.linux-journey-stop{width:77%;padding:8px}}
