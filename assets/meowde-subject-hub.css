@@ -1,18 +1,18 @@
 /* Shared presentation shell only: never changes course engines or progress keys. */
-:root{--meowde-pink:#f45b98;--meowde-ink:#272631;--meowde-line:#eee7ec}
+:root{--meowde-pink:#F5DDE5;--meowde-ink:#38343A;--meowde-line:#F5DDE5}
 html,body{background:#fff!important}
 body{font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif}
 body>.app,.app,.shell{background:#fff!important}
 .subject-switch{display:grid!important;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 14px}
 .subject-switch a,.subject-switch span{display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:14px;text-align:center;font-size:14px;font-weight:800;text-decoration:none;padding:10px;background:#fff;border:1px solid var(--meowde-line);color:var(--meowde-ink)}
-.subject-switch [aria-current="page"]{background:#fff2f7!important;color:#85234f!important;border-color:#f45b98!important}
-.subject-switch a:focus-visible{outline:3px solid #8c2451;outline-offset:2px}
+.subject-switch [aria-current="page"]{background:#FAF5F7!important;color:#38343A!important;border-color:#B77F94!important}
+.subject-switch a:focus-visible{outline:3px solid #B77F94;outline-offset:2px}
 .meowde-subject-overview{background:#fff;border:1px solid var(--meowde-line);border-radius:20px;padding:16px;margin-bottom:16px;box-shadow:0 6px 22px rgba(39,38,49,.04)}
 .meowde-subject-overview h2{font-size:17px;margin:0 0 8px}.meowde-subject-overview p{font-size:13px;line-height:1.6;color:#675c66;margin:0 0 12px}
 .meowde-subject-overview .subject-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .meowde-subject-overview .subject-options a{display:flex;flex-direction:column;gap:5px;min-height:76px;padding:12px;border:1px solid var(--meowde-line);border-radius:14px;text-decoration:none;color:var(--meowde-ink);background:#fff}
-.meowde-subject-overview .subject-options a:focus-visible{outline:3px solid #8c2451;outline-offset:2px}
+.meowde-subject-overview .subject-options a:focus-visible{outline:3px solid #B77F94;outline-offset:2px}
 .meowde-subject-overview .subject-options b{font-size:14px}.meowde-subject-overview .subject-options small{font-size:11px;line-height:1.45;color:#625962}
-.meowde-subject-overview .subject-options a[aria-current]{background:#fff2f7;border-color:#f45b98}
+.meowde-subject-overview .subject-options a[aria-current]{background:#FAF5F7;border-color:#B77F94}
 .meowde-subject-overview .overview-note{font-size:11px;margin:12px 0 0}
 @media(max-width:340px){.meowde-subject-overview .subject-options{grid-template-columns:1fr}}
