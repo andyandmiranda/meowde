@@ -95,6 +95,6 @@ function renderPath(focus=false){
 }
 const requestedLesson=Number(new URLSearchParams(location.search).get("lesson"));if(Number.isInteger(requestedLesson)&&requestedLesson>=1&&requestedLesson<=9){index=requestedLesson-1;persist();}
 const originalShow=show;
-show=function(){originalShow();stage=Number(saved.stageByLesson?.[index]);if(!Number.isInteger(stage)||stage<0||stage>3)stage=0;wrongAttempts=0;renderPath();};
+show=function(){originalShow();stage=Number(saved.stageByLesson?.[index]);if(!Number.isInteger(stage)||stage<0||stage>3)stage=0;if(done[index]===true)stage=3;wrongAttempts=0;renderPath();};
 show();
 })();
