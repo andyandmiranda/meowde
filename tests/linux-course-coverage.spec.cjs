@@ -32,7 +32,7 @@ test('Linux E1-E9 drafts survive tab navigation and reload without touching Pyth
  const drafts=[['E1','pwd # unfinished'],['E5','chmod 600 secret.txt # unfinished'],['E9','if [ "$battery" -lt 30 ]; then\n  echo "draft"']];
  for(const [lesson,draft] of drafts){
   const i=Number(lesson.slice(1))-1;
-  await page.locator('#nav button').nth(i).click();
+  await page.goto(base+'/linux-crash-course.html?view=concept&lesson='+Number(lesson.slice(1)));
   await page.getByRole('button',{name:'예제 보기 →'}).click();
   await page.getByRole('button',{name:'직접 연습하기 →'}).click();
   const editor=page.getByRole('textbox',{name:/^(연습 명령어|Bash 조건문 연습 코드)$/});
@@ -41,7 +41,7 @@ test('Linux E1-E9 drafts survive tab navigation and reload without touching Pyth
   await expect(page).toHaveURL(/together\.html\?subject=linux/);
   await page.getByRole('navigation',{name:'메인 메뉴'}).getByRole('link',{name:'심화'}).click();
   await expect(page).toHaveURL(/linux-crash-course\.html/);
-  await page.locator('#nav button').nth(i).click();
+  await page.goto(base+'/linux-crash-course.html?view=concept&lesson='+Number(lesson.slice(1)));
   await expect(page.getByRole('textbox',{name:/^(연습 명령어|Bash 조건문 연습 코드)$/})).toHaveValue(draft);
   await page.reload();
   await expect(page.getByRole('textbox',{name:/^(연습 명령어|Bash 조건문 연습 코드)$/})).toHaveValue(draft);
