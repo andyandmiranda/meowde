@@ -1,5 +1,5 @@
-/* MEOWDE learning surface design system: same type scale and cream/mint as Home/Learn. */
-:root{--surface-cream:#FFF9EF;--surface-ink:#2D2A28;--surface-muted:#706961;--surface-line:#E8DED0;--surface-mint:#53C7A0;--surface-mint-dark:#247B61;--surface-pale:#E7F8F0;--surface-font:"Pretendard Variable",Pretendard,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+/* MEOWDE learning surface: Milky Pink shared palette; semantic status colors remain unchanged. */
+:root{--surface-cream:#FFFFFF;--surface-ink:#38343A;--surface-muted:#706961;--surface-line:#F5DDE5;--surface-mint:#F5DDE5;--surface-mint-dark:#B77F94;--surface-pale:#FAF5F7;--surface-font:"Pretendard Variable",Pretendard,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 body:has(#lab){--pink:var(--surface-mint);--background:var(--surface-cream);--ink:var(--surface-ink);--muted:var(--surface-muted);--line:var(--surface-line);--accent:var(--surface-mint-dark);background:var(--surface-cream);color:var(--surface-ink);font:15px/1.6 var(--surface-font)}
 body:has(#lab) button,body:has(#lab) input,body:has(#lab) textarea,body:has(#lab) summary{font-family:var(--surface-font)}
 body:has(#lab) pre,body:has(#lab) textarea.code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
