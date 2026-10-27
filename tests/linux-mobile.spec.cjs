@@ -6,7 +6,7 @@ test("focused lesson from home to independent transfer and completion",async({pa
  const errors=[];page.on("pageerror",e=>errors.push(e.message));
  await page.goto(base+"/linux-home.html");await expect(page.locator(".primary")).toHaveCount(1);
  await expect(page.getByRole("img",{name:"헤드폰을 쓴 Meowde"})).toBeVisible();
- await page.getByRole("link",{name:"고양이와 시작하기"}).click();
+ await page.getByRole("link",{name:"첫 학습 시작하기"}).click();
  const action=page.locator("#lesson-action");await expect(page.locator("#lesson-input")).toHaveCount(0);
  await action.click();await action.click();await expect(page.locator("#lesson-title")).toBeFocused();
  const input=page.getByRole("textbox",{name:"명령어 입력"});

@@ -33,8 +33,7 @@ test('instant wrong choice keeps feedback usable if lesson storage is full',asyn
  await page.goto(base+'/');await ready(page);await select(page,0);
  await page.locator('.lesson-foot .btn').click();
  await expect(page.locator('.choices')).toBeVisible();
- const before=await page.evaluate(()=>localStorage.getItem('meowde-v410-state'));
- await page.evaluate(()=>{const original=Storage.prototype.setItem;window.__restoreChoiceStorage=()=>{Storage.prototype.setItem=original};Storage.prototype.setItem=function(k,v){if(k==='meowde-v410-state')throw new DOMException('full','QuotaExceededError');return original.call(this,k,v)};});
+ const before=await page.evaluate(()=>{const before=localStorage.getItem('meowde-v410-state'),original=Storage.prototype.setItem;window.__restoreChoiceStorage=()=>{Storage.prototype.setItem=original};Storage.prototype.setItem=function(k,v){if(k==='meowde-v410-state')throw new DOMException('full','QuotaExceededError');return original.call(this,k,v)};return before;});
  const wrong=await page.evaluate(()=>(cur().answer+1)%cur().choices.length);
  await page.locator('.choice').nth(wrong).click();
  await expect(page.locator('.feedback.no:not(.lesson-save-warning)')).toBeVisible();

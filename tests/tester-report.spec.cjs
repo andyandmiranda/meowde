@@ -47,6 +47,6 @@ test('Linux snapshots use the current question and clipboard denial leaves a usa
  await page.keyboard.press('Escape');
  expect(await page.evaluate(()=>localStorage.getItem('meowde-linux-guided-v1'))).toBe(before);
  await page.goto(base+'/linux-crash-course.html?tester=1');
- await page.locator('#nav button').nth(2).click();await page.locator('.tester-report-details').click();
+ await page.evaluate(()=>document.querySelectorAll('#nav button')[2].click());await page.locator('.tester-report-details').click();
  expect(JSON.parse(await page.locator('#tester-report-preview').inputValue()).exerciseId).toBe('linux-e3-quiz');
 });
