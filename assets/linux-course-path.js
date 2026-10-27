@@ -46,8 +46,8 @@ function renderPath(focus=false){
   const next=make("button","직접 연습하기 →","linux-next");next.onclick=()=>{stage=2;saveStage();renderPath(true);};panel.append(next);
  }
  if(stage===2){
-  panel.append(make("h3",index<3?"결과로 확인하는 연습":"예제 구조 따라 쓰기"));
-  const note=make("p",index<3?"명령을 입력하면 제한된 시뮬레이터가 결과를 확인해요.":"이 명령은 현재 시뮬레이터에서 실행하지 않아요. 예제와 같은 구조인지 확인하는 연습이에요.","sub");
+  panel.append(make("h3",index<3?"결과로 확인하는 연습":index<8?"안전한 명령 구조 확인":"예제 구조 따라 쓰기"));
+  const note=make("p",index<3?"명령을 입력하면 제한된 시뮬레이터가 결과를 확인해요.":index<8?"지원하는 명령 구조만 확인해요. 실제 셸 실행 결과는 검증하지 않아요.":"이 명령은 현재 시뮬레이터에서 실행하지 않아요. 예제와 같은 구조인지 확인하는 연습이에요.","sub");
   const input=make("input","");input.setAttribute("aria-label","연습 명령어");input.autocomplete="off";input.autocapitalize="off";input.spellcheck=false;input.placeholder=lesson.cmd;
   const drafts=saved.commandDraftByLesson;
   if(drafts&&typeof drafts==="object"&&!Array.isArray(drafts)&&typeof drafts[index]==="string")input.value=drafts[index];
@@ -55,7 +55,7 @@ function renderPath(focus=false){
   const check=make("button","명령어 확인");const feedback=make("p","","linux-feedback");feedback.setAttribute("role","status");
   check.onclick=()=>{
    const raw=input.value;
-   if(index<3){
+   if(index<8){
     const result=MeowdeLinuxCommandPractice.grade(index,raw),ok=result.ok;
     feedback.className="linux-feedback "+(ok?"good":"bad");
     feedback.textContent=result.message;
