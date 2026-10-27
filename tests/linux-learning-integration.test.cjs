@@ -29,6 +29,9 @@ test("Linux learning path declares honest L0-L3 goals and one-stage UI",()=>{
  assert.match(source,/다시 선택할 수 있어요/);
  assert.doesNotMatch(source,/function stageButton/);
  assert.match(source,/make\("li",\(i\+1\)\+"\. "\+name\)/);
+ assert.match(source,/saved\.commandDraftByLesson=\{/);
+ assert.match(source,/input\.value=drafts\[index\]/);
+ assert.match(source,/input\.addEventListener\("input"/);
  const css=fs.readFileSync(path.join(root,"assets/linux-learning-ui.css"),"utf8");
  assert.match(css,/--surface-mint:#F45B98/);
  assert.match(css,/--surface-mint-dark:#8C2451/);
