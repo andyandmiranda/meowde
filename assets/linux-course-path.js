@@ -82,6 +82,13 @@ function renderPath(focus=false){
    }
   };answers.append(b);});
   panel.append(answers,feedback);
+  if(done[index]===true){
+   feedback.className="linux-feedback good";feedback.textContent="완료한 단원이에요. "+lesson.why;
+   answers.querySelectorAll("button").forEach(x=>x.disabled=true);
+   const next=make("button",index<8?"다음 단원 →":"학습 지도로 →","linux-next");
+   next.onclick=()=>{if(index===8){location.href="/linux-home.html?tab=learn";return;}index++;stage=0;saved.stageByLesson={...(saved.stageByLesson||{}),[index]:0};persist();show();window.scrollTo(0,0);};
+   feedback.after(next);
+  }
  }
  area.append(panel);byId("progress").textContent=Object.keys(done).filter(k=>done[k]===true&&/^[0-8]$/.test(k)).length+" / 9단원 개념 확인 완료";
  if(focus)panel.querySelector("h3")?.setAttribute("tabindex","-1"),panel.querySelector("h3")?.focus();
