@@ -49,6 +49,9 @@ function renderPath(focus=false){
   panel.append(make("h3",index<3?"결과로 확인하는 연습":"예제 구조 따라 쓰기"));
   const note=make("p",index<3?"명령을 입력하면 제한된 시뮬레이터가 결과를 확인해요.":"이 명령은 현재 시뮬레이터에서 실행하지 않아요. 예제와 같은 구조인지 확인하는 연습이에요.","sub");
   const input=make("input","");input.setAttribute("aria-label","연습 명령어");input.autocomplete="off";input.autocapitalize="off";input.spellcheck=false;input.placeholder=lesson.cmd;
+  const drafts=saved.commandDraftByLesson;
+  if(drafts&&typeof drafts==="object"&&!Array.isArray(drafts)&&typeof drafts[index]==="string")input.value=drafts[index];
+  input.addEventListener("input",()=>{if(!canPersist)return;const old=saved.commandDraftByLesson;const safe=old&&typeof old==="object"&&!Array.isArray(old)?old:{};saved.commandDraftByLesson={...safe,[index]:input.value};persist();});
   const check=make("button","명령어 확인");const feedback=make("p","","linux-feedback");feedback.setAttribute("role","status");
   check.onclick=()=>{
    const raw=input.value;
