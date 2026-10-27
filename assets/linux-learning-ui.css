@@ -43,3 +43,5 @@ body.linux-five-tabs,body.linux-five-tabs .shell,body.linux-five-tabs .app{backg
 .linux-journey-stop:focus-visible{outline:3px solid #8c2451;outline-offset:4px}
 @media(max-width:360px){.linux-journey-stop{width:84%;padding:9px 6px}}
 @media(prefers-reduced-motion:reduce){.linux-journey-stop:nth-child(n){transform:none}}
+
+body.linux-map-page,body.linux-map-page .shell,body.linux-map-page #linux-learning-map{background:#fff}
