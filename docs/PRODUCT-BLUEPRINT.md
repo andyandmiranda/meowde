@@ -176,3 +176,37 @@ For each exercise, a human-reviewed content audit must record concepts, prerequi
 - **Decision needed:** whether to adopt the five-level rubric as a product-wide public label after sample content calibration; existing labels stay authoritative until then.
 - **Decision needed:** whether/when to introduce any AI tutor, social account, camera, public sharing or paid API, with privacy, moderation, spend and approval gates.
 - **No new decision:** v2.0 five-tab destination, existing six cats/coaches, protected learner data, exact-SHA testing, one main Home CTA, and explicit Production approval remain unchanged.
+
+## 13. 2026.10 통합 개정 — 제품 계약·구현 분리 (2026-10-27)
+
+이 절은 기존 v2.0~v2.1의 변경 이력을 보존하면서 **최신 사용자 요구와 출시 기준을 우선 적용**한다. 문서 커밋은 기능 완료·Production 승인이나 기존 PR 통합을 뜻하지 않는다. 실행 소유권은 Issue #78, 통합 작업의 실제 최신 원격/로컬 상태는 담당 Work 인계가 우선한다.
+
+### 결정 재평가
+| 항목 | 결정 | 수용 조건·주의 |
+|---|---|---|
+| Python/Linux 초보자 독립 학습 | 유지·개선 / P0 | 개념·짧은 예시·예측·도움받은 연습·독립 적용을 **5개 학습 활동**으로 제공한다. 기존 심화의 이해→연습→도전 **3단계 화면**과 모순되지 않도록 내부 활동을 매핑하며, 두 과목 전 범위 구현으로 간주하지 않는다. |
+| 홈·학습·심화·함께·마이 5탭 | 유지하되 구현 보류 / P1 | 목표 정보 구조다. 기존 Production/통합 작업의 4탭·기존 경로를 완료된 5탭으로 오인하지 않는다. 실제 함께 기능·이동·기록 보존이 검증되기 전 강제 전환 금지. |
+| 한 화면 한 문제·오답 설명·다음 이동 | 강화 / P0 | 단계/문제 번호는 중복·혼동 없이 표시. 제출→실제 시도와 원인 해설→재시도 또는 다음 문제→다음 단계. 정답 시 자동 제출·보상·이동 금지. |
+| Milky Pink | 유지·개선 / P1 | Python/Linux 공통 토큰, 가독성·상태 의미·접근성 대비 보존. 배경 색상 수정만으로 전체 디자인 PASS 아님. |
+| 기존 고양이 6마리 | 유지 / P0 보존·P1 표현 | 외형·선택·독립 코치·학습/보상 기록 보존. 캐릭터 복구 PR이 열려 있다고 Production 완료로 표시하지 않는다. |
+| 호그와트풍 함께 공간 | 개선·단계 출시 / P1 설계, P2 멀티플레이 | 독창적인 마법학교 분위기의 고급 공간·고양이 캐릭터·실제 집중/학습 행동 연결. 특정 IP의 이름·상징·자산 복제 금지. 실제 이용자·공간·실시간 동기화를 허위로 표시하지 않는다. 공개방·친구·채팅은 동의·신고/차단·연령·모더레이션·비용 검증 전 보류. |
+| 과도한 기능/중복 메뉴·반복 CI/Preview | 폐기·축소 | 하나의 정본 경로와 CTA, 기존 PASS 재사용, 변경된 위험 경로만 재검증. 새 PR·Preview·원장 남발 금지. |
+
+### 증거 상태 — 범위별
+- **확인된 과거 PASS:** Issue #78의 2026-10-25 함수 심화 시범 배포 및 Chromium/WebKit·저장 검증 기록. 이는 Python/Linux 전체 과정의 5활동 완성이나 실제 iPhone PASS가 아니다.
+- **부분 구현:** Linux 저장·채점·다음 단계/캐시 관련 수정은 2026-10-27 Work 체크포인트 및 Vercel Production 기록에 있으나, 최신 통합 로컬 변경이 모두 원격에 게시·출시된 것은 아니다.
+- **미구현/미검증:** 목표 5탭 전체 전환, 고급 함께 공간/멀티플레이, 모든 단원에 동일한 5활동 적용, 실제 초보자 독립 학습 성과. 실제 iPhone Safari·권리 검토의 남은 범위도 별도 판정.
+- **배포 참고:** 2026-10-27 조회 Production READY SHA `744ceaf306c0241aea1124ccb5e3a91ed55c8d9d`. READY만으로 실사용 기능 합격을 뜻하지 않는다. 로컬 전용 `fix/integrated-release-20261027` 체크포인트는 원격 배포와 구분한다.
+
+### 우선순위와 출시 게이트
+- **P0:** 저장 실패·임시 답안·채점·보상 중복·진도 복원·다음 문제/단계 이동·기존 기록 호환성·실행 안전·문항 정답/해설 정확성. 대표 Python/Linux 학습 여정의 실제 완주가 필수.
+- **P1:** 목표 5탭의 중복 없는 통합, Milky Pink, 캐릭터 코치와 복습, 고급 함께 공간의 안전한 비공개/혼자 집중 경험.
+- **P2:** 공개 협업/실시간 가상 공간, 확장 과목·개인화·성장 실험. P0보다 먼저 출시 차단 요인으로 삼지 않는다.
+- **G1 데이터:** 기존 Python/Linux 답안·진도·6캐릭터·XP/churu·알 수 없는 기록을 보존.
+- **G2 학습:** 실제 실행·오답 원인·재시도·다음 문제/단계·독립 적용을 대표 단원에서 확인.
+- **G3 복원:** 새로고침/재접속·PWA 캐시 갱신·이전 링크에서 답안 손실 없음.
+- **G4 기기/안전:** 변경 경로 Chromium/WebKit·접근성·모바일 검증 범위를 구분, 실행 격리·콘텐츠/자산 권리 위험을 판정.
+- **G5 후보:** 정확한 HEAD/배포 SHA, 기존 PASS 재사용, P0 차단 0건, 롤백 경로.
+- **G6 출시:** 명시 승인 후에만 main/Production/별칭 변경 및 배포 후 핵심 경로 확인.
+
+**운영:** 활성 Work 소유 파일을 덮어쓰지 않는다. 본 문서 변경만으로 CI·Preview·Production을 재실행하지 않는다.
