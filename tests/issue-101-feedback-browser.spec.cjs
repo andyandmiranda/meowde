@@ -93,12 +93,12 @@ test('Linux loop feedback shows the correct answer even after a correct choice',
  await expect(page.getByRole('link',{name:'학습 지도로 돌아가기'})).toHaveAttribute('href','/?tab=map');
  const nav=page.getByRole('navigation',{name:'메인 메뉴'});
  await expect(nav.getByRole('link')).toHaveCount(5);
- await expect(nav.getByRole('link',{name:'학습'})).toHaveAttribute('href','/linux-home.html');
+ await expect(nav.getByRole('link',{name:'학습'})).toHaveAttribute('href','/linux-home.html?tab=learn');
  await expect(nav.getByRole('link',{name:'심화'})).toHaveAttribute('aria-current','page');
- await expect(nav.getByRole('link',{name:'함께'})).toHaveAttribute('href','/together.html');
+ await expect(nav.getByRole('link',{name:'함께'})).toHaveAttribute('href','/together.html?subject=linux');
  const palette=await page.evaluate(()=>({link:getComputedStyle(document.querySelector('main a')).color,buttonBorder:getComputedStyle(document.querySelector('#guided button')).borderTopColor}));
- expect(palette.link).toBe('rgb(36, 123, 97)');
- expect(palette.buttonBorder).toBe('rgb(180, 220, 203)');
+ expect(palette.link).toBe('rgb(140, 36, 81)');
+ expect(palette.buttonBorder).toBe('rgb(232, 167, 197)');
  const guided=page.locator('#guided');
  await expect(guided.locator('button[aria-pressed="false"]')).toHaveCount(3);
  await guided.locator('button[data-value="3"]').click();
@@ -126,16 +126,16 @@ test('practice task surfaces use distinct shared styles without changing storage
  if(state.editorBorder)expect(state.editorBorder).toBe('2px');
 });
 
-test('Linux crash course uses shared cream and mint UI in Chromium and WebKit',async({page})=>{
+test('Linux crash course uses shared white and pink UI in Chromium and WebKit',async({page})=>{
  await page.goto(base+'/linux-crash-course.html');
  await expect(page.getByRole('navigation',{name:'학습 화면 이동'}).getByRole('link',{name:'전체 학습 지도'})).toHaveAttribute('href','/?tab=map');
  const nav=page.getByRole('navigation',{name:'메인 메뉴'});
  await expect(nav.getByRole('link')).toHaveCount(5);
  await expect(nav.getByRole('link',{name:'심화'})).toHaveAttribute('aria-current','page');
- await expect(nav.getByRole('link',{name:'함께'})).toHaveAttribute('href','/together.html');
+ await expect(nav.getByRole('link',{name:'함께'})).toHaveAttribute('href','/together.html?subject=linux');
  const colors=await page.evaluate(()=>({background:getComputedStyle(document.querySelector('.app')).backgroundColor,button:getComputedStyle(document.querySelector('#sim-run')).backgroundColor}));
- expect(colors.background).toBe('rgb(255, 249, 239)');
- expect(colors.button).toBe('rgb(83, 199, 160)');
+ expect(colors.background).toBe('rgb(255, 255, 255)');
+ expect(colors.button).toBe('rgb(244, 91, 152)');
 });
 
 test('practice top heading and four-step structure remain accessible',async({page})=>{
