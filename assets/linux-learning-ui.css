@@ -1,4 +1,4 @@
-:root{--surface-cream:#FFFFFF;--surface-ink:#272631;--surface-muted:#706961;--surface-line:#EEE7EC;--surface-mint:#F45B98;--surface-mint-dark:#8C2451;--surface-pale:#FFF0F6;--surface-danger:#A83248;--surface-danger-pale:#FFF0F2;--surface-font:"Pretendard Variable",Pretendard,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+:root{--surface-cream:#FFFFFF;--surface-ink:#272631;--surface-muted:#706961;--surface-line:#EEE7EC;--surface-mint:#F8BBD0;--surface-mint-dark:#8C2451;--surface-pale:#FFF0F6;--surface-danger:#A83248;--surface-danger-pale:#FFF0F2;--surface-font:"Pretendard Variable",Pretendard,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 body.linux-five-tabs{background:var(--surface-cream);color:var(--surface-ink);font-family:var(--surface-font)}
 body.linux-five-tabs .shell,body.linux-five-tabs .app{width:min(100%,430px);max-width:430px;background:var(--surface-cream)}
 body.linux-five-tabs .top{margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--surface-line)}
@@ -31,12 +31,12 @@ body.linux-five-tabs,body.linux-five-tabs .shell,body.linux-five-tabs .app{backg
 .linux-journey-region{margin:20px 0 28px}
 .linux-journey-region-title{margin:0 0 14px;text-align:center;color:#8c2451;font-size:15px}
 .linux-journey-trail{position:relative;display:flex;flex-direction:column;gap:16px;padding:4px 8px}
-.linux-journey-trail::before{content:"";position:absolute;inset:0 4% 0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 320 400%27 preserveAspectRatio=%27none%27%3E%3Cpath d=%27M90 0 C90 45 260 45 260 100 S70 155 70 210 S260 270 260 325 S150 365 150 400%27 fill=%27none%27 stroke=%27%23f3a4c6%27 stroke-width=%276%27 stroke-linecap=%27round%27 stroke-dasharray=%2711 14%27/%3E%3C/svg%3E");background-size:100% 100%;background-repeat:no-repeat}
+.linux-journey-trail::before{content:"";position:absolute;inset:0 4% 0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 320 400%27 preserveAspectRatio=%27none%27%3E%3Cpath d=%27M90 0 C90 45 260 45 260 100 S70 155 70 210 S260 270 260 325 S150 365 150 400%27 fill=%27none%27 stroke=%27%23f8bbd0%27 stroke-width=%276%27 stroke-linecap=%27round%27 stroke-dasharray=%2711 14%27/%3E%3C/svg%3E");background-size:100% 100%;background-repeat:no-repeat}
 .linux-journey-stop{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:5px;width:76%;min-height:90px;padding:10px 12px;border:1px solid #f0d9e3;border-radius:22px;background:#fff;color:#512e40;text-decoration:none;text-align:center;box-shadow:0 4px 12px #5b2c4810}
 .linux-journey-stop:nth-child(odd){align-self:flex-start}
 .linux-journey-stop:nth-child(even){align-self:flex-end}
 .linux-journey-pin{display:grid;place-items:center;min-width:39px;height:39px;padding:0 7px;border:3px solid #fff;border-radius:50%;background:#fce8f1;color:#8c2451;font-weight:800;box-shadow:0 0 0 2px #f3b4cf}
-.linux-journey-stop.current .linux-journey-pin{background:#f45b98;color:#fff;box-shadow:0 0 0 3px #f9c0d8}
+.linux-journey-stop.current .linux-journey-pin{background:#f8bbd0;color:#8c2451;box-shadow:0 0 0 3px #f9c0d8}
 .linux-journey-stop.complete .linux-journey-pin{background:#8c2451;color:#fff}
 .linux-journey-title{font-weight:750;font-size:14px;line-height:1.35}
 .linux-journey-stop small{font-size:12px;color:#8c2451}
