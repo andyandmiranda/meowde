@@ -30,7 +30,9 @@ test("Linux learning path declares honest L0-L3 goals and one-stage UI",()=>{
  assert.doesNotMatch(source,/function stageButton/);
  assert.match(source,/make\("li",\(i\+1\)\+"\. "\+name\)/);
  const css=fs.readFileSync(path.join(root,"assets/linux-learning-ui.css"),"utf8");
- assert.match(css,/--surface-mint:#53C7A0/);
+ assert.match(css,/--surface-mint:#F45B98/);
+ assert.match(css,/--surface-mint-dark:#8C2451/);
+ assert.doesNotMatch(css,/--surface-mint:#53C7A0/);
  assert.match(css,/\.linux-stage-path/);
 });
 
@@ -49,6 +51,8 @@ test("Linux navigation uses the approved five-tab product structure",()=>{
  for(const label of ["홈","학습","심화","함께","마이"])assert.match(source,new RegExp("'"+label+"'"));
  assert.doesNotMatch(source,/\['practice','실습'/);
  assert.doesNotMatch(source,/\['review','복습'/);
+ for(const route of ['/linux-home.html?tab=home','/linux-home.html?tab=learn','/linux-crash-course.html?view=concept','/together.html?subject=linux','/linux-home.html?tab=my'])assert.ok(source.includes(route),'missing subject-aware tab '+route);
+ assert.doesNotMatch(source,/\['my','마이','♧','\/\?tab=my'\]/);
  assert.match(source,/previous=\{\.\.\.previous,version:1/);
  const pathSource=fs.readFileSync(path.join(root,"assets/linux-course-path.js"),"utf8");
  assert.match(pathSource,/saved=\{\.\.\.saved,index,done,stageByLesson:stages\}/);
