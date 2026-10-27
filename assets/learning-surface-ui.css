@@ -212,7 +212,7 @@ body:has(#lab) .deepen-hub a:focus-visible{outline:3px solid var(--surface-mint-
 .phase1-home .card[aria-label="Deepen learning entry"]>.btn{margin-top:4px;min-height:48px;font-size:14px;text-decoration:none}
 
 /* Practice shell follows the same compact, rounded Home visual language. */
-body:has(#lab){background:#fff9ef;color:var(--surface-ink)}
+body:has(#lab){background:var(--surface-cream);color:var(--surface-ink)}
 body:has(#lab) .lab-header,
 body:has(#lab) main#lab{background:#fff}
 body:has(#lab) .lab-header{margin:20px auto 0;padding:18px 18px 10px;border-radius:26px 26px 0 0}
@@ -230,7 +230,7 @@ body:has(#lab) .meowde-lab-tabbar{background:#fff;border-top-color:#ece8ef}
 
 /* Review remains a learning action rather than a global navigation tab. */
 .learn-review-entry{padding:0 18px 12px}
-.learn-review-entry button{width:100%;min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid #bdebd8;border-radius:15px;background:#e7f8f0;color:#247b61;font:800 14px/1.4 var(--surface-font);cursor:pointer}
+.learn-review-entry button{width:100%;min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid #B77F94;border-radius:15px;background:#FAF5F7;color:#38343A;font:800 14px/1.4 var(--surface-font);cursor:pointer}
 .learn-review-entry button .ico{width:18px;height:18px}
 .review-back{padding:4px 18px 10px}
-.review-back button{min-height:44px;color:#247b61;font-size:13px;font-weight:750}
+.review-back button{min-height:44px;color:#38343A;font-size:13px;font-weight:750}
