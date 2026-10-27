@@ -46,9 +46,9 @@ function renderPath(focus=false){
   const next=make("button","직접 연습하기 →","linux-next");next.onclick=()=>{stage=2;saveStage();renderPath(true);};panel.append(next);
  }
  if(stage===2){
-  panel.append(make("h3",index<3?"결과로 확인하는 연습":index<8?"안전한 명령 구조 확인":"예제 구조 따라 쓰기"));
-  const note=make("p",index<3?"명령을 입력하면 제한된 시뮬레이터가 결과를 확인해요.":index<8?"지원하는 명령 구조만 확인해요. 실제 셸 실행 결과는 검증하지 않아요.":"이 명령은 현재 시뮬레이터에서 실행하지 않아요. 예제와 같은 구조인지 확인하는 연습이에요.","sub");
-  const input=make("input","");input.setAttribute("aria-label","연습 명령어");input.autocomplete="off";input.autocapitalize="off";input.spellcheck=false;input.placeholder=lesson.cmd;
+  panel.append(make("h3",index<3?"결과로 확인하는 연습":index<8?"안전한 명령 구조 확인":"조건문 분기 검증"));
+  const note=make("p",index<3?"명령을 입력하면 제한된 시뮬레이터가 결과를 확인해요.":index<8?"지원하는 명령 구조만 확인해요. 실제 셸 실행 결과는 검증하지 않아요.":"Bash if/else 코드를 작성해요. 여러 경계값으로 모의 검증하며 실제 Bash는 실행하지 않아요.","sub");
+  const input=make(index===8?"textarea":"input","");input.setAttribute("aria-label",index===8?"Bash 조건문 연습 코드":"연습 명령어");if(index===8)input.rows=7;input.autocomplete="off";input.autocapitalize="off";input.spellcheck=false;input.placeholder=index===8?lesson.example:lesson.cmd;
   const drafts=saved.commandDraftByLesson;
   if(drafts&&typeof drafts==="object"&&!Array.isArray(drafts)&&typeof drafts[index]==="string")input.value=drafts[index];
   input.addEventListener("input",()=>{if(!canPersist)return;const old=saved.commandDraftByLesson;const safe=old&&typeof old==="object"&&!Array.isArray(old)?old:{};saved.commandDraftByLesson={...safe,[index]:input.value};persist();});
@@ -61,9 +61,9 @@ function renderPath(focus=false){
     feedback.textContent=result.message;
     if(ok){const next=make("button","도전 문제 풀기 →","linux-next");next.onclick=()=>{stage=3;saveStage();renderPath(true);};feedback.after(next);}
    }else{
-    const same=raw.trim().replace(/\s+/g," ")===lesson.cmd.replace(/\s+/g," ");
+    const result=window.MeowdeBashPractice.grade("battery",raw);const same=result.ok;
     feedback.className="linux-feedback "+(same?"good":"bad");
-    feedback.textContent=same?"예제 구조를 정확히 따라 썼어요. 실제 실행 검증은 지원하지 않아요.":"예제와 다른 부분이 있어요. 공백·옵션·기호를 다시 비교해 보세요.";
+    feedback.textContent=same?"경계값 포함 "+result.passed+"/"+result.total+"개 모의 검증을 통과했어요. 실제 Bash 실행은 하지 않았어요.":result.error||"조건문 구조를 확인하고 다시 시도해 보세요.";
     if(same){const next=make("button","도전 문제 풀기 →","linux-next");next.onclick=()=>{stage=3;saveStage();renderPath(true);};feedback.after(next);}
    }
   };
