@@ -1,0 +1,17 @@
+.hero.compact{display:flex;align-items:center;gap:16px;text-align:left;padding:2px 4px 10px}
+.hero.compact img{width:92px;height:98px;flex:0 0 auto}
+.hero.compact h1{font-size:26px;margin:6px 0 0}
+.hero.compact .eyebrow{margin:0}
+.lesson-card.first-action{margin-top:8px;margin-bottom:14px}
+.more-links{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:8px 0}
+.more-links summary{cursor:pointer;min-height:48px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;font-weight:700}
+.more-links[open]{padding-bottom:8px}
+.data-note{text-align:center;margin:0 0 18px}
+.linux-stage-path{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:14px 0;padding:0;list-style:none}
+.linux-stage-path li{padding:8px 4px;font-size:12px;text-align:center;border-bottom:3px solid var(--surface-line);color:var(--surface-muted)}
+.linux-stage-path li[aria-current=step]{border-color:var(--surface-mint-dark);color:var(--surface-mint-dark);font-weight:800}
+.practice-picker{margin:14px 0 70px;border-top:1px solid var(--surface-line)}
+.practice-picker summary{cursor:pointer;min-height:48px;display:flex;align-items:center;justify-content:center;color:var(--surface-muted);font-size:14px;font-weight:700}
+.practice-picker nav{display:grid;gap:8px;padding:4px 0 12px}
+.practice-picker a{display:flex;align-items:center;justify-content:center;min-height:46px;border:1px solid #B4DCCB;border-radius:14px;background:#fff;text-decoration:none;color:var(--surface-ink);font-weight:700}
+@media(max-width:360px){.hero.compact h1{font-size:23px}}

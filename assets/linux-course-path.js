@@ -31,15 +31,11 @@ function saveStage(){
  saved.stageByLesson={...(saved.stageByLesson&&typeof saved.stageByLesson==="object"&&!Array.isArray(saved.stageByLesson)?saved.stageByLesson:{}),[index]:stage};
  persist();
 }
-function stageButton(i){
- const b=make("button",(i+1)+". "+stageNames[i]);b.type="button";b.setAttribute("aria-current",stage===i?"step":"false");
- b.onclick=()=>{stage=i;wrongAttempts=0;saveStage();renderPath(true);};return b;
-}
 function renderPath(focus=false){
  const lesson=LESSONS[index],meta=META[index],area=byId("lesson");area.replaceChildren();
  area.append(make("span",meta.level,"linux-level"),make("h2",lesson.title),make("p","학습 목표 · "+meta.goal,"linux-objective"));
- const path=make("nav","","linux-stage-path");path.setAttribute("aria-label","학습 단계");
- stageNames.forEach((_,i)=>path.append(stageButton(i)));area.append(path);
+ const path=make("ol","","linux-stage-path");path.setAttribute("aria-label","학습 진행");
+ stageNames.forEach((name,i)=>{const item=make("li",(i+1)+". "+name);if(stage===i)item.setAttribute("aria-current","step");path.append(item);});area.append(path);
  const panel=make("section","","linux-stage-panel");panel.dataset.stage=String(stage);
  if(stage===0){
   panel.append(make("h3","개념 이해"),make("p",lesson.idea));

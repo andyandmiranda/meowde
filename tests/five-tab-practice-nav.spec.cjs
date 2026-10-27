@@ -252,12 +252,12 @@ test('Linux practice survives every tab, reload, retries and explicit mission ch
 });
 
 test('Linux concept selection and Bash draft remain independent',async({page})=>{
- await page.goto(base+'/linux-crash-course.html?view=concept');await page.locator('#nav button').nth(4).click();
- await page.locator('#library-mode').selectOption('bash');
+ await page.goto(base+'/linux-crash-course.html?view=concept');await page.evaluate(()=>document.querySelectorAll('#nav button')[4].click());
+ await page.goto(base+'/linux-crash-course.html?view=bash');
  await page.locator('#bash-source').fill('unfinished bash draft');
- await page.locator('#library-mode').selectOption('concept');await expect(page.locator('#lesson h2')).toContainText('E5');
- await page.locator('#library-mode').selectOption('bash');
- await expect(page.locator('#library-mode')).toHaveValue('bash');await expect(page.locator('#bash-source')).toHaveValue('unfinished bash draft');
+ await page.goto(base+'/linux-crash-course.html?view=concept');await expect(page.locator('#lesson h2')).toContainText('E5');
+ await page.goto(base+'/linux-crash-course.html?view=bash');
+ await expect(page.locator('#bash-source')).toHaveValue('unfinished bash draft');
  await page.reload();await expect(page.locator('#bash-source')).toHaveValue('unfinished bash draft');
 });
 
@@ -269,7 +269,7 @@ test('Linux corrupt practice session is preserved instead of overwritten',async(
 });
 
 test('Linux quiz feedback explains an error and keeps retry in the same flow',async({page})=>{
- await page.goto(base+'/linux-crash-course.html');await page.getByRole('button',{name:'4. 도전'}).click();await page.locator('#lesson .answers button').nth(1).click();
+ await page.goto(base+'/linux-crash-course.html');await page.getByRole('button',{name:'예제 보기 →'}).click();await page.getByRole('button',{name:'직접 연습하기 →'}).click();const input=page.getByRole('textbox',{name:'연습 명령어'});await input.fill(await input.getAttribute('placeholder'));await page.getByRole('button',{name:'명령어 확인'}).click();await page.getByRole('button',{name:'도전 문제 풀기 →'}).click();await page.locator('#lesson .answers button').nth(1).click();
  await expect(page.locator('.linux-feedback.bad')).toContainText('ps는');await expect(page.locator('#lesson .answers button').first()).toBeEnabled();
 });
 

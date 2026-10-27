@@ -3,6 +3,9 @@
 if(!document.querySelector('link[href="/assets/linux-learning-ui.css"]')){
  const design=document.createElement('link');design.rel='stylesheet';design.href='/assets/linux-learning-ui.css';document.head.append(design);
 }
+if(!document.querySelector('link[href="/assets/linux-focus-flow.css"]')){
+ const focus=document.createElement('link');focus.rel='stylesheet';focus.href='/assets/linux-focus-flow.css';document.head.append(focus);
+}
 const path=location.pathname,params=new URLSearchParams(location.search);
 const library=path.endsWith('/linux-crash-course.html');
 let active=library||path.endsWith('/linux-review.html')?'deepen':path.endsWith('/linux-start.html')||path.endsWith('/linux-home.html')?'learn':params.get('tab')==='my'?'my':'home';
@@ -26,23 +29,19 @@ if(active==='my'&&path.endsWith('/linux-home.html')){
  main.replaceChildren(title,description,records,legacy,settings);
 }
 if(library){
- const mode=document.getElementById('library-mode');
  const KEY='meowde-linux-practice-session-v1';let previous={},writable=true;
  try{const raw=sessionStorage.getItem(KEY);if(raw!==null){previous=JSON.parse(raw);if(!previous||previous.version!==1||typeof previous.fields!=='object'||!previous.fields||!Array.isArray(previous.terminal?.commands))throw Error('Unsupported session');}}
  catch{writable=false;previous={};}
  const fields=['sim-input','bash-source','bash-task','cond-case','cond-value'];
  const outputs=['sim-out','sim-feedback','bash-feedback','cond-output'];
- const notice=document.createElement('p');notice.setAttribute('role','status');notice.id='practice-session-status';mode.parentElement.after(notice);
+ const notice=document.createElement('p');notice.setAttribute('role','status');notice.id='practice-session-status';document.getElementById('more-learning').after(notice);
  function warning(){notice.textContent='이번 실습 상태를 저장하지 못했습니다. 기존 기록은 보존했으며, 화면을 나가기 전 작성한 코드를 복사해두세요.';}
  try{
   if(previous.terminal)window.MeowdeTerminalSession.restore(previous.terminal);
   for(const id of fields)if(typeof previous.fields?.[id]==='string')document.getElementById(id).value=previous.fields[id];
   for(const id of outputs)if(typeof previous.outputs?.[id]==='string')document.getElementById(id).textContent=previous.outputs[id];
  }catch{writable=false;warning();}
- let practiceMode=['terminal','condition','bash'].includes(previous.mode)?previous.mode:'terminal';
- const openPractice=window.MeowdeOpenPractice;
- window.MeowdeOpenPractice=function(value){openPractice(value);select('deepen');if(value!=='concept')practiceMode=value;};
- function show(value){window.MeowdeOpenPractice(value);}
+ let practiceMode=['terminal','condition','bash'].includes(params.get('view'))?params.get('view'):'concept';
  function save(){if(!writable){warning();return;}try{
   const terminal={...(previous.terminal&&typeof previous.terminal==='object'&&!Array.isArray(previous.terminal)?previous.terminal:{}),...window.MeowdeTerminalSession.snapshot()};
   const fieldValues={...(previous.fields&&typeof previous.fields==='object'&&!Array.isArray(previous.fields)?previous.fields:{}),...Object.fromEntries(fields.map(id=>[id,document.getElementById(id).value]))};
@@ -50,10 +49,8 @@ if(library){
   previous={...previous,version:1,mode:practiceMode,terminal,fields:fieldValues,outputs:outputValues};
   sessionStorage.setItem(KEY,JSON.stringify(previous));
  }catch{warning();}}
- show(params.get('view')==='practice'?practiceMode:'concept');if(!writable)warning();
- mode.addEventListener('change',()=>{select('deepen');if(mode.value!=='concept')practiceMode=mode.value;save();history.replaceState(null,'',`?view=${mode.value==='concept'?'concept':'practice'}`);});
+ if(!writable)warning();
  nav.addEventListener('click',save);
- window.addEventListener('popstate',()=>show(new URLSearchParams(location.search).get('view')==='practice'?practiceMode:'concept'));
  for(const event of ['input','change','click','keyup'])document.querySelector('main').addEventListener(event,save);
  window.addEventListener('pagehide',save);
 }
