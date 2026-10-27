@@ -1,4 +1,4 @@
-:root{--surface-cream:#FFF9EF;--surface-ink:#2D2A28;--surface-muted:#706961;--surface-line:#E8DED0;--surface-mint:#53C7A0;--surface-mint-dark:#247B61;--surface-pale:#E7F8F0;--surface-danger:#A83248;--surface-danger-pale:#FFF0F2;--surface-font:"Pretendard Variable",Pretendard,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+:root{--surface-cream:#FFFFFF;--surface-ink:#272631;--surface-muted:#706961;--surface-line:#EEE7EC;--surface-mint:#F45B98;--surface-mint-dark:#8C2451;--surface-pale:#FFF0F6;--surface-danger:#A83248;--surface-danger-pale:#FFF0F2;--surface-font:"Pretendard Variable",Pretendard,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 body.linux-five-tabs{background:var(--surface-cream);color:var(--surface-ink);font-family:var(--surface-font)}
 body.linux-five-tabs .shell,body.linux-five-tabs .app{width:min(100%,430px);max-width:430px;background:var(--surface-cream)}
 body.linux-five-tabs .top{margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--surface-line)}
@@ -8,19 +8,19 @@ body.linux-five-tabs h2{letter-spacing:-.025em}
 body.linux-five-tabs .card,body.linux-five-tabs .lesson-card,body.linux-five-tabs .focus-card{border-color:var(--surface-line);border-radius:22px;background:#fff;box-shadow:0 7px 20px rgba(68,49,36,.06)}
 body.linux-five-tabs button,body.linux-five-tabs a.primary{border-radius:16px}
 body.linux-five-tabs button:not(.back-step):not(.hint),body.linux-five-tabs a.primary{min-height:48px}
-body.linux-five-tabs .primary,body.linux-five-tabs button:not(.outline):not(.hint):not(.back-step){background:var(--surface-mint);color:#193F33}
-body.linux-five-tabs .outline{background:#fff;border:1px solid #B4DCCB;color:var(--surface-ink)}
-body.linux-five-tabs input,body.linux-five-tabs textarea,body.linux-five-tabs select{border:2px solid #A7CDBD;border-radius:14px;background:#F8FAF9;color:#20342E}
+body.linux-five-tabs .primary,body.linux-five-tabs button:not(.outline):not(.hint):not(.back-step){background:var(--surface-mint);color:#272631}
+body.linux-five-tabs .outline{background:#fff;border:1px solid #E8A7C5;color:var(--surface-ink)}
+body.linux-five-tabs input,body.linux-five-tabs textarea,body.linux-five-tabs select{border:2px solid #E8A7C5;border-radius:14px;background:#FFF9FC;color:#272631}
 body.linux-five-tabs pre{background:#2C252B;color:#FFF6E9;border-radius:16px}
 body.linux-five-tabs :focus-visible{outline:3px solid var(--surface-mint-dark);outline-offset:3px}
 .linux-stage-path{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:14px 0}
 .linux-stage-path button{min-height:42px!important;padding:7px 4px!important;font-size:12px!important;background:#fff!important;border:1px solid var(--surface-line)!important;color:var(--surface-muted)!important}
-.linux-stage-path button[aria-current=step]{background:var(--surface-pale)!important;border-color:#A7CDBD!important;color:var(--surface-mint-dark)!important}
+.linux-stage-path button[aria-current=step]{background:var(--surface-pale)!important;border-color:#E8A7C5!important;color:var(--surface-mint-dark)!important}
 .linux-stage-panel{margin-top:14px}.linux-stage-panel h3{margin:0 0 8px}
-.linux-objective{padding:10px 12px;border-radius:13px;background:var(--surface-pale);color:#205844;font-size:13px;line-height:1.55}
+.linux-objective{padding:10px 12px;border-radius:13px;background:var(--surface-pale);color:#8C2451;font-size:13px;line-height:1.55}
 .linux-level{display:inline-flex;padding:4px 9px;border-radius:999px;background:#F4EEE4;color:#745F50;font-size:12px;font-weight:800}
-.linux-feedback{min-height:30px;margin:12px 0;padding:11px 13px;border-radius:13px;background:#F4F8F6;line-height:1.55}
-.linux-feedback.bad{background:var(--surface-danger-pale);color:#843043}.linux-feedback.good{background:var(--surface-pale);color:#205844}
+.linux-feedback{min-height:30px;margin:12px 0;padding:11px 13px;border-radius:13px;background:#FFF7FA;line-height:1.55}
+.linux-feedback.bad{background:var(--surface-danger-pale);color:#843043}.linux-feedback.good{background:var(--surface-pale);color:#8C2451}
 .linux-next{width:100%;margin-top:10px}
 @media(max-width:359px){.linux-stage-path{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
