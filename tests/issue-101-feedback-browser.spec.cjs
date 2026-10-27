@@ -135,7 +135,7 @@ test('Linux crash course uses shared white and pink UI in Chromium and WebKit',a
  await expect(nav.getByRole('link',{name:'함께'})).toHaveAttribute('href','/together.html?subject=linux');
  const colors=await page.evaluate(()=>({background:getComputedStyle(document.querySelector('.app')).backgroundColor,button:getComputedStyle(document.querySelector('#sim-run')).backgroundColor}));
  expect(colors.background).toBe('rgb(255, 255, 255)');
- expect(colors.button).toBe('rgb(244, 91, 152)');
+ expect(colors.button).toBe('rgb(245, 221, 229)');
 });
 
 test('practice top heading and four-step structure remain accessible',async({page})=>{
