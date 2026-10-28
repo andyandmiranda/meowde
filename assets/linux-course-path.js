@@ -51,7 +51,7 @@ function renderPath(focus=false){
   const input=make(index===8?"textarea":"input","");input.setAttribute("aria-label",index===8?"Bash 조건문 연습 코드":"연습 명령어");if(index===8)input.rows=7;input.autocomplete="off";input.autocapitalize="off";input.spellcheck=false;input.placeholder=index===8?lesson.example:lesson.cmd;
   const drafts=saved.commandDraftByLesson;
   if(drafts&&typeof drafts==="object"&&!Array.isArray(drafts)&&typeof drafts[index]==="string")input.value=drafts[index];
-  input.addEventListener("input",()=>{if(!canPersist)return;const old=saved.commandDraftByLesson;const safe=old&&typeof old==="object"&&!Array.isArray(old)?old:{};saved.commandDraftByLesson={...safe,[index]:input.value};persist();});
+  input.addEventListener("input",()=>{panel.querySelectorAll(".linux-next").forEach(button=>button.remove());const feedback=panel.querySelector(".linux-feedback");if(feedback){feedback.textContent="입력이 바뀌었어요. 다시 채점해 주세요.";feedback.className="linux-feedback";}if(!canPersist)return;const old=saved.commandDraftByLesson;const safe=old&&typeof old==="object"&&!Array.isArray(old)?old:{};saved.commandDraftByLesson={...safe,[index]:input.value};persist();});
   const check=make("button","명령어 확인");const feedback=make("p","","linux-feedback");feedback.setAttribute("role","status");
   check.onclick=()=>{
    // A later failed submission must revoke any previously earned continue action.
