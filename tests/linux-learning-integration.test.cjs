@@ -74,3 +74,19 @@ test("Linux navigation uses the approved five-tab product structure",()=>{
  const pathSource=fs.readFileSync(path.join(root,"assets/linux-course-path.js"),"utf8");
  assert.match(pathSource,/saved=\{\.\.\.saved,index,done,stageByLesson:stages\}/);
 });
+
+test("Linux simulator rejects unbalanced quotes without changing virtual files",()=>{
+ const sandbox=load("assets/linux-mobile-simulator.js");
+ for(const command of ['mkdir "training','mkdir training"',"touch 'notes"]){
+  const sim=sandbox.MeowdeLinuxSim.create();
+  const before=JSON.stringify(sim.snapshot());
+  const result=sim.run(command);
+  assert.equal(result.ok,false,command);
+  assert.match(result.output,/따옴표/);
+  assert.equal(JSON.stringify(sim.snapshot()),before,command);
+ }
+ for(const command of ['mkdir "my folder"',"mkdir 'my folder'",'mkdir training']){
+  const sim=sandbox.MeowdeLinuxSim.create();
+  assert.equal(sim.run(command).ok,true,command);
+ }
+});
