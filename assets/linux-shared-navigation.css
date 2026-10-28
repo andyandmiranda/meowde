@@ -6,3 +6,12 @@ body.linux-five-tabs{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))
 .linux-tabbar a:focus-visible{outline:3px solid #80556A;outline-offset:-3px}
 .linux-five-tabs input,.linux-five-tabs textarea,.linux-five-tabs select{scroll-margin-bottom:110px}
 #practice-session-status{font-size:14px;line-height:1.6}
+
+
+/* Cross-subject navigation: same placement and control semantics as Python. */
+.meowde-subject-switch{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:center;margin:8px 0 16px}
+.meowde-subject-switch-label{grid-column:1/-1;font-size:12px;font-weight:800;letter-spacing:.02em;color:#706961}
+.meowde-subject-switch a{display:flex;align-items:center;justify-content:center;min-height:46px;border:1.5px solid #e5d4dd;border-radius:14px;background:#fff;color:#38343a;text-decoration:none;font:750 14px/1.4 "Pretendard Variable",Pretendard,system-ui,sans-serif}
+.meowde-subject-switch a[aria-current="page"]{background:#f5dde5;border-color:#b77f94;color:#523344}
+.meowde-subject-switch a:focus-visible{outline:3px solid #80556a;outline-offset:2px}
+@media(min-width:900px){.linux-tabbar{max-width:760px}}
