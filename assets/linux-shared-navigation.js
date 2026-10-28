@@ -17,8 +17,9 @@ if(brand&&!header.querySelector('.meowde-compact-subject')){
  selector.setAttribute('aria-label','과목 선택');
  const python=document.createElement('option');python.value='python';python.textContent='Python';
  const linux=document.createElement('option');linux.value='linux';linux.textContent='Linux';
- selector.append(python,linux);selector.value='linux';
- selector.addEventListener('change',()=>{if(selector.value==='python')location.assign('/?tab=map');});
+ const ml=document.createElement('option');ml.value='ml';ml.textContent='ML 입문';
+ selector.append(python,linux,ml);selector.value='linux';
+ selector.addEventListener('change',()=>{if(selector.value==='python')location.assign('/?tab=map');else if(selector.value==='ml')location.assign('/ml-foundations.html');});
  brand.append(selector);
 }
 
