@@ -59,7 +59,7 @@ if(active==='my'&&path.endsWith('/linux-home.html')){
  }catch{records.textContent='학습 기록을 읽지 못했습니다. 기존 기록은 변경하지 않았습니다.';}
  const legacy=document.createElement('a');legacy.href='/robotics.html';legacy.className='secondary';legacy.textContent='이전 학습 기록 보기';
  const settings=document.createElement('a');settings.href='/?tab=my';settings.className='secondary';settings.textContent='공통 프로필·설정';
- main.replaceChildren(title,description,records,legacy,settings);
+ main.replaceChildren(header,title,description,records,legacy,settings);
 }
 if(library){
  const KEY='meowde-linux-practice-session-v1';let previous={},writable=true;
