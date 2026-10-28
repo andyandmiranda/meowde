@@ -47,3 +47,21 @@
 ### 출시 판단
 - **HOLD / 배포 금지**: 최신 개발 HEAD의 자동 테스트 실제 PASS, Python/Linux/ML 통합 브라우저 확인, 저장 데이터 회귀, 배포 제한 해제 및 사용자 최종 승인 전에는 `main` 병합 및 Production 배포하지 않음.
 - 본 문서와 새 테스트는 모든 과목을 '완성'으로 바꾸지 않음. 31~60 기본 레슨과 실제 ML 작성형 모델 학습은 현재 출시 범위에 포함되지 않음.
+
+## 개발 HEAD `0ead2505` 이후 검증 갱신 · 2026-10-28
+
+### 실제 실행된 독립 소스 검사
+- GitHub에서 읽은 `assets/lessons-ko.js`의 기본 레슨 slug: **30개, 고유값 30개**. Python 기본 앱에서 30개가 직접 열리고 채점되는지는 **브라우저 NOT RUN**.
+- `assets/python-lab-content.json` 데이터: **20개 단원, 작성형 평가 기준 91개**, ID/선수 단원 참조/퀴즈 정답 범위/평가 코드의 구조 검사에서 누락 **0개**. Pyodide에서 91개가 실행되는지 **NOT RUN**.
+- GitHub에서 읽은 실제 `linux-mobile-simulator.js` + `linux-command-practice.js`를 JS 모듈로 실행하여 E1~E8의 정답형 대표 입력 **8/8 수락**, 지원되지 않는 오답 **8/8 거절**. E4~E8 중 일부는 **문법 검사**이고 실제 Bash 명령 실행 결과가 아님.
+- `linux-bash-practice.js` 원본 코드를 실행한 E9 battery·pass 조건문: 정답 코드 각각 **4/4 경계값 통과**, 잘못된 비교 연산자 `-eq`는 각각 거절. 실제 셸 실행 아님.
+- `ml-foundations.js` 원본 모듈로 4개 입문 문제 정답 **4/4 수락**, 오답 **4/4 거절**. 실제 브라우저 진도 저장/복원은 **NOT RUN**.
+
+### 새 회귀 테스트와 정적 검사
+- `tests/release-scope-smoke.spec.cjs`: 기존 6개 Playwright 시나리오에 **E9 정답 → 수정 → 오답 → 재정답의 다음 버튼 무효화** 시나리오 1개 추가하여 **7개**. 테스트 파일 JavaScript 구문 파싱 성공. **브라우저 실행 NOT RUN**.
+- 최신 개발 HEAD에 대한 GitHub Actions의 PR 기반 실행 조회는 **0개**. 이 API는 수동 workflow_dispatch 실행을 포괄하지 않으므로 전체 CI 실행 이력 부재나 CI PASS/FAIL로 단정하지 않음.
+- Git clone 실행 시 `Could not resolve host: github.com`으로 전체 리포지토리를 컨테이너에 내려받지 못했음. GitHub 연결 도구로 확인한 개별 소스 기반 JS 실행은 완료했지만 **전체 앱 서버·Playwright·Pyodide 검증은 NOT RUN**.
+- 추가 구현 결함을 확인하지 못해 **제품 코드 변경 없음**. 테스트·증거 문서만 개발 브랜치에서 변경.
+
+### 현재 출시 판정
+**HOLD**. Python/ML/Linux 대표 소스 검사 통과는 전체 기능 통합 PASS를 대체하지 않음. 최신 HEAD CI, 홈·심화 실브라우저 테스트, 저장·복구, 모바일 검증, Vercel build-rate-limit 해소 및 최종 사용자 승인 전 Production 승격 금지.
