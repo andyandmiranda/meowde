@@ -160,7 +160,7 @@ test('switching a lesson around Smart Review preserves counters and grants its d
 });
 
 
-test('roadmap deep entry to lesson 60 preserves an unfinished earlier lesson',async({page})=>{
+test('roadmap deep entry to available lesson 30 preserves an unfinished earlier lesson',async({page})=>{
  await page.addInitScript(()=>{
   if(sessionStorage.getItem('roadmap-seeded'))return;
   localStorage.setItem('meowde-v410-state',JSON.stringify({lang:'ko',done:[],next:0,xp:17,churu:8}));
@@ -170,13 +170,14 @@ test('roadmap deep entry to lesson 60 preserves an unfinished earlier lesson',as
  await page.locator('.lesson-foot .btn').click();
  const original=await page.evaluate(()=>({index:S.lessonIndex,idx:S.idx,queue:S.queue.map(e=>e.id),done:S.done.slice(),xp:S.xp,churu:S.churu}));
  await page.goto(base+'/learning-path.html');
- await expect(page.locator('#path-list a[href^="/?lesson="]')).toHaveCount(60);
- await page.locator('#path-list li').nth(59).locator('a').click();await ready(page);
+ await expect(page.locator('#path-list a[href^="/?lesson="]')).toHaveCount(30);
+ await expect(page.locator('#path-list .path-pending-notice')).toHaveCount(30);
+  await page.locator('#path-list li').nth(29).locator('a').click();await ready(page);
  await expect(page.locator('.start-guard')).toBeVisible();
  expect(await page.evaluate(()=>({index:S.lessonIndex,done:S.done,xp:S.xp,churu:S.churu}))).toEqual({index:0,done:[],xp:17,churu:8});
  await page.locator('.start-guard button').last().click();
  await expect(page.locator('.lesson-top')).toBeVisible();
- expect(await page.evaluate(()=>({index:S.lessonIndex,done:S.done,xp:S.xp,churu:S.churu}))).toEqual({index:59,done:[],xp:17,churu:8});
+ expect(await page.evaluate(()=>({index:S.lessonIndex,done:S.done,xp:S.xp,churu:S.churu}))).toEqual({index:29,done:[],xp:17,churu:8});
  await page.goto(base+'/?lesson=start-field');await ready(page);
  await expect(page.locator('.start-guard')).toBeVisible();
  await page.locator('.start-guard button').last().click();
