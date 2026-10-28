@@ -50,7 +50,7 @@ test('function journey preserves separate drafts, records, retries and legacy da
  expect(records.functions).toEqual({draft:'old draft',independentPassed:true});
  expect(records.unknown).toEqual({custom:'future'});
  expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(legacy);
- await page.locator('.lab-back-link').click();
+ await page.getByRole('navigation',{name:'메인 메뉴'}).getByRole('link',{name:'학습'}).click();
  await expect(page).toHaveURL(/tab=map/);
 });
 test('function stages fit narrow viewport and preserve unreadable storage',async({page})=>{
