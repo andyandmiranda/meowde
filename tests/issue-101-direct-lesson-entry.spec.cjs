@@ -1,8 +1,9 @@
 const {test,expect}=require('playwright/test');
 const base=process.env.MEOWDE_BASE_URL||'http://127.0.0.1:4173';
+async function ready(page){await page.waitForFunction(()=>typeof DATA!=='undefined'&&Array.isArray(DATA.ko)&&DATA.ko.length>=30&&typeof S!=='undefined'&&typeof startLesson==='function');}
 
 test('roadmap deep link opens lesson 30 and survives refresh without resetting progress',async({page})=>{
- await page.goto(base+'/');
+ await page.goto(base+'/');await ready(page);
  const slug=await page.evaluate(()=>DATA.ko[29].slug);
  expect(slug).toBeTruthy();
  await page.goto(base+'/?lesson='+encodeURIComponent(slug));
@@ -16,7 +17,7 @@ test('roadmap deep link opens lesson 30 and survives refresh without resetting p
 });
 
 test('different deep link asks before replacing saved in-progress answers',async({page})=>{
- await page.goto(base+'/');
+ await page.goto(base+'/');await ready(page);
  await page.evaluate(()=>{startLesson(0);S.idx=1;save()});
  const target=await page.evaluate(()=>DATA.ko[20].slug);
  page.once('dialog',dialog=>dialog.dismiss());
@@ -29,7 +30,7 @@ test('different deep link asks before replacing saved in-progress answers',async
 });
 
 test('unknown deep link never silently starts or overwrites an existing lesson',async({page})=>{
- await page.goto(base+'/');
+ await page.goto(base+'/');await ready(page);
  await page.evaluate(()=>{startLesson(0);S.idx=1;save()});
  await page.goto(base+'/?lesson=not-a-real-lesson');
  await expect(page.locator('.lesson-top')).toBeVisible();
@@ -44,7 +45,7 @@ test('roadmap links only to lessons present in canonical app data',async({page})
 });
 
 test('accepting a different lesson preserves completed history and opens selected lesson',async({page})=>{
- await page.goto(base+'/');
+ await page.goto(base+'/');await ready(page);
  await page.evaluate(()=>{S.done=[0];S.xp=40;S.churu=120;startLesson(0);S.idx=1;save()});
  const target=await page.evaluate(()=>DATA.ko[20].slug);
  page.once('dialog',dialog=>dialog.accept());
