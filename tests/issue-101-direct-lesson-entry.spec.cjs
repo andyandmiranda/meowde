@@ -1,24 +1,24 @@
 const {test,expect}=require('playwright/test');
 const base=process.env.MEOWDE_BASE_URL||'http://127.0.0.1:4173';
 
-test('roadmap deep link opens lesson 60 and survives refresh without resetting progress',async({page})=>{
+test('roadmap deep link opens lesson 30 and survives refresh without resetting progress',async({page})=>{
  await page.goto(base+'/');
- const slug=await page.evaluate(()=>DATA.ko[59].slug);
+ const slug=await page.evaluate(()=>DATA.ko[29].slug);
  expect(slug).toBeTruthy();
  await page.goto(base+'/?lesson='+encodeURIComponent(slug));
  await expect(page.locator('.lesson-top')).toBeVisible();
- expect(await page.evaluate(()=>S.lessonIndex)).toBe(59);
+ expect(await page.evaluate(()=>S.lessonIndex)).toBe(29);
  expect(new URL(page.url()).searchParams.has('lesson')).toBe(false);
  await page.evaluate(()=>{S.idx=1;save()});
  await page.reload();
  await expect(page.locator('.lesson-top')).toBeVisible();
- expect(await page.evaluate(()=>({index:S.lessonIndex,step:S.idx}))).toEqual({index:59,step:1});
+ expect(await page.evaluate(()=>({index:S.lessonIndex,step:S.idx}))).toEqual({index:29,step:1});
 });
 
 test('different deep link asks before replacing saved in-progress answers',async({page})=>{
  await page.goto(base+'/');
  await page.evaluate(()=>{startLesson(0);S.idx=1;save()});
- const target=await page.evaluate(()=>DATA.ko[30].slug);
+ const target=await page.evaluate(()=>DATA.ko[20].slug);
  page.once('dialog',dialog=>dialog.dismiss());
  await page.goto(base+'/?lesson='+encodeURIComponent(target));
  await expect(page.locator('.lesson-top')).toBeVisible();
@@ -34,4 +34,11 @@ test('unknown deep link never silently starts or overwrites an existing lesson',
  await page.goto(base+'/?lesson=not-a-real-lesson');
  await expect(page.locator('.lesson-top')).toBeVisible();
  expect(await page.evaluate(()=>({index:S.lessonIndex,step:S.idx}))).toEqual({index:0,step:1});
+});
+
+test('roadmap links only to lessons present in canonical app data',async({page})=>{
+ await page.goto(base+'/learning-path.html');
+ await expect(page.locator('#path-list .journey-stop')).toHaveCount(60);
+ await expect(page.locator('#path-list a[href^="/?lesson="]')).toHaveCount(30);
+ await expect(page.locator('#path-list .path-pending-notice')).toHaveCount(30);
 });
