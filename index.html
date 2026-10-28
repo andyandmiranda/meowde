@@ -111,6 +111,7 @@ function save(){
  if(storageReadProblem){lessonSaveFailed=true;return false}
  const state=Object.assign({},rawState,{lang:S.lang,done:S.done,next:S.next,xp:S.xp,churu:S.churu,streak:S.streak,milk:S.milk,cat:S.cat,unit:S.unit});
  if(hasLessonProgress())state.inProgress={lang:S.lang,lessonIndex:S.lessonIndex,idx:S.idx,queue:S.queue,combo:S.combo,maxCombo:S.maxCombo,firstTotal:S.firstTotal,firstCorrect:S.firstCorrect,xpEarned:S.xpEarned,daily:S.daily,sel:S.sel,fill:S.fill,checked:S.checked,correct:S.correct,hint:S.hint,output:S.output||'',write:S.write||''};
+ else delete state.inProgress; // Completing a lesson must clear ordinary pending progress.
  try{const next=preserveDeferredLessonState(state);localStorage.setItem(STORAGE,JSON.stringify(next));rawState=next;lessonSaveFailed=false;return true}
  catch{lessonSaveFailed=true;return false}
 }
