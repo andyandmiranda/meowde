@@ -54,6 +54,8 @@ function renderPath(focus=false){
   input.addEventListener("input",()=>{if(!canPersist)return;const old=saved.commandDraftByLesson;const safe=old&&typeof old==="object"&&!Array.isArray(old)?old:{};saved.commandDraftByLesson={...safe,[index]:input.value};persist();});
   const check=make("button","명령어 확인");const feedback=make("p","","linux-feedback");feedback.setAttribute("role","status");
   check.onclick=()=>{
+   // A later failed submission must revoke any previously earned continue action.
+   panel.querySelectorAll(".linux-next").forEach(button=>button.remove());
    const raw=input.value;
    if(index<8){
     const result=MeowdeLinuxCommandPractice.grade(index,raw),ok=result.ok;
