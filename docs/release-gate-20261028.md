@@ -144,3 +144,13 @@
 - 정확한 최신 개발 HEAD에서 `npm run validate` 전체와 브라우저 Playwright, 스크린리더, 과목별 새로고침·복원은 **NOT RUN**. 기존 Work에서 확인한 Chromium 8/8 결과는 현재 HEAD의 증거가 아님.
 - 2026-10-28 앞선 Production 배포 요청은 Vercel `402 api-deployments-free-per-day` 한도 초과. Production 현재 실제 배포 SHA `744ceaf306c0241aea1124ccb5e3a91ed55c8d9d` (READY), 최신 개발 변경 미반영. 계정 요금제·설정은 수정하지 않음.
 - **출시 상태 HOLD**: 다중 학습 영역 진입 QA와 데이터 보존 회귀·새 SHA 검증 전 Production 승격을 완료로 표시하지 않음.
+
+## Python 실습 탭 테마·입문 레슨 목록 회귀 (2026-10-28 사용자 실기기 스크린샷)
+
+- 실기기 Preview `cb69d2d2` 사용자의 iOS 화면에서 '문자에서 계산으로' 입문 연습의 `values-units` 목록이 크게 펼쳐져 녹색 밑줄 링크가 화면을 점유하고, 홈·학습·마이와 다른 본문 밀도·배경이 관찰됨.
+- 원인: `python-values-path.js`는 일반 `python-lab.js` 단원 레이아웃 대신 **독립된 `<details class="values-units">` + `<article class="values-path card">`**를 삽입. 이전 공통 스타일 수정은 헤더/하단 탭에 집중돼 이 별도 UI를 충분히 통제하지 못함.
+- `assets/practice-theme-unified.css` 신규, `python-lab.html`에서 마지막 CSS로 로드: 공통 크림 그라데이션 배경/흰 표면, 430px 모바일 프레임과 1080px 데스크톱 프레임, 카드 테두리/반경/글꼴, 단원 메뉴 44px 항목·최대 230px 내부 스크롤·밑줄 제거·키보드 포커스 표시.
+- `tests/practice-theme-unified.test.cjs` 정적 3개 계약 검사를 `npm run validate`에 연결.
+- 학습 콘텐츠/문제/채점 및 localStorage 코드는 **변경하지 않음**. 사용자 학습 기록 마이그레이션/삭제 없음.
+- 사용자에게 보인 `cb69d2d2` Preview는 수정 전 버전. 이 변경의 최신 SHA에서 실제 iOS 스크린샷·모바일 Safari·Chromium **NOT RUN**. 시각 일관성 최종 PASS 금지.
+- 현재 Draft PR #114의 기존 CI는 실패 내역이 있어 **릴리스 HOLD**. 새 커밋 검증 결과로 갱신 필요.
