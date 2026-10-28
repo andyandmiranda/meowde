@@ -1,14 +1,18 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
-test('Linux shared navigation mounts subject selector without writing learner storage',()=>{
+test('Linux course selector stays compact in the existing top-right header without touching storage',()=>{
  const src=fs.readFileSync('assets/linux-shared-navigation.js','utf8');
- assert.match(src,/aria-label','과목 선택'/);
- assert.match(src,/python\.href='\/\?tab=map'/);
- assert.match(src,/linux\.href='\/linux-home\.html\?tab=learn'/);
- assert.match(src,/subjectBar\.append\(label,python,linux\)/);
- assert.match(src,/if\(main&&!main\.querySelector\('\.meowde-subject-switch'\)\)/);
- const block=src.slice(src.indexOf("const main=document.querySelector"),src.indexOf("const library="));
+ const css=fs.readFileSync('assets/linux-shared-navigation.css','utf8');
+ assert.match(src,/header\.querySelector\('\.brand'\)/);
+ assert.match(src,/selector\.className='meowde-compact-subject'/);
+ assert.match(src,/selector\.setAttribute\('aria-label','과목 선택'\)/);
+ assert.match(src,/selector\.value='linux'/);
+ assert.match(src,/location\.assign\('\/\?tab=map'\)/);
+ assert.doesNotMatch(src,/subjectBar|meowde-subject-switch/);
+ assert.match(css,/\.top \.meowde-compact-subject/);
+ assert.doesNotMatch(css,/\.meowde-subject-switch/);
+ const block=src.slice(src.indexOf("const header=document.querySelector"),src.indexOf("const library="));
  assert.doesNotMatch(block,/localStorage|sessionStorage|setItem|removeItem/);
 });
 test('desktop practice and Linux use widened frames but preserve mobile breakpoints',()=>{
