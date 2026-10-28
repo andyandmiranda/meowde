@@ -234,3 +234,19 @@ body:has(#lab) .meowde-lab-tabbar{background:#fff;border-top-color:#ece8ef}
 .learn-review-entry button .ico{width:18px;height:18px}
 .review-back{padding:4px 18px 10px}
 .review-back button{min-height:44px;color:#247b61;font-size:13px;font-weight:750}
+
+
+/* Desktop Python practice: restore a genuine two-column work area.
+   The mobile-first 430px focus layout is retained below 900px. */
+@media (min-width:900px) {
+  body:has(#lab) .lab-header {max-width:1080px;padding-inline:24px}
+  body:has(#lab) main#lab {max-width:1080px;padding:12px 24px 112px}
+  body:has(#lab) .layout {display:grid;grid-template-columns:250px minmax(0,1fr);gap:24px;align-items:start}
+  body:has(#lab) .unit-nav,
+  body:has(#lab) .unit-nav[data-collapsed="true"] {display:block;position:sticky;top:20px;max-height:calc(100dvh - 120px);overflow:auto}
+  body:has(#lab) .nav-toggle {display:none}
+  body:has(#lab) .lesson {min-width:0}
+  body:has(#lab) .practice-primary {padding:20px}
+  body:has(#lab) .practice-primary textarea.code {min-height:200px;height:clamp(200px,30dvh,360px)}
+  body:has(#lab) .meowde-lab-tabbar {max-width:1080px}
+}
