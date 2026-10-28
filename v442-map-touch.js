@@ -71,9 +71,10 @@
         const id=`meowde-map-label-${lessonIndex}`;
         label.id=id;
         label.dataset.lessonIndex=String(lessonIndex);
-        label.setAttribute("role","button");
-        label.setAttribute("tabindex","0");
-        label.setAttribute("aria-label",node.getAttribute("aria-label")||label.textContent.trim());
+        // Keep the text label clickable, but expose only the adjacent node as a keyboard control.
+        label.removeAttribute("role");
+        label.removeAttribute("tabindex");
+        label.removeAttribute("aria-label");
         node.setAttribute("aria-describedby",id);
       }
     });
@@ -91,12 +92,6 @@
   }
 
   document.addEventListener("click",event=>{
-    const label=event.target instanceof Element?event.target.closest(".trail .node-label"):null;
-    if(label)triggerLabel(label,event);
-  });
-
-  document.addEventListener("keydown",event=>{
-    if(event.key!=="Enter"&&event.key!==" ")return;
     const label=event.target instanceof Element?event.target.closest(".trail .node-label"):null;
     if(label)triggerLabel(label,event);
   });
