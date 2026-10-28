@@ -69,3 +69,23 @@ test('release scope: ML corrupt saved JSON is not overwritten by a correct answe
  expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe(broken);
  await expect(page.locator('#units button').first()).not.toContainText('✓');
 });
+
+test('release scope: E9 Bash correct, edited, and incorrect work must be regraded',async({page})=>{
+ await page.goto(base+'/linux-crash-course.html?view=concept&lesson=9');
+ await expect(page.locator('#lesson h2')).toContainText('E9');
+ await page.locator('#lesson .linux-next').click();
+ await page.locator('#lesson .linux-next').click();
+ const exercise=page.locator('#lesson textarea');
+ await expect(exercise).toBeVisible();
+ const correct='if [ "$battery" -lt 30 ]; then\necho "충전이 필요해요"\nelse\necho "계속 사용할 수 있어요"\nfi';
+ await exercise.fill(correct);
+ await page.locator('#lesson button').filter({hasText:'명령어 확인'}).click();
+ await expect(page.locator('#lesson .linux-next')).toHaveCount(1);
+ await exercise.fill(correct.replace('-lt','-eq'));
+ await expect(page.locator('#lesson .linux-next')).toHaveCount(0);
+ await page.locator('#lesson button').filter({hasText:'명령어 확인'}).click();
+ await expect(page.locator('#lesson .linux-next')).toHaveCount(0);
+ await exercise.fill(correct);
+ await page.locator('#lesson button').filter({hasText:'명령어 확인'}).click();
+ await expect(page.locator('#lesson .linux-next')).toHaveCount(1);
+});
