@@ -90,3 +90,17 @@ test("Linux simulator rejects unbalanced quotes without changing virtual files",
   assert.equal(sim.run(command).ok,true,command);
  }
 });
+
+test("E1-E9 retry revokes stale continue actions before regrading",()=>{
+ const source=fs.readFileSync(path.join(root,"assets/linux-course-path.js"),"utf8");
+ assert.match(source,/check\.onclick=\(\)=>\{\s*\/\/ A later failed submission must revoke any previously earned continue action\.\s*panel\.querySelectorAll\("\.linux-next"\)\.forEach\(button=>button\.remove\(\)\)/);
+ const sim=load("assets/linux-mobile-simulator.js");
+ const grader=load("assets/linux-command-practice.js",sim).MeowdeLinuxCommandPractice;
+ assert.equal(grader.grade(0,"pwd").ok,true);
+ assert.equal(grader.grade(0,"cat notes.txt").ok,false);
+});
+
+test("mobile terminal does not submit during Korean IME composition",()=>{
+ const source=fs.readFileSync(path.join(root,"linux-crash-course.html"),"utf8");
+ assert.match(source,/input\.addEventListener\("keydown",event=>\{if\(event\.isComposing\|\|event\.keyCode===229\)return;if\(event\.key==="Enter"\)/);
+});
