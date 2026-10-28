@@ -18,7 +18,19 @@ test("limited Linux command practice grades outcomes and accepts equivalent quot
  assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(1,"tail -n 2 './app.log'").ok,true);
  assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(2,"grep -n 'ERROR' ./app.log").ok,true);
  assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(2,"grep ERROR app.log").ok,false);
- assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(4,"chmod 600 secret.txt").supported,false);
+ assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(4,"chmod 600 secret.txt").ok,true);
+ assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(4,"chmod 777 secret.txt").ok,false);
+ for(const [index,valid,invalid] of [
+  [3,"cat ./names.txt | sort","cat names.txt > sort"],
+  [5,"ps aux","kill 1234"],
+  [6,"apt-cache search tree","sudo apt install tree"],
+  [7,'echo "$name"',"echo name="]
+ ]){
+  assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(index,valid).ok,true);
+  assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(index,invalid).ok,false);
+  assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(index,valid).verified,"syntax");
+ }
+ assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(8,'echo "충전이 필요해요"').supported,false);
 });
 
 test("Linux learning path declares honest L0-L3 goals and one-stage UI",()=>{
@@ -29,8 +41,15 @@ test("Linux learning path declares honest L0-L3 goals and one-stage UI",()=>{
  assert.match(source,/다시 선택할 수 있어요/);
  assert.doesNotMatch(source,/function stageButton/);
  assert.match(source,/make\("li",\(i\+1\)\+"\. "\+name\)/);
+ assert.match(source,/saved\.commandDraftByLesson=\{/);
+ assert.match(source,/input\.value=drafts\[index\]/);
+ assert.match(source,/input\.addEventListener\("input"/);
+ assert.match(source,/MeowdeBashPractice\.grade\("battery",raw\)/);
+ assert.match(source,/index===8\?"textarea":"input"/);
  const css=fs.readFileSync(path.join(root,"assets/linux-learning-ui.css"),"utf8");
- assert.match(css,/--surface-mint:#53C7A0/);
+ assert.match(css,/--surface-mint:#F5DDE5/);
+ assert.match(css,/--surface-mint-dark:#80556A/);
+ assert.doesNotMatch(css,/--surface-mint:#53C7A0/);
  assert.match(css,/\.linux-stage-path/);
 });
 
@@ -49,6 +68,8 @@ test("Linux navigation uses the approved five-tab product structure",()=>{
  for(const label of ["홈","학습","심화","함께","마이"])assert.match(source,new RegExp("'"+label+"'"));
  assert.doesNotMatch(source,/\['practice','실습'/);
  assert.doesNotMatch(source,/\['review','복습'/);
+ for(const route of ['/linux-home.html?tab=home','/linux-home.html?tab=learn','/linux-crash-course.html?view=concept','/together.html?subject=linux','/linux-home.html?tab=my'])assert.ok(source.includes(route),'missing subject-aware tab '+route);
+ assert.doesNotMatch(source,/\['my','마이','♧','\/\?tab=my'\]/);
  assert.match(source,/previous=\{\.\.\.previous,version:1/);
  const pathSource=fs.readFileSync(path.join(root,"assets/linux-course-path.js"),"utf8");
  assert.match(pathSource,/saved=\{\.\.\.saved,index,done,stageByLesson:stages\}/);

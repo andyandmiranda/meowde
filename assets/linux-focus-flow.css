@@ -13,5 +13,5 @@
 .practice-picker{margin:14px 0 70px;border-top:1px solid var(--surface-line)}
 .practice-picker summary{cursor:pointer;min-height:48px;display:flex;align-items:center;justify-content:center;color:var(--surface-muted);font-size:14px;font-weight:700}
 .practice-picker nav{display:grid;gap:8px;padding:4px 0 12px}
-.practice-picker a{display:flex;align-items:center;justify-content:center;min-height:46px;border:1px solid #B4DCCB;border-radius:14px;background:#fff;text-decoration:none;color:var(--surface-ink);font-weight:700}
+.practice-picker a{display:flex;align-items:center;justify-content:center;min-height:46px;border:1px solid #E8A7C5;border-radius:14px;background:#fff;text-decoration:none;color:var(--surface-ink);font-weight:700}
 @media(max-width:360px){.hero.compact h1{font-size:23px}}
