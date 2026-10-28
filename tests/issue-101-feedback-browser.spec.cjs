@@ -1,6 +1,27 @@
 const {test,expect}=require('playwright/test');
 const base=process.env.MEOWDE_BASE_URL||'http://127.0.0.1:4173';
 async function ready(page){await page.goto(base+'/');await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');}
+// Diagnostics are emitted only if the practice element fails to become visible.
+function watchPracticeDiagnostics(page){
+ const pageErrors=[],contentResponses=[];
+ page.on('pageerror',error=>pageErrors.push(error.stack||String(error)));
+ page.on('response',response=>{
+  if(new URL(response.url()).pathname==='/assets/python-lab-content.json')
+   contentResponses.push({url:response.url(),status:response.status()});
+ });
+ page.on('requestfailed',request=>{
+  if(new URL(request.url()).pathname==='/assets/python-lab-content.json')
+   contentResponses.push({url:request.url(),failure:request.failure()?.errorText||'request failed'});
+ });
+ return async()=>{
+  try{await expect(page.locator('#practice')).toBeVisible();}
+  catch(error){
+   const lab=await page.locator('#lab').evaluate(el=>el.innerText.slice(0,3000)).catch(e=>`#lab unavailable: ${e.message}`);
+   console.error('QA_PRACTICE_DIAGNOSTICS',JSON.stringify({url:page.url(),lab,pageErrors,contentResponses}));
+   throw error;
+  }
+ };
+}
 const cases=[
  {kind:'predict',exercise:{id:'qa-p',type:'predict',prompt:'What prints?',code:'print(2)',choices:['1','2'],answer:1,explain:'The print call outputs 2.',output:'2'},wrong:()=>0,answer:'2'},
  {kind:'fill',exercise:{id:'qa-f',type:'fill',prompt:'Fill the blank',code:'print(____)',tokens:['1','2'],answer:'2',explain:'Insert 2.'},wrong:()=>0,answer:'print(2)'},
@@ -113,8 +134,9 @@ test('Linux loop feedback shows the correct answer even after a correct choice',
 });
 
 test('practice task surfaces use distinct shared styles without changing storage',async({page})=>{
+ const expectPractice=watchPracticeDiagnostics(page);
  await page.goto(base+"/python-lab.html#function-slots/practice");
- await expect(page.locator('#practice')).toBeVisible();
+ await expectPractice();
  const state=await page.evaluate(()=>{
   const task=document.querySelector('#practice');
   const kicker=task.querySelector('.practice-kicker');
@@ -139,10 +161,11 @@ test('Linux crash course uses shared white and pink UI in Chromium and WebKit',a
 });
 
 test('practice top heading and four-step structure remain accessible',async({page})=>{
+ const expectPractice=watchPracticeDiagnostics(page);
  await page.goto(base+"/python-lab.html#function-slots/practice");
  await expect(page.getByRole('banner',{name:'실습 화면 상단'}).getByRole('heading',{name:'실습'})).toBeVisible();
  await expect(page.getByRole('link',{name:'학습으로 돌아가기'})).toHaveAttribute('href','/?tab=map');
- await expect(page.locator('#practice')).toBeVisible();
+ await expectPractice();
  await expect(page.locator('#practice #learner-code')).toBeVisible();
  await expect(page.locator('#practice [data-run="grade"]')).toBeVisible();
  expect(await page.locator('#practice').evaluate(el=>getComputedStyle(el.querySelector('.practice-kicker'),'::before').content)).toContain('01');
