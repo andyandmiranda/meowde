@@ -11,7 +11,7 @@
   tabs=function(active){
     const ko=S.lang==='ko';
     const item=(name,activeKey,handler,iconName,label)=>`<button class="${active===activeKey?'on':''}" onclick="${handler}" aria-label="${label}">${icon(iconName)}<span>${label}</span></button>`;
-    return `<div class="tabbar" data-phase1-navigation="five-tabs">${item('home','home','renderHome()','home',ko?'홈':'Home')}${item('study',active==='review'?'review':'study','renderMap()','map',ko?'학습':'Learn')}${item('lab','lab',"location.href='/python-lab.html'",'code',ko?'심화':'Deepen')}${item('together','together',"location.href='/together.html'",'spark',ko?'함께':'Together')}${item('my','my','renderProfile()','cat',ko?'마이':'My')}</div>`;
+    return `<div class="tabbar" data-phase1-navigation="five-tabs">${item('home','home','renderHome()','home',ko?'홈':'Home')}${item('study',active==='review'?'review':'study','renderMap()','map',ko?'학습':'Learn')}${item('lab','lab',"location.href='/python-lab.html'",'code',ko?'심화':'Deepen')}${item('together','together',"location.href='/together.html'",'spark',ko?'함께':'Together')}${item('my','my','renderRoom()','cat',ko?'마이':'My')}</div>`;
   };
 
   function learnBrand(){
