@@ -94,3 +94,24 @@
 - 정확한 새 HEAD에서 `npm run validate`, `pnpm test:browser`, Linux/Python/ML 저장 및 키보드·스크린리더 브라우저 검증 **NOT RUN**.
 - Python 선택 버튼의 실제 스크린리더 체크박스 불일치 **추가 재현 필요**. 현재 소스와 Work 설명 사이에 불일치가 있어 미확인 상태.
 - **HOLD**: 실제 통합 실행 로그·기록 보존·모바일 확인과 사용자 승인 전 `main` 병합/Production 배포 금지. 기존 학습 기록 변경·삭제 없음.
+
+## 사용자가 보고한 과목별 구조·화면 폭 불일치 대응 (2026-10-28)
+
+### 사용자 화면 근거
+- 제공된 Preview 스크린샷에서 Python 심화 실습은 큰 데스크톱에서도 약 320px 폭의 한 열로 출력되고, 긴 단원 목록을 펼치면 과제 내용이 아래로 밀림.
+- Linux는 별도 학습 지도/첫 레슨/E1~E9/복습 화면으로 나뉘어 상단 과목 선택과 공통 레이아웃 일관성이 떨어짐.
+- ML 첫걸음은 입문 4개 개념 퀴즈이며 심화 Python과 다른 시각적 구조. 현재 실제 코딩/모델 구현 완성 과목으로 표시하지 않음.
+- 현 시점 직접 운영하는 학습 엔진은 **Python·Linux 2개**. ML은 입문 보충 콘텐츠로서 Python 심화에 연결되고, 다른 과목 추가는 이번 출시 범위에 없음.
+
+### 개발 브랜치에 적용한 UI 구조 수정
+- `assets/learning-surface-ui.css`: 900px 이상 화면에 Python 심화 **1080px 최대 너비, 250px 왼쪽 단원 탐색 + 오른쪽 실습** 구조를 다시 적용. 모바일 좁은 화면은 기존 한 열 유지.
+- `assets/linux-shared-navigation.js` 및 CSS: `linux-home.html`, `linux-start.html`, `linux-crash-course.html`, `linux-review.html`의 공통 머리글 아래 **Python / Linux 과목 선택**을 추가. Linux 현재 과목 표시, 공통 5탭 유지.
+- `assets/linux-learning-ui.css`, `assets/linux-shared-navigation.css`: 900px 이상 Linux 데스크톱 폭을 최대 760px로 늘리고 모바일 레이아웃은 유지. 과목 전환 탭 키보드 포커스 스타일 적용.
+- `tests/subject-switch-layout.test.cjs` 3개 정적 회귀를 추가하고 `npm run validate`에 연결.
+- **Linux 교육 데이터, 진도 저장 키 및 기존 학습 완료 기록은 수정하지 않음.** 제품 전체 구조를 완전히 통합한 것이 아니라 공통 탐색과 레이아웃 1차 정렬임.
+
+### 검증 수준
+- GitHub 최신 소스에서 과목 전환 삽입, 저장 쓰기 부재, Python·Linux 데스크톱 브레이크포인트 및 테스트 JS 구문을 **소스 독립 검사 5/5 PASS**.
+- Node `npm run validate`, 데스크톱/모바일 실브라우저, 새 Linux 과목 전환 및 콘텐츠 배치, Python 심화 Pyodide 채점은 이 수정 HEAD에서 **NOT RUN**.
+- Vercel Production 신규 배포는 앞선 사용자 요청에서 HTTP 402 `api-deployments-free-per-day` 제한으로 **차단**됐고 기존 Production 유지. 최신 UI는 배포 확인 전 Preview에서 PASS 주장 금지.
+- 1차 출시 게이트 **HOLD**. 과목 통합 화면, 학습 엔진 공통화, 추가 과목 콘텐츠는 후속 구조 작업으로 관리.
