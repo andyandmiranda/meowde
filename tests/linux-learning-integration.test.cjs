@@ -104,3 +104,18 @@ test("mobile terminal does not submit during Korean IME composition",()=>{
  const source=fs.readFileSync(path.join(root,"linux-crash-course.html"),"utf8");
  assert.match(source,/input\.addEventListener\("keydown",event=>\{if\(event\.isComposing\|\|event\.keyCode===229\)return;if\(event\.key==="Enter"\)/);
 });
+
+test("changed Linux practice input revokes previously successful progression",()=>{
+ const source=fs.readFileSync(path.join(root,"assets/linux-course-path.js"),"utf8");
+ assert.match(source,/input\.addEventListener\("input",\(\)=>\{panel\.querySelectorAll\("\.linux-next"\)\.forEach\(button=>button\.remove\(\)\)/);
+ assert.match(source,/입력이 바뀌었어요\. 다시 채점해 주세요/);
+});
+
+test("Linux E1-E9 persistence keeps storage unreadable records protected and reports quota errors",()=>{
+ const page=fs.readFileSync(path.join(root,"linux-crash-course.html"),"utf8");
+ const pathSource=fs.readFileSync(path.join(root,"assets/linux-course-path.js"),"utf8");
+ assert.match(page,/canPersist=false;storageIssue="저장된 개념 퀴즈 기록을 읽지 못했어요/);
+ assert.match(pathSource,/if\(!canPersist\)return;/);
+ assert.match(pathSource,/localStorage\.setItem\(KEY,JSON\.stringify\(saved\)\);storageIssue=""/);
+ assert.match(pathSource,/catch\(error\)\{storageIssue="퀴즈 기록을 저장하지 못했어요/);
+});
