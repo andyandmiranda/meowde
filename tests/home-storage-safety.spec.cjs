@@ -48,6 +48,7 @@ test('transient quota failure keeps the active lesson and allows retry after sto
 test('unknown existing learner fields survive a normal save',async({page})=>{
  await page.addInitScript(key=>localStorage.setItem(key,JSON.stringify({lang:'ko',xp:12,customFutureKey:{v:5}})),key);
  await page.goto(base+'/');
+ expect(await page.evaluate(()=>save())).toBe(true);
  const persisted=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);
  expect(persisted.customFutureKey).toEqual({v:5});
  expect(persisted.xp).toBe(12);
@@ -67,6 +68,7 @@ test('future lesson inProgress survives saves in 30-lesson shell',async({page})=
   localStorage.setItem(key,JSON.stringify({lang:'ko',inProgress:{lang:'ko',lessonIndex:42,idx:1,queue:[{type:'concept',title:'later'}]}}));
  },key);
  await page.goto(base+'/');
+ expect(await page.evaluate(()=>save())).toBe(true);
  const preserved=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).inProgress,key);
  expect(preserved.lessonIndex).toBe(42);
  expect(preserved.idx).toBe(1);
