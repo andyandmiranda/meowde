@@ -52,3 +52,22 @@ test('unknown existing learner fields survive a normal save',async({page})=>{
  expect(persisted.customFutureKey).toEqual({v:5});
  expect(persisted.xp).toBe(12);
 });
+
+test('completed ordinary lesson clears inProgress without erasing unrelated fields',async({page})=>{
+ await page.goto(base+'/');
+ await page.evaluate(()=>{startLesson(0);S.done=[0];S.xp=40;clearLessonProgress();save()});
+ const persisted=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);
+ expect(persisted.inProgress).toBeUndefined();
+ expect(persisted.done).toEqual([0]);
+ expect(persisted.xp).toBe(40);
+});
+
+test('future lesson inProgress survives saves in 30-lesson shell',async({page})=>{
+ await page.addInitScript(key=>{
+  localStorage.setItem(key,JSON.stringify({lang:'ko',inProgress:{lang:'ko',lessonIndex:42,idx:1,queue:[{type:'concept',title:'later'}]}}));
+ },key);
+ await page.goto(base+'/');
+ const preserved=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).inProgress,key);
+ expect(preserved.lessonIndex).toBe(42);
+ expect(preserved.idx).toBe(1);
+});
