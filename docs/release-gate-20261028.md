@@ -73,3 +73,24 @@
 - `package.json`의 `test:browser`는 `playwright test`, `playwright.config.cjs`는 `tests/`의 `*.spec.cjs`와 `tools/serve-preview.cjs` 로컬 서버를 사용. `tests/release-scope-smoke.spec.cjs` **7개 테스트 문법 검사 PASS**, 실제 Chromium 테스트 **NOT RUN**.
 - 브라우저 및 전체 CI용 수동 재현 경로: 개발 브랜치의 **정확한 HEAD**를 checkout한 환경에서 `pnpm install --frozen-lockfile --ignore-scripts` → `pnpm exec playwright install --with-deps chromium` → `pnpm test:browser`; 별도로 `npm run validate` 와 Python 실험실 브라우저 테스트의 실행 조건 확인. 개인 저장 기록을 삭제하거나 Production을 배포하지 않고 검증할 것.
 - 이번 점검에서 **신규 재현 가능한 제품 코드 결함 없음**. 출시 판정 **HOLD** 유지. 실제 실행 로그 없이 PASS/FAIL을 추정하지 않음.
+
+## Work UX 결함 채팅 재구현 및 출시 게이트 (2026-10-28)
+
+### 개발 브랜치 수정 (기준 `f9117d528a9c4043f38e3ed88f02c679ac593a89`)
+- `v442-map-touch.js`: 레슨 라벨의 가짜 `role=button`, `tabindex=0`, 자체 `aria-label` 제거. 클릭 가능한 텍스트 라벨과 원형 레슨 버튼을 그대로 연결하며 키보드 포커스 대상은 실제 버튼 하나로 제한. 기존 `aria-describedby` 유지.
+- `v413-core.js`: 학습 지도 포함 5탭의 '마이' 진입을 루트 화면의 `renderRoom()`으로 통일.
+- `tests/issue-101-direct-lesson-entry.spec.cjs`: 루트 접속 후 DATA·S·startLesson 초기화 대기를 추가해 로더 타이밍으로 인한 테스트 경합 최소화.
+- `v412-hotfix.js`, `v414-state.js`: 구형 저장 래퍼가 기존 미지 필드와 미래 레슨을 보존하도록 기존 `rawState` 병합, `preserveDeferredLessonState` 반환값 직렬화, 읽기 차단 시 쓰기 금지, 저장 성공·실패 반환값 명시.
+- `tests/lesson-resume.test.cjs`: 낡은 직렬화 정규식을 현재 계약에 맞게 갱신하고 양쪽 구형 저장 래퍼의 정상 저장/읽기 거부/quota 6개 경우를 테스트.
+- `tests/ui-a11y-guards.test.cjs` 신규; `package.json`의 `npm run validate`에 포함.
+- Python 정답 선택의 원본 `v413-lesson.js`는 실제 `button` + `aria-pressed`이며 `role=checkbox`가 없는 것을 **소스 검사로만 확인**. Work가 언급한 스크린리더 역할 불일치는 정확한 DOM/보조기기 재현이 없어 임의 역할 변경하지 않음.
+
+### 이번 대화에서 실제 실행한 검증
+- GitHub에서 읽은 구형 저장 래퍼의 **실제 함수 본문**을 JS 격리 환경에서 실행: 2개 래퍼 × 정상/읽기 차단/quota **6/6 PASS**. 정상 시 미지 필드 및 미래 레슨 기록 보존, 읽기 거부 시 0건 쓰기, quota 시 실패 반환 확인. **Node 전체 테스트/브라우저 테스트를 실행한 증거 아님**.
+- 현재 개발 브랜치 소스에서 지도 중복 포커스 제거·마이 경로·기본 선택 버튼 시맨틱·두 저장 계약·Issue 101 초기화 대기·검증 명령 연결 6항목 **소스 검사 PASS**. 변경된 JS/테스트 JS 파싱 확인.
+- Work 대화에서 사용자가 전달한 기록: 수정 전 Issue101 **1/5**, 수정 후 핵심 Chromium 회귀 **8/8 PASS 보고**, 전체 `validate`는 이전 저장 회귀 **1개 FAIL 보고**. 원본 로그/정확한 SHA를 이 대화에서 확인한 것은 아니므로 **별도 외부 보고로 분류**, 본 브랜치의 새 HEAD 실제 PASS로 계상하지 않음.
+
+### 남은 출시 차단
+- 정확한 새 HEAD에서 `npm run validate`, `pnpm test:browser`, Linux/Python/ML 저장 및 키보드·스크린리더 브라우저 검증 **NOT RUN**.
+- Python 선택 버튼의 실제 스크린리더 체크박스 불일치 **추가 재현 필요**. 현재 소스와 Work 설명 사이에 불일치가 있어 미확인 상태.
+- **HOLD**: 실제 통합 실행 로그·기록 보존·모바일 확인과 사용자 승인 전 `main` 병합/Production 배포 금지. 기존 학습 기록 변경·삭제 없음.
