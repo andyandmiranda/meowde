@@ -8,17 +8,18 @@ if(!document.querySelector('link[href="/assets/linux-focus-flow.css"]')){
 }
 const path=location.pathname,params=new URLSearchParams(location.search);
 
-const main=document.querySelector('main.shell,main.app');
-if(main&&!main.querySelector('.meowde-subject-switch')){
- const subjectBar=document.createElement('nav');
- subjectBar.className='meowde-subject-switch';
- subjectBar.setAttribute('aria-label','과목 선택');
- const label=document.createElement('span');label.className='meowde-subject-switch-label';label.textContent='과목 선택';
- const python=document.createElement('a');python.href='/?tab=map';python.textContent='Python';python.dataset.subject='python';
- const linux=document.createElement('a');linux.href='/linux-home.html?tab=learn';linux.textContent='Linux';linux.dataset.subject='linux';linux.setAttribute('aria-current','page');
- subjectBar.append(label,python,linux);
- const header=main.querySelector('.top');
- if(header)header.after(subjectBar);else main.prepend(subjectBar);
+// Match the existing compact top-right course selector instead of adding a second nav row.
+const header=document.querySelector('main.shell .top,main.app .top');
+const brand=header&&header.querySelector('.brand');
+if(brand&&!header.querySelector('.meowde-compact-subject')){
+ const selector=document.createElement('select');
+ selector.className='meowde-compact-subject';
+ selector.setAttribute('aria-label','과목 선택');
+ const python=document.createElement('option');python.value='python';python.textContent='Python';
+ const linux=document.createElement('option');linux.value='linux';linux.textContent='Linux';
+ selector.append(python,linux);selector.value='linux';
+ selector.addEventListener('change',()=>{if(selector.value==='python')location.assign('/?tab=map');});
+ brand.append(selector);
 }
 
 const library=path.endsWith('/linux-crash-course.html');
