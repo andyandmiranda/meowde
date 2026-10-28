@@ -61,8 +61,14 @@ test('early serializers retain future lesson 60 and archived places until curric
  c.lessons=()=>Array(60);
  const current={inProgress:{lessonIndex:0},lessonResumes:{new:'latest'}};
  assert.equal(c.preserveDeferredLessonState(current),current);assert.equal(current.inProgress.lessonIndex,0);
- for(const file of ['v412-hotfix.js','v414-state.js'])assert.match(fs.readFileSync(file,'utf8'),/preserveDeferredLessonState\(state\)/);
- assert.match(html,/JSON.stringify\(preserveDeferredLessonState\(state\)\)/);
+ for(const file of ['v412-hotfix.js','v414-state.js']){
+  const source=fs.readFileSync(file,'utf8');
+  assert.match(source,/preserveDeferredLessonState\(next\)/);
+  assert.match(source,/JSON.stringify\(preserved\)/);
+  assert.match(source,/storageReadProblem/);
+ }
+ assert.match(html,/const next=preserveDeferredLessonState\(state\)/);
+ assert.match(html,/JSON.stringify\(next\)/);
 });
 
 test('a changing review recommendation order resumes the saved identity instead of restarting',()=>{
