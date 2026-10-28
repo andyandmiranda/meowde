@@ -29,3 +29,21 @@
 ## 경계
 - 이 문서의 코드 감사와 독립 모의 검증은 실제 사용자 브라우저 기능 통과를 보증하지 않음.
 - 공지에 언급된 수업 진도와 현재 앱의 구현 수준은 다름. ML 입문 4개를 수업 문제를 모두 해결하는 완성형 학습으로 표시하지 않음.
+
+## 2026-10-28 추가 출시 게이트 감사 (개발 HEAD 기반)
+
+### 실행 환경과 최신 CI
+- GitHub branch HEAD 확인: 감사 시작 시 `58c03978430151560263aaeb7fb493985dbedb18`와 동일했고, 이후 아래 테스트/문서 커밋만 개발 브랜치에 추가.
+- GitHub `fetch_commit_workflow_runs`는 **PR 기반 실행만 조회**하므로 빈 결과는 수동 `workflow_dispatch` 부재의 확정 증거가 아님. 수동 CI의 실제 실행 로그는 이번 환경에서 확인 불가. **최신 HEAD CI = NOT VERIFIED / NOT RUN으로 보류**.
+- GitHub combined status에서 `Vercel=failure` 및 `upgradeToPro=build-rate-limit` URL 확인. 이는 **Vercel 빌드 속도 제한**이며 Playwright FAIL이나 Production 배포 실패의 증거가 아님.
+- 전체 저장소 Git clone은 컨테이너에서 `Could not resolve host: github.com` DNS 실패. 현 환경에서는 **최신 HEAD 전체 앱 Playwright 실행 불가**. 기존 독립 ML 모의 실행 4/4는 전체 앱 PASS로 전환하지 않음.
+
+### 새 검증 코드 (작성 완료, 실제 Playwright NOT RUN)
+- `tests/release-scope-smoke.spec.cjs`: Python 기본 30개 원본 레슨 슬러그/직접 진입(대표 3개), Python 실험실 20개 메뉴/EDA 편집기, Linux E1~E9 직접 진입, ML 4개 오답→정답·새로고침 진도, ML quota 차단→복구, ML 손상 데이터 원본 보존을 다루는 **6개 Playwright 테스트** 추가. 이것들은 **아직 실제 브라우저에서 실행하지 않음**.
+- `tests/home-storage-safety.spec.cjs`의 'unknown existing learner fields'와 'future lesson inProgress' 두 테스트는 초기 `localStorage` 재조회만 하던 허점을 보완하여 **`save()===true` 이후 값 보존을 검증**하도록 변경. 이 두 테스트도 **아직 NOT RUN**.
+- Python 심화의 Pyodide 채점 전체 통합 및 모바일 WebKit은 별도 실제 브라우저 실행 필요. 기존 `tests/python-lab.browser.cjs`는 독립 실행 프로그램이며 **CI/Playwright 통합 PASS 증거는 없음**.
+- CI `pnpm test:browser`가 `tests/*.spec.cjs`를 수집하도록 설정됨. 새 스모크 테스트가 포함될 **예정**일 뿐, 통과 확정은 아님.
+
+### 출시 판단
+- **HOLD / 배포 금지**: 최신 개발 HEAD의 자동 테스트 실제 PASS, Python/Linux/ML 통합 브라우저 확인, 저장 데이터 회귀, 배포 제한 해제 및 사용자 최종 승인 전에는 `main` 병합 및 Production 배포하지 않음.
+- 본 문서와 새 테스트는 모든 과목을 '완성'으로 바꾸지 않음. 31~60 기본 레슨과 실제 ML 작성형 모델 학습은 현재 출시 범위에 포함되지 않음.
