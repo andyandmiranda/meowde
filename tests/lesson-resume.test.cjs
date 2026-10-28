@@ -80,3 +80,38 @@ test('a changing review recommendation order resumes the saved identity instead 
  c.startLesson(0,false,[{id:'b',type:'predict'},{id:'a',type:'predict'}],{mode:'smart-review',resumeKey:key,force:true,onStarted:()=>{throw Error('must not start a fresh session')}});
  assert.equal(c.S.checked,true);assert.equal(c.S.firstCorrect,1);assert.equal(c.S.queue[0].id,'a');
 });
+
+test('legacy serializer wrappers preserve unknown fields and deferred future progress',()=>{
+ for(const [file,fnName] of [['v412-hotfix.js','safeSave'],['v414-state.js','v414Save']]){
+  const source=fs.readFileSync(file,'utf8');
+  const start=source.indexOf('function '+fnName+'()');
+  const end=source.indexOf('\n  save='+fnName+';',start);
+  assert.ok(start>=0&&end>start);
+  const wrapper=source.slice(start,end);
+  for(const mode of ['normal','unreadable','quota']){
+   let writes=0,persisted=null;
+   const original={futureField:{keep:true},inProgress:{lessonIndex:59,queue:[{id:'later'}]}};
+   const context={
+    S:{lang:'ko',done:[0],next:1,xp:11,churu:7,streak:0,milk:0,cat:'a',unit:0,mistakes:[],dailyHistory:{},activityDates:[],lessonResumes:{}},
+    rawState:original,storageReadProblem:mode==='unreadable'?'unreadable':'',
+    hasLessonProgress:()=>false,
+    preserveDeferredLessonState:state=>({...state,inProgress:original.inProgress}),
+    localStorage:{setItem:(key,value)=>{writes++;if(mode==='quota')throw Error('QuotaExceededError');persisted=JSON.parse(value)}},
+    snapshot:()=>({}),console:{warn:()=>{}}
+   };
+   vm.createContext(context);
+   vm.runInContext(wrapper+'\nthis.result='+fnName+'();',context);
+   if(mode==='normal'){
+    assert.equal(context.result,true);
+    assert.equal(writes,1);
+    assert.deepEqual(persisted.futureField,{keep:true});
+    assert.equal(persisted.inProgress.lessonIndex,59);
+   }else{
+    assert.equal(context.result,false);
+    assert.equal(writes,mode==='quota'?1:0);
+    assert.equal(persisted,null);
+    assert.equal(context.rawState,original);
+   }
+  }
+ }
+});
