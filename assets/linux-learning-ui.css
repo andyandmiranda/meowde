@@ -60,3 +60,11 @@ body.linux-map-page #linux-learning-map>.primary{min-height:48px;margin-bottom:1
 .linux-journey-title{flex:1;min-width:0;font-size:13px}
 .linux-journey-stop small{width:100%;padding-left:42px;font-size:11px;line-height:1.2}
 @media(max-width:360px){.linux-journey-stop{width:77%;padding:8px}}
+
+
+/* Shared responsive app frame: keep one-column phone UI, use readable desktop width. */
+@media(min-width:900px){
+ body.linux-five-tabs .shell,body.linux-five-tabs .app{width:min(100%,760px);max-width:760px;padding-inline:32px}
+ body.linux-five-tabs .linux-journey-map{max-width:570px;margin-inline:auto}
+ body.linux-five-tabs .lesson-card,body.linux-five-tabs .card{max-width:100%}
+}
