@@ -8,12 +8,13 @@
   <link rel="stylesheet" href="/assets/python-lab.css?v=2">
   <link rel="stylesheet" href="/assets/five-tab-practice-nav.css?v=1">
   <link rel="stylesheet" href="/assets/learning-surface-ui.css?v=4">
+  <link rel="stylesheet" href="/assets/shared-five-tab-shell.css?v=1">
   <script defer src="/assets/python-values-path.js?v=3"></script>
   <script defer src="/assets/python-lab.js?v=5"></script>
   <script defer src="/assets/python-lab-update.js?v=1"></script>
 </head>
 <body>
-  <header class="lab-header" aria-label="심화 학습·실습 화면 상단"><div class="lab-header-main"><a href="/?tab=home" aria-label="먀오드 홈으로">Meowde</a><h1>실습</h1><p class="lab-header-description">개념 이해부터 직접 코딩과 응용까지 한 문제씩 풀어요. 단원 목록에서 다른 주제를 선택할 수 있어요.</p></div><a class="lab-back-link" href="/?tab=map">학습으로 돌아가기</a><a class="lab-back-link" href="/ml-foundations.html">ML 기초 4개 주제 →</a></header>
+  <header class="meowde-shell-header" aria-label="상단 메뉴"><div class="meowde-shell-brand"><img src="/assets/meowde-approved-base.svg?v=450" width="38" height="38" alt=""><div><a href="/?tab=home">Meowde</a><small>심화 · Python 실습</small></div></div><select class="meowde-shell-subject" aria-label="과목 선택" onchange="if(this.value==='linux')location.assign('/linux-home.html?tab=learn')"><option value="python" selected>Python</option><option value="linux">Linux</option></select></header>
   <main id="lab"><p role="status">학습 내용을 불러오는 중입니다…</p></main>
   <nav class="meowde-lab-tabbar" aria-label="메인 메뉴">
     <a href="/?tab=home" aria-label="홈"><span class="lab-nav-icon" aria-hidden="true">⌂</span><span>홈</span></a>
