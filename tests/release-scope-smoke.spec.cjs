@@ -6,6 +6,8 @@ test('release scope: 30 canonical Python entries available by direct lesson link
  const slugs=await page.evaluate(()=>DATA.ko.map(x=>x.slug));
  expect(slugs).toHaveLength(30);
  for(const i of [0,14,29]){
+  // Each deep-link smoke starts as an isolated learner; an active prior lesson would request confirmation.
+  await page.evaluate(()=>localStorage.removeItem('meowde-v410-state'));
   await page.goto(base+'/?lesson='+encodeURIComponent(slugs[i]));
   await expect(page.locator('.lesson-top')).toBeVisible();
   expect(await page.evaluate(()=>S.lessonIndex)).toBe(i);
