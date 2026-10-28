@@ -101,7 +101,7 @@ test('measure first review entry phases in real browser',async({page})=>{
 
 test('practice header back-to-learn opens actual map in both engines',async({page})=>{
  await page.goto(base+'/python-lab.html#values/challenge');
- const link=page.getByRole('link',{name:'학습으로 돌아가기'});
+ const link=page.getByRole('navigation',{name:'메인 메뉴'}).getByRole('link',{name:'학습'});
  await expect(link).toHaveAttribute('href','/?tab=map');
  await link.click();
  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
@@ -163,8 +163,9 @@ test('Linux crash course uses shared white and pink UI in Chromium and WebKit',a
 test('practice top heading and four-step structure remain accessible',async({page})=>{
  const expectPractice=watchPracticeDiagnostics(page);
  await page.goto(base+"/python-lab.html#function-slots/practice");
- await expect(page.getByRole('banner',{name:'실습 화면 상단'}).getByRole('heading',{name:'실습'})).toBeVisible();
- await expect(page.getByRole('link',{name:'학습으로 돌아가기'})).toHaveAttribute('href','/?tab=map');
+ await expect(page.getByRole('banner',{name:'상단 메뉴'}).getByRole('link',{name:'Meowde'})).toBeVisible();
+ await expect(page.getByRole('banner',{name:'상단 메뉴'}).getByRole('combobox',{name:'과목 선택'})).toBeVisible();
+ await expect(page.getByRole('navigation',{name:'메인 메뉴'}).getByRole('link',{name:'학습'})).toHaveAttribute('href','/?tab=map');
  await expectPractice();
  await expect(page.locator('#practice #learner-code')).toBeVisible();
  await expect(page.locator('#practice [data-run="grade"]')).toBeVisible();
