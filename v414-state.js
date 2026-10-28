@@ -108,8 +108,12 @@
     if(hasLessonProgress()){
       state.inProgress=snapshot();
     }
-    try{if(typeof preserveDeferredLessonState==='function')preserveDeferredLessonState(state);localStorage.setItem('meowde-v410-state',JSON.stringify(state))}
-    catch(error){console.warn('Meowde could not save progress:',error)}
+    if(typeof storageReadProblem!=='undefined'&&storageReadProblem)return false;
+    const next=Object.assign({},typeof rawState==='object'&&rawState?rawState:{},state);
+    if(!hasLessonProgress())delete next.inProgress;
+    const preserved=typeof preserveDeferredLessonState==='function'?preserveDeferredLessonState(next):next;
+    try{localStorage.setItem('meowde-v410-state',JSON.stringify(preserved));if(typeof rawState!=='undefined')rawState=preserved;return true}
+    catch(error){console.warn('Meowde could not save progress:',error);return false}
   }
   save=v414Save;
 
