@@ -115,3 +115,16 @@
 - Node `npm run validate`, 데스크톱/모바일 실브라우저, 새 Linux 과목 전환 및 콘텐츠 배치, Python 심화 Pyodide 채점은 이 수정 HEAD에서 **NOT RUN**.
 - Vercel Production 신규 배포는 앞선 사용자 요청에서 HTTP 402 `api-deployments-free-per-day` 제한으로 **차단**됐고 기존 Production 유지. 최신 UI는 배포 확인 전 Preview에서 PASS 주장 금지.
 - 1차 출시 게이트 **HOLD**. 과목 통합 화면, 학습 엔진 공통화, 추가 과목 콘텐츠는 후속 구조 작업으로 관리.
+
+## 2026-10-28 과목 선택·5탭 화면 구조 재조정
+
+### 사용자 피드백 반영
+- Linux 상단에 새로 넣었던 **큰 2열 과목 전환**은 기존 UX에 비해 과도하다는 피드백을 받아 제거하고, 우측 상단 기존 브랜드 영역에 **작은 Python/Linux 선택 메뉴**로 변경. Linux 과목 진도 엔진·저장 키는 변경하지 않음.
+- Python 홈·학습·마이와 달리 심화 실습·함께 페이지가 별도 헤더, 좁은 콘텐츠 폭, 다른 하단 탭 스타일을 사용한다는 피드백에 따라, 두 HTML 화면에 `assets/shared-five-tab-shell.css` 공통 헤더·하단 5탭 스타일 및 우측 상단 작은 과목 메뉴를 적용.
+- Python 심화의 900px 이상 2열 레이아웃 변경은 유지. 함께 페이지는 데스크톱 최대 760px 콘텐츠, 휴대전화 430px 폭을 사용. 기존 함께 초대 링크 생성·공유 로직과 Python 심화 저장/채점 로직 수정 없음.
+- Linux는 하단 5탭·상단 과목 선택을 공유하지만, 레슨 엔진·학습 지도는 여전히 별도 구현이므로 **전체 구조 완전 통합 완료라고 주장하지 않음**.
+
+### 검증
+- 개발 브랜치 최신 파일 원본을 다시 조회해 Python 심화·함께에서 공통 스타일 링크/동일 헤더/작은 과목 선택/5탭 라벨 모두 존재, Linux 새 큰 전환 제거 및 작은 우측 메뉴 적용, 과목 선택 코드에 localStorage 쓰기 없음 확인: **소스 계약 검사 PASS**.
+- `tests/subject-switch-layout.test.cjs`를 작은 메뉴 기준으로 변경. `tests/shared-shell-consistency.test.cjs` 3개를 추가해 `npm run validate`에 연결. JavaScript 문법 검사 **PASS**, 실제 Node test 및 브라우저에서의 화면 배치 **NOT RUN**.
+- Vercel 일일 빌드 제한으로 새 Preview/Production 배포 성공 미확인. 수정 전 Preview 스크린샷으로 이번 변경을 PASS 판정하지 않음. 출시 게이트 **HOLD**.
