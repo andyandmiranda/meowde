@@ -54,7 +54,7 @@ function run(){
  input.value="";input.focus();
 }
 document.getElementById("sim-run").addEventListener("click",run);
-input.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();run()}});
+input.addEventListener("keydown",event=>{if(event.isComposing||event.keyCode===229)return;if(event.key==="Enter"){event.preventDefault();run()}});
 document.getElementById("sim-check").addEventListener("click",()=>{
  attempts++;
  const passed=missions[current].test(terminal.snapshot(),lastResult);
