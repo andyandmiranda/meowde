@@ -4,8 +4,12 @@
     if(hasLessonProgress()){
       state.inProgress={lang:S.lang,lessonIndex:S.lessonIndex,idx:S.idx,queue:S.queue,combo:S.combo,maxCombo:S.maxCombo,firstTotal:S.firstTotal,firstCorrect:S.firstCorrect,xpEarned:S.xpEarned,daily:S.daily,sel:S.sel,fill:S.fill,checked:S.checked,correct:S.correct,hint:S.hint,output:S.output||'',write:S.write||''};
     }
-    try{if(typeof preserveDeferredLessonState==='function')preserveDeferredLessonState(state);localStorage.setItem('meowde-v410-state',JSON.stringify(state))}
-    catch(error){console.warn('Meowde could not save progress:',error)}
+    if(typeof storageReadProblem!=='undefined'&&storageReadProblem)return false;
+    const next=Object.assign({},typeof rawState==='object'&&rawState?rawState:{},state);
+    if(!hasLessonProgress())delete next.inProgress;
+    const preserved=typeof preserveDeferredLessonState==='function'?preserveDeferredLessonState(next):next;
+    try{localStorage.setItem('meowde-v410-state',JSON.stringify(preserved));if(typeof rawState!=='undefined')rawState=preserved;return true}
+    catch(error){console.warn('Meowde could not save progress:',error);return false}
   }
 
   save=safeSave;
