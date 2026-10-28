@@ -42,3 +42,17 @@ test('roadmap links only to lessons present in canonical app data',async({page})
  await expect(page.locator('#path-list a[href^="/?lesson="]')).toHaveCount(30);
  await expect(page.locator('#path-list .path-pending-notice')).toHaveCount(30);
 });
+
+test('accepting a different lesson preserves completed history and opens selected lesson',async({page})=>{
+ await page.goto(base+'/');
+ await page.evaluate(()=>{S.done=[0];S.xp=40;S.churu=120;startLesson(0);S.idx=1;save()});
+ const target=await page.evaluate(()=>DATA.ko[20].slug);
+ page.once('dialog',dialog=>dialog.accept());
+ await page.goto(base+'/?lesson='+encodeURIComponent(target));
+ await expect(page.locator('.lesson-top')).toBeVisible();
+ expect(await page.evaluate(()=>({index:S.lessonIndex,done:S.done,xp:S.xp,churu:S.churu}))).toEqual({index:20,done:[0],xp:40,churu:120});
+ const persisted=await page.evaluate(()=>JSON.parse(localStorage.getItem('meowde-v410-state')));
+ expect(persisted.done).toEqual([0]);
+ expect(persisted.xp).toBe(40);
+ expect(persisted.inProgress.lessonIndex).toBe(20);
+});
