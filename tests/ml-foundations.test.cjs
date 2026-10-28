@@ -25,7 +25,7 @@ test("ML learning storage is isolated and linked from Python lab",()=>{
  assert.match(html,/location\.assign\(\x27\/ml-foundations\.html\x27\)/);
  const entry=fs.readFileSync(path.join(root,"ml-foundations.html"),"utf8");
  assert.match(entry,/assets\/ml-foundations\.js/);
- assert.match(fs.readFileSync(path.join(root,"assets/ml-foundations.js"),"utf8"),/if\(!writable\)return false/);
+ assert.match(fs.readFileSync(path.join(root,"assets/ml-foundations.js"),"utf8"),/if\(!writable\)\{[^}]*return false;/);
 });
 
 function renderWithStorage({readError=false,writeError=false,record=null}={}){
