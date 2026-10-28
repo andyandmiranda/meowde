@@ -65,3 +65,11 @@
 
 ### 현재 출시 판정
 **HOLD**. Python/ML/Linux 대표 소스 검사 통과는 전체 기능 통합 PASS를 대체하지 않음. 최신 HEAD CI, 홈·심화 실브라우저 테스트, 저장·복구, 모바일 검증, Vercel build-rate-limit 해소 및 최종 사용자 승인 전 Production 승격 금지.
+
+## 후속 실행 가능성 점검 (2026-10-28, 개발 HEAD b8aa4ad2)
+
+- 로컬 컨테이너에서 `git ls-remote https://github.com/andyandmiranda/meowde.git HEAD`를 **실제 실행**했으나 `Could not resolve host: github.com`으로 실패. 저장소 전체 소스를 확보하지 못했으므로 로컬 앱 서버 및 최신 전체 앱 Playwright **NOT RUN**. 테스트 자체가 실패한 것은 아님.
+- 연결된 GitHub 기능 목록을 조사했으며 `workflow_dispatch`를 신규 트리거하는 동작은 제공되지 않음. GitHub Actions `Validate Meowde`는 `workflow_dispatch`를 지원하지만 실행을 호출할 수 없어 신규 CI **NOT RUN**. PR 연결 실행 조회 결과 0개는 수동 실행 이력을 부정하지 않음.
+- `package.json`의 `test:browser`는 `playwright test`, `playwright.config.cjs`는 `tests/`의 `*.spec.cjs`와 `tools/serve-preview.cjs` 로컬 서버를 사용. `tests/release-scope-smoke.spec.cjs` **7개 테스트 문법 검사 PASS**, 실제 Chromium 테스트 **NOT RUN**.
+- 브라우저 및 전체 CI용 수동 재현 경로: 개발 브랜치의 **정확한 HEAD**를 checkout한 환경에서 `pnpm install --frozen-lockfile --ignore-scripts` → `pnpm exec playwright install --with-deps chromium` → `pnpm test:browser`; 별도로 `npm run validate` 와 Python 실험실 브라우저 테스트의 실행 조건 확인. 개인 저장 기록을 삭제하거나 Production을 배포하지 않고 검증할 것.
+- 이번 점검에서 **신규 재현 가능한 제품 코드 결함 없음**. 출시 판정 **HOLD** 유지. 실제 실행 로그 없이 PASS/FAIL을 추정하지 않음.
