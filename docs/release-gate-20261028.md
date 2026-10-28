@@ -128,3 +128,19 @@
 - 개발 브랜치 최신 파일 원본을 다시 조회해 Python 심화·함께에서 공통 스타일 링크/동일 헤더/작은 과목 선택/5탭 라벨 모두 존재, Linux 새 큰 전환 제거 및 작은 우측 메뉴 적용, 과목 선택 코드에 localStorage 쓰기 없음 확인: **소스 계약 검사 PASS**.
 - `tests/subject-switch-layout.test.cjs`를 작은 메뉴 기준으로 변경. `tests/shared-shell-consistency.test.cjs` 3개를 추가해 `npm run validate`에 연결. JavaScript 문법 검사 **PASS**, 실제 Node test 및 브라우저에서의 화면 배치 **NOT RUN**.
 - Vercel 일일 빌드 제한으로 새 Preview/Production 배포 성공 미확인. 수정 전 Preview 스크린샷으로 이번 변경을 PASS 판정하지 않음. 출시 게이트 **HOLD**.
+
+## 과목 확장 단계 — 기존 콘텐츠 기반 3번째 진입 영역 (2026-10-28)
+
+### 구현 범위
+- Python (기본 30레슨/심화 20단원), Linux (첫걸음/E1~E9)과 더불어 기존 ML 입문 4주제(Linear Regression, Logistic Regression, KNN, Naive Bayes)를 **세 번째 탐색 가능한 학습 영역**으로 노출.
+- `assets/meowde-subject-hub.js` 기존 '나의 학습'에 ML 기록을 **읽기 전용**으로 집계, `assets/meowde-subject-hub.css`의 3개 카드 반응형 배치.
+- `subjects.html` 신규 과목 목록: Python·Linux·ML 입문에는 실제 엔진 링크, 웹 개발·데이터베이스·Git 협업은 **준비 중**으로만 표시. 미구현 과목은 학습 시작 버튼·완료 상태 없음.
+- `ml-foundations.html`에 기존 공통 상단 헤더 및 하단 5탭 추가. `python-lab.html`, `together.html`, `assets/linux-shared-navigation.js`의 **작은 우측 과목 선택**에 ML 입문 추가. `learning-path.html`에서 전체 과목 바로가기.
+- **ML은 여전히 입문 개념/선택형 퀴즈 4개이며 실제 모델 훈련 과목으로 확장된 것이 아님.** Python·Linux·ML 원본 문제/채점기/기존 사용자 진도 저장 포맷 변경 없음. 웹 개발, SQL, Git 신규 수업 콘텐츠 제작은 별도 단계.
+- `tests/subject-catalog.test.cjs` 추가, `npm run validate`에 포함.
+
+### 검증 및 배포 판정
+- GitHub 개발 브랜치 파일 기준 ML 집계·Python/Linux 진도 읽기·추가 과목 경로·공통 ML 5탭·작은 과목 선택·준비 중 표기·읽기 전용 검사 **12/12 소스 및 격리 JS 실행 PASS**, 신규 테스트 구문 파싱 PASS.
+- 정확한 최신 개발 HEAD에서 `npm run validate` 전체와 브라우저 Playwright, 스크린리더, 과목별 새로고침·복원은 **NOT RUN**. 기존 Work에서 확인한 Chromium 8/8 결과는 현재 HEAD의 증거가 아님.
+- 2026-10-28 앞선 Production 배포 요청은 Vercel `402 api-deployments-free-per-day` 한도 초과. Production 현재 실제 배포 SHA `744ceaf306c0241aea1124ccb5e3a91ed55c8d9d` (READY), 최신 개발 변경 미반영. 계정 요금제·설정은 수정하지 않음.
+- **출시 상태 HOLD**: 다중 학습 영역 진입 QA와 데이터 보존 회귀·새 SHA 검증 전 Production 승격을 완료로 표시하지 않음.
