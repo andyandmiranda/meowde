@@ -18,8 +18,8 @@ test('My tab in canonical path points to same screen as the root',()=>{
 });
 test('Python choice and bughunt options remain semantic pressed buttons',()=>{
  const js=fs.readFileSync('v413-lesson.js','utf8');
- assert.match(js,/class=\\"choice /);
- assert.match(js,/class=\\"linebtn /);
+ assert.match(js,/class="choice /);
+ assert.match(js,/class="linebtn /);
  assert.match(js,/aria-pressed/);
  assert.doesNotMatch(js,/role=\\"checkbox\\"/);
 });
