@@ -7,6 +7,20 @@ if(!document.querySelector('link[href="/assets/linux-focus-flow.css"]')){
  const focus=document.createElement('link');focus.rel='stylesheet';focus.href='/assets/linux-focus-flow.css';document.head.append(focus);
 }
 const path=location.pathname,params=new URLSearchParams(location.search);
+
+const main=document.querySelector('main.shell,main.app');
+if(main&&!main.querySelector('.meowde-subject-switch')){
+ const subjectBar=document.createElement('nav');
+ subjectBar.className='meowde-subject-switch';
+ subjectBar.setAttribute('aria-label','과목 선택');
+ const label=document.createElement('span');label.className='meowde-subject-switch-label';label.textContent='과목 선택';
+ const python=document.createElement('a');python.href='/?tab=map';python.textContent='Python';python.dataset.subject='python';
+ const linux=document.createElement('a');linux.href='/linux-home.html?tab=learn';linux.textContent='Linux';linux.dataset.subject='linux';linux.setAttribute('aria-current','page');
+ subjectBar.append(label,python,linux);
+ const header=main.querySelector('.top');
+ if(header)header.after(subjectBar);else main.prepend(subjectBar);
+}
+
 const library=path.endsWith('/linux-crash-course.html');
 let active=path.endsWith('/linux-home.html')&&params.get('tab')==='my'?'my':library||path.endsWith('/linux-review.html')?'deepen':path.endsWith('/linux-start.html')?'learn':path.endsWith('/linux-home.html')&&params.get('tab')==='home'?'home':path.endsWith('/linux-home.html')?'learn':'home';
 const nav=document.createElement('nav');nav.className='linux-tabbar';nav.setAttribute('aria-label','메인 메뉴');
