@@ -13,7 +13,8 @@ test('My tab in canonical path points to same screen as the root',()=>{
  const js=fs.readFileSync('v413-core.js','utf8');
  const html=fs.readFileSync('index.html','utf8');
  assert.match(js,/'renderRoom\(\)','cat',ko\?'마이':'My'/);
- assert.match(html,/onclick=\\"renderRoom\(\)\\" aria-label/);
+ assert.match(html,/function tabs\(active\)/);
+ assert.match(html,/renderRoom\(\)/);
 });
 test('Python choice and bughunt options remain semantic pressed buttons',()=>{
  const js=fs.readFileSync('v413-lesson.js','utf8');
