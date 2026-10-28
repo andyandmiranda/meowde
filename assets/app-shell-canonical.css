@@ -22,3 +22,7 @@ body .meowde-lab-tabbar .lab-nav-icon,body.linux-five-tabs .linux-tabbar a span:
 body .tabbar button:focus-visible,body .meowde-lab-tabbar a:focus-visible,body.linux-five-tabs .linux-tabbar a:focus-visible,body .meowde-shell-subject:focus-visible,body .meowde-root-subject:focus-visible,body .meowde-compact-subject:focus-visible{outline:3px solid #247b61;outline-offset:2px}
 @media(min-width:900px){body:has(main#lab) .meowde-shell-header{max-width:1080px}body:has(main#lab) .meowde-lab-tabbar{max-width:1080px}}
 @media(max-width:359px){body .top.meowde-canonical-top,body .meowde-shell-header,body.linux-five-tabs .top{padding-inline:12px;gap:6px}body .meowde-shell-brand a,body.linux-five-tabs .top .meowde-linux-title{font-size:21px}body .meowde-shell-subject,body.linux-five-tabs .top .meowde-compact-subject{min-width:84px;max-width:100px}}
+
+/* Match the root app's 24px icon SVG, including stroke width and selected state. */
+.meowde-tab-icon{width:24px;height:24px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+body.linux-five-tabs .top .meowde-compact-subject{margin-left:auto}
