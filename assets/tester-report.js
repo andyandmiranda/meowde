@@ -15,7 +15,12 @@ function snapshot(){
  const title=document.getElementById('lesson-title');
  if(title&&document.getElementById('lesson-body'))return {subject:'linux',language:'ko',lessonId:'mkdir-intro',exerciseId:'mkdir-intro-step-'+document.getElementById('lesson-progress').getAttribute('aria-valuenow'),exerciseType:'guided',prompt:clip(title.textContent+'\n'+document.getElementById('lesson-body').querySelector('.explain')?.textContent)};
  if(typeof LESSONS!=='undefined'&&typeof index!=='undefined'){
-  const lesson=LESSONS[index];return {subject:'linux',language:'ko',lessonId:'linux-e'+(index+1),exerciseId:'linux-e'+(index+1)+'-quiz',exerciseType:'concept-quiz',prompt:clip(lesson.challenge),code:clip(lesson.example),choices:lesson.choices.map(clip)};
+  // Prefer the visibly selected lesson in the rendered navigation to avoid stale lexical state.
+  const navButtons=Array.from(document.querySelectorAll('#nav button'));
+  const selectedIndex=navButtons.findIndex(button=>button.getAttribute('aria-current')==='true');
+  const currentIndex=selectedIndex>=0?selectedIndex:index;
+  const lesson=LESSONS[currentIndex];if(!lesson)return null;
+  return {subject:'linux',language:'ko',lessonId:'linux-e'+(currentIndex+1),exerciseId:'linux-e'+(currentIndex+1)+'-quiz',exerciseType:'concept-quiz',prompt:clip(lesson.challenge),code:clip(lesson.example),choices:lesson.choices.map(clip)};
  }
  return null;
 }
