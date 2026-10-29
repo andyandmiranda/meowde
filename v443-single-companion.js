@@ -101,13 +101,12 @@
     const screen=current.screen||"home";
     const ko=isKorean();
     const learnActive=screen==="map";
-    const reviewActive=screen==="review";
     const meowdeActive=["room","my","achievements","profile"].includes(screen);
     return [
       `<button class="${screen==='home'?'on':''}" onclick="renderHome()" aria-label="${ko?'홈':'Home'}">${icon('home')}<span>${ko?'홈':'Home'}</span></button>`,
       `<button class="${learnActive?'on':''}" onclick="renderMap()" aria-label="${ko?'학습':'Learn'}">${icon('map')}<span>${ko?'학습':'Learn'}</span></button>`,
-      `<button onclick="location.href='/python-lab.html'" aria-label="${ko?'실습':'Practice'}">${icon('code')}<span>${ko?'실습':'Practice'}</span></button>`,
-      `<button class="${reviewActive?'on':''}" onclick="renderReview()" aria-label="${ko?'복습':'Review'}">${icon('code')}<span>${ko?'복습':'Review'}</span></button>`,
+      `<button onclick="location.href='/python-lab.html'" aria-label="${ko?'심화':'Deepen'}">${icon('code')}<span>${ko?'심화':'Deepen'}</span></button>`,
+      `<button onclick="location.href='/together.html'" aria-label="${ko?'함께':'Together'}">${icon('spark')}<span>${ko?'함께':'Together'}</span></button>`,
       `<button class="${meowdeActive?'on':''}" onclick="renderProfile()" aria-label="${ko?'마이':'My'}">${icon('cat')}<span>${ko?'마이':'My'}</span></button>`
     ].join("");
   }
@@ -179,8 +178,7 @@
     const profileCopy=ko?`${done}개 레슨 완료 · ${streak}일 연속 학습`:`${done} lessons complete · ${streak} day streak`;
     const modeLabel=ko?mode.labelKo:mode.labelEn;
     const modeCopy=ko?mode.copyKo:mode.copyEn;
-    const sections=growthCard()+achievementSummary()+milestoneCard()+eventCards();
-    app.innerHTML=`<div class="screen">${brand()}${stats()}<div class="scroll" data-phase3-companion-hub="ordered"><div class="simple-head"><h2>Meowde</h2><p>${intro}</p></div><section class="card profile-card v443-selected-mode">${coachModeImageMarkup(mode,"v443-selected-mode-image",modeLabel)}<div class="profile-copy"><div class="section-kicker">${ko?'현재 코치 모드':'Current coach mode'}</div><h3>${esc(modeLabel)}</h3><p>${esc(modeCopy)} · ${profileCopy}</p></div></section><div class="v443-mode-heading"><div><h3>${ko?'캐릭터 6가지':'6 character poses'}</h3><p>${ko?'좋아하는 모습을 선택하세요.':'Choose your favorite appearance.'}</p></div></div>${characterGrid()}${guestGallery()}<div class="v443-mode-heading"><div><h3>${ko?'학습 지원 방식':'Coaching style'}</h3></div></div>${coachModeGrid()}${sections}<div class="profile-stats"><div class="profile-stat"><b>${Number(current.xp)||0}</b><span>XP</span></div><div class="profile-stat"><b>${Number(current.churu)||0}</b><span>${ko?"츄르":"Churu"}</span></div><div class="profile-stat"><b>${progressPercent()}%</b><span>${ko?"진도":"Progress"}</span></div></div></div>${canonicalTabs()}</div>`;
+    app.innerHTML=`<div class="screen">${brand()}<div class="scroll" data-phase3-companion-hub="ordered"><div class="simple-head"><button class="text-link" onclick="renderProfile()">← ${ko?'마이':'My'}</button><h2>${ko?'캐릭터':'Character'}</h2><p>${ko?'학습 화면에 함께할 모습을 골라요.':'Choose a companion for your lessons.'}</p></div>${characterGrid()}</div>${canonicalTabs()}</div>`;
     document.documentElement.dataset.companionSystem="single";document.documentElement.dataset.navigation="phase1-five-tabs";document.documentElement.dataset.roomRenderer="canonical-v443";document.documentElement.dataset.coachMode=mode.id;
     if(window.MeowCharacterMaster&&typeof MeowCharacterMaster.purgeLegacyCats==="function")MeowCharacterMaster.purgeLegacyCats();
   }

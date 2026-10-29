@@ -78,18 +78,17 @@ test("Five global tabs keep the same physical order on every screen",async({page
   const labels=await page.locator(".meowde-lab-tabbar a").evaluateAll(nodes=>nodes.map(el=>el.getAttribute("aria-label")));
   expect(labels).toEqual(expected);
 });
-test("Together invite link opens recipient invitation without exposing progress",async({page,context})=>{
+test("Together shares immediately with no personal fields and local QR",async({page,context})=>{
   await page.goto(base+"/together.html");
-  await page.getByLabel("보내는 사람 이름 (선택)").fill("코딩냥");
-  await page.getByLabel("함께 공부할 주제").fill("Python 함수");
-  await page.getByRole("button",{name:"초대 링크 공유하기"}).click();
-  const url=await page.getByLabel("생성된 초대 링크").inputValue();
-  expect(url).toContain("topic=Python");
-  const guest=await context.newPage();
-  await guest.goto(url);
+  await expect(page.locator('input:not([readonly])')).toHaveCount(0);
+  await page.getByRole("button",{name:"초대 링크 복사"}).click();
+  const url=await page.getByLabel("초대 링크",{exact:true}).inputValue();
+  expect(new URL(url).search).toBe('?invite=1');
+  await page.getByRole('button',{name:'초대 QR 코드 보기'}).click();
+  await expect(page.locator('#qr-image svg')).toBeVisible();
+  const guest=await context.newPage();await guest.goto(url);
   await expect(guest.getByText("도착한 학습 초대")).toBeVisible();
-  await expect(guest.getByText("Python 함수",{exact:true})).toBeVisible();
-  await expect(guest.getByText(/코딩냥님이/)).toBeVisible();
+  await expect(guest.getByText("Python 기초",{exact:true})).toBeVisible();
   await expect(guest.getByRole("link",{name:"학습 시작하기"})).toHaveAttribute("href","/?tab=map");
   expect(await guest.evaluate(()=>localStorage.getItem("meowde-v410-state"))).toBeNull();
 });

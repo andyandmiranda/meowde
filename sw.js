@@ -1,7 +1,9 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v489-character-cutouts";
+const CACHE_NAME = "meowde-v490-simple-sharing";
 
 const REQUIRED_ASSETS = [
+  "/assets/together.js",
+  "/assets/vendor/qrcode-generator-2.0.4.js",
   "/assets/lesson-access-policy.js",
   "/assets/lesson-learning-polish.js",
   "/assets/lesson-qa-report.js",
