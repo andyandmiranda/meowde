@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v488-linux-focus";
+const CACHE_NAME = "meowde-v489-character-cutouts";
 
 const REQUIRED_ASSETS = [
   "/assets/lesson-access-policy.js",
@@ -42,6 +42,12 @@ const REQUIRED_ASSETS = [
   "/assets/characters/v451/meowde-happy.webp",
   "/assets/characters/v451/meowde-challenge.webp",
   "/assets/characters/v451/meowde-debug.webp",
+  "/assets/characters/v452-cutouts/meowde-coding.webp",
+  "/assets/characters/v452-cutouts/meowde-music.webp",
+  "/assets/characters/v452-cutouts/meowde-reading.webp",
+  "/assets/characters/v452-cutouts/meowde-happy.webp",
+  "/assets/characters/v452-cutouts/meowde-challenge.webp",
+  "/assets/characters/v452-cutouts/meowde-debug.webp",
   "/manifest.webmanifest",
   "/icons/meowde-approved.svg",
   "/icons/meowde-approved-maskable.svg",

@@ -12,20 +12,20 @@
     meh:"/assets/meowde-approved-base.svg?v=450",
     coding:"/assets/meowde-approved-headphones.svg?v=450",
     music:"/assets/meowde-approved-headphones.svg?v=450",
-    reading:"/assets/characters/v451/meowde-reading.webp",
+    reading:"/assets/characters/v452-cutouts/meowde-reading.webp",
     error:"/assets/meowde-approved-base.svg?v=450"
   };
   let queued=false;
 
   const ROOM_ASSETS={
-    coding:"/assets/characters/v451/meowde-coding.webp",
-    music:"/assets/characters/v451/meowde-music.webp",
-    reading:"/assets/characters/v451/meowde-reading.webp",
-    happy:"/assets/characters/v451/meowde-happy.webp",
-    challenge:"/assets/characters/v451/meowde-challenge.webp",
-    smug:"/assets/characters/v451/meowde-challenge.webp",
-    debug:"/assets/characters/v451/meowde-debug.webp",
-    error:"/assets/characters/v451/meowde-debug.webp"
+    coding:"/assets/characters/v452-cutouts/meowde-coding.webp",
+    music:"/assets/characters/v452-cutouts/meowde-music.webp",
+    reading:"/assets/characters/v452-cutouts/meowde-reading.webp",
+    happy:"/assets/characters/v452-cutouts/meowde-happy.webp",
+    challenge:"/assets/characters/v452-cutouts/meowde-challenge.webp",
+    smug:"/assets/characters/v452-cutouts/meowde-challenge.webp",
+    debug:"/assets/characters/v452-cutouts/meowde-debug.webp",
+    error:"/assets/characters/v452-cutouts/meowde-debug.webp"
   };
 
   function roomImageMarkup(pose="coding",label="Meowde"){

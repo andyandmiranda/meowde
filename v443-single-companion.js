@@ -24,7 +24,7 @@
     const selected=typeof mode==="string"?coachModeById(mode):mode;
     const safe=selected||COACH_MODES[0];
     const alt=label||(isKorean()?safe.labelKo:safe.labelEn);
-    return `<img class="v443-coach-mode-image ${extraClass}" src="/assets/characters/v451/meowde-${safe.asset}.webp" alt="${esc(alt)}" data-coach-mode="${safe.id}" data-coach-asset="${safe.asset}" decoding="async">`;
+    return `<img class="v443-coach-mode-image ${extraClass}" src="/assets/characters/v452-cutouts/meowde-${safe.asset}.webp" alt="${esc(alt)}" data-coach-mode="${safe.id}" data-coach-asset="${safe.asset}" decoding="async">`;
   }
   function selectCoachMode(id){
     const mode=coachModeById(id);if(!mode)return false;
@@ -50,7 +50,7 @@
   }
   function characterMarkup(id,className=""){
     const pose=CHARACTER_POSES.find(item=>item.id===id)||CHARACTER_POSES[0];
-    return `<img class="v443-character-pose ${className}" src="/assets/characters/v451/meowde-${pose.id}.webp" alt="" decoding="async">`;
+    return `<img class="v443-character-pose ${className}" src="/assets/characters/v452-cutouts/meowde-${pose.id}.webp" alt="" decoding="async">`;
   }
   function selectCharacter(id){
     if(!CHARACTER_POSES.some(item=>item.id===id))return false;
@@ -83,9 +83,9 @@
     if(!original&&!existing)return;
     const checked=Boolean(current.checked);
     const asset=checked?(current.correct?"happy":"debug"):(current.hint?"reading":currentCharacter().id);
-    if(existing){if(existing.dataset.pose!==asset){existing.src="/assets/characters/v451/meowde-"+asset+".webp";existing.dataset.pose=asset}return}
+    if(existing){if(existing.dataset.pose!==asset){existing.src="/assets/characters/v452-cutouts/meowde-"+asset+".webp";existing.dataset.pose=asset}return}
     const img=document.createElement("img");
-    img.className="v443-lesson-pose";img.src="/assets/characters/v451/meowde-"+asset+".webp";img.alt="";img.dataset.pose=asset;img.decoding="async";
+    img.className="v443-lesson-pose";img.src="/assets/characters/v452-cutouts/meowde-"+asset+".webp";img.alt="";img.dataset.pose=asset;img.decoding="async";
     original.replaceWith(img);
   }
   function forceSingleCompanion(){
