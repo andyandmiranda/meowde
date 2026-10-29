@@ -79,3 +79,4 @@ body .phase1-home .phase1-deepen-button b{font-size:14px;line-height:1.4}
 body .phase1-home .phase1-deepen-button small{font-size:11.5px;line-height:1.4}
 body .phase1-home .phase1-deepen-button:focus-visible{outline:3px solid var(--meowde-pink-strong);outline-offset:-3px}
 @media(max-width:360px){body .phase1-home .phase1-deepen-button{padding:12px;gap:6px}}
+body .hero::after{background:var(--meowde-pink-soft)!important}
