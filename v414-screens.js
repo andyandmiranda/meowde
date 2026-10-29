@@ -32,8 +32,8 @@
     return `<div class="top"><div class="brand"><span class="brand-mark"><img class="v449-character v449-pose-base v448-brand-cat" src="/assets/meowde-approved-base.svg?v=450" alt="" width="42" height="42" data-v449-pose="base" data-character-version="4.50" decoding="async"></span><div><h1 class="v444-brand-wordmark">Meowde</h1><p>${esc(tagline)}</p></div></div><button class="lang" onclick="langSheet()">${ko?'KO':'EN'}</button></div>`;
   }
   function homeHeroCharacter(){
-    const label=S.lang==='ko'?'책을 읽는 Meowde':'Meowde reading a book';
-    return `<div class="v444-coding-scene v448-approved-hero v449-coding-scene"><img class="v449-character v449-pose-coding" src="/assets/characters/v451/meowde-reading.webp" alt="${esc(label)}" data-v449-pose="reading" data-character-version="4.50" decoding="async"></div>`;
+    const label=S.lang==='ko'?'헤드폰을 쓰고 학습하는 Meowde':'Meowde learning with headphones';
+    return `<div class="v444-coding-scene v448-approved-hero v449-coding-scene"><img class="v449-character v449-pose-coding" src="/assets/meowde-approved-headphones.svg?v=450" alt="${esc(label)}" data-v449-pose="coding" data-character-version="4.50" decoding="async"></div>`;
   }
   function canonicalTabs(active){
     const ko=S.lang==='ko',lab=ko?'심화':'Deepen',my=ko?'마이':'My';
