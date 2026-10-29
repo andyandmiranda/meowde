@@ -46,7 +46,7 @@ test("Five-tab navigation preserves progress and practice drafts; review stays i
   await page.goto(base+"/python-lab.html#function-slots/practice");
   await page.getByRole("navigation",{name:"메인 메뉴"}).getByRole("link",{name:"함께"}).click();
   await expect(page).toHaveURL(/together.html/);
-  await expect(page.getByRole("heading",{name:"함께 공부해요"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"함께",exact:true})).toBeVisible();
   await expect(page.getByRole("navigation",{name:"메인 메뉴"}).getByRole("link",{name:"함께"})).toHaveAttribute("aria-current","page");
 });
 test("Unknown entry tabs leave the default home screen usable",async({page})=>{

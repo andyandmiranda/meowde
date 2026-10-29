@@ -80,3 +80,31 @@ body .phase1-home .phase1-deepen-button small{font-size:11.5px;line-height:1.4}
 body .phase1-home .phase1-deepen-button:focus-visible{outline:3px solid var(--meowde-pink-strong);outline-offset:-3px}
 @media(max-width:360px){body .phase1-home .phase1-deepen-button{padding:12px;gap:6px}}
 body .hero::after{background:var(--meowde-pink-soft)!important}
+
+/* My: progress and a useful next action; identity preferences stay secondary. */
+body .my-overview .simple-head{padding:16px 18px 14px}
+body .my-overview .simple-head h2{font:800 24px/1.35 "Pretendard Variable",Pretendard,system-ui,sans-serif;letter-spacing:-.035em}
+body .my-overview .simple-head p{font:400 13px/1.6 "Pretendard Variable",Pretendard,system-ui,sans-serif;margin-top:5px}
+body .my-overview>.card{margin:0 18px 14px;padding:18px;border:1px solid var(--meowde-border);border-radius:22px;background:#fff;box-shadow:none}
+body .my-overview h3{font:750 15px/1.45 "Pretendard Variable",Pretendard,system-ui,sans-serif}
+body .my-progress-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+body .my-progress-head strong{font-size:24px;line-height:1.3}
+body .my-progress-head strong span{font-size:12px;font-weight:500;color:var(--meowde-muted)}
+body .my-progress-track{height:8px;border-radius:20px;background:#F0E5EB;margin:16px 0 18px;overflow:hidden}
+body .my-progress-track>span{display:block;height:100%;background:#B77F94;border-radius:inherit}
+body .my-overview .my-review-card{display:grid;gap:12px;background:var(--meowde-pink-soft)}
+body .my-review-card p{font-size:12px;margin:5px 0 0;color:var(--meowde-muted)}
+body .my-review-card h3>span{color:var(--meowde-pink-strong)}
+body .my-overview .v420-card-title h3{font-size:15px}
+body .my-overview .v420-card-title p{font-size:12px;font-weight:400}
+body .my-overview .v420-day span{background:#FAF5F7;border-color:#EEE7EC;font-weight:600}
+body .my-overview .v420-day.active span{background:#F5DDE5;border-color:#D9A7B9;color:#80556A}
+body .my-overview .v420-day.today span{outline:2px solid #B77F94;outline-offset:1px}
+body .my-overview summary{font-size:14px;font-weight:650;min-height:28px;cursor:pointer}
+body .my-overview details[open]>summary{margin-bottom:12px}
+body .my-records>.card{margin:0;padding:0 0 14px;border:0;box-shadow:none}
+body .my-records .v420-mastery-bar{background:#F0E5EB}
+body .my-records .v420-mastery-bar span{background:#B77F94}
+body .my-records>.text-link{display:block;width:100%;text-align:left;font-size:13px;font-weight:550;padding:12px 0;border-top:1px solid #EEE7EC}
+body .my-local-note{font-size:11px;color:var(--meowde-muted);line-height:1.6;margin:10px 0 0}
+body .my-settings-row{width:100%;display:flex;justify-content:space-between;gap:12px;text-align:left;background:transparent;border:0;border-top:1px solid #EEE7EC;border-radius:0;padding:14px 0;font:inherit;font-size:13px;color:var(--meowde-ink);min-height:44px}

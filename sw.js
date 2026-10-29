@@ -1,7 +1,8 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v490-simple-sharing";
+const CACHE_NAME = "meowde-v491-learning-overview";
 
 const REQUIRED_ASSETS = [
+  "/assets/meowde-pink-unified.css",
   "/assets/together.js",
   "/assets/vendor/qrcode-generator-2.0.4.js",
   "/assets/lesson-access-policy.js",
