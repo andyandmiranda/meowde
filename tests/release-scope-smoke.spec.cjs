@@ -3,6 +3,8 @@ const base=process.env.MEOWDE_BASE_URL||'http://127.0.0.1:4173';
 const key='meowde-ml-foundations-v1';
 test('release scope: 30 canonical Python entries available by direct lesson link',async({page})=>{
  await page.goto(base+'/');
+ await page.waitForFunction(()=>typeof DATA!=='undefined'&&window.MeowRelease&&MeowRelease.isReady());
+ await page.evaluate(async()=>{await MeowRelease.loadPromise});
  const slugs=await page.evaluate(()=>DATA.ko.map(x=>x.slug));
  expect(slugs).toHaveLength(30);
  for(const i of [0,14,29]){

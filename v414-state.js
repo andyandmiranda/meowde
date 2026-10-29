@@ -99,7 +99,7 @@
     return true;
   }
 
-  function v414Save(){
+  function v414Save(prepare){
     const state={
       lang:S.lang,done:S.done,next:S.next,xp:S.xp,churu:S.churu,streak:S.streak,
       milk:S.milk,cat:S.cat,unit:S.unit,mistakes:S.mistakes,
@@ -111,8 +111,8 @@
     if(typeof storageReadProblem!=='undefined'&&storageReadProblem)return false;
     const next=Object.assign({},typeof rawState==='object'&&rawState?rawState:{},state);
     if(!hasLessonProgress())delete next.inProgress;
-    const preserved=typeof preserveDeferredLessonState==='function'?preserveDeferredLessonState(next):next;
-    try{localStorage.setItem('meowde-v410-state',JSON.stringify(preserved));if(typeof rawState!=='undefined')rawState=preserved;return true}
+    let preserved=typeof preserveDeferredLessonState==='function'?preserveDeferredLessonState(next):next;
+    try{if(typeof prepare==='function')preserved=prepare(preserved);localStorage.setItem('meowde-v410-state',JSON.stringify(preserved));if(typeof rawState!=='undefined')rawState=preserved;return true}
     catch(error){console.warn('Meowde could not save progress:',error);return false}
   }
   save=v414Save;
@@ -138,6 +138,13 @@
   function beginLesson(index,daily,queueOverride,options){
     if(S.loading)return;
     if(!preserveBeforeSwitch())return;
+    const previous=JSON.parse(JSON.stringify(S));
+    function restoreFailedStart(){
+      Object.keys(S).forEach(key=>{if(!Object.prototype.hasOwnProperty.call(previous,key))delete S[key]});
+      Object.assign(S,previous);
+      if(hasLessonProgress())renderLesson();
+      toast(S.lang==='ko'?'학습 기록을 저장하지 못해 현재 답안을 유지했어요.':'Could not save. Your current answers were kept.');
+    }
     const mode=options&&options.mode?options.mode:(daily?'daily':(S.done.includes(index)?'review':'lesson'));
     const key=typeof options.resumeKey==='string'&&Object.prototype.hasOwnProperty.call(S.lessonResumes,options.resumeKey)
       ?options.resumeKey:resumeKey(index,mode,options,queueOverride);
@@ -150,7 +157,9 @@
       const fields=['lessonIndex','idx','queue','combo','maxCombo','firstTotal','firstCorrect','xpEarned','daily','sel','fill','checked','correct','hint','output','write','stdinExerciseId','stdinValue'];
       fields.forEach(field=>{S[field]=saved[field]});
       S.v414Mode=saved.mode;S.v414DailyKey=saved.dailyKey||'';S.v414MistakeId=saved.mistakeId||'';
-      S.v414ResumeKey=key;S.loading=false;save();renderLesson();
+      S.v414ResumeKey=key;S.loading=false;
+      if(save()===false){restoreFailedStart();return;}
+      renderLesson();
       return;
     }
     S.v414ResumeKey=key;
@@ -158,7 +167,7 @@
     S.v414DailyKey=options&&options.dailyKey?options.dailyKey:'';
     S.v414MistakeId=options&&options.mistakeId?options.mistakeId:'';
     const previousQueue=S.queue;
-    baseStartLesson(index,daily,queueOverride);
+    if(baseStartLesson(index,daily,queueOverride)===false){restoreFailedStart();return;}
     if(
       options&&typeof options.onStarted==='function'&&
       hasLessonProgress()&&S.queue!==previousQueue

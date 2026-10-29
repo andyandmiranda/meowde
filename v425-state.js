@@ -19,7 +19,7 @@
 
   function uniqueIntegers(value,max){
     if(!Array.isArray(value))return [];
-    return [...new Set(value.map(item=>integer(item,-1,-1,max)).filter(item=>item>=0))].sort((a,b)=>a-b);
+    return [...new Set(value.map(item=>integer(item,-1,-1)).filter(item=>item>=0&&item<=max))].sort((a,b)=>a-b);
   }
 
   function cloneJson(value){
@@ -61,19 +61,17 @@
     return deferredProgress.done.length>0||deferredProgress.next!==null||deferredProgress.unit!==null||Boolean(deferredProgress.inProgress);
   }
 
-  function mergeDeferredProgressIntoStorage(){
-    if(!hasDeferredProgress())return;
-    const raw=localStorage.getItem(STORAGE_KEY);
-    if(!raw)return;
-    const state=JSON.parse(raw);
-    state.done=[...new Set([
-      ...uniqueIntegers(state.done,MAX_DEFERRED_INDEX),
-      ...deferredProgress.done
-    ])].sort((a,b)=>a-b);
-    if(deferredProgress.next!==null)state.next=deferredProgress.next;
-    if(deferredProgress.unit!==null)state.unit=deferredProgress.unit;
-    if(deferredProgress.inProgress)state.inProgress=cloneJson(deferredProgress.inProgress);
-    localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+  function preparePersistedState(state){
+    if(hasDeferredProgress()){
+      state.done=[...new Set([...uniqueIntegers(state.done,MAX_DEFERRED_INDEX),...deferredProgress.done])].sort((a,b)=>a-b);
+      if(deferredProgress.next!==null)state.next=deferredProgress.next;
+      if(deferredProgress.unit!==null)state.unit=deferredProgress.unit;
+      if(deferredProgress.inProgress)state.inProgress=cloneJson(deferredProgress.inProgress);
+    }
+    state.schemaVersion=SCHEMA_VERSION;
+    state.savedAt=new Date().toISOString();
+    state.milkMode="unlimited";
+    return state;
   }
 
   function normalizeRuntimeState(){
@@ -96,25 +94,15 @@
     S.activityDates=Array.isArray(S.activityDates)?S.activityDates:[];
   }
 
-  function enrichPersistedState(){
-    const raw=localStorage.getItem(STORAGE_KEY);
-    if(!raw)return;
-
-    const state=JSON.parse(raw);
-    state.schemaVersion=SCHEMA_VERSION;
-    state.savedAt=new Date().toISOString();
-    state.milkMode="unlimited";
-    localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
-    localStorage.setItem(BACKUP_KEY,JSON.stringify(state));
-  }
-
   function safeSave(){
     normalizeRuntimeState();
 
     try{
-      if(baseSave()===false)throw new Error("Primary lesson progress save failed");
-      mergeDeferredProgressIntoStorage();
-      enrichPersistedState();
+      if(baseSave(preparePersistedState)===false)throw new Error("Primary lesson progress save failed");
+      // The primary record is the commit boundary. An optional backup must not
+      // report a committed reward as failed and trigger an in-memory rollback.
+      try{localStorage.setItem(BACKUP_KEY,localStorage.getItem(STORAGE_KEY))}
+      catch(error){console.warn("Meowde backup could not be refreshed:",error)}
       window.__MEOWDE_SAVE_STATUS__="saved";
       if(typeof lessonSaveFailed!=="undefined")lessonSaveFailed=false;
       return true;

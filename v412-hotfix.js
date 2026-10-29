@@ -67,6 +67,7 @@ _buffer.getvalue()`);
 
   startLesson=function(index,daily=false,queueOverride=null){
     if(!useMilk())return;
+    const previous=JSON.parse(JSON.stringify(S));
     S.lessonIndex=Math.max(0,Math.min(index,lessons().length-1));
     const source=Array.isArray(queueOverride)&&queueOverride.length?queueOverride:lessons()[S.lessonIndex].exercises;
     S.queue=source.map(item=>Object.assign({},item));
@@ -78,8 +79,9 @@ _buffer.getvalue()`);
     S.xpEarned=0;
     S.daily=Boolean(daily);
     setup();
-    save();
+    if(save()===false){Object.assign(S,previous);return false;}
     renderLesson();
+    return true;
   };
 
   finish=function(){

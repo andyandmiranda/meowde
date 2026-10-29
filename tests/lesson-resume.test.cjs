@@ -12,7 +12,7 @@ function boot(record={}){
   hasLessonProgress:()=>c.S.queue.length>0&&c.S.idx<c.S.queue.length,
   cur:()=>c.S.queue[c.S.idx],save:()=>{},renderLesson:()=>{},resumeLesson:()=>{},
   closeOverlay:()=>{},overlay:()=>{},toast:message=>{c.message=message},esc:String,
-  checkQ:async()=>{},startLesson:(i,daily,queue)=>{Object.assign(c.S,{lessonIndex:i,idx:0,queue:queue||c.lessons()[i].exercises,write:'',xpEarned:0,combo:0,maxCombo:0,firstTotal:1,firstCorrect:0,daily});c.save()},
+  checkQ:async()=>{},startLesson:(i,daily,queue)=>{Object.assign(c.S,{lessonIndex:i,idx:0,queue:queue||c.lessons()[i].exercises,write:'',xpEarned:0,combo:0,maxCombo:0,firstTotal:1,firstCorrect:0,daily});return c.save()},
   clearLessonProgress:()=>{c.S.queue=[];c.S.idx=0},catSVG:()=>'',t:k=>k,app:{},renderMap:()=>{}};
  c.window=c;vm.createContext(c);
  vm.runInContext(fs.readFileSync('assets/lesson-access-policy.js','utf8'),c);
@@ -84,7 +84,7 @@ test('a changing review recommendation order resumes the saved identity instead 
 test('legacy serializer wrappers preserve unknown fields and deferred future progress',()=>{
  for(const [file,fnName] of [['v412-hotfix.js','safeSave'],['v414-state.js','v414Save']]){
   const source=fs.readFileSync(file,'utf8');
-  const start=source.indexOf('function '+fnName+'()');
+  const start=source.indexOf('function '+fnName+'(');
   const end=source.indexOf('\n  save='+fnName+';',start);
   assert.ok(start>=0&&end>start);
   const wrapper=source.slice(start,end);
@@ -114,4 +114,60 @@ test('legacy serializer wrappers preserve unknown fields and deferred future pro
    }
   }
  }
+});
+
+test('shipped reward override rolls back a failed final save and retries exactly once',()=>{
+ const b=boot(),c=b.c;c.startLesson(0);
+ Object.assign(c.S,{write:'keep answer',checked:true,correct:true,xpEarned:35,firstCorrect:1});
+ c.save();
+ const before=JSON.stringify(c.S),bytes=b.disk.get('meowde-v410-state');
+ const realSave=c.save;c.save=()=>false;
+ c.finish();
+ assert.equal(JSON.stringify(c.S),before);
+ assert.equal(b.disk.get('meowde-v410-state'),bytes);
+ c.save=realSave;c.finish();
+ assert.equal(c.S.xp,42);assert.deepEqual(Array.from(c.S.done),[0]);
+ const awarded=JSON.stringify(c.S);c.finish();assert.equal(JSON.stringify(c.S),awarded);
+});
+
+
+test('failure after switch checkpoint preserves the active draft and suppresses onStarted',()=>{
+ const b=boot(),c=b.c;c.startLesson(0);c.S.write='keep after checkpoint';c.S.checked=true;
+ const realSave=c.save;let writes=0,starts=0;
+ c.save=()=>++writes===2?false:realSave();
+ c.startLesson(59,false,null,{force:true,onStarted:()=>starts++});
+ assert.equal(c.S.lessonIndex,0);assert.equal(c.S.write,'keep after checkpoint');assert.equal(c.S.checked,true);assert.equal(starts,0);
+});
+
+test('season wrapper never counts a failed or repeated completion',()=>{
+ const b=boot(),c=b.c;c.startLesson(0);
+ let increments=0;
+ c.incrementSeason=()=>increments++;c.persist=()=>{};c.localDateKey=()=> '2026-10-29';
+ const source=fs.readFileSync('v428-events.js','utf8');
+ vm.runInContext(source.slice(source.indexOf('  const baseFinish=window.finish;'),source.indexOf('  window.MeowEvents=')),c);
+ const realSave=c.save;c.save=()=>false;c.finish();assert.equal(increments,0);
+ c.save=realSave;c.finish();assert.equal(increments,1);c.finish();assert.equal(increments,1);
+});
+
+test('backup denial after the primary commit cannot roll back or duplicate a completed reward',()=>{
+ const b=boot(),c=b.c;c.document.addEventListener=()=>{};c.addEventListener=()=>{};
+ vm.runInContext(fs.readFileSync('v425-state.js','utf8'),c);
+ c.startLesson(0);c.S.xpEarned=35;
+ const set=c.localStorage.setItem;let primaryWrites=0;
+ c.localStorage.setItem=(key,value)=>{if(key==='meowde-v425-state-backup')throw Error('backup quota');if(key==='meowde-v410-state')primaryWrites++;set(key,value)};
+ c.finish();
+ assert.equal(c.__MEOWDE_SAVE_STATUS__,'saved');assert.equal(primaryWrites,1);
+ assert.equal(c.S.xp,42);assert.equal(b.saved().xp,42);assert.equal(c.S.queue.length,0);
+ c.finish();assert.equal(c.S.xp,42);assert.equal(b.saved().xp,42);
+});
+
+test('atomic serializer keeps future fields and deferred progress when the primary write is denied',()=>{
+ const record={xp:7,done:[80],next:80,unit:8,future:{keep:true},inProgress:{lessonIndex:80,queue:[{id:'future'}],idx:0}};
+ const b=boot(record),c=b.c;c.document.addEventListener=()=>{};c.addEventListener=()=>{};
+ vm.runInContext(fs.readFileSync('v425-state.js','utf8'),c);
+ const bytes=b.disk.get('meowde-v410-state');const set=c.localStorage.setItem;let primaryWrites=0;
+ c.localStorage.setItem=(key,value)=>{if(key==='meowde-v410-state'){primaryWrites++;throw Error('primary quota')}set(key,value)};
+ c.S.xp=99;assert.equal(c.save(),false);assert.equal(primaryWrites,1);assert.equal(b.disk.get('meowde-v410-state'),bytes);
+ c.localStorage.setItem=set;assert.equal(c.save(),true);
+ const saved=b.saved();assert.equal(saved.xp,99);assert.deepEqual(saved.done,[80]);assert.equal(saved.next,80);assert.equal(saved.unit,8);assert.equal(saved.inProgress.lessonIndex,80);assert.deepEqual(saved.future,{keep:true});assert.equal(saved.schemaVersion,425);
 });

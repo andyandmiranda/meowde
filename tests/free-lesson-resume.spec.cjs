@@ -46,7 +46,7 @@ test('completion warns and retries storage without losing reward state',async({p
  await page.goto(base+'/');await ready(page);await select(page,0);
  const before=await page.evaluate(()=>{
   const key='meowde-v410-state',old=localStorage.getItem(key),original=Storage.prototype.setItem;
-  S.xpEarned=10;S.firstTotal=1;S.firstCorrect=1;
+  S.idx=S.queue.length-1;S.xpEarned=10;S.firstTotal=1;S.firstCorrect=1;
   try{
    Storage.prototype.setItem=function(k,v){if(k===key)throw new DOMException('full','QuotaExceededError');return original.call(this,k,v)};
    finish();
@@ -54,10 +54,11 @@ test('completion warns and retries storage without losing reward state',async({p
   }finally{Storage.prototype.setItem=original}
  });
  expect(before.now).toBe(before.old);
- await expect(page.locator('#lesson-reward-save-alert')).toContainText('저장하지 못했어요');
- await expect(page.locator('#lesson-reward-continue')).toBeDisabled();
+ await expect(page.locator('.lesson-save-warning')).toContainText('저장하지 못했어요');
+ expect(await page.evaluate(()=>hasLessonProgress())).toBe(true);
  await page.getByRole('button',{name:'저장 다시 시도'}).click();
- await expect(page.locator('#lesson-reward-save-alert')).toHaveCount(0);
+ await page.locator('.lesson-foot .btn,.feedback.ok .btn').last().click();
+ await expect(page.locator('.lesson-save-warning')).toHaveCount(0);
  await expect(page.locator('#lesson-reward-continue')).toBeEnabled();
  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('meowde-v410-state')).done.includes(0))).toBe(true);
 });

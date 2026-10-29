@@ -1,15 +1,14 @@
 const {test,expect}=require('playwright/test');
 const base=process.env.MEOWDE_BASE_URL||'http://127.0.0.1:4173';
 const key='meowde-v410-state';
+async function ready(page){await page.waitForFunction(()=>typeof DATA!=='undefined'&&typeof save==='function'&&typeof startLesson==='function'&&window.MeowRelease&&window.MeowRelease.isReady());await page.evaluate(async()=>{await MeowRelease.loadPromise})}
 
-test('corrupt learning JSON stays byte-for-byte intact after home/map navigation',async({page})=>{
+
+test('corrupt learning JSON stops the loader and stays byte-for-byte intact',async({page})=>{
  const original='{"done":[0],"inProgress":';
  await page.addInitScript(({key,original})=>localStorage.setItem(key,original),{key,original});
  await page.goto(base+'/');
- await expect(page.locator('.lesson-save-warning')).toContainText('원본을 덮어쓰지 않았어요');
- await page.evaluate(()=>renderMap());
- expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(original);
- expect(await page.evaluate(()=>({problem:storageReadProblem,saveResult:save()}))).toEqual({problem:'corrupt',saveResult:false});
+ await expect(page.locator('#status.error')).toContainText('원본 기록은 그대로 보존');
  expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(original);
 });
 
@@ -22,12 +21,12 @@ test('storage read permission denial never calls setItem with default progress',
   Storage.prototype.setItem=function(name,value){if(name===key)window.__protectedWrites++;return originalSet.call(this,name,value)};
  },key);
  await page.goto(base+'/');
- await expect(page.locator('.lesson-save-warning')).toContainText('읽을 수 없어');
- expect(await page.evaluate(()=>({problem:storageReadProblem,attempt:save(),writes:window.__protectedWrites}))).toEqual({problem:'unreadable',attempt:false,writes:0});
+ await expect(page.locator('#status.error')).toBeVisible();
+ expect(await page.evaluate(()=>window.__protectedWrites)).toBe(0);
 });
 
 test('transient quota failure keeps the active lesson and allows retry after storage recovers',async({page})=>{
- await page.goto(base+'/');
+ await page.goto(base+'/');await ready(page);
  await page.evaluate(key=>{
   startLesson(0);
   S.idx=1;
@@ -41,13 +40,13 @@ test('transient quota failure keeps the active lesson and allows retry after sto
  expect(await page.evaluate(()=>({failed:lessonSaveFailed,step:S.idx}))).toEqual({failed:false,step:1});
  const persisted=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);
  expect(persisted.inProgress.idx).toBe(1);
- await page.reload();
+ await page.reload();await ready(page);
  expect(await page.evaluate(()=>S.idx)).toBe(1);
 });
 
 test('unknown existing learner fields survive a normal save',async({page})=>{
  await page.addInitScript(key=>localStorage.setItem(key,JSON.stringify({lang:'ko',xp:12,customFutureKey:{v:5}})),key);
- await page.goto(base+'/');
+ await page.goto(base+'/');await ready(page);
  expect(await page.evaluate(()=>save())).toBe(true);
  const persisted=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);
  expect(persisted.customFutureKey).toEqual({v:5});
@@ -55,7 +54,7 @@ test('unknown existing learner fields survive a normal save',async({page})=>{
 });
 
 test('completed ordinary lesson clears inProgress without erasing unrelated fields',async({page})=>{
- await page.goto(base+'/');
+ await page.goto(base+'/');await ready(page);
  await page.evaluate(()=>{startLesson(0);S.done=[0];S.xp=40;clearLessonProgress();save()});
  const persisted=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);
  expect(persisted.inProgress).toBeUndefined();
@@ -67,7 +66,7 @@ test('future lesson inProgress survives saves in 30-lesson shell',async({page})=
  await page.addInitScript(key=>{
   localStorage.setItem(key,JSON.stringify({lang:'ko',inProgress:{lang:'ko',lessonIndex:42,idx:1,queue:[{type:'concept',title:'later'}]}}));
  },key);
- await page.goto(base+'/');
+ await page.goto(base+'/');await ready(page);
  expect(await page.evaluate(()=>save())).toBe(true);
  const preserved=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).inProgress,key);
  expect(preserved.lessonIndex).toBe(42);
@@ -75,7 +74,7 @@ test('future lesson inProgress survives saves in 30-lesson shell',async({page})=
 });
 
 test('failed final-lesson save restores draft, grading, progress and rewards; retry awards once',async({page})=>{
- await page.goto(base+'/');
+ await page.goto(base+'/');await ready(page);
  const result=await page.evaluate(key=>{
   startLesson(0);
   S.idx=S.queue.length-1;

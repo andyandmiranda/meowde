@@ -126,6 +126,7 @@
 
   const baseFinish=window.finish;
   if(typeof baseFinish==="function")window.finish=function(){
+    if(!hasLessonProgress())return;
     const modeBefore=typeof meowdeMode==="function"?meowdeMode():(S.daily?"daily":"lesson");
     const lessonBefore=S.lessonIndex;
     const wasDone=Array.isArray(S.done)&&S.done.includes(lessonBefore);
@@ -133,7 +134,7 @@
     const dailyDone=Boolean(S.dailyHistory&&S.dailyHistory[dailyKey]);
     baseFinish.apply(this,arguments);
     const newCompletion=(modeBefore==="lesson"&&!wasDone)||(modeBefore==="daily"&&!dailyDone);
-    if(newCompletion){incrementSeason(1);persist()}
+    if(newCompletion&&!hasLessonProgress()){incrementSeason(1);persist()}
   };
 
   window.MeowEvents={state:E,season,progress,visitorForToday,claimSeason,claimVisitor,incrementSeason};
