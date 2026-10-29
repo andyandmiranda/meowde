@@ -152,11 +152,11 @@ function renderHome(){S.screen='home'; save(); const hasProgress=hasLessonProgre
 function renderMap(){S.screen='map'; save(); const start=S.unit*10, XS=[50,26,50,74,50,26,50,74,50,26], STEP=106, TOP=64; const H=TOP+9*STEP+118;
  let stones='';
  for(let i=0;i<9;i++){const x1=XS[i],y1=TOP+i*STEP,x2=XS[i+1],y2=TOP+(i+1)*STEP; [0.28,0.5,0.72].forEach((tt,k)=>{const sx=x1+(x2-x1)*tt+(k===1?0:(k===0?-1.4:1.4)), sy=y1+(y2-y1)*tt; stones+=`<span class="stone" style="left:${sx}%;top:${sy}px"></span>`})}
- const deco=`<svg class="bush" style="left:6%;top:${TOP+STEP*0.5}px" width="52" height="34" viewBox="0 0 52 34"><circle cx="14" cy="22" r="12" fill="#CBEEDC"/><circle cx="30" cy="18" r="15" fill="#B8E7CF"/><circle cx="43" cy="24" r="9" fill="#CBEEDC"/></svg>
- <svg class="bush" style="left:78%;top:${TOP+STEP*2.4}px" width="46" height="40" viewBox="0 0 46 40"><path d="M23 2 40 30H6z" fill="#A9E0C2"/><rect x="20" y="30" width="6" height="8" rx="2" fill="#D9C6A5"/></svg>
- <svg class="bush" style="left:8%;top:${TOP+STEP*4.5}px" width="46" height="40" viewBox="0 0 46 40"><path d="M23 2 40 30H6z" fill="#B8E7CF"/><rect x="20" y="30" width="6" height="8" rx="2" fill="#D9C6A5"/></svg>
- <svg class="bush" style="left:74%;top:${TOP+STEP*6.5}px" width="52" height="34" viewBox="0 0 52 34"><circle cx="14" cy="22" r="12" fill="#B8E7CF"/><circle cx="30" cy="18" r="15" fill="#CBEEDC"/><circle cx="43" cy="24" r="9" fill="#B8E7CF"/></svg>
- <svg class="bush" style="left:12%;top:${TOP+STEP*8.4}px" width="40" height="24" viewBox="0 0 40 24"><ellipse cx="12" cy="16" rx="10" ry="7" fill="#CBEEDC"/><ellipse cx="27" cy="14" rx="11" ry="9" fill="#B8E7CF"/></svg>`;
+ const deco=`<svg class="bush" style="left:6%;top:${TOP+STEP*0.5}px" width="52" height="34" viewBox="0 0 52 34"><circle cx="14" cy="22" r="12" fill="#F5DDE5"/><circle cx="30" cy="18" r="15" fill="#E7C9D5"/><circle cx="43" cy="24" r="9" fill="#F5DDE5"/></svg>
+ <svg class="bush" style="left:78%;top:${TOP+STEP*2.4}px" width="46" height="40" viewBox="0 0 46 40"><path d="M23 2 40 30H6z" fill="#D9A7B9"/><rect x="20" y="30" width="6" height="8" rx="2" fill="#D9C6A5"/></svg>
+ <svg class="bush" style="left:8%;top:${TOP+STEP*4.5}px" width="46" height="40" viewBox="0 0 46 40"><path d="M23 2 40 30H6z" fill="#E7C9D5"/><rect x="20" y="30" width="6" height="8" rx="2" fill="#D9C6A5"/></svg>
+ <svg class="bush" style="left:74%;top:${TOP+STEP*6.5}px" width="52" height="34" viewBox="0 0 52 34"><circle cx="14" cy="22" r="12" fill="#E7C9D5"/><circle cx="30" cy="18" r="15" fill="#F5DDE5"/><circle cx="43" cy="24" r="9" fill="#E7C9D5"/></svg>
+ <svg class="bush" style="left:12%;top:${TOP+STEP*8.4}px" width="40" height="24" viewBox="0 0 40 24"><ellipse cx="12" cy="16" rx="10" ry="7" fill="#F5DDE5"/><ellipse cx="27" cy="14" rx="11" ry="9" fill="#E7C9D5"/></svg>`;
  const nodes=lessons().slice(start,start+10).map((l,i)=>{const idx=start+i, done=S.done.includes(idx), curN=idx===S.next, locked=!done&&idx>S.next; const x=XS[i], y=TOP+i*STEP;
   const inner=done?icon('check'):locked?icon('lock'):String(idx+1).padStart(2,'0');
   const cat=curN?`<span class="trail-cat" style="left:${x+(x<=50?15:-15)}%;top:${y-6}px">${catSVG(S.cat,'idle',44)}</span>`:'';
