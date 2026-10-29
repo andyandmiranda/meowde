@@ -108,3 +108,31 @@ body .my-records .v420-mastery-bar span{background:#B77F94}
 body .my-records>.text-link{display:block;width:100%;text-align:left;font-size:13px;font-weight:550;padding:12px 0;border-top:1px solid #EEE7EC}
 body .my-local-note{font-size:11px;color:var(--meowde-muted);line-height:1.6;margin:10px 0 0}
 body .my-settings-row{width:100%;display:flex;justify-content:space-between;gap:12px;text-align:left;background:transparent;border:0;border-top:1px solid #EEE7EC;border-radius:0;padding:14px 0;font:inherit;font-size:13px;color:var(--meowde-ink);min-height:44px}
+
+/* Canonical pink treatment for legacy navigation and invitation surfaces. */
+body .pill.good,body .course .status,body .status.good,
+body .meowde-subject-overview .subject-options a[aria-current="page"]{
+  background:var(--meowde-pink-soft)!important;color:var(--meowde-pink-strong)!important;
+  border-color:#E7C9D5!important
+}
+body .course .status{display:inline-block;padding:3px 0;background:transparent!important}
+body .course.pending .status{color:var(--meowde-muted)!important}
+body .course a,body .meowde-linux-back,body .meowde-shell-header>a,
+body .meowde-shell-header a:not(.meowde-shell-brand a){
+  color:var(--meowde-pink-strong)!important
+}
+body .course a{background:var(--meowde-pink-soft)!important}
+body .course a:focus-visible,body .invite-action:focus-visible,
+body .meowde-shell-header a:focus-visible{
+  outline-color:var(--meowde-pink-strong)!important
+}
+body .invite,body .invite-action{
+  border-color:#E7C9D5!important
+}
+body .invite-action,body .meowde-lab-tabbar a[aria-current="page"]{
+  background:var(--meowde-pink-soft)!important;color:var(--meowde-pink-strong)!important
+}
+body #status{color:var(--meowde-pink-strong)!important}
+body .together-main button.primary,body .together-main a.primary{
+  background:var(--meowde-pink)!important;color:var(--meowde-ink)!important
+}
