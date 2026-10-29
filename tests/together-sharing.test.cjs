@@ -23,5 +23,5 @@ test('local QR contains the same minimal Linux invite and can be closed',()=>{
 
 test('ML sharing stays on the selected course and recipient opens the ML entry',async()=>{
  const b=boot('?subject=ml&invite=1&from=private');await b.el('share').click();
- assert.equal(b.copied(),'https://meowde.example/together.html?invite=1&subject=ml');assert.equal(b.el('course-label').textContent,'ML 첫걸음');assert.equal(b.el('received-start').href,'/ml-foundations.html');
+ assert.equal(b.copied(),'https://meowde.example/together.html?invite=1&subject=ml');assert.equal(b.el('course-label').textContent,'ML 첫걸음');assert.equal(b.el('received-start').href,'/ml-foundations.html');assert.equal(b.tabs[3].href,'/together.html?subject=ml');
 });

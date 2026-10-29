@@ -14,7 +14,7 @@ const destination=linux?'/linux-home.html?tab=learn':ml?'/ml-foundations.html':'
 document.querySelector('#received a').href=destination;
 if(linux||ml){
  const tabs=document.querySelectorAll('.meowde-lab-tabbar a');
- tabs[1].href=destination;tabs[2].href=linux?'/linux-crash-course.html?view=concept':'/ml-foundations.html';
+ tabs[1].href=destination;tabs[3].href='/together.html?subject='+subject;tabs[2].href=linux?'/linux-crash-course.html?view=concept':'/ml-foundations.html';
  if(linux){document.querySelector('.meowde-shell-brand a').href='/linux-home.html?tab=home';tabs[0].href='/linux-home.html?tab=home';tabs[4].href='/linux-home.html?tab=my';}
 }
 link.value=inviteURL.href;
