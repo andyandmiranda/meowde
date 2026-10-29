@@ -73,3 +73,34 @@ test('future lesson inProgress survives saves in 30-lesson shell',async({page})=
  expect(preserved.lessonIndex).toBe(42);
  expect(preserved.idx).toBe(1);
 });
+
+test('failed final-lesson save restores draft, grading, progress and rewards; retry awards once',async({page})=>{
+ await page.goto(base+'/');
+ const result=await page.evaluate(key=>{
+  startLesson(0);
+  S.idx=S.queue.length-1;
+  S.write='print("unsaved answer")';
+  S.checked=true;S.correct=true;S.xpEarned=35;S.firstCorrect=2;
+  save();
+  const before={idx:S.idx,write:S.write,checked:S.checked,correct:S.correct,xpEarned:S.xpEarned,xp:S.xp,churu:S.churu,done:[...S.done],queueLength:S.queue.length};
+  const diskBefore=localStorage.getItem(key);
+  const original=Storage.prototype.setItem;
+  Storage.prototype.setItem=function(name,value){if(name===key)throw new DOMException('quota','QuotaExceededError');return original.call(this,name,value)};
+  try{nextQ()}finally{Storage.prototype.setItem=original}
+  const afterFailure={idx:S.idx,write:S.write,checked:S.checked,correct:S.correct,xpEarned:S.xpEarned,xp:S.xp,churu:S.churu,done:[...S.done],queueLength:S.queue.length};
+  const unchangedDisk=localStorage.getItem(key)===diskBefore;
+  const warning=!!document.querySelector('.lesson-save-warning');
+  nextQ();
+  const afterSuccess={xp:S.xp,churu:S.churu,done:[...S.done],progress:JSON.parse(localStorage.getItem(key)).inProgress};
+  finish(); // No active lesson remains; repeated completion must not award again.
+  return {before,afterFailure,unchangedDisk,warning,afterSuccess,afterRepeat:{xp:S.xp,churu:S.churu,done:[...S.done]}};
+ },key);
+ expect(result.afterFailure).toEqual(result.before);
+ expect(result.unchangedDisk).toBe(true);
+ expect(result.warning).toBe(true);
+ expect(result.afterSuccess.xp).toBe(result.before.xp+35);
+ expect(result.afterSuccess.churu).toBeGreaterThan(result.before.churu);
+ expect(result.afterSuccess.done).toEqual([0]);
+ expect(result.afterSuccess.progress).toBeUndefined();
+ expect(result.afterRepeat).toEqual({xp:result.afterSuccess.xp,churu:result.afterSuccess.churu,done:[0]});
+});
