@@ -54,7 +54,7 @@
     const start=S.unit*10;
     const XS=[50,26,50,74,50,26,50,74,50,26],STEP=106,TOP=64,H=TOP+9*STEP+118;
     const ko=S.lang==='ko';
-    const unitNames=ko?['01 Python 기초','02 입력과 조건','03 컬렉션·반복·함수','04 문자열·딕셔너리·데이터']:['01 Python Basics','02 Input & Decisions','03 Collections, Loops & Functions','04 Strings, Dictionaries & Data'];
+    const unitNames=ko?['01 Python 기초','02 입력과 조건','03 컬렉션·반복·함수','04 문자열·딕셔너리·데이터','05 예외·파일·모듈','06 클래스·객체']:['01 Python Basics','02 Input & Decisions','03 Collections, Loops & Functions','04 Strings, Dictionaries & Data','05 Exceptions, Files & Modules','06 Classes & Objects'];
     const nodes=lessons().slice(start,start+10).map((lesson,index)=>{
       const lessonIndex=start+index;
       const done=Array.isArray(S.done)&&S.done.includes(lessonIndex);
@@ -66,7 +66,7 @@
       return `<button class="node ${done?'done':''} ${current?'current':''} ${locked?'locked':''}" style="left:${x}%;top:${y}px" onclick="${action}" aria-label="${esc(lesson.title)}">${inner}</button><span class="node-label ${locked?'lk':''}" style="left:${x}%;top:${y+38}px">${esc(lesson.short)}</span>`;
     }).join('');
     const unitTabs=unitNames.slice(0,unitCount).map((name,index)=>`<button class="${S.unit===index?'on':''}" onclick="S.unit=${index};save();renderMap()">${name}</button>`).join('');
-    app.innerHTML=`<div class="screen">${learnBrand()}${stats()}<div class="scroll"><div class="map-head"><h2>${ko?'학습 경로':'Learning path'}</h2><p>${ko?'권장 순서를 참고하되 원하는 레슨부터 시작할 수 있어요. 진행 중인 학습은 레슨별로 보관돼요.':'Use the recommended order or start any available lesson. Unfinished lessons keep their own saved place.'}</p></div><div class="learn-review-entry"><button type="button" onclick="renderReview()">${icon('spark')} ${ko?'복습 · 오답 다시 풀기':'Review · Retry mistakes'} →</button></div><div class="unit-tabs">${unitTabs}</div><div class="trail" style="height:${H}px" data-learn-path="canonical">${nodes}</div></div>${learnTabs()}</div>`;
+    app.innerHTML=`<div class="screen">${learnBrand()}${stats()}<div class="scroll"><div class="map-head"><h2>${ko?'학습 경로':'Learning path'}</h2><p>${ko?'권장 순서를 참고하되 원하는 레슨부터 시작할 수 있어요. 진행 중인 학습은 레슨별로 보관돼요.':'Use the recommended order or start any available lesson. Unfinished lessons keep their own saved place.'}</p></div><div class="unit-tabs">${unitTabs}</div><div class="map-unit-context"><b>${ko?`단원 ${S.unit+1} / ${unitCount}`:`Unit ${S.unit+1} / ${unitCount}`}</b><span>${ko?`레슨 ${start+1}~${Math.min(start+10,lessons().length)} / ${lessons().length}`:`Lessons ${start+1}–${Math.min(start+10,lessons().length)} / ${lessons().length}`}</span></div><div class="trail" style="height:${H}px" data-learn-path="canonical">${nodes}</div><div class="learn-review-entry" data-map-secondary-action><button type="button" onclick="renderReview()">${ko?'복습 · 오답 다시 풀기':'Review · Retry mistakes'} →</button></div></div>${learnTabs()}</div>`;
     document.documentElement.dataset.learnRenderer='canonical-v413';
     document.documentElement.dataset.navigation='phase1-four-tabs';
   };
