@@ -12,7 +12,7 @@
     meh:"/assets/meowde-approved-base.svg?v=450",
     coding:"/assets/meowde-approved-headphones.svg?v=450",
     music:"/assets/meowde-approved-headphones.svg?v=450",
-    reading:"/assets/meowde-approved-base.svg?v=450",
+    reading:"/assets/characters/v451/meowde-reading.webp",
     error:"/assets/meowde-approved-base.svg?v=450"
   };
   let queued=false;
@@ -67,13 +67,13 @@
     const hero=document.querySelector(".hero");if(!hero)return;
     let scene=hero.querySelector(".v449-coding-scene");
     if(!scene){
-      const current=hero.querySelector(".v448-approved-hero,.v444-coding-scene,.v435-coding-scene"),label=english()?"Meowde learning with headphones":"헤드폰을 쓰고 학습하는 Meowde";
-      const markup=`<div class="v444-coding-scene v448-approved-hero v449-coding-scene">${imageMarkup("coding","",label)}</div>`;
+      const current=hero.querySelector(".v448-approved-hero,.v444-coding-scene,.v435-coding-scene"),label=english()?"Meowde reading a book":"책을 읽는 Meowde";
+      const markup=`<div class="v444-coding-scene v448-approved-hero v449-coding-scene">${imageMarkup("reading","",label)}</div>`;
       if(current)current.outerHTML=markup;else (hero.querySelector(".hero-main")||hero).insertAdjacentHTML("afterbegin",markup);
       scene=hero.querySelector(".v449-coding-scene");
     }
     scene.querySelectorAll(".v449-character").forEach((node,index)=>{if(index)node.remove()});
-    const character=scene.querySelector(".v449-character");if(character)updateImage(character,"coding","",english()?"Meowde learning with headphones":"헤드폰을 쓰고 학습하는 Meowde");
+    const character=scene.querySelector(".v449-character");if(character)updateImage(character,"reading","",english()?"Meowde reading a book":"책을 읽는 Meowde");
   }
   function decorateBrand(){const mark=document.querySelector(".brand-mark");if(mark)mark.innerHTML=imageMarkup("base","v448-brand-cat","Meowde")}
   function level(){const current=window.MeowGrowth&&typeof MeowGrowth.stage==="function"?MeowGrowth.stage():null,stages=window.MeowGrowth&&Array.isArray(MeowGrowth.stages)?MeowGrowth.stages:[];return Math.max(1,stages.findIndex(item=>current&&item.id===current.id)+1)}

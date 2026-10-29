@@ -43,3 +43,39 @@ body:has(main#lab) .values-path button.primary,body:has(main#lab) button.primary
 body:has(main#lab) .choice[aria-pressed=true]{background:#F5DDE5!important;border-color:#B77F94!important;color:#38343A!important}
 body:has(main#lab) .meowde-shell-header,body:has(main#lab) main#lab{color:#38343A}
 @media(max-width:359px){body .map-unit-context{align-items:flex-start;flex-direction:column}}
+
+/* Final shared controls: legacy modules still contain fixed mint/yellow accents. */
+body .btn,body .btn.butter,body .btn.primary,
+body .primary:not(.console *),body .phase1-mini-progress i{
+  background:var(--meowde-pink)!important;color:var(--meowde-ink)!important;
+  border-color:#D9A7B9!important;box-shadow:none!important
+}
+body .btn.ghost,body .text-link,body .section-kicker,body .hint,
+body .program-input b,body .review-back button,body .learn-review-entry button{
+  color:var(--meowde-pink-strong)!important
+}
+body .btn.ghost,body .hint,body .learn-review-entry button,
+body .phase1-row-icon,body .lesson-badge,body .token,
+body .choice.sel,body .linebtn.sel,body .blank.filled{
+  background:var(--meowde-pink-soft)!important;border-color:#E7C9D5!important
+}
+body .hero,body .daily-card.daily-done,body .mistake-item,
+body .profile-card,body .v420-profile-hero{
+  background:linear-gradient(145deg,#FFFFFF,var(--meowde-pink-soft))!important;
+  border-color:var(--meowde-border)!important
+}
+body .feedback.ok,body:has(#lab) #practice .feedback.good,body .fix{
+  background:var(--meowde-pink-soft)!important;color:var(--meowde-pink-strong)!important;
+  border-color:#D9A7B9!important
+}
+body .phase1-mini-progress{background:#F0E5EB!important}
+body .phase1-home .phase1-deepen-card{padding:0}
+body .phase1-home .phase1-deepen-button{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;
+  text-decoration:none;color:var(--meowde-ink);padding:14px 15px;
+  min-height:80px;box-sizing:border-box
+}
+body .phase1-home .phase1-deepen-button b{font-size:14px;line-height:1.4}
+body .phase1-home .phase1-deepen-button small{font-size:11.5px;line-height:1.4}
+body .phase1-home .phase1-deepen-button:focus-visible{outline:3px solid var(--meowde-pink-strong);outline-offset:-3px}
+@media(max-width:360px){body .phase1-home .phase1-deepen-button{padding:12px;gap:6px}}

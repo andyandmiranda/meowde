@@ -80,6 +80,10 @@
   async function loadEnhancementsInOrder(){
     const results=[];
     for(const item of ENHANCEMENTS)results.push(await loadEnhancement(item));
+    // Legacy enhancement styles arrive later than the HTML theme link.
+    // Keep the existing shared theme last in the cascade without another fetch.
+    const theme=document.querySelector('link[href^="/assets/meowde-pink-unified.css"]');
+    if(theme)document.head.appendChild(theme);
     // Standalone practice links enter through /?tab=... . Apply the destination
     // once, after every enhancement has installed its final screen renderer.
     // Never infer a destination from saved lesson progress or reset that progress.
