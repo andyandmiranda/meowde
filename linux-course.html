@@ -7,7 +7,7 @@ body{margin:0;background:#fff;color:#272631;font:15px/1.6 "Pretendard Variable",
 </style></head><body><main class="app"><header class="top"><a class="crumb" href="/linux-home.html?tab=learn">← Linux 학습</a><span class="brand">MEOWDE</span></header>
 <section class="hero"><p class="level">LINUX · 정식 학습 과정</p><h1>개념부터 이해하고<br>난이도별 문제로 확인해요.</h1><p class="muted">강의자료의 개념 흐름을 따라가고, E/exercise·방탈출은 심화 실습에서 풀어요.</p></section>
 <section class="card"><b>12개 핵심 단원</b><p class="progress" id="course-progress"></p><div class="unit-grid" id="unit-grid"></div></section>
-<section class="card" id="lesson-card" aria-live="polite"></section>
+<p id="save-warning" class="feedback bad" role="status" aria-live="polite"></p><section class="card" id="lesson-card" aria-live="polite"></section>
 </main>
 <script>
 "use strict";
@@ -65,17 +65,18 @@ const U=[
 let state={version:1,unit:0,step:0,done:{}};try{const raw=localStorage.getItem(KEY);if(raw){const parsed=JSON.parse(raw);if(parsed&&parsed.version===1)state={...state,...parsed,done:parsed.done&&typeof parsed.done==="object"?parsed.done:{}}}}catch{}
 const requested=Number(new URLSearchParams(location.search).get("unit"));if(Number.isInteger(requested)&&requested>=1&&requested<=U.length)state.unit=requested-1;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch{return false}}
+function commitProgress(change){const previous=JSON.parse(JSON.stringify(state));change();if(save())return true;state=previous;const notice=document.getElementById("save-warning");if(notice)notice.textContent="진도를 저장하지 못했어요. 이전 진행 상태를 유지했어요. 저장 공간을 확인한 뒤 다시 시도해 주세요.";return false;}
 function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function renderGrid(){const grid=document.getElementById("unit-grid");grid.innerHTML=U.map((u,i)=>'<button data-unit="'+i+'" aria-current="'+(i===state.unit)+'"><b>'+(i+1)+'. '+esc(u[0])+'</b><small>'+(state.done[i]?'완료':'학습하기')+'</small></button>').join("");grid.querySelectorAll("button").forEach(b=>b.onclick=()=>{state.unit=Number(b.dataset.unit);state.step=0;save();render()});document.getElementById("course-progress").textContent=Object.keys(state.done).filter(k=>state.done[k]).length+" / "+U.length+"단원 완료";}
+function renderGrid(){const grid=document.getElementById("unit-grid");grid.innerHTML=U.map((u,i)=>'<button data-unit="'+i+'" aria-current="'+(i===state.unit)+'"><b>'+(i+1)+'. '+esc(u[0])+'</b><small>'+(state.done[i]?'완료':'학습하기')+'</small></button>').join("");grid.querySelectorAll("button").forEach(b=>b.onclick=()=>{if(commitProgress(()=>{state.unit=Number(b.dataset.unit);state.step=0;}))render()});document.getElementById("course-progress").textContent=Object.keys(state.done).filter(k=>state.done[k]).length+" / "+U.length+"단원 완료";}
 function render(){renderGrid();const u=U[state.unit],card=document.getElementById("lesson-card");const qIndex=state.step-1;let body='<span class="level">단원 '+(state.unit+1)+' / '+U.length+'</span><h2>'+esc(u[0])+'</h2><p>'+esc(u[1])+'</p><div class="stage"><span class="'+(state.step===0?'on':'')+'">개념</span><span class="'+(state.step===1?'on':'')+'">Lv1</span><span class="'+(state.step===2?'on':'')+'">Lv2</span><span class="'+(state.step===3?'on':'')+'">Lv3</span></div>';
 if(state.step===0){body+='<h3>핵심 개념</h3><p>'+esc(u[2])+'</p><pre class="code">'+esc(u[3])+'</pre><button class="primary" id="start-q">난이도별 문제 시작 →</button>';}
 else if(state.step>=1&&state.step<=3){const q=u[4][qIndex];body+='<span class="level">'+esc(q[0])+'</span><h3>'+esc(q[1])+'</h3><div class="answers">'+q[2].map((a,i)=>'<button data-answer="'+i+'">'+esc(a)+'</button>').join("")+'</div><p class="feedback" id="feedback"></p>';}
 else{body+='<h3>단원 완료 🎉</h3><p>개념과 Lv1~Lv3 확인 문제를 모두 통과했어요.</p><div class="foot-actions"><button class="secondary" id="review-unit">이 단원 다시 보기</button>'+(state.unit<U.length-1?'<button class="primary" id="next-unit">다음 단원 →</button>':'<button class="primary" id="go-practice">심화 실습 보기 →</button>')+'</div>';}
 card.innerHTML=body;
-document.getElementById("start-q")?.addEventListener("click",()=>{state.step=1;save();render()});
-card.querySelectorAll("[data-answer]").forEach(b=>b.onclick=()=>{const q=u[4][qIndex],feedback=document.getElementById("feedback");if(Number(b.dataset.answer)===q[3]){feedback.className="feedback good";feedback.textContent="정답! "+q[4];card.querySelectorAll("[data-answer]").forEach(x=>x.disabled=true);const next=document.createElement("button");next.className="primary";next.textContent=state.step<3?"다음 난이도 →":"단원 완료 →";next.onclick=()=>{state.step++;if(state.step===4)state.done[state.unit]=true;save();render()};feedback.after(next);}else{feedback.className="feedback bad";feedback.textContent="다시 생각해봐요. "+q[4];}});
-document.getElementById("review-unit")?.addEventListener("click",()=>{state.step=0;save();render()});
-document.getElementById("next-unit")?.addEventListener("click",()=>{state.unit++;state.step=0;save();render();window.scrollTo(0,0)});
+document.getElementById("start-q")?.addEventListener("click",()=>{if(commitProgress(()=>{state.step=1;}))render()});
+card.querySelectorAll("[data-answer]").forEach(b=>b.onclick=()=>{const q=u[4][qIndex],feedback=document.getElementById("feedback");if(Number(b.dataset.answer)===q[3]){feedback.className="feedback good";feedback.textContent="정답! "+q[4];card.querySelectorAll("[data-answer]").forEach(x=>x.disabled=true);const next=document.createElement("button");next.className="primary";next.textContent=state.step<3?"다음 난이도 →":"단원 완료 →";next.onclick=()=>{if(commitProgress(()=>{state.step++;if(state.step===4)state.done[state.unit]=true;}))render()};feedback.after(next);}else{feedback.className="feedback bad";feedback.textContent="다시 생각해봐요. "+q[4];}});
+document.getElementById("review-unit")?.addEventListener("click",()=>{if(commitProgress(()=>{state.step=0;}))render()});
+document.getElementById("next-unit")?.addEventListener("click",()=>{if(commitProgress(()=>{state.unit++;state.step=0;})){render();window.scrollTo(0,0)}});
 document.getElementById("go-practice")?.addEventListener("click",()=>location.href="/linux-crash-course.html?view=concept");
 }
 render();
