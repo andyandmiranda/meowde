@@ -26,3 +26,30 @@ body .tabbar button:focus-visible,body .meowde-lab-tabbar a:focus-visible,body.l
 /* Match the root app's 24px icon SVG, including stroke width and selected state. */
 .meowde-tab-icon{width:24px;height:24px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 body.linux-five-tabs .top .meowde-compact-subject{margin-left:auto}
+
+
+/* Canonical controls: every subject surface uses the same top actions and bottom navigation geometry. */
+body .meowde-shell-header .meowde-top-actions,
+body.linux-five-tabs .top .meowde-top-actions,
+body .top.meowde-canonical-top .meowde-top-actions{
+  display:flex;align-items:center;justify-content:flex-end;gap:6px;flex:none;margin-left:auto
+}
+body .meowde-shell-header .meowde-shell-subject,
+body.linux-five-tabs .top .meowde-compact-subject,
+body .top.meowde-canonical-top .meowde-root-subject,
+body .meowde-shell-language,
+body .top.meowde-canonical-top .lang{
+  box-sizing:border-box;min-height:34px;border:1px solid var(--meowde-shell-line);border-radius:999px;
+  background:#fff;color:var(--meowde-shell-ink);padding:5px 8px;
+  font:750 12px/1.35 "Pretendard Variable",Pretendard,system-ui,sans-serif
+}
+body .meowde-shell-language{min-width:42px}
+body .meowde-shell-language[aria-disabled="true"]{opacity:.62;cursor:default}
+body .meowde-shell-header .meowde-shell-subject:focus-visible,
+body.linux-five-tabs .top .meowde-compact-subject:focus-visible,
+body .top.meowde-canonical-top .meowde-root-subject:focus-visible,
+body .meowde-shell-language:focus-visible,
+body .top.meowde-canonical-top .lang:focus-visible{outline:3px solid #80556A;outline-offset:2px}
+body .meowde-lab-tabbar,body.linux-five-tabs .linux-tabbar,body .tabbar{
+  border-top-color:#EEE7EC;background:rgba(255,255,255,.98)
+}

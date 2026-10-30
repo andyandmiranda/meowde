@@ -28,7 +28,7 @@ if(brand&&!header.querySelector('.meowde-compact-subject')){
  const pending=['데이터 분석','딥러닝','AI 로보틱스'].map(label=>{const option=document.createElement('option');option.textContent=label+' · 준비 중';option.disabled=true;return option;});
  selector.append(python,linux,ml,...pending);selector.value='linux';
  selector.addEventListener('change',()=>{if(selector.value==='python')location.assign('/?tab=map');else if(selector.value==='ml')location.assign('/ml-foundations.html');});
- brand.append(selector);
+ let actions=header.querySelector('.meowde-top-actions');if(!actions){actions=document.createElement('div');actions.className='meowde-top-actions';header.append(actions);}actions.append(selector);
 }
 
 
@@ -52,7 +52,7 @@ const nav=document.createElement('nav');nav.className='linux-tabbar';nav.setAttr
 const tabs=[['home','홈','⌂','/linux-home.html?tab=home'],['learn','학습','◫','/linux-home.html?tab=learn'],['deepen','심화','‹/›','/linux-crash-course.html?view=concept'],['together','함께','✧','/together.html?subject=linux'],['my','마이','♧','/linux-home.html?tab=my']];
 for(const [id,label,icon,href] of tabs){const a=document.createElement('a');a.href=href;a.dataset.tab=id;a.setAttribute('aria-label',label);const symbol=document.createElement('span');symbol.textContent=icon;symbol.setAttribute('aria-hidden','true');a.append(symbol,document.createTextNode(label));nav.append(a);}
 document.body.append(nav);document.body.classList.add('linux-five-tabs');
-const sharedSubjects=document.createElement('script');sharedSubjects.src='/assets/meowde-subject-selector.js?v=1';document.body.append(sharedSubjects);
+const sharedSubjects=document.createElement('script');sharedSubjects.src='/assets/meowde-subject-selector.js?v=3';document.body.append(sharedSubjects);
 const commonIcons=document.createElement('script');commonIcons.src='/assets/app-shell-icons.js?v=1';document.body.append(commonIcons);
 function select(id){active=id;nav.querySelectorAll('a').forEach(a=>{if(a.dataset.tab===id)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});}
 if(active==='my'&&path.endsWith('/linux-home.html')){

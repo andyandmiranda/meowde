@@ -16,3 +16,14 @@ test('Linux pages retain per-course routes and My screen header while using same
  const css=read('assets/app-shell-canonical.css');assert.match(css,/grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);assert.match(css,/\.meowde-tab-icon/);
  assert.doesNotMatch(css,/localStorage|sessionStorage/);
 });
+
+test('shared subject controller preserves tab meaning and normalizes top controls',()=>{
+ const js=read('assets/meowde-subject-selector.js');
+ for(const subject of ['python','linux','ml'])assert.ok(js.includes(subject));
+ for(const tab of ['home','learn','deepen','together','my'])assert.ok(js.includes(tab));
+ assert.match(js,/meowde-top-actions/);
+ assert.match(js,/meowde-shell-language/);
+ assert.match(js,/routeFor\(choice\[0\]\)/);
+ const shell=read('assets/shared-five-tab-shell.css');
+ assert.doesNotMatch(shell,/#247b61|#e7f8f0|#bdebd8/i);
+});
