@@ -52,7 +52,8 @@ test('invalid selection and loading execution cannot replace a live session',()=
 
 test('early serializers retain future lesson 60 and archived places until curriculum loads',()=>{
  const html=fs.readFileSync('index.html','utf8');
- const saveStart=html.indexOf('function save(');\n const helper=html.slice(html.indexOf('function preserveDeferredLessonState('),saveStart);
+ const saveStart=html.indexOf('function save(');
+ const helper=html.slice(html.indexOf('function preserveDeferredLessonState('),saveStart);
  const original={lang:'ko',lessonIndex:59,idx:1,queue:[{id:'late',type:'concept'}, {id:'late-q',type:'predict'}],resumeKey:'lesson-60'};
  const archives={old:{lessonIndex:0,write:'keep'}};
  const c={rawState:{inProgress:original,lessonResumes:archives},lessons:()=>Array(30)};vm.createContext(c);vm.runInContext(helper,c);
