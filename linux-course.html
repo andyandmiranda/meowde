@@ -63,7 +63,7 @@ const U=[
 ["Lv3","Shell Script와 자동화의 관계는?",["반복 명령을 스크립트로 묶어 재사용","서로 관련 없음","스크립트는 파일 검색만 가능"],0,"스크립트는 반복 작업 자동화의 기본 도구예요."]]]
 ];
 let state={version:1,unit:0,step:0,done:{}};try{const raw=localStorage.getItem(KEY);if(raw){const parsed=JSON.parse(raw);if(parsed&&parsed.version===1)state={...state,...parsed,done:parsed.done&&typeof parsed.done==="object"?parsed.done:{}}}}catch{}
-const requested=Number(new URLSearchParams(location.search).get("unit"));if(Number.isInteger(requested)&&requested>=1&&requested<=U.length)state.unit=requested-1;
+const requested=Number(new URLSearchParams(location.search).get("unit"));if(Number.isInteger(requested)&&requested>=1&&requested<=U.length){const selectedUnit=requested-1;if(state.unit!==selectedUnit){state.unit=selectedUnit;state.step=0;}else state.unit=selectedUnit;}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch{return false}}
 function commitProgress(change){const previous=JSON.parse(JSON.stringify(state));change();if(save())return true;state=previous;const notice=document.getElementById("save-warning");if(notice)notice.textContent="진도를 저장하지 못했어요. 이전 진행 상태를 유지했어요. 저장 공간을 확인한 뒤 다시 시도해 주세요.";return false;}
 function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
