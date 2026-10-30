@@ -53,14 +53,18 @@ test("Linux learning path declares honest L0-L3 goals and one-stage UI",()=>{
  assert.match(css,/\.linux-stage-path/);
 });
 
-test("Linux entry keeps one primary action and hides secondary routes by default",()=>{
- const home=fs.readFileSync(path.join(root,"linux-home.html"),"utf8");
- assert.equal((home.match(/class="primary"/g)||[]).length,1);
- assert.match(home,/<details class="more-links">/);
- assert.doesNotMatch(home,/meowde-subject-overview/);
+test("Linux entry mirrors Python home, learn map and one-mode deepen hierarchy",()=>{
+ const home=fs.readFileSync(path.join(root,"assets/linux-home-view.js"),"utf8");
+ assert.match(home,/오늘의 학습/);
+ assert.match(home,/현재 과정/);
+ assert.match(home,/심화 학습/);
+ const map=fs.readFileSync(path.join(root,"assets/linux-learning-map.js"),"utf8");
+ assert.match(map,/mapHead\.className='map-head'/);
+ assert.match(map,/classList\.add\('trail'\)/);
+ assert.doesNotMatch(map,/linux-region-picker|selectedGroup/);
  const library=fs.readFileSync(path.join(root,"assets/linux-library-view.js"),"utf8");
- assert.doesNotMatch(library,/library-mode/);
  assert.match(library,/all\.forEach\(x=>x\.hidden=true\)/);
+ assert.match(library,/linux-deepen-tabs/);
  assert.match(library,/if\(mode===\"concept\"\)practiceHub\.hidden=false/);
  assert.match(library,/if\(mode===\"terminal\"&&terminal\)terminal\.hidden=false/);
 });
@@ -70,8 +74,8 @@ test("Linux navigation uses the approved five-tab product structure",()=>{
  for(const label of ["홈","학습","심화","함께","마이"])assert.match(source,new RegExp("'"+label+"'"));
  assert.doesNotMatch(source,/\['practice','실습'/);
  assert.doesNotMatch(source,/\['review','복습'/);
- for(const route of ['/linux-home.html?tab=home','/linux-home.html?tab=learn','/linux-crash-course.html?view=concept','/together.html?subject=linux','/linux-home.html?tab=my'])assert.ok(source.includes(route),'missing subject-aware tab '+route);
- assert.doesNotMatch(source,/\['my','마이','♧','\/\?tab=my'\]/);
+ for(const route of ['/linux-home.html?tab=home','/linux-home.html?tab=learn','/linux-crash-course.html?view=concept','/together.html?subject=linux','/?tab=my&subject=linux'])assert.ok(source.includes(route),'missing subject-aware tab '+route);
+ assert.doesNotMatch(source,/\/linux-home\.html\?tab=my/);
  assert.match(source,/previous=\{\.\.\.previous,version:1/);
  const pathSource=fs.readFileSync(path.join(root,"assets/linux-course-path.js"),"utf8");
  assert.match(pathSource,/saved=\{\.\.\.saved,index,done,stageByLesson:stages\}/);

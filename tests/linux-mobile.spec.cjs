@@ -2,20 +2,19 @@ const {test,expect}=require("playwright/test");
 const base=process.env.MEOWDE_BASE_URL||"http://127.0.0.1:4173";
 async function openChallenge(page){await page.getByRole("button",{name:"예제 보기 →"}).click();await page.getByRole("button",{name:"직접 연습하기 →"}).click();const input=page.getByRole("textbox",{name:"연습 명령어"});await input.fill(await input.getAttribute("placeholder"));await page.getByRole("button",{name:"명령어 확인"}).click();await page.getByRole("button",{name:"도전 문제 풀기 →"}).click();}
 test.use({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
-test("focused lesson from home to independent transfer and completion",async({page})=>{
+test("Linux default home mirrors Python app hierarchy and enters the learning map",async({page})=>{
  const errors=[];page.on("pageerror",e=>errors.push(e.message));
- await page.goto(base+"/linux-home.html");await expect(page.locator(".primary")).toHaveCount(1);
- await expect(page.getByRole("img",{name:"헤드폰을 쓴 Meowde"})).toBeVisible();
- await page.getByRole("link",{name:"첫 학습 시작하기"}).click();
- const action=page.locator("#lesson-action");await expect(page.locator("#lesson-input")).toHaveCount(0);
- await action.click();await action.click();await expect(page.locator("#lesson-title")).toBeFocused();
- const input=page.getByRole("textbox",{name:"명령어 입력"});
- await input.fill("mkdir wrong");await action.click();await expect(page.locator("#step-label")).toContainText("3 / 4");
- await page.getByRole("button",{name:"조금 도와줘"}).click();await expect(page.locator("#lesson-feedback")).toContainText("mkdir");
- await input.fill("mkdir training");await input.press("Enter");await expect(page.locator("#lesson-feedback")).toContainText("폴더가 생겼어요");await action.click();
- await input.fill("mkdir travel");await action.click();await action.click();
- await expect(page.locator("#lesson-title")).toHaveText("첫 폴더 만들기, 성공!");await expect(page.locator("#lesson-progress")).toHaveAttribute("aria-valuenow","4");
- await action.click();await expect(page.getByRole("heading",{name:"단계별 학습"})).toBeVisible();expect(errors).toEqual([]);
+ await page.goto(base+"/linux-home.html");
+ await expect(page.getByRole("heading",{name:/Linux와 Ubuntu|경로와 디렉터리|파일과 폴더 관리|파일 읽기와 편집|검색|파이프와 리디렉션|사용자·그룹·권한|프로세스|패키지|Shell Script와 변수|조건문과 반복문|Network와 자동화/})).toBeVisible();
+ await expect(page.getByText("현재 과정",{exact:true})).toBeVisible();
+ await expect(page.getByText("심화 학습",{exact:true})).toBeVisible();
+ const nav=page.getByRole("navigation",{name:"메인 메뉴"});
+ await expect(nav.getByRole("link")).toHaveCount(5);
+ await nav.getByRole("link",{name:"학습"}).click();
+ await expect(page).toHaveURL(/linux-home\.html\?tab=learn/);
+ await expect(page.getByRole("heading",{name:"학습 지도"})).toBeVisible();
+ await expect(page.locator("#linux-map-list .linux-python-node")).toHaveCount(12);
+ expect(errors).toEqual([]);
 });
 test("blank and unsupported inputs cannot advance; back remains usable",async({page})=>{
  await page.goto(base+"/linux-start.html");const action=page.locator("#lesson-action");await action.click();await action.click();
@@ -40,19 +39,17 @@ test("quiz progress survives reload and opens the selected practice tool",async(
  await page.goto(base+"/linux-crash-course.html");await openChallenge(page);await page.locator("#lesson .answers button").first().click();await page.reload();await expect(page.locator("#progress")).toContainText("1 / 9");
  await page.goto(base+"/linux-crash-course.html?view=terminal");await expect(page.locator("#sim-input")).toBeVisible();await expect(page.locator("#lesson")).toBeHidden();
 });
-test("four-module map keeps the selected module through lesson return and reload",async({page})=>{
+test("continuous Linux map keeps all 12 lessons and returns to the same map",async({page})=>{
  await page.goto(base+"/linux-home.html?tab=learn");
- const module=page.getByRole("button",{name:"4. Shell과 운영"});
- await module.click();
- await expect(page).toHaveURL(/group=4/);
+ await expect(page.locator("#linux-map-list .linux-python-node")).toHaveCount(12);
  await page.getByRole("link",{name:/Shell Script와 변수/}).click();
  await expect(page).toHaveURL(/linux-course\.html\?unit=10/);
  await page.locator("a.crumb").click();
- await expect(page).toHaveURL(/linux-home\.html\?tab=learn&group=4/);
+ await expect(page).toHaveURL(/linux-home\.html\?tab=learn/);
  await page.reload();
- await expect(page.getByRole("button",{name:"4. Shell과 운영"})).toHaveAttribute("aria-pressed","true");
- await expect(page.getByRole("link",{name:/Shell Script와 변수/})).toBeVisible();
- await expect(page.getByRole("link",{name:/Linux와 Ubuntu/})).toHaveCount(0);
+ await expect(page.locator("#linux-map-list .linux-python-node")).toHaveCount(12);
+ await expect(page.getByRole("link",{name:/Linux와 Ubuntu/})).toBeVisible();
+ await expect(page.getByRole("link",{name:/Network와 자동화/})).toBeVisible();
 });
 for(const width of [320,375,390,768])test("screens fit viewport "+width,async({page})=>{
  await page.setViewportSize({width,height:844});for(const route of ["linux-home.html","linux-start.html","robotics.html","content-notice.html"]){await page.goto(base+"/"+route);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await expect(page.getByText(/NVIDIA AI Campus/)).toHaveCount(0);}
