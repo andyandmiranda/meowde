@@ -6,7 +6,7 @@ test('course catalog only links to existing lessons, planned tracks are disabled
  const html=fs.readFileSync('subjects.html','utf8');
  for(const destination of ['/\\?tab=map','/linux-home.html\\?tab=learn','/ml-foundations.html'])assert.match(html,new RegExp(destination));
  for(const title of ['Python','Linux','데이터 분석','머신러닝','딥러닝','AI 로보틱스'])assert.match(html,new RegExp('<h2>'+title+'</h2>'));
- assert.equal((html.match(/class="course pending"/g)||[]).length,3);
+ assert.equal((html.match(/class="course pending meowde-subject-card"/g)||[]).length,3);
  assert.match(html,/준비 중 · 학습 비활성/);
 });
 test('ML intro is reachable with shared five-tab and small subject picker',()=>{
