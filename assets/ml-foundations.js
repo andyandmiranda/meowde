@@ -21,14 +21,56 @@ catch{storageIssue="저장 공간 문제로 완료 기록을 저장하지 못했
 let current=units.findIndex(x=>x.id===new URLSearchParams(location.search).get("unit"));if(current<0)current=0;
 const nav=document.getElementById("units"),area=document.getElementById("lesson");
 function render(){
-nav.replaceChildren();units.forEach((u,i)=>{const b=document.createElement("button");b.textContent=u.title+(saved.done.includes(u.id)?" ✓":"");b.type="button";b.setAttribute("aria-current",String(i===current));b.onclick=()=>{current=i;render()};nav.append(b)});
+nav.replaceChildren();
+units.forEach((u,i)=>{
+ const b=document.createElement("button");
+ b.textContent=u.title+(saved.done.includes(u.id)?" ✓":"");
+ b.type="button";b.setAttribute("aria-current",String(i===current));
+ b.onclick=()=>{current=i;render()};nav.append(b);
+});
 const u=units[current];area.replaceChildren();
-const h=document.createElement("h2");h.textContent=u.title;area.append(h);
-for(const [name,value] of [["선수 개념",u.prereq],["핵심 개념",u.concept],["손으로 따라가기",u.trace],["자주 하는 실수",u.mistake]]){const p=document.createElement("p");const strong=document.createElement("strong");strong.textContent=name+" · ";p.append(strong,document.createTextNode(value));area.append(p);if(name==="핵심 개념"){const pre=document.createElement("pre");pre.textContent=u.code;area.append(pre);}}
-const prompt=document.createElement("h3");prompt.textContent=u.question;area.append(prompt);
-const choices=document.createElement("div");choices.className="choices";const feedback=document.createElement("p");feedback.id="feedback";feedback.setAttribute("role","status");
-u.choices.forEach((choice,i)=>{const b=document.createElement("button");b.textContent=choice;b.onclick=()=>{const answer=grade(u.id,i);feedback.className=answer.correct?"good":"bad";feedback.textContent=(answer.correct?"정답! ":"다시 생각해 봐. ")+"선택: "+answer.selected+"\n정답: "+answer.answer+"\n이유: "+answer.reason+"\n응용: "+answer.next;if(answer.correct&&!saved.done.includes(u.id)){persist({...saved,done:[...saved.done,u.id]});}else if(!answer.correct)status.textContent=storageIssue;if(answer.correct&&saved.done.includes(u.id))nav.children[current].textContent=u.title+" ✓";};choices.append(b)});
-area.append(choices,feedback);status.textContent=storageIssue||"완료 "+saved.done.length+" / 4 · 각 단원을 자유롭게 선택할 수 있어요.";
+area.className="meowde-subject-card ml-lesson-card";
+
+const pass=document.createElement("p");pass.className="ml-pass-label";pass.textContent="핵심만 보기";
+const h=document.createElement("h2");h.textContent=u.title;
+const concept=document.createElement("p");concept.className="ml-key-idea";concept.textContent=u.concept;
+const pre=document.createElement("pre");pre.textContent=u.code;
+area.append(pass,h,concept,pre);
+
+const more=document.createElement("details");more.className="ml-more";
+const summary=document.createElement("summary");summary.textContent="더 알고 싶을 때";
+more.append(summary);
+for(const [name,value] of [["먼저 알면 좋아요",u.prereq],["한 번 더 따라가기",u.trace],["자주 하는 실수",u.mistake]]){
+ const p=document.createElement("p"),strong=document.createElement("strong");strong.textContent=name+" · ";
+ p.append(strong,document.createTextNode(value));more.append(p);
+}
+area.append(more);
+
+const prompt=document.createElement("h3");prompt.className="ml-question";prompt.textContent=u.question;area.append(prompt);
+const choices=document.createElement("div");choices.className="choices";
+const feedback=document.createElement("p");feedback.id="feedback";feedback.setAttribute("role","status");
+const action=document.createElement("div");action.className="ml-next-action";
+u.choices.forEach((choice,i)=>{
+ const b=document.createElement("button");b.textContent=choice;
+ b.onclick=()=>{
+  const answer=grade(u.id,i);
+  feedback.className=answer.correct?"good":"bad";
+  feedback.textContent=answer.correct?"정답이에요. "+answer.reason:"다시 해봐요. "+answer.reason;
+  action.replaceChildren();
+  if(answer.correct){
+   if(!saved.done.includes(u.id)){persist({...saved,done:[...saved.done,u.id]});}
+   if(saved.done.includes(u.id))nav.children[current].textContent=u.title+" ✓";
+   const transfer=document.createElement("p");transfer.className="ml-transfer";transfer.textContent="응용 · "+answer.next;action.append(transfer);
+   const next=document.createElement("button");next.type="button";next.className="ml-next";
+   next.textContent=current<units.length-1?"다음 단원 →":"학습 마치기";
+   next.onclick=()=>{if(current<units.length-1){current++;render();}else location.assign("/ml-foundations.html?tab=my");};
+   action.append(next);
+  }else status.textContent=storageIssue;
+ };
+ choices.append(b);
+});
+area.append(choices,feedback,action);
+status.textContent=storageIssue||"완료 "+saved.done.length+" / 4 · 각 단원을 자유롭게 선택할 수 있어요.";
 }
 render();
 })(typeof window!=="undefined"?window:globalThis);
