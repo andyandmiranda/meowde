@@ -150,7 +150,7 @@ test('practice task surfaces use distinct shared styles without changing storage
 
 test('Linux crash course uses shared white and pink UI in Chromium and WebKit',async({page})=>{
  await page.goto(base+'/linux-crash-course.html');
- await expect(page.getByRole('navigation',{name:'학습 화면 이동'}).getByRole('link',{name:'Linux 학습 지도'})).toHaveAttribute('href','/linux-home.html?tab=learn');
+ await expect(page.getByRole('navigation',{name:'학습 화면 이동'})).toHaveCount(0);
  const nav=page.getByRole('navigation',{name:'메인 메뉴'});
  await expect(nav.getByRole('link')).toHaveCount(5);
  await expect(nav.getByRole('link',{name:'심화'})).toHaveAttribute('aria-current','page');
