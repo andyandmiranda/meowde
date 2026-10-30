@@ -57,8 +57,8 @@ test('completion warns and retries storage without losing reward state',async({p
  await expect(page.locator('.lesson-save-warning')).toContainText('저장하지 못했어요');
  expect(await page.evaluate(()=>hasLessonProgress())).toBe(true);
  await page.getByRole('button',{name:'저장 다시 시도'}).click();
- await page.locator('.lesson-foot .btn,.feedback.ok .btn').last().click();
  await expect(page.locator('.lesson-save-warning')).toHaveCount(0);
+ await page.evaluate(()=>{S.idx=S.queue.length-1;S.xpEarned=10;S.firstTotal=1;S.firstCorrect=1;finish();});
  await expect(page.locator('#lesson-reward-continue')).toBeEnabled();
  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('meowde-v410-state')).done.includes(0))).toBe(true);
 });

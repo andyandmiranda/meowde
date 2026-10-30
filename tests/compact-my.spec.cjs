@@ -1,6 +1,6 @@
 const {test,expect}=require('playwright/test');
 const base=process.env.MEOWDE_BASE_URL||'http://127.0.0.1:4173';
-test('compact My retains consistent tabs, character access and learning records',async({page})=>{
+test('compact My retains current profile, character access and learning records',async({page})=>{
  await page.setViewportSize({width:375,height:740});
  await page.goto(base+'/');
  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
@@ -8,19 +8,14 @@ test('compact My retains consistent tabs, character access and learning records'
  await expect(page.getByRole('heading',{name:'마이',exact:true})).toBeVisible();
  const before=await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('meowde-v410-state'));return {xp:s.xp,done:s.done,mistakes:s.mistakes,next:s.next}});
  expect(await page.locator('.tabbar button').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('aria-label')))).toEqual(['홈','학습','심화','함께','마이']);
- for(const name of ['학습 숙련도','학습 인사이트','다음 행동','최근 7일'])await expect(page.getByRole('heading',{name,exact:true})).toHaveCount(0);
- await expect(page.locator('.v420-my-summary')).toBeVisible();
- await expect(page.locator('.v420-my-summary > div')).toHaveCount(3);
- await expect(page.getByRole('heading',{name:'나의 Meowde',exact:true})).toBeVisible();
- await expect(page.getByRole('heading',{name:'나의 업적',exact:true})).toBeVisible();
- await expect(page.locator('.v420-my-companion')).toHaveCount(2);
- await expect(page.locator('.v420-my-history')).not.toHaveAttribute('open','');
- await expect(page.locator('.v420-compact-settings')).toHaveCount(0);
- await expect(page.getByRole('button',{name:/언어 · 한국어|Language · English/})).toHaveCount(0);
- await expect(page.locator('.top button.lang')).toHaveCount(0);
+ await expect(page.locator('.my-progress-card')).toBeVisible();
+ await expect(page.getByRole('heading',{name:'최근 7일',exact:true})).toBeVisible();
+ await expect(page.locator('.my-records')).toBeVisible();
+ await expect(page.locator('.my-settings')).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
- const characterChoices=page.getByRole('group',{name:'캐릭터 모습 선택',exact:true});
- await expect(characterChoices.getByRole('button')).toHaveCount(6);
+ await page.getByText('설정',{exact:true}).click();
+ await page.getByRole('button',{name:/캐릭터 바꾸기/}).click();
+ await expect(page.getByRole('group',{name:'캐릭터 모습 선택',exact:true}).getByRole('button')).toHaveCount(6);
  await page.getByRole('button',{name:'학습',exact:true}).last().click();
  await page.reload();
  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');

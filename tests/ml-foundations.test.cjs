@@ -21,7 +21,7 @@ test("ML learning storage is isolated and linked from Python lab",()=>{
  const api=load();
  assert.equal(api.KEY,"meowde-ml-foundations-v1");
  const html=fs.readFileSync(path.join(root,"python-lab.html"),"utf8");
- assert.match(html,/value="ml">ML 입문<\/option>/);
+ assert.match(html,/value="ml">머신러닝<\/option>/);
  assert.match(html,/location\.assign\(\x27\/ml-foundations\.html\x27\)/);
  const entry=fs.readFileSync(path.join(root,"ml-foundations.html"),"utf8");
  assert.match(entry,/assets\/ml-foundations\.js/);
