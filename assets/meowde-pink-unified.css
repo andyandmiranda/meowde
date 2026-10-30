@@ -136,3 +136,6 @@ body #status{color:var(--meowde-pink-strong)!important}
 body .together-main button.primary,body .together-main a.primary{
   background:var(--meowde-pink)!important;color:var(--meowde-ink)!important
 }
+
+/* Canonical home CTA must stay within the approved muted pink palette. */
+body .phase1-home .btn,body .phase1-home .primary,body .phase1-home button[class*="primary"],body .phase1-home a[class*="primary"]{background:#F5DDE5!important;color:#38343A!important;border-color:#D9A7B9!important;box-shadow:none!important}

@@ -34,7 +34,7 @@ if(header&&brand&&!header.querySelector('.meowde-linux-mark')){
  const mark=document.createElement('img');mark.className='meowde-linux-mark';mark.src='/assets/meowde-approved-base.svg?v=450';mark.alt='';
  const name=document.createElement('span');name.className='meowde-linux-name';
  const title=document.createElement('a');title.className='meowde-linux-title';title.href='/linux-home.html?tab=home';title.textContent='Meowde';
- const subtitle=document.createElement('small');subtitle.className='meowde-linux-subtitle';subtitle.textContent='Linux · 학습';
+ const subtitle=document.createElement('small');subtitle.className='meowde-linux-subtitle';subtitle.textContent=path.endsWith('/linux-crash-course.html')||path.endsWith('/linux-review.html')?'Linux · 심화':path.endsWith('/linux-home.html')&&params.get('tab')==='home'?'Linux':'Linux · 학습';
  name.append(title,subtitle);brand.insertBefore(name,brand.firstChild);brand.insertBefore(mark,name);
 }
 if(!document.querySelector('link[href^="/assets/app-shell-canonical.css"]')){
@@ -47,7 +47,7 @@ const nav=document.createElement('nav');nav.className='linux-tabbar';nav.setAttr
 const tabs=[['home','홈','⌂','/linux-home.html?tab=home'],['learn','학습','◫','/linux-home.html?tab=learn'],['deepen','심화','‹/›','/linux-crash-course.html?view=concept'],['together','함께','✧','/together.html?subject=linux'],['my','마이','♧','/linux-home.html?tab=my']];
 for(const [id,label,icon,href] of tabs){const a=document.createElement('a');a.href=href;a.dataset.tab=id;a.setAttribute('aria-label',label);const symbol=document.createElement('span');symbol.textContent=icon;symbol.setAttribute('aria-hidden','true');a.append(symbol,document.createTextNode(label));nav.append(a);}
 document.body.append(nav);document.body.classList.add('linux-five-tabs');
-const sharedSubjects=document.createElement('script');sharedSubjects.src='/assets/meowde-subject-selector.js?v=1';document.body.append(sharedSubjects);
+const sharedSubjects=document.createElement('script');sharedSubjects.src='/assets/meowde-subject-selector.js?v=2';document.body.append(sharedSubjects);
 const commonIcons=document.createElement('script');commonIcons.src='/assets/app-shell-icons.js?v=1';document.body.append(commonIcons);
 function select(id){active=id;nav.querySelectorAll('a').forEach(a=>{if(a.dataset.tab===id)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});}
 if(active==='my'&&path.endsWith('/linux-home.html')){
