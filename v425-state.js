@@ -94,11 +94,32 @@
     S.activityDates=Array.isArray(S.activityDates)?S.activityDates:[];
   }
 
+  function deferredIsPersisted(state){
+    if(!state||typeof state!=="object")return !hasDeferredProgress();
+    if(deferredProgress.done.some(index=>!Array.isArray(state.done)||!state.done.includes(index)))return false;
+    if(deferredProgress.next!==null&&Number(state.next)!==deferredProgress.next)return false;
+    if(deferredProgress.unit!==null&&Number(state.unit)!==deferredProgress.unit)return false;
+    if(deferredProgress.inProgress){
+      const stored=state.inProgress;
+      if(!stored||Number(stored.lessonIndex)!==Number(deferredProgress.inProgress.lessonIndex)||Number(stored.idx)!==Number(deferredProgress.inProgress.idx))return false;
+    }
+    return true;
+  }
+
   function safeSave(){
     normalizeRuntimeState();
 
     try{
       if(baseSave(preparePersistedState)===false)throw new Error("Primary lesson progress save failed");
+      // Some legacy base saves ignore transform arguments. Verify the committed
+      // record and patch it only when deferred fields were not carried through.
+      if(hasDeferredProgress()){
+        const raw=localStorage.getItem(STORAGE_KEY);
+        const stored=raw?JSON.parse(raw):{};
+        if(!deferredIsPersisted(stored)){
+          localStorage.setItem(STORAGE_KEY,JSON.stringify(preparePersistedState(stored&&typeof stored==="object"?stored:{})));
+        }
+      }
       // The primary record is the commit boundary. An optional backup must not
       // report a committed reward as failed and trigger an in-memory rollback.
       try{localStorage.setItem(BACKUP_KEY,localStorage.getItem(STORAGE_KEY))}
@@ -135,6 +156,7 @@
       deferredProgress.unit=null;
       changed=true;
     }
+    let restoredDeferredLesson=false;
     if(deferredProgress.inProgress){
       const progress=deferredProgress.inProgress;
       const lessonIndex=integer(progress.lessonIndex,-1,-1,MAX_DEFERRED_INDEX);
@@ -146,12 +168,16 @@
         if(Object.prototype.hasOwnProperty.call(progress,"mode"))S.v414Mode=progress.mode||"";
         if(Object.prototype.hasOwnProperty.call(progress,"dailyKey"))S.v414DailyKey=progress.dailyKey||"";
         if(Object.prototype.hasOwnProperty.call(progress,"mistakeId"))S.v414MistakeId=progress.mistakeId||"";
-        deferredProgress.inProgress=null;
+        // Keep the exact stored lesson snapshot until the first restore save commits.
+        restoredDeferredLesson=true;
         changed=true;
       }
     }
 
-    if(changed)safeSave();
+    if(changed){
+      const saved=safeSave();
+      if(saved&&restoredDeferredLesson)deferredProgress.inProgress=null;
+    }
     return changed;
   }
 
