@@ -45,6 +45,7 @@ body.linux-five-tabs,body.linux-five-tabs .shell,body.linux-five-tabs .app{backg
 @media(prefers-reduced-motion:reduce){.linux-journey-stop:nth-child(n){transform:none}}
 
 body.linux-map-page,body.linux-map-page .shell,body.linux-map-page #linux-learning-map{background:#fff}
+.linux-home-dashboard,.linux-my-dashboard{padding:4px 18px 96px}.linux-home-intro{display:flex;align-items:center;gap:14px;margin:8px 0 16px}.linux-home-intro img{width:64px;height:68px;object-fit:contain;flex:none}.linux-home-intro h1{margin:2px 0 0!important;font-size:27px!important}.linux-home-intro .eyebrow{margin:0}.linux-home-card,.linux-my-card{padding:20px!important;margin:12px 0!important}.linux-home-card h2,.linux-my-card h2{margin:8px 0}.linux-home-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.linux-home-actions a{display:flex;align-items:center;justify-content:center}.linux-my-dashboard>h1{margin-bottom:6px}.linux-settings-link{display:flex;justify-content:center;margin-top:12px}.linux-source-list .linux-source-card{display:block;min-height:0;padding:0}.linux-source-list .linux-source-card summary{padding:14px 16px;cursor:pointer}.linux-source-list .linux-source-card p,.linux-source-list .linux-source-card em{margin:0;padding:0 16px 12px}.linux-source-list .linux-source-card:not([open]) p,.linux-source-list .linux-source-card:not([open]) em{display:none}
 
 /* Compact mobile route: one tappable stop, less scrolling, same saved progress. */
 body.linux-map-page #linux-learning-map{padding:16px 14px;border-radius:20px;box-shadow:none}

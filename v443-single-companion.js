@@ -190,7 +190,7 @@
     const current=runtimeState();
     const canonicalSurface=current&&["home","map","review","profile","achievements","room","my"].includes(current.screen);
     if(!canonicalSurface)normalizeNavigation(root);
-    document.documentElement.dataset.companionSystem="single";document.documentElement.dataset.navigation="phase1-five-tabs";document.documentElement.dataset.coachMode=currentCoachMode().id;
+    document.documentElement.dataset.companionSystem="single";document.documentElement.dataset.phase3CompanionHub="ordered";document.documentElement.dataset.navigation="phase1-five-tabs";document.documentElement.dataset.coachMode=currentCoachMode().id;
   }
   function queueDecoration(root=document){if(decorationQueued)return;decorationQueued=true;requestAnimationFrame(()=>{decorationQueued=false;decorate(root&&root.isConnected?root:document)})}
 

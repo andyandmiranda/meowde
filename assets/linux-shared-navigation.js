@@ -47,7 +47,7 @@ if(!document.querySelector('link[href^="/assets/app-shell-canonical.css"]')){
  const common=document.createElement('link');common.rel='stylesheet';common.href='/assets/app-shell-canonical.css?v=1';document.head.append(common);
 }
 
-let active=path.endsWith('/linux-home.html')&&params.get('tab')==='my'?'my':library||path.endsWith('/linux-review.html')?'deepen':path.endsWith('/linux-start.html')||path.endsWith('/linux-course.html')?'learn':path.endsWith('/linux-home.html')&&params.get('tab')==='home'?'home':path.endsWith('/linux-home.html')?'learn':'home';
+let active=path.endsWith('/linux-home.html')&&params.get('tab')==='my'?'my':library||path.endsWith('/linux-review.html')?'deepen':path.endsWith('/linux-start.html')||path.endsWith('/linux-course.html')?'learn':path.endsWith('/linux-home.html')&&params.get('tab')==='learn'?'learn':'home';
 const nav=document.createElement('nav');nav.className='linux-tabbar';nav.setAttribute('aria-label','메인 메뉴');
 const tabs=[['home','홈','⌂','/linux-home.html?tab=home'],['learn','학습','◫','/linux-home.html?tab=learn'],['deepen','심화','‹/›','/linux-crash-course.html?view=concept'],['together','함께','✧','/together.html?subject=linux'],['my','마이','♧','/linux-home.html?tab=my']];
 for(const [id,label,icon,href] of tabs){const a=document.createElement('a');a.href=href;a.dataset.tab=id;a.setAttribute('aria-label',label);const symbol=document.createElement('span');symbol.textContent=icon;symbol.setAttribute('aria-hidden','true');a.append(symbol,document.createTextNode(label));nav.append(a);}
@@ -56,18 +56,16 @@ const sharedSubjects=document.createElement('script');sharedSubjects.src='/asset
 const commonIcons=document.createElement('script');commonIcons.src='/assets/app-shell-icons.js?v=1';document.body.append(commonIcons);
 function select(id){active=id;nav.querySelectorAll('a').forEach(a=>{if(a.dataset.tab===id)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});}
 if(active==='my'&&path.endsWith('/linux-home.html')){
- const main=document.querySelector('main');const title=document.createElement('h1');title.textContent='마이 · Linux';
- const description=document.createElement('p');description.textContent='학습 기록은 이 브라우저에 저장됩니다.';
- const records=document.createElement('p');records.setAttribute('role','status');
+ const main=document.querySelector('main');const section=document.createElement('section');section.className='linux-my-dashboard';
+ let summary='학습 전',count=0;
  try{
   const guided=MeowdeLinuxProgress.open(localStorage),raw=localStorage.getItem('meowde-linux-cram-v1'),quiz=raw===null?{}:JSON.parse(raw);
   if(guided.issue||!quiz||typeof quiz!=='object'||Array.isArray(quiz)||quiz.done&&(typeof quiz.done!=='object'||Array.isArray(quiz.done)))throw Error('Unreadable records');
-  const count=Object.keys(quiz.done||{}).filter(k=>/^[0-8]$/.test(k)&&quiz.done[k]===true).length;
-  records.textContent=`첫 폴더 만들기: ${guided.state.step===4?'완료':guided.state.step===0?'학습 전':'진행 중'} · 개념 퀴즈: ${count} / 9 완료`;
- }catch{records.textContent='학습 기록을 읽지 못했습니다. 기존 기록은 변경하지 않았습니다.';}
- const legacy=document.createElement('a');legacy.href='/robotics.html';legacy.className='secondary';legacy.textContent='이전 학습 기록 보기';
- const settings=document.createElement('a');settings.href='/?tab=my';settings.className='secondary';settings.textContent='공통 프로필·설정';
- main.replaceChildren(header,title,description,records,legacy,settings);
+  count=Object.keys(quiz.done||{}).filter(k=>/^[0-8]$/.test(k)&&quiz.done[k]===true).length;
+  summary=guided.state.step===4?'완료':guided.state.step===0?'학습 전':'진행 중';
+ }catch{summary='기록을 읽지 못했어요';}
+ section.innerHTML='<h1>마이</h1><p class="muted">Linux 학습 기록과 설정을 확인해요.</p><section class="lesson-card linux-my-card"><span class="meta">학습 진도</span><h2>개념 퀴즈 '+count+' / 9 완료</h2><p class="muted">첫 폴더 만들기 · '+summary+'</p><a class="primary" href="/linux-home.html?tab=learn">학습 이어하기 →</a></section><section class="lesson-card linux-my-card"><span class="meta">최근 기록</span><h2>Linux 학습</h2><a class="secondary" href="/robotics.html">이전 학습 기록 보기</a></section><a class="secondary linux-settings-link" href="/?tab=my">공통 프로필·설정</a>';
+ main.replaceChildren(header,section);
 }
 if(library){
  const KEY='meowde-linux-practice-session-v1';let previous={},writable=true;
