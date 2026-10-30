@@ -33,7 +33,7 @@ if(header&&brand&&!header.querySelector('.meowde-linux-mark')){
  Array.from(brand.childNodes).filter(node=>node.nodeType===3).forEach(node=>node.remove());
  const mark=document.createElement('img');mark.className='meowde-linux-mark';mark.src='/assets/meowde-approved-base.svg?v=450';mark.alt='';
  const name=document.createElement('span');name.className='meowde-linux-name';
- const title=document.createElement('a');title.className='meowde-linux-title';title.href='/?tab=home';title.textContent='Meowde';
+ const title=document.createElement('a');title.className='meowde-linux-title';title.href='/linux-home.html?tab=home';title.textContent='Meowde';
  const subtitle=document.createElement('small');subtitle.className='meowde-linux-subtitle';subtitle.textContent='Linux · 학습';
  name.append(title,subtitle);brand.insertBefore(name,brand.firstChild);brand.insertBefore(mark,name);
 }
@@ -44,7 +44,7 @@ if(!document.querySelector('link[href^="/assets/app-shell-canonical.css"]')){
 const library=path.endsWith('/linux-crash-course.html');
 let active=path.endsWith('/linux-home.html')&&params.get('tab')==='my'?'my':library||path.endsWith('/linux-review.html')?'deepen':path.endsWith('/linux-start.html')||path.endsWith('/linux-course.html')?'learn':path.endsWith('/linux-home.html')&&params.get('tab')==='home'?'home':path.endsWith('/linux-home.html')?'learn':'home';
 const nav=document.createElement('nav');nav.className='linux-tabbar';nav.setAttribute('aria-label','메인 메뉴');
-const tabs=[['home','홈','⌂','/?tab=home'],['learn','학습','◫','/linux-home.html?tab=learn'],['deepen','심화','‹/›','/linux-crash-course.html?view=concept'],['together','함께','✧','/together.html?subject=linux'],['my','마이','♧','/?tab=my']];
+const tabs=[['home','홈','⌂','/linux-home.html?tab=home'],['learn','학습','◫','/linux-home.html?tab=learn'],['deepen','심화','‹/›','/linux-crash-course.html?view=concept'],['together','함께','✧','/together.html?subject=linux'],['my','마이','♧','/?tab=my']];
 for(const [id,label,icon,href] of tabs){const a=document.createElement('a');a.href=href;a.dataset.tab=id;a.setAttribute('aria-label',label);const symbol=document.createElement('span');symbol.textContent=icon;symbol.setAttribute('aria-hidden','true');a.append(symbol,document.createTextNode(label));nav.append(a);}
 document.body.append(nav);document.body.classList.add('linux-five-tabs');
 const sharedSubjects=document.createElement('script');sharedSubjects.src='/assets/meowde-subject-selector.js?v=1';document.body.append(sharedSubjects);
