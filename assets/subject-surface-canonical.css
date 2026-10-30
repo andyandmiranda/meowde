@@ -1,0 +1,75 @@
+/* MEOWDE canonical subject surface — shared by Python, Linux, ML and future subjects.
+   Presentation only: no storage, grading, progress or reward behavior. */
+:root{
+ --subject-width:430px;--subject-ink:#38343A;--subject-muted:#716877;
+ --subject-line:#EEE7EC;--subject-soft:#FAF5F7;--subject-accent:#80556A;
+ --subject-action:#F5DDE5;--subject-radius:20px;
+}
+body .meowde-subject-page,
+body.linux-five-tabs main.shell,
+body.linux-five-tabs main.app,
+body:has(.meowde-shell-header) main{
+ width:min(100%,var(--subject-width));max-width:var(--subject-width);margin-inline:auto;
+ padding-left:18px;padding-right:18px;color:var(--subject-ink);box-sizing:border-box
+}
+body .meowde-subject-page>h1,
+body.linux-five-tabs main :is(.linux-my-dashboard,.linux-map-page)>h1,
+body.linux-five-tabs main.app>h1,
+body .ml-shell-page>h1,
+body .ml-learn-page>h1{
+ margin:8px 0 6px;font:850 23px/1.35 "Pretendard Variable",Pretendard,system-ui,sans-serif;
+ letter-spacing:-.035em;color:var(--subject-ink)
+}
+body .meowde-subject-intro,
+body .ml-shell-page>p,
+body .ml-learn-page>h1+p,
+body.linux-five-tabs .sub,
+body.linux-five-tabs .muted{
+ color:var(--subject-muted);font-size:14px;line-height:1.62
+}
+body :is(.meowde-subject-card,.ml-shell-page article),
+body.linux-five-tabs :is(.lesson-card,.card){
+ margin:12px 0;padding:16px;border:1px solid var(--subject-line);border-radius:var(--subject-radius);
+ background:#fff;box-shadow:none;box-sizing:border-box
+}
+body :is(.meowde-subject-card,.ml-shell-page article),
+body.linux-five-tabs :is(.lesson-card,.card)>:first-child{margin-top:0}
+body :is(.meowde-subject-card,.ml-shell-page article),
+body.linux-five-tabs :is(.lesson-card,.card)>:last-child{margin-bottom:0}
+body :is(.meowde-subject-card,.ml-shell-page article) h2,
+body.linux-five-tabs :is(.lesson-card,.card) h2{
+ margin:0 0 7px;font:800 18px/1.4 "Pretendard Variable",Pretendard,system-ui,sans-serif;
+ letter-spacing:-.02em;color:var(--subject-ink)
+}
+body :is(.meowde-subject-card,.ml-shell-page article) p,
+body.linux-five-tabs :is(.lesson-card,.card) p{
+ margin:7px 0 12px;font-size:14px;line-height:1.62;color:var(--subject-muted);word-break:keep-all
+}
+body :is(.meowde-subject-card,.ml-shell-page article) small,
+body.linux-five-tabs :is(.meta,.pill){font-size:12px;line-height:1.55;color:var(--subject-muted)}
+body :is(.meowde-subject-primary,.ml-shell-page a.unit),
+body.linux-five-tabs :is(a.primary,button:not(.outline)){
+ display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:10px 14px;
+ border:1px solid #D9A7B9;border-radius:15px;background:var(--subject-action);color:var(--subject-ink);
+ font:750 14px/1.4 "Pretendard Variable",Pretendard,system-ui,sans-serif;text-decoration:none;box-shadow:none
+}
+body :is(.meowde-subject-secondary,.ml-settings),
+body.linux-five-tabs :is(a.secondary,.outline){
+ min-height:44px;border-color:var(--subject-line);background:#fff;color:var(--subject-accent)
+}
+body :is(.meowde-subject-primary,.meowde-subject-secondary,.ml-shell-page a.unit,.ml-settings):focus-visible,
+body.linux-five-tabs :is(a,button,input,textarea,select,summary):focus-visible{
+ outline:3px solid var(--subject-accent)!important;outline-offset:2px
+}
+body .meowde-subject-grid{display:grid;gap:12px}
+body .meowde-subject-progress{height:8px;border:0;border-radius:999px;overflow:hidden;background:#F0E5EB}
+body .meowde-subject-progress::-webkit-progress-bar{background:#F0E5EB}
+body .meowde-subject-progress::-webkit-progress-value{background:#B77F94}
+body .meowde-subject-progress::-moz-progress-bar{background:#B77F94}
+body.linux-five-tabs .lessons{gap:8px}
+body.linux-five-tabs .lessons button{min-height:48px;border-radius:14px}
+body.linux-five-tabs pre{border-radius:14px;line-height:1.62}
+@media(max-width:359px){
+ body .meowde-subject-page,body.linux-five-tabs main.shell,body.linux-five-tabs main.app,body:has(.meowde-shell-header) main{padding-left:14px;padding-right:14px}
+ body :is(.meowde-subject-card,.ml-shell-page article),body.linux-five-tabs :is(.lesson-card,.card){padding:14px}
+}
