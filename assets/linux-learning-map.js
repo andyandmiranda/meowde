@@ -24,6 +24,6 @@ const selectedFromUrl=Number(new URLSearchParams(location.search).get('group'));
 let selectedGroup=Number.isInteger(selectedFromUrl)&&selectedFromUrl>=1&&selectedFromUrl<=4?selectedFromUrl-1:Math.floor(resumeIndex/3);
 function paint(){
 picker.innerHTML=regions.map((title,i)=>'<button type="button" aria-pressed="'+(selectedGroup===i)+'">'+(i+1)+'. '+escape(title)+'</button>').join('');
-Array.from(picker.children).forEach((button,i)=>button.onclick=()=>{selectedGroup=i;paint();});
+Array.from(picker.children).forEach((button,i)=>button.onclick=()=>{selectedGroup=i;const url=new URL(location.href);url.searchParams.set('group',String(i+1));history.replaceState(history.state,'',url);paint();});
 list.innerHTML=units.map((title,idx)=>{const complete=!!state.done[idx],ongoing=!complete&&idx===resumeIndex;if(Math.floor(idx/3)!==selectedGroup)return '';return '<a class="linux-python-node '+(complete?'complete':ongoing?'current':'')+'" href="/linux-course.html?unit='+(idx+1)+'" aria-label="'+escape(title)+' · '+(complete?'완료':ongoing?'현재 학습':'학습하기')+'"><span class="linux-python-ball" aria-hidden="true">'+(complete?'✓':String(idx+1).padStart(2,'0'))+'</span><strong>'+escape(title)+'</strong><small>'+(complete?'완료':ongoing?'이어서 학습':'시작하기')+'</small></a>'}).join('');}
 paint();})();
