@@ -10,9 +10,11 @@ test('all four question types get concept-to-problem reasoning guidance',()=>{
  assert.match(source,/예제에서 문제로 연결하기/);
  assert.match(source,/\$\{qhead\}\$\{body\}\$\{conceptHelp\}/);
 });
-test('concept teaching offers a readiness check but does not grant completion',()=>{
- assert.match(source,/lesson-concept-check/);
- assert.match(source,/문제를 풀기 전 확인/);
+test('concept teaching keeps first read short and does not grant completion',()=>{
+ assert.match(source,/lesson-pass-label/);
+ assert.match(source,/1회독 · 핵심만/);
+ assert.match(source,/더 알고 싶을 때/);
+ assert.doesNotMatch(source,/lesson-concept-check/);
  const bridge=source.slice(source.indexOf('const solveSteps='),source.indexOf('// Explain wrong answers on demand'));
  assert.doesNotMatch(bridge,/localStorage|sessionStorage|setItem|S\.done\.push|S\.xp\s*[+\-]?=/);
 });
