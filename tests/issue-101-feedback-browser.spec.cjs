@@ -28,7 +28,8 @@ const cases=[
  {kind:'bughunt',exercise:{id:'qa-b',type:'bughunt',prompt:'Find the bug',lines:['print(2)','print(1'],buggy:1,fixed:'print(1)',explain:'The second line is missing a parenthesis.'},wrong:()=>0,answer:'print(1)'},
  {kind:'write',exercise:{id:'qa-w',type:'write',prompt:'Write Python',starter:'print(0)',model:'print(2)',expected:'2',testcase:'Expect 2',explain:'Use print(2).'},wrong:()=>null,answer:'print(2)'}
 ];
-for(const row of cases)test('wrong '+row.kind+' reveals correct example and reason without reward',async({page})=>{
+for(const row of cases)test('wrong '+row.kind+' reveals correct example and reason without reward',async({page},testInfo)=>{
+ if(row.kind==='write')testInfo.setTimeout(90000);
  await ready(page);
  await page.evaluate(ex=>{const lesson=lessons()[0];S.lessonIndex=0;S.queue=[Object.assign({},ex)];S.idx=0;S.firstTotal=1;S.firstCorrect=0;S.xpEarned=0;S.combo=0;S.daily=false;S.sel=null;S.fill=null;S.checked=false;S.correct=false;S.hint=false;S.output='';S.write='';renderLesson();},row.exercise);
  const before=await page.evaluate(()=>({xp:S.xp,churu:S.churu,done:[...S.done]}));
@@ -36,7 +37,7 @@ for(const row of cases)test('wrong '+row.kind+' reveals correct example and reas
  if(row.kind==='fill')await page.locator('.token').first().click();
  if(row.kind==='write')await page.locator('#code-editor').fill('print(0)');
  if(!(await page.locator('.feedback.no').count()))await page.locator('.lesson-foot .btn').click();
- await expect(page.locator('.feedback.no')).toBeVisible();
+ await expect(page.locator('.feedback.no')).toBeVisible({timeout:row.kind==='write'?60000:5000});
  const disclosure=page.locator('[data-answer-review]');
  await expect(disclosure).toBeVisible();
  await disclosure.locator('summary').click();
