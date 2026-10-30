@@ -104,3 +104,16 @@ test('three active subjects share one five-tab information hierarchy',()=>{
  assert.match(together,/class="card invite meowde-subject-card"/);
  assert.match(together,/class="card invite-actions meowde-subject-card"/);
 });
+
+test('active learning surfaces contain no legacy green active-state tokens',()=>{
+ for(const p of ['together.html','ml-foundations.html']){
+  const s=read(p);
+  assert.doesNotMatch(s,/#247b61|#e7f8f0|#bdebd8|#53c7a0/i,p+' still contains legacy green UI');
+ }
+ const surface=read('assets/learning-surface-ui.css');
+ const lock=surface.slice(surface.lastIndexOf('Blueprint v3 final learning lock'));
+ assert.match(lock,/font-size:23px/);
+ assert.match(lock,/line-height:1\.62/);
+ assert.match(lock,/min-height:48px/);
+ assert.match(lock,/min-height:44px/);
+});
