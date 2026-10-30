@@ -3,7 +3,7 @@
 <head>
 <link rel="apple-touch-icon" href="/icons/meowde-approved-touch-180.png">
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<script id="meowde-pyodide-loader" async src="https://cdn.jsdelivr.net/pyodide/v0.28.0/full/pyodide.js"></script>
 <title>Meowde v4.11 — Unlimited Practice</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="/assets/learning-surface-ui.css?v=1">
@@ -206,7 +206,7 @@ function renderRoom(){
 }
 function langSheet(){overlay(`<h3>${t('chooseLang')}</h3><p>Meowde supports Korean and English lesson copy.</p><div class="grid2"><button class="btn" onclick="S.lang='ko';closeOverlay();renderHome()">한국어</button><button class="btn ghost" onclick="S.lang='en';closeOverlay();renderHome()">English</button></div>`)}
 function overlay(html){let d=document.createElement('div');d.className='sheet';d.id='overlay';d.innerHTML=`<div class="panel">${html}</div>`;app.appendChild(d)}function closeOverlay(){const o=document.getElementById('overlay');if(o)o.remove()}function toast(msg){document.querySelectorAll('.toast').forEach(x=>x.remove());const d=document.createElement('div');d.className='toast';d.textContent=msg;app.appendChild(d);setTimeout(()=>d.remove(),2100)}
-let pyodideScriptPromise=null;function ensurePyodideLoader(){if(typeof loadPyodide!=='undefined')return Promise.resolve();if(pyodideScriptPromise)return pyodideScriptPromise;pyodideScriptPromise=new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='https://cdn.jsdelivr.net/pyodide/v0.28.0/full/pyodide.js';script.async=true;script.onload=resolve;script.onerror=()=>{pyodideScriptPromise=null;reject(new Error('Pyodide loader unavailable'))};document.head.append(script)});return pyodideScriptPromise}
+let pyodideScriptPromise=null;function ensurePyodideLoader(){if(typeof loadPyodide!=='undefined')return Promise.resolve();if(pyodideScriptPromise)return pyodideScriptPromise;pyodideScriptPromise=new Promise((resolve,reject)=>{let script=document.getElementById('meowde-pyodide-loader');if(!script){script=document.createElement('script');script.id='meowde-pyodide-loader';script.src='https://cdn.jsdelivr.net/pyodide/v0.28.0/full/pyodide.js';script.async=true;document.head.append(script)}const loaded=()=>typeof loadPyodide!=='undefined'?resolve():(pyodideScriptPromise=null,reject(new Error('Pyodide loader unavailable')));script.addEventListener('load',loaded,{once:true});script.addEventListener('error',()=>{pyodideScriptPromise=null;reject(new Error('Pyodide loader unavailable'))},{once:true})});return pyodideScriptPromise}
 async function warmPy(){if(pyReady||pyLoading)return;pyLoading=true;try{await ensurePyodideLoader()}catch{pyLoading=false;return;} const origError=console.error, origWarn=console.warn; let warnCount=0;
  const filter=(...a)=>{const s=String(a[0]||''); if(s.includes('wasm instantiation failed')||s.includes('DataCloneError')||s.includes('URL object could not be cloned'))warnCount++; else origError(...a)};
  try{console.error=filter;console.warn=filter;pyodide=await loadPyodide({indexURL:'https://cdn.jsdelivr.net/pyodide/v0.28.0/full/'});pyReady=true}catch(e){

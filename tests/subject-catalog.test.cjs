@@ -16,7 +16,7 @@ test('ML intro is reachable with shared five-tab and small subject picker',()=>{
  assert.match(ml,/class="meowde-lab-tabbar"/);
  for(const name of ['홈','학습','심화','함께','마이'])assert.match(ml,new RegExp('aria-label="'+name+'"'));
  for(const filename of ['python-lab.html','together.html']){
-  assert.match(fs.readFileSync(filename,'utf8'),/value="ml">ML 입문/);
+  assert.match(fs.readFileSync(filename,'utf8'),/value="ml">머신러닝/);
  }
 });
 test('subject overview reads existing Python/Linux/ML progress without writing storage',()=>{
