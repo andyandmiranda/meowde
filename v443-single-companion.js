@@ -127,7 +127,7 @@
   function achievementSummary(){
     const api=window.MeowAchievements;
     if(!api||!Array.isArray(api.definitions))return "";
-    if(typeof api.evaluate==="function")api.evaluate(false);
+    // Read-only summary: do not award retroactive rewards while rendering My.
     const definitions=api.definitions,state=api.state||{},unlocked=state.unlocked||{};
     const count=definitions.filter(item=>Boolean(unlocked[item.id])).length;
     const selected=definitions.find(item=>item.id===state.featured&&unlocked[item.id])||definitions.slice().reverse().find(item=>unlocked[item.id])||null;
