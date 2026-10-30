@@ -12,7 +12,7 @@ body .top.meowde-canonical-top .meowde-top-actions{display:flex;align-items:cent
 body .top.meowde-canonical-top .lang{min-height:34px;padding:6px 9px;border:1px solid var(--meowde-shell-line);background:#fff}
 body.linux-five-tabs .top .brand{flex:1;justify-content:flex-start;align-items:center}
 body.linux-five-tabs .top .meowde-compact-subject{flex:none;align-self:center}
-body.linux-five-tabs .top .meowde-linux-name{min-width:0;flex:1}
+body.linux-five-tabs .top .meowde-linux-name{min-width:0;flex:1;display:flex;flex-direction:column;align-items:flex-start}
 body.linux-five-tabs .meowde-linux-back{display:inline-flex;align-items:center;min-height:40px;margin:0 18px 8px;font-size:12px;font-weight:700;color:#80556a;text-decoration:none}
 body .tabbar,body .meowde-lab-tabbar,body.linux-five-tabs .linux-tabbar{box-sizing:border-box;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;position:relative;width:100%;max-width:430px;margin-inline:auto;min-height:74px;padding:10px 10px calc(10px + env(safe-area-inset-bottom,0px));border:0;border-top:1.5px solid rgba(68,49,36,.08);border-radius:0;background:rgba(255,255,255,.97);box-shadow:none}
 body .meowde-lab-tabbar,body.linux-five-tabs .linux-tabbar{position:fixed;inset:auto 0 0;z-index:100}
