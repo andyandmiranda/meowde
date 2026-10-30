@@ -292,3 +292,13 @@ body:has(#lab) :is(.actions button,.practice-tools-open,.nav-toggle),
 body:has(#lab) .lesson :is(p,li,dd){line-height:1.62}
 body:has(#lab) .lesson :is(h2,h3,h4)+p{margin-top:6px}
 body:has(#lab) .lesson p+p{margin-top:8px}
+
+/* Blueprint v3 final learning lock: last declaration wins over legacy experiments. */
+body:has(#lab) .lab-header h1{font-size:23px;line-height:1.35;letter-spacing:-.04em;font-weight:850}
+body:has(#lab) .lab-header-description{font-size:13px;line-height:1.55}
+body:has(#lab) .lesson h2{font-size:20px;line-height:1.4}
+body:has(#lab) .lesson :is(p,li,dd){font-size:14px;line-height:1.62}
+body:has(#lab) .card{padding:16px;margin:12px 0;border-radius:18px;box-shadow:none}
+body:has(#lab) :is(button.primary,a.primary,.practice-next-action){min-height:48px;border-radius:15px}
+body:has(#lab) :is(.nav-toggle,.practice-tools-close,.practice-support>summary,.deepen-more>summary){min-height:44px}
+body:has(#lab) .meowde-lab-tabbar a[aria-current="page"]{background:#FAF5F7;color:#80556A;border-color:#E7C9D5}
