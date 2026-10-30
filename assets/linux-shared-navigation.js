@@ -7,6 +7,12 @@ if(!document.querySelector('link[href="/assets/linux-focus-flow.css"]')){
  const focus=document.createElement('link');focus.rel='stylesheet';focus.href='/assets/linux-focus-flow.css';document.head.append(focus);
 }
 const path=location.pathname,params=new URLSearchParams(location.search);
+const library=path.endsWith('/linux-crash-course.html');
+if(library){
+ const main=document.querySelector('main.app');
+ const duplicate=main&&main.querySelector('nav[aria-label="학습 화면 이동"]');if(duplicate)duplicate.remove();
+ if(main&&!main.querySelector('.top')){const shellHeader=document.createElement('header');shellHeader.className='top';const shellBrand=document.createElement('span');shellBrand.className='brand';shellBrand.textContent='MEOWDE';shellHeader.append(shellBrand);main.prepend(shellHeader);}
+}
 
 // Match the existing compact top-right course selector instead of adding a second nav row.
 const header=document.querySelector('main.shell .top,main.app .top');
@@ -41,7 +47,6 @@ if(!document.querySelector('link[href^="/assets/app-shell-canonical.css"]')){
  const common=document.createElement('link');common.rel='stylesheet';common.href='/assets/app-shell-canonical.css?v=1';document.head.append(common);
 }
 
-const library=path.endsWith('/linux-crash-course.html');
 let active=path.endsWith('/linux-home.html')&&params.get('tab')==='my'?'my':library||path.endsWith('/linux-review.html')?'deepen':path.endsWith('/linux-start.html')||path.endsWith('/linux-course.html')?'learn':path.endsWith('/linux-home.html')&&params.get('tab')==='home'?'home':path.endsWith('/linux-home.html')?'learn':'home';
 const nav=document.createElement('nav');nav.className='linux-tabbar';nav.setAttribute('aria-label','메인 메뉴');
 const tabs=[['home','홈','⌂','/linux-home.html?tab=home'],['learn','학습','◫','/linux-home.html?tab=learn'],['deepen','심화','‹/›','/linux-crash-course.html?view=concept'],['together','함께','✧','/together.html?subject=linux'],['my','마이','♧','/linux-home.html?tab=my']];

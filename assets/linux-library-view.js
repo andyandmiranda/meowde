@@ -23,10 +23,10 @@ const sets=[
  ["E9","Shell Script·Network 자료 실습","README + check.sh"],
  ["E10","Shell Script·Network 자료 실습","README + check.sh"]
 ];
-practiceHub.innerHTML='<h2>원본 Exercise · E5~E10</h2><p class="sub">강의자료의 실습 구조를 그대로 구분했어요. 실제 문제는 각 폴더의 README와 check.sh가 기준이며, 원문이 확보되지 않은 개별 문항을 임의로 만들어 넣지 않아요.</p><div class="linux-source-grid">'+sets.map(([id,title,meta])=>'<article class="linux-source-card"><b>'+id+'</b><span>'+title+'</span><small>'+meta+'</small><em>원본 실습 세트</em></article>').join("")+'</div><p class="sub" style="margin-top:14px">아래의 가상 터미널·조건문·Bash 실습은 앱 안에서 바로 할 수 있는 별도 응용 실습이에요.</p>';
+practiceHub.innerHTML='<h2>원본 Exercise · E5~E10</h2><p class="sub">원본 자료는 그대로 보존하고, 필요한 세트만 펼쳐 확인해요.</p><div class="linux-source-list">'+sets.map(([id,title,meta],index)=>'<details class="linux-source-card"'+(index===0?' open':'')+'><summary><b>'+id+'</b> · '+title+'</summary><p><small>'+meta+'</small></p><em>원본 실습 세트</em></details>').join("")+'</div><p class="sub" style="margin-top:14px">가상 터미널·조건문·Bash 실습은 아래 심화 메뉴에서 선택할 수 있어요.</p>';
 
 const modes={
- concept:["원본 실습 세트","concept"],
+ concept:["심화 학습","concept"],
  terminal:["가상 터미널 미션","terminal"],
  condition:["조건문 이해 실습","condition"],
  bash:["Bash 직접 작성","bash"]
@@ -51,7 +51,7 @@ picker.append(summary,links);more.after(picker);
 
 const title=document.querySelector(".app>h1"),sub=document.querySelector(".app>p.sub");
 if(title)title.textContent=modes[mode][0];
-if(sub)sub.textContent=mode==="concept"?"E/exercise는 정식 개념 과정이 아니라 강의자료의 실습 문제 묶음이에요.":"정식 학습에서 배운 개념을 실제 문제 형태로 적용해 봐요.";
+if(sub)sub.textContent=mode==="concept"?"원본 Exercise·E5~E10 중 필요한 실습만 펼쳐 확인해요.":"정식 학습에서 배운 개념을 실제 문제 형태로 적용해 봐요.";
 
 window.MeowdeOpenPractice=function(value){if(!Object.prototype.hasOwnProperty.call(modes,value))return;location.href="/linux-crash-course.html?view="+value;};
 })();
