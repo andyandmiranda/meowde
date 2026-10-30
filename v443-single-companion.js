@@ -31,7 +31,8 @@
     try{localStorage.setItem(MODE_STORAGE_KEY,mode.id)}catch(error){console.warn("Meowde coach mode could not be saved:",error)}
     document.documentElement.dataset.coachMode=mode.id;
     const current=runtimeState();
-    if(current&&["room","my"].includes(current.screen))renderCompanionHub();
+    if(new URLSearchParams(location.search).get("tab")==="my"&&typeof window.renderProfile==="function")window.renderProfile();
+  else if(current&&["room","my"].includes(current.screen))renderCompanionHub();
     return true;
   }
   // Character appearances are independent from the learning guidance mode.
@@ -170,17 +171,18 @@
     return season+visitor+collection;
   }
   function renderCompanionHub(){
-    const current=runtimeState();
-    if(!current)return;
-    forceSingleCompanion();current.screen="room";try{if(typeof save==="function")save()}catch(error){}
-    const ko=isKorean(),done=Number(current.done&&current.done.length)||0,streak=Number(current.streak)||0,mode=currentCoachMode();
-    const intro=ko?"좋아하는 캐릭터와 학습 지원 방식을 각각 선택하세요.":"Choose your character and coaching style separately.";
-    const profileCopy=ko?`${done}개 레슨 완료 · ${streak}일 연속 학습`:`${done} lessons complete · ${streak} day streak`;
-    const modeLabel=ko?mode.labelKo:mode.labelEn;
-    const modeCopy=ko?mode.copyKo:mode.copyEn;
-    app.innerHTML=`<div class="screen">${brand()}<div class="scroll" data-phase3-companion-hub="ordered"><div class="simple-head"><button class="text-link" onclick="renderProfile()">← ${ko?'마이':'My'}</button><h2>${ko?'캐릭터':'Character'}</h2><p>${ko?'학습 화면에 함께할 모습을 골라요.':'Choose a companion for your lessons.'}</p></div>${characterGrid()}${guestGallery()}</div>${canonicalTabs()}</div>`;
-    document.documentElement.dataset.companionSystem="single";document.documentElement.dataset.navigation="phase1-five-tabs";document.documentElement.dataset.roomRenderer="canonical-v443";document.documentElement.dataset.coachMode=mode.id;
-    if(window.MeowCharacterMaster&&typeof MeowCharacterMaster.purgeLegacyCats==="function")MeowCharacterMaster.purgeLegacyCats();
+    const current=runtimeState();if(!current)return;
+    forceSingleCompanion();
+    if(typeof window.__MEOWDE_CANONICAL_PROFILE_RENDERER__==="function"){
+      current.screen="profile";
+      window.__MEOWDE_CANONICAL_PROFILE_RENDERER__();
+      document.documentElement.dataset.roomRenderer="profile-first-v443";
+      return;
+    }
+    const ko=isKorean(),done=Number(current.done&&current.done.length)||0,streak=Number(current.streak)||0;
+    current.screen="room";try{if(typeof save==="function")save()}catch(error){}
+    app.innerHTML=`<div class="screen">${brand()}<div class="scroll"><div class="simple-head"><h2>${ko?'마이':'My'}</h2><p>${ko?'학습 기록과 설정을 확인해요.':'Check learning records and settings.'}</p></div><section class="card"><div class="section-title"><h3>${ko?'학습 기록':'Learning record'}</h3></div><p>${ko?`${done}개 레슨 완료 · ${streak}일 연속 학습`:`${done} lessons complete · ${streak} day streak`}</p></section></div>${canonicalTabs()}</div>`;
+    document.documentElement.dataset.roomRenderer="profile-first-v443";
   }
   function decorate(root=document){
     decorateLessonCharacter();
