@@ -17,8 +17,9 @@ if(brand&&!header.querySelector('.meowde-compact-subject')){
  selector.setAttribute('aria-label','과목 선택');
  const python=document.createElement('option');python.value='python';python.textContent='Python';
  const linux=document.createElement('option');linux.value='linux';linux.textContent='Linux';
- const ml=document.createElement('option');ml.value='ml';ml.textContent='ML 입문';
- selector.append(python,linux,ml);selector.value='linux';
+ const ml=document.createElement('option');ml.value='ml';ml.textContent='머신러닝';
+ const pending=['데이터 분석','딥러닝','AI 로보틱스'].map(label=>{const option=document.createElement('option');option.textContent=label+' · 준비 중';option.disabled=true;return option;});
+ selector.append(python,linux,ml,...pending);selector.value='linux';
  selector.addEventListener('change',()=>{if(selector.value==='python')location.assign('/?tab=map');else if(selector.value==='ml')location.assign('/ml-foundations.html');});
  brand.append(selector);
 }
