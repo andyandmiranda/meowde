@@ -51,6 +51,7 @@ test("Linux learning path declares honest L0-L3 goals and one-stage UI",()=>{
  assert.match(css,/--surface-mint-dark:#80556A/);
  assert.doesNotMatch(css,/--surface-mint:#53C7A0/);
  assert.match(css,/\.linux-stage-path/);
+ assert.match(source,/const stageNames=\["핵심","예제","따라 하기","혼자·응용"\]/);
 });
 
 test("Linux entry keeps one primary action and hides secondary routes by default",()=>{
