@@ -144,10 +144,5 @@
   if(typeof window.__MEOWDE_CANONICAL_REVIEW_RENDERER__==="function")window.renderReview=window.__MEOWDE_CANONICAL_REVIEW_RENDERER__;
   if(typeof window.__MEOWDE_CANONICAL_PROFILE_RENDERER__==="function")window.renderProfile=window.__MEOWDE_CANONICAL_PROFILE_RENDERER__;
   if(typeof window.__MEOWDE_CANONICAL_ACHIEVEMENTS_RENDERER__==="function")window.renderAchievements=window.__MEOWDE_CANONICAL_ACHIEVEMENTS_RENDERER__;
-  if(state().screen==="home"&&typeof window.renderHome==="function")window.renderHome();
-  else if(state().screen==="map"&&typeof window.renderMap==="function")window.renderMap();
-  else if(state().screen==="review"&&typeof window.renderReview==="function")window.renderReview();
-  else if(state().screen==="profile"&&typeof window.renderProfile==="function")window.renderProfile();
-  else if(state().screen==="achievements"&&typeof window.renderAchievements==="function")window.renderAchievements();
-  else queue();
+  queue();
 })();
