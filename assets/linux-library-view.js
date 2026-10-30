@@ -29,7 +29,8 @@ const modes={
  concept:["심화 학습","concept"],
  terminal:["가상 터미널 미션","terminal"],
  condition:["조건문 이해 실습","condition"],
- bash:["Bash 직접 작성","bash"]
+ bash:["Bash 직접 작성","bash"],
+ source:["원본 Exercise","source"]
 };
 const rawView=new URLSearchParams(location.search).get("view");
 const requested=rawView==="practice"?"terminal":rawView;
@@ -38,10 +39,11 @@ const mode=Object.prototype.hasOwnProperty.call(modes,requested)?requested:"conc
 more.before(practiceHub);
 const all=[navSection,lesson,terminal,condition,bash,practiceHub].filter(Boolean);
 all.forEach(x=>x.hidden=true);
-if(mode==="concept")practiceHub.hidden=false;
+if(mode==="concept"){if(navSection)navSection.hidden=false;if(lesson)lesson.hidden=false;}
 if(mode==="terminal"&&terminal)terminal.hidden=false;
 if(mode==="condition"&&condition)condition.hidden=false;
 if(mode==="bash"&&bash)bash.hidden=false;
+if(mode==="source")practiceHub.hidden=false;
 
 const picker=document.createElement("details");picker.className="practice-picker";
 const summary=document.createElement("summary");summary.textContent="다른 Linux 심화 실습 보기";
@@ -51,7 +53,7 @@ picker.append(summary,links);more.after(picker);
 
 const title=document.querySelector(".app>h1"),sub=document.querySelector(".app>p.sub");
 if(title)title.textContent=modes[mode][0];
-if(sub)sub.textContent=mode==="concept"?"원본 Exercise·E5~E10 중 필요한 실습만 펼쳐 확인해요.":"정식 학습에서 배운 개념을 실제 문제 형태로 적용해 봐요.";
+if(sub)sub.textContent=mode==="concept"?"짧게 보고 바로 해본 뒤, 혼자 해결까지 이어가요.":mode==="source"?"원본 자료는 필요할 때만 펼쳐 확인해요.":"정식 학습에서 배운 개념을 실제 문제 형태로 적용해 봐요.";
 
 window.MeowdeOpenPractice=function(value){if(!Object.prototype.hasOwnProperty.call(modes,value))return;location.href="/linux-crash-course.html?view="+value;};
 })();
