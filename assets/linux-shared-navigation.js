@@ -4,10 +4,9 @@ if(!document.querySelector('link[href="/assets/linux-learning-ui.css"]')){const 
 if(!document.querySelector('link[href^="/assets/app-shell-canonical.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/assets/app-shell-canonical.css?v=2';document.head.append(l)}
 const path=location.pathname,params=new URLSearchParams(location.search);
 const library=path.endsWith('/linux-crash-course.html');
-let active=path.endsWith('/linux-home.html')&&params.get('tab')==='home'?'home':
- path.endsWith('/linux-home.html')&&params.get('tab')==='my'?'my':
+let active=path.endsWith('/linux-home.html')&&params.get('tab')==='my'?'my':
  library||path.endsWith('/linux-review.html')?'deepen':
- path.endsWith('/linux-home.html')||path.endsWith('/linux-start.html')||path.endsWith('/linux-course.html')?'learn':'home';
+ path.endsWith('/linux-home.html')&&params.get('tab')==='learn'||path.endsWith('/linux-start.html')||path.endsWith('/linux-course.html')?'learn':'home';
 
 const main=document.querySelector('main.shell,main.app');
 let header=main&&main.querySelector('header.top');

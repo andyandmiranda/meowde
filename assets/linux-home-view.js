@@ -1,7 +1,7 @@
 (function(){
 "use strict";
 const params=new URLSearchParams(location.search);
-if(params.get("tab")!=="home")return;
+if(params.get("tab")&&params.get("tab")!=="home")return;
 const main=document.querySelector("main.shell");if(!main)return;
 const header=main.querySelector("header.top");
 const units=["Linux와 Ubuntu","경로와 디렉터리","파일과 폴더 관리","파일 읽기와 편집","검색","파이프와 리디렉션","사용자·그룹·권한","프로세스","패키지","Shell Script와 변수","조건문과 반복문","Network와 자동화"];

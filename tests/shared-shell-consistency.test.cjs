@@ -69,3 +69,13 @@ test('common My keeps Linux subject context instead of falling back to Python',(
  assert.match(selector,/const explicit=q\.get\("subject"\)/);
  assert.match(selector,/\?tab=my&subject=linux/);
 });
+
+test('Linux default entry is Home and Learn uses Python map-head plus trail hierarchy',()=>{
+ const home=fs.readFileSync('assets/linux-home-view.js','utf8');
+ assert.match(home,/params\.get\("tab"\)&&params\.get\("tab"\)!=="home"/);
+ const nav=fs.readFileSync('assets/linux-shared-navigation.js','utf8');
+ assert.match(nav,/params\.get\('tab'\)==='learn'/);
+ const map=fs.readFileSync('assets/linux-learning-map.js','utf8');
+ assert.match(map,/mapHead\.className='map-head'/);
+ assert.match(map,/classList\.add\('trail'\)/);
+});
