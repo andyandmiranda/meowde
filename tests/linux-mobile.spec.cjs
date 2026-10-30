@@ -31,7 +31,7 @@ test("legacy URL is read-only and prior records survive new learning",async({pag
  expect(await page.evaluate(()=>localStorage.getItem("meowde-v410-state"))).toBe('{"xp":17}');expect(await page.evaluate(()=>localStorage.getItem("meowde-linux-cram-v1"))).toBe('{"index":2,"done":{"0":true}}');
 });
 test("library shows one tool at a time and grades search results",async({page})=>{
- await page.goto(base+"/linux-crash-course.html");await expect(page.locator("#micro-e1")).toBeHidden();await expect(page.locator("#lesson")).toBeVisible();await expect(page.locator("#sim-input")).toBeHidden();
+ await page.goto(base+"/linux-crash-course.html");await expect(page.locator("#micro-e1")).toBeHidden();await expect(page.locator("#lesson")).toBeVisible();await expect(page.locator("#sim-input")).toBeHidden();await expect(page.getByRole("heading",{name:/E1/})).toBeVisible();
  await page.goto(base+"/linux-crash-course.html?view=terminal");await expect(page.locator("#lesson")).toBeHidden();await page.locator("#sim-missions button").nth(3).click();
  for(const [command,success] of [["grep INFO app.log",false],["grep -n ERROR app.log",true]]){await page.locator("#sim-input").fill(command);await page.locator("#sim-run").click();await page.locator("#sim-check").click();if(success)await expect(page.locator("#sim-next")).toBeVisible();else await expect(page.locator("#sim-next")).toBeHidden();}
  await page.goto(base+"/linux-crash-course.html?view=bash");await expect(page.locator("#sim-input")).toBeHidden();await expect(page.locator("#bash-source")).toBeVisible();
