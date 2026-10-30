@@ -62,7 +62,7 @@ test("Linux entry keeps one primary action and hides secondary routes by default
  const library=fs.readFileSync(path.join(root,"assets/linux-library-view.js"),"utf8");
  assert.doesNotMatch(library,/library-mode/);
  assert.match(library,/all\.forEach\(x=>x\.hidden=true\)/);
- assert.match(library,/if\(mode===\"concept\"\)practiceHub\.hidden=false/);
+ assert.match(library,/if\(mode===\"concept\"\)\{if\(navSection\)navSection\.hidden=false;if\(lesson\)lesson\.hidden=false;\}/);\n assert.match(library,/if\(mode===\"source\"\)practiceHub\.hidden=false/);
  assert.match(library,/if\(mode===\"terminal\"&&terminal\)terminal\.hidden=false/);
 });
 
