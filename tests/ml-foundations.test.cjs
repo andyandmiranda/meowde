@@ -67,3 +67,19 @@ test("ML completion preserves unknown fields and logistic snippet imports math",
  const logistic=load().units.find(x=>x.id==="logistic");
  assert.match(logistic.code,/^import math\n/);
 });
+
+test("ML first read is short, details are optional, and next action follows success",()=>{
+ const source=fs.readFileSync(path.join(root,"assets/ml-foundations.js"),"utf8");
+ assert.match(source,/핵심만 보기/);
+ assert.match(source,/더 알고 싶을 때/);
+ assert.match(source,/먼저 알면 좋아요/);
+ assert.match(source,/한 번 더 따라가기/);
+ assert.match(source,/자주 하는 실수/);
+ assert.match(source,/다음 단원 →/);
+ assert.match(source,/응용 · /);
+ const css=fs.readFileSync(path.join(root,"assets/ml-shell-view.css"),"utf8");
+ assert.match(css,/\.ml-key-idea/);
+ assert.match(css,/line-height:1\.62/);
+ assert.match(css,/\.ml-more>summary\{min-height:44px/);
+ assert.match(css,/\.ml-next\{min-height:48px/);
+});
