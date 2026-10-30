@@ -69,7 +69,7 @@ test('early serializers retain future lesson 60 and archived places until curric
   assert.match(source,/storageReadProblem/);
  }
  assert.match(html,/const next=preserveDeferredLessonState\(state\)/);
- assert.match(html,/JSON.stringify\(next\)/);
+ assert.match(html,/JSON.stringify\(prepared\)/);
 });
 
 test('a changing review recommendation order resumes the saved identity instead of restarting',()=>{

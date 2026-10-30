@@ -5,7 +5,6 @@ test('six character choices and independent coaching survive reload without chan
   await page.goto(base+'/');
   await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
   await page.getByRole('button',{name:'마이',exact:true}).last().click();
-  await page.getByRole('button',{name:'🐱 Meowde',exact:true}).click();
   const choices=page.getByRole('group',{name:'캐릭터 모습 선택',exact:true});
   await expect(choices.getByRole('button')).toHaveCount(6);
   await expect(choices).toHaveClass(/v443-single-companion/);
@@ -23,7 +22,6 @@ test('six character choices and independent coaching survive reload without chan
   await page.reload();
   await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
   await page.getByRole('button',{name:'마이',exact:true}).last().click();
-  await page.getByRole('button',{name:'🐱 Meowde',exact:true}).click();
   await expect(choices.getByRole('button',{name:'디버그',exact:true})).toHaveAttribute('aria-pressed','true');
   await expect(page.getByRole('group',{name:'코치 모드 선택',exact:true}).getByRole('button',{name:/집중 모드/})).toHaveAttribute('aria-pressed','true');
   expect(await page.evaluate(()=>{
