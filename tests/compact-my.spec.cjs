@@ -1,22 +1,20 @@
 const {test,expect}=require('playwright/test');
 const base=process.env.MEOWDE_BASE_URL||'http://127.0.0.1:4173';
-test('compact My retains current profile, character access and learning records',async({page})=>{
+test('compact My stays learning-first and preserves records without character galleries',async({page})=>{
  await page.setViewportSize({width:375,height:740});
  await page.goto(base+'/');
  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
+ const before=await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('meowde-v410-state'));return {xp:s.xp,done:s.done,mistakes:s.mistakes,next:s.next}});
  await page.getByRole('button',{name:'마이',exact:true}).last().click();
  await expect(page.getByRole('heading',{name:'마이',exact:true})).toBeVisible();
- const before=await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('meowde-v410-state'));return {xp:s.xp,done:s.done,mistakes:s.mistakes,next:s.next}});
  expect(await page.locator('.tabbar button').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('aria-label')))).toEqual(['홈','학습','심화','함께','마이']);
  await expect(page.locator('.my-progress-card')).toBeVisible();
  await expect(page.getByRole('heading',{name:'최근 7일',exact:true})).toBeVisible();
  await expect(page.locator('.my-records')).toBeVisible();
  await expect(page.locator('.my-settings')).toBeVisible();
+ await expect(page.getByRole('group',{name:'캐릭터 모습 선택',exact:true})).toHaveCount(0);
+ await expect(page.getByText('LAYRN 게스트 고양이',{exact:true})).toHaveCount(0);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
- await page.getByText('설정',{exact:true}).click();
- await page.getByRole('button',{name:/캐릭터 바꾸기/}).click();
- await expect(page.getByRole('group',{name:'캐릭터 모습 선택',exact:true}).getByRole('button')).toHaveCount(6);
- await page.getByRole('button',{name:'학습',exact:true}).last().click();
  await page.reload();
  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
  expect(await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('meowde-v410-state'));return {xp:s.xp,done:s.done,mistakes:s.mistakes,next:s.next}})).toEqual(before);
