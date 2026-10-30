@@ -53,3 +53,9 @@ body .top.meowde-canonical-top .lang:focus-visible{outline:3px solid #80556A;out
 body .meowde-lab-tabbar,body.linux-five-tabs .linux-tabbar,body .tabbar{
   border-top-color:#EEE7EC;background:rgba(255,255,255,.98)
 }
+
+/* Blueprint v3 button contract shared by root and standalone surfaces. */
+body :is(.btn,button.primary,a.primary){min-height:48px;box-sizing:border-box}
+body :is(.btn,button.primary,a.primary,.meowde-lab-tabbar a,.linux-tabbar a,.tabbar button):focus-visible{
+  outline:3px solid #80556A;outline-offset:2px
+}

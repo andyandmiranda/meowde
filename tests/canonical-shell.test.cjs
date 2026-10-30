@@ -41,3 +41,15 @@ test('learning surfaces default to short first-read progressive disclosure',()=>
  assert.match(lab,/5회독 · 응용/);
  assert.match(lab,/support\.open=false/);
 });
+
+test('blueprint v3 keeps learning help collapsed and button geometry canonical',()=>{
+ const lab=read('assets/python-lab.js');
+ assert.match(lab,/conceptDetails\.open=false/);
+ assert.doesNotMatch(lab,/conceptDetails\.open=true/);
+ const surface=read('assets/learning-surface-ui.css');
+ assert.match(surface,/min-height:48px/);
+ assert.match(surface,/line-height:1\.62/);
+ assert.doesNotMatch(surface,/#6d4d89|#f0eaff|#e9f7f3/i);
+ const shell=read('assets/app-shell-canonical.css');
+ assert.match(shell,/button\.primary,a\.primary/);
+});

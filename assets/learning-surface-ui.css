@@ -173,7 +173,7 @@ body:has(#lab) .lab-header-description{font-size:13px;margin-top:5px}
 /* Review sunglasses mascot size is controlled by the actual .v449-review-pose rule in v449-character-cutouts.css (82px -> 41px). */
 
 /* Match active practice tab despite more specific shared surface selectors. */
-body:has(#lab) .meowde-lab-tabbar a[aria-current="page"]{color:#6d4d89;background:linear-gradient(135deg,#f0eaff,#e9f7f3)}
+body:has(#lab) .meowde-lab-tabbar a[aria-current="page"]{color:var(--surface-mint-dark);background:var(--surface-pale);border-color:#E7C9D5}
 
 
 /* Deepen entry reuses Home/Learn typography, cream canvas, mint actions and cards. */
@@ -278,3 +278,17 @@ body:has(#lab) #quiz .meta{line-height:1.5}
 .lesson-main .lesson-concept-more{border-top:1px solid #eee7ec;padding-top:2px}
 .lesson-main .lesson-concept-more>summary{min-height:44px;display:flex;align-items:center;font-size:13px;font-weight:750;color:#80556a;cursor:pointer}
 .lesson-main .lesson-concept-more>p{font-size:13.5px;line-height:1.62;color:#716877;word-break:keep-all;margin:4px 0 2px}
+
+/* Blueprint v3 interaction contract: readable rhythm and one clear action hierarchy. */
+body:has(#lab) :is(button.primary,a.primary,.practice-next-action),
+.lesson-main .lesson-foot .btn,
+.lesson-main .feedback .btn{
+  min-height:48px;box-sizing:border-box;border-radius:14px;font-weight:750
+}
+body:has(#lab) :is(.actions button,.practice-tools-open,.nav-toggle),
+.lesson-main :is(button.hint,.meowde-inline-concept>summary,.lesson-concept-more>summary){
+  min-height:44px;box-sizing:border-box
+}
+body:has(#lab) .lesson :is(p,li,dd){line-height:1.62}
+body:has(#lab) .lesson :is(h2,h3,h4)+p{margin-top:6px}
+body:has(#lab) .lesson p+p{margin-top:8px}

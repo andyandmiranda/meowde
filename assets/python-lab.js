@@ -127,10 +127,10 @@
       // Existing DOM handlers still bind by ID after the move.
       move(article.querySelector("#values-bridge"),"연결 연습 · 기초에서 응용으로");
       move(article.querySelector(".practice-support"),"개념과 예제");
-      // Open the existing concept section directly when requested; keep the original learning content intact.
+      // Keep support collapsed by default. A learner opens it only when they need help.
       const conceptGroup=tools.querySelector(".practice-tools-group");
       const conceptDetails=conceptGroup?.querySelector(".practice-support");
-      if(conceptDetails)conceptDetails.open=true;
+      if(conceptDetails)conceptDetails.open=false;
       move(article.querySelector("#quiz"),"이해 확인 문제");
       move(article.querySelector(".card:has(#reflection)"),"생각 정리");
       move(article.querySelector("#recommendation")?.closest(".card"),"복습과 다음 학습");
