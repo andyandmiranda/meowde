@@ -46,6 +46,9 @@ if(header&&brand&&!header.querySelector('.meowde-linux-mark')){
 if(!document.querySelector('link[href^="/assets/app-shell-canonical.css"]')){
  const common=document.createElement('link');common.rel='stylesheet';common.href='/assets/app-shell-canonical.css?v=1';document.head.append(common);
 }
+if(!document.querySelector('link[href^="/assets/subject-surface-canonical.css"]')){
+ const subjectSurface=document.createElement('link');subjectSurface.rel='stylesheet';subjectSurface.href='/assets/subject-surface-canonical.css?v=1';document.head.append(subjectSurface);
+}
 
 let active=path.endsWith('/linux-home.html')&&params.get('tab')==='my'?'my':library||path.endsWith('/linux-review.html')?'deepen':path.endsWith('/linux-start.html')||path.endsWith('/linux-course.html')?'learn':path.endsWith('/linux-home.html')&&params.get('tab')==='learn'?'learn':'home';
 const nav=document.createElement('nav');nav.className='linux-tabbar';nav.setAttribute('aria-label','메인 메뉴');
