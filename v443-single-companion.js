@@ -178,7 +178,7 @@
     const profileCopy=ko?`${done}개 레슨 완료 · ${streak}일 연속 학습`:`${done} lessons complete · ${streak} day streak`;
     const modeLabel=ko?mode.labelKo:mode.labelEn;
     const modeCopy=ko?mode.copyKo:mode.copyEn;
-    app.innerHTML=`<div class="screen">${brand()}<div class="scroll" data-phase3-companion-hub="ordered"><div class="simple-head"><button class="text-link" onclick="renderProfile()">← ${ko?'마이':'My'}</button><h2>${ko?'캐릭터':'Character'}</h2><p>${ko?'학습 화면에 함께할 모습을 골라요.':'Choose a companion for your lessons.'}</p></div>${characterGrid()}</div>${canonicalTabs()}</div>`;
+    app.innerHTML=`<div class="screen">${brand()}<div class="scroll" data-phase3-companion-hub="ordered"><div class="simple-head"><button class="text-link" onclick="renderProfile()">← ${ko?'마이':'My'}</button><h2>${ko?'캐릭터':'Character'}</h2><p>${ko?'학습 화면에 함께할 모습을 골라요.':'Choose a companion for your lessons.'}</p></div>${characterGrid()}${guestGallery()}</div>${canonicalTabs()}</div>`;
     document.documentElement.dataset.companionSystem="single";document.documentElement.dataset.navigation="phase1-five-tabs";document.documentElement.dataset.roomRenderer="canonical-v443";document.documentElement.dataset.coachMode=mode.id;
     if(window.MeowCharacterMaster&&typeof MeowCharacterMaster.purgeLegacyCats==="function")MeowCharacterMaster.purgeLegacyCats();
   }
