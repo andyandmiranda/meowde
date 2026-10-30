@@ -79,3 +79,28 @@ test('active subjects and future subject catalog share one canonical surface con
  const selector=read('assets/meowde-subject-selector.js');
  for(const id of ['python','linux','ml','data','deep','robotics'])assert.match(selector,new RegExp('"' + id + '"'));
 });
+
+test('three active subjects share one five-tab information hierarchy',()=>{
+ const root=read('index.html');
+ assert.match(root,/phase1-home-primary/);
+ assert.match(root,/phase1-home-progress/);
+ assert.match(root,/phase1-home-deepen/);
+ assert.doesNotMatch(root,/Linux 집중 복습|Linux 학습<\/a>/);
+
+ const linux=read('assets/linux-home-view.js');
+ assert.match(linux,/linux-home-dashboard/);
+ assert.match(linux,/오늘 학습/);
+ assert.match(linux,/지도 보기/);
+ assert.match(linux,/심화 학습/);
+
+ const ml=read('assets/ml-shell-view.js');
+ assert.match(ml,/오늘 학습/);
+ assert.match(ml,/학습 지도/);
+ assert.match(ml,/마이/);
+
+ const together=read('together.html');
+ assert.match(together,/meowde-subject-page/);
+ assert.match(together,/subject-surface-canonical\.css/);
+ assert.match(together,/class="card invite meowde-subject-card"/);
+ assert.match(together,/class="card invite-actions meowde-subject-card"/);
+});
