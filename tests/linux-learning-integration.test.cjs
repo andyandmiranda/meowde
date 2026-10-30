@@ -60,7 +60,9 @@ test("Linux entry keeps one primary action and hides secondary routes by default
  assert.doesNotMatch(home,/meowde-subject-overview/);
  const library=fs.readFileSync(path.join(root,"assets/linux-library-view.js"),"utf8");
  assert.doesNotMatch(library,/library-mode/);
- assert.match(library,/section\.hidden=i!==modes\[mode\]\[1\]/);
+ assert.match(library,/all\.forEach\(x=>x\.hidden=true\)/);
+ assert.match(library,/if\(mode===\"concept\"\)practiceHub\.hidden=false/);
+ assert.match(library,/if\(mode===\"terminal\"&&terminal\)terminal\.hidden=false/);
 });
 
 test("Linux navigation uses the approved five-tab product structure",()=>{
