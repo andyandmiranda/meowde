@@ -40,6 +40,20 @@ test("quiz progress survives reload and opens the selected practice tool",async(
  await page.goto(base+"/linux-crash-course.html");await openChallenge(page);await page.locator("#lesson .answers button").first().click();await page.reload();await expect(page.locator("#progress")).toContainText("1 / 9");
  await page.goto(base+"/linux-crash-course.html?view=terminal");await expect(page.locator("#sim-input")).toBeVisible();await expect(page.locator("#lesson")).toBeHidden();
 });
+test("four-module map keeps the selected module through lesson return and reload",async({page})=>{
+ await page.goto(base+"/linux-home.html?tab=learn");
+ const module=page.getByRole("button",{name:"4. Shell과 운영"});
+ await module.click();
+ await expect(page).toHaveURL(/group=4/);
+ await page.getByRole("link",{name:/Shell Script와 변수/}).click();
+ await expect(page).toHaveURL(/linux-course\.html\?unit=10/);
+ await page.locator("a.crumb").click();
+ await expect(page).toHaveURL(/linux-home\.html\?tab=learn&group=4/);
+ await page.reload();
+ await expect(page.getByRole("button",{name:"4. Shell과 운영"})).toHaveAttribute("aria-pressed","true");
+ await expect(page.getByRole("link",{name:/Shell Script와 변수/})).toBeVisible();
+ await expect(page.getByRole("link",{name:/Linux와 Ubuntu/})).toHaveCount(0);
+});
 for(const width of [320,375,390,768])test("screens fit viewport "+width,async({page})=>{
  await page.setViewportSize({width,height:844});for(const route of ["linux-home.html","linux-start.html","robotics.html","content-notice.html"]){await page.goto(base+"/"+route);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await expect(page.getByText(/NVIDIA AI Campus/)).toHaveCount(0);}
 });
