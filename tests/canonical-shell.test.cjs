@@ -117,3 +117,13 @@ test('active learning surfaces contain no legacy green active-state tokens',()=>
  assert.match(lock,/min-height:48px/);
  assert.match(lock,/min-height:44px/);
 });
+
+test('canonical subject surface wins over legacy subject styling',()=>{
+ const css=read('assets/subject-surface-canonical.css');
+ assert.match(css,/Final convergence layer/);
+ assert.match(css,/max-width:430px!important/);
+ assert.match(css,/font:850 23px\/1\.35/);
+ assert.match(css,/min-height:48px!important/);
+ assert.match(css,/feedback\.bad/);
+ assert.match(css,/background:var\(--subject-soft\)!important/);
+});
