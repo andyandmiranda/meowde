@@ -53,3 +53,29 @@ test('blueprint v3 keeps learning help collapsed and button geometry canonical',
  const shell=read('assets/app-shell-canonical.css');
  assert.match(shell,/button\.primary,a\.primary/);
 });
+
+test('active subjects and future subject catalog share one canonical surface contract',()=>{
+ const subjectCss=read('assets/subject-surface-canonical.css');
+ assert.match(subjectCss,/--subject-width:430px/);
+ assert.match(subjectCss,/min-height:48px/);
+ assert.match(subjectCss,/line-height:1\.62/);
+ assert.doesNotMatch(subjectCss,/#247b61|#e7f8f0|#bdebd8/i);
+
+ const linux=read('assets/linux-shared-navigation.js');
+ assert.match(linux,/subject-surface-canonical\.css/);
+
+ const mlHtml=read('ml-foundations.html');
+ const mlView=read('assets/ml-shell-view.js');
+ assert.match(mlHtml,/subject-surface-canonical\.css/);
+ assert.match(mlView,/meowde-subject-page/);
+ assert.match(mlView,/meowde-subject-card/);
+ assert.match(mlView,/meowde-subject-primary/);
+
+ const subjects=read('subjects.html');
+ assert.match(subjects,/meowde-subject-page/);
+ assert.match(subjects,/meowde-subject-grid/);
+ assert.equal((subjects.match(/meowde-subject-card/g)||[]).length,6);
+
+ const selector=read('assets/meowde-subject-selector.js');
+ for(const id of ['python','linux','ml','data','deep','robotics'])assert.match(selector,new RegExp('"' + id + '"'));
+});
