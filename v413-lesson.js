@@ -135,6 +135,17 @@
     const note=teachingNotes[lang][lesson.slug];
     return note?core+' '+note:core;
   }
+  function firstRead(text,limit=150){
+    const value=String(text||'').replace(/\s+/g,' ').trim();
+    const sentences=value.match(/[^.!?。！？]+[.!?。！？]?/g)||[value];
+    let out='';
+    for(const sentence of sentences){
+      if(out&&out.length+sentence.trim().length+1>limit)break;
+      out+=(out?' ':'')+sentence.trim();
+      if(out.length>=70)break;
+    }
+    return out||value.slice(0,limit);
+  }
 
   renderLesson=function(){
     if(!hasLessonProgress())return renderHome();
@@ -155,7 +166,8 @@
     }
     if(ex.type==='concept'){
       qhead=`<div class="coach" data-lesson-outcome="idle" data-coach-style="${esc(coachStyle.id)}">${catSVG(S.cat,'idle',62)}<div class="bubble"><div class="prompt">${esc(coachStyle.concept||t('conceptCoach'))}</div></div></div>`;
-      body=`<div class="card"><div class="pill" style="display:inline-flex;margin-bottom:10px">Q ${esc(qcode)}</div><h3>${esc(ex.title)}</h3><p style="font-size:14px;color:var(--muted);line-height:1.6;margin:8px 0 12px">${esc(beginnerExplanation(L,ex))}</p><div class="code">${esc(ex.code)}</div><div class="lesson-concept-check"><h4>${S.lang==='ko'?'문제를 풀기 전 확인':'Before the questions'}</h4><p>${S.lang==='ko'?'이 예제의 실행 순서와 출력이 왜 그렇게 되는지 먼저 설명해 보세요. 이해되지 않으면 예제를 다시 읽고 따라 해도 괜찮아요.':'Explain the execution order and output before continuing.'}</p></div></div>`;
+      const fullConcept=beginnerExplanation(L,ex),quickConcept=firstRead(fullConcept);
+      body=`<div class="card lesson-concept-card"><div class="lesson-pass-label">${S.lang==='ko'?'1회독 · 핵심만':'Pass 1 · Key idea'}</div><h3>${esc(ex.title)}</h3><p class="lesson-concept-summary">${esc(quickConcept)}</p><div class="code">${esc(ex.code)}</div><details class="lesson-concept-more"><summary>${S.lang==='ko'?'더 알고 싶을 때':'More explanation'}</summary><p>${esc(fullConcept)}</p></details></div>`;
     }else if(ex.type==='predict'){
       body=`<div class="code">${esc(ex.code)}</div><div class="choices">${ex.choices.map((choice,index)=>`<button class="choice ${S.sel===index?'sel':''} ${S.checked&&index===ex.answer?'right':''} ${S.checked&&S.sel===index&&index!==ex.answer?'wrong':''}" ${S.checked?'disabled':''} aria-pressed="${S.sel===index}" onclick="if(S.checked)return;S.sel=${index};save();checkQ()">${esc(choice)}</button>`).join('')}</div>${S.checked&&S.correct?`<div class="console">${esc(ex.output)}</div>`:''}`;
     }else if(ex.type==='fill'){

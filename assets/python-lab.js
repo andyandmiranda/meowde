@@ -3,6 +3,7 @@
   const root=document.getElementById("lab"),KEY="meowde-python-lab-v1";
   const escape=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const list=(items,ordered=false)=>`<${ordered?"ol":"ul"}>${items.map(item=>`<li>${escape(item)}</li>`).join("")}</${ordered?"ol":"ul"}>`;
+  const firstRead=(text,limit=150)=>{const value=String(text||"").replace(/\s+/g," ").trim(),sentences=value.match(/[^.!?。！？]+[.!?。！？]?/g)||[value];let out="";for(const sentence of sentences){const piece=sentence.trim();if(out&&out.length+piece.length+1>limit)break;out+=(out?" ":"")+piece;if(out.length>=70)break}return out||value.slice(0,limit)};
   let data,progress={},unit,worker=null,timer=null,busy=false,storageProblem=false;
   let runAssisted=false,storageReadBlocked=false,stage="understand",pathStep="",valuesPath=null;
   try{
@@ -43,9 +44,7 @@
       <button class="nav-toggle" id="nav-toggle" aria-controls="unit-nav" aria-expanded="false">단원 목록 열기</button>
       <div class="layout"><nav id="unit-nav" class="unit-nav" data-collapsed="true" aria-label="학습 단원">${navigation()}</nav>
       <article class="lesson" aria-labelledby="unit-title"><h2 id="unit-title" tabindex="-1">${escape(u.title)}</h2><p class="badge">${stateLabel(u)}</p>
-      <section class="card"><h3>준비와 학습 목표</h3><div class="prerequisites">선수 개념: ${u.prerequisites.length?u.prerequisites.map(id=>`<a href="#${id}">${escape(data.units.find(x=>x.id===id).title)}</a>`).join(""):"없음 · 첫 학습부터 시작할 수 있습니다."}</div>${list(u.goals)}<p class="meta">목표를 읽고 낯선 용어가 있으면 아래 용어 설명부터 확인하세요. 어느 단원이든 자유롭게 열 수 있습니다.</p></section>
-      <section class="card"><h3>왜 필요하고, 어떻게 동작할까?</h3><p>${escape(u.concept)}</p><details><summary>새 용어와 문법 확인하기</summary><dl>${Object.entries(u.glossary).map(([k,v])=>`<dt>${escape(k)}</dt><dd>${escape(v)}</dd>`).join("")}</dl></details></section>
-      <section class="card"><h3>실행 흐름 따라가기</h3><pre>${escape(u.example)}</pre><p>예상 출력</p><pre>${escape(u.output)}</pre>${list(u.flow,true)}<button data-run="example">예제 실행</button><h4>흔한 오해</h4>${list(u.pitfalls)}</section>
+      <section class="card deepen-first-read"><p class="practice-kicker">1회독 · 핵심</p><h3>이것만 먼저 알아요</h3><p class="deepen-key-sentence">${escape(firstRead(u.concept))}</p><pre>${escape(u.example)}</pre><button data-run="example">예제 한 번 실행</button><details class="deepen-more"><summary>필요할 때만 더 보기</summary><div class="deepen-more-body"><h4>학습 목표</h4>${list(u.goals)}<div class="prerequisites">선수 개념: ${u.prerequisites.length?u.prerequisites.map(id=>`<a href="#${id}">${escape(data.units.find(x=>x.id===id).title)}</a>`).join(""):"없음"}</div><h4>전체 설명</h4><p>${escape(u.concept)}</p><h4>용어</h4><dl>${Object.entries(u.glossary).map(([k,v])=>`<dt>${escape(k)}</dt><dd>${escape(v)}</dd>`).join("")}</dl><h4>실행 흐름</h4>${list(u.flow,true)}<p class="meta">예상 출력</p><pre>${escape(u.output)}</pre><h4>자주 헷갈리는 점</h4>${list(u.pitfalls)}</div></details></section>
       <section class="card" id="quiz"><h3>이해 확인 · 결과 예측</h3><p class="meta">${escape(u.quiz.difficulty)} · 목표: ${escape(u.quiz.goal)}<br>평가 기준: ${escape(u.quiz.criteria)}<br>선수 개념: 이 단원의 개념과 실행 흐름</p><pre>${escape(u.quiz.code)}</pre><div>${u.quiz.choices.map((c,i)=>`<button class="choice" data-choice="${i}" aria-pressed="false">${escape(c)}</button>`).join("")}</div><p id="quiz-feedback" role="status"></p></section>
       <section class="card practice-task" id="practice"><p class="practice-kicker">실습 문제</p><h3>직접 작성 · ${escape(t.type)}</h3><p class="meta">${escape(t.difficulty)} · 학습 목표: ${escape(u.goals.join(" / "))}<br>선수 개념: ${escape(u.prerequisites.map(id=>data.units.find(x=>x.id===id).title).concat(u.title).join(" → "))}</p><p>${escape(t.prompt)}</p><h4>평가 기준</h4>${list(t.criteria)}
       <label for="learner-code">내 코드 · 공백 4칸으로 들여쓰세요</label><textarea id="learner-code" class="code" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-describedby="code-info">${escape(typeof r.draft==="string"?r.draft:t.starter)}</textarea><p id="code-info" class="meta">Tab으로 공백 4칸을 넣을 수 있습니다. 실행은 브라우저의 임시 환경에서 진행합니다. 입력 대기는 지원하지 않으며 각 테스트는 새 변수·임시 폴더에서 시작합니다.</p>
@@ -163,16 +162,16 @@
     const article=root.querySelector(".lesson"),practice=root.querySelector("#practice");
     const steps=document.createElement("nav");
     steps.className="function-stages";steps.setAttribute("aria-label","함수 심화 단계");
-    steps.innerHTML=[["understand","1. 이해"],["practice","2. 연습"],["challenge","3. 도전"]].map(([id,label])=>`<a href="#function-slots/${id}" ${stage===id?'aria-current="step"':''}>${label}</a>`).join("");
+    steps.innerHTML=[["understand","핵심"],["practice","따라 코딩"],["challenge","혼자·응용"]].map(([id,label])=>`<a href="#function-slots/${id}" ${stage===id?'aria-current="step"':''}>${label}</a>`).join("");
     article.querySelector(".badge").after(steps);
     const introduction=document.createElement("p");introduction.className="meta";
-    introduction.textContent="이해 → 연습 → 도전 · 순서는 자유입니다. 연습과 도전은 따로 이어갈 수 있습니다. 도움받은 통과와 혼자 푼 결과를 구분해 복습합니다.";
+    introduction.textContent="처음엔 짧게 보고 바로 풀어요. 같은 개념을 다시 만날수록 힌트는 줄고 난이도는 조금씩 올라가요.";
     steps.after(introduction);
     if(stage==="understand"){
       practice.hidden=true;
       const understanding=document.createElement("section");understanding.className="function-understanding";
       const support=root.querySelector(".practice-support");
-      if(support){support.open=true;understanding.append(support)}
+      if(support){support.open=false;const summary=support.querySelector("summary");if(summary)summary.textContent="막힐 때만 개념·예제 다시 보기";understanding.append(support)}
       const quiz=root.querySelector("#quiz");if(quiz)understanding.append(quiz);
       const status=root.querySelector("#run-status"),results=root.querySelector("#run-results"),cancel=root.querySelector("#stop-run");
       if(status&&results&&cancel)understanding.append(cancel,status,results);
@@ -327,15 +326,17 @@
       :other?{hash:"#"+other.id+(other.id==="function-slots"&&typeof progress["function-slots:practice"]?.draft==="string"?"/practice":""),title:other.title}
       :{hash:"#values",title:"문자에서 계산으로 · 처음부터"};
     const stages=[
-      {title:"이해",description:"개념과 실행 예제를 살펴봐요",hash:"#function-slots/understand"},
-      {title:"연습",description:"함수 코드를 직접 완성하고 피드백을 받아요",hash:"#function-slots/practice"},
-      {title:"응용",description:"새로운 입력과 실전 문제에 도전해요",hash:"#function-slots/challenge"}
+      {title:"1회독 · 핵심",description:"한 문장과 예제 하나만 봐요",hash:"#values"},
+      {title:"2회독 · 반복",description:"짧은 문제로 같은 규칙을 다시 만나요",hash:"#values"},
+      {title:"3회독 · 따라 코딩",description:"힌트와 함께 코드를 완성해요",hash:"#function-slots/practice"},
+      {title:"4회독 · 혼자 해결",description:"도움 없이 직접 풀어봐요",hash:"#function-slots/challenge"},
+      {title:"5회독 · 응용",description:"새 입력과 실전형 문제에 적용해요",hash:"#function-slots/challenge"}
     ];
     root.innerHTML='<section class="deepen-hub" aria-label="심화 학습 시작">'
       +'<p class="deepen-hub-kicker">PYTHON · 심화 학습</p><h2 id="unit-title" tabindex="-1">이해하고, 직접 풀고, 응용해요</h2>'
       +'<p class="deepen-hub-intro">개념부터 코딩까지 내 속도로 학습해요. 각 화면에서는 한 문제에 집중하고 채점 후 다음으로 이동할 수 있어요.</p>'
       +'<section class="deepen-resume"><h3>'+(valuesCompleted?'학습 완료 · 복습 확인':hasHistory?'이어서 학습하기':'첫 심화 학습 시작')+'</h3><p>'+escape(resume.title)+'</p><a class="primary" href="'+resume.hash+'">'+(valuesCompleted?'복습 시점 확인':hasHistory?'학습 이어하기':'학습 시작하기')+'</a></section>'
-      +'<p class="deepen-stage-caption">함수 심화 · 이해 → 연습 → 응용</p><nav class="deepen-stage-list" aria-label="함수 심화 학습 방식">'+stages.map((s,i)=>'<a href="'+s.hash+'"><span class="deepen-stage-number">0'+(i+1)+'</span><span><strong>'+s.title+'</strong><small>'+s.description+'</small></span><span aria-hidden="true">›</span></a>').join('')+'</nav>'
+      +'<p class="deepen-stage-caption">한 번에 조금씩 · 핵심 → 반복 → 따라 코딩 → 혼자 해결 → 응용</p><nav class="deepen-stage-list" aria-label="함수 심화 학습 방식">'+stages.map((s,i)=>'<a href="'+s.hash+'"><span class="deepen-stage-number">0'+(i+1)+'</span><span><strong>'+s.title+'</strong><small>'+s.description+'</small></span><span aria-hidden="true">›</span></a>').join('')+'</nav>'
       +'<details class="deepen-unit-list"><summary>모든 심화 단원 보기 · '+data.units.length+'개</summary><nav aria-label="심화 단원 목록">'+data.units.map(u=>'<a href="#'+encodeURIComponent(u.id)+'">'+escape(u.title)+'</a>').join('')+'</nav></details></section>';
   }
   try{

@@ -250,3 +250,31 @@ body:has(#lab) .meowde-lab-tabbar{background:#fff;border-top-color:#ece8ef}
   body:has(#lab) .practice-primary textarea.code {min-height:200px;height:clamp(200px,30dvh,360px)}
   body:has(#lab) .meowde-lab-tabbar {max-width:1080px}
 }
+
+/* Low-literacy / low-attention learning rhythm: one idea per screen, stable vertical rhythm. */
+body:has(#lab) .lesson{line-height:1.6}
+body:has(#lab) .lesson>h2{margin:8px 0 6px}
+body:has(#lab) .lesson>.badge{margin:0 0 12px}
+body:has(#lab) .deepen-first-read{display:grid;gap:12px;padding:18px;margin-top:10px}
+body:has(#lab) .deepen-first-read :is(h3,p,pre,button,details){margin-top:0;margin-bottom:0}
+body:has(#lab) .deepen-key-sentence{font-size:16px;line-height:1.65;font-weight:650;letter-spacing:-.015em;color:var(--surface-ink);word-break:keep-all}
+body:has(#lab) .deepen-first-read pre{padding:14px;border-radius:14px;line-height:1.65}
+body:has(#lab) .deepen-more{border-top:1px solid var(--surface-line);padding-top:2px}
+body:has(#lab) .deepen-more>summary{min-height:46px;display:flex;align-items:center;color:var(--surface-mint-dark);font-size:13px;font-weight:750;cursor:pointer}
+body:has(#lab) .deepen-more-body{display:grid;gap:10px;padding:4px 0 2px}
+body:has(#lab) .deepen-more-body :is(h4,p,ul,ol,dl,pre){margin:0}
+body:has(#lab) .deepen-more-body :is(p,li,dd){font-size:13.5px;line-height:1.62;word-break:keep-all}
+body:has(#lab) .deepen-more-body dt{font-size:13px;font-weight:750;margin-top:6px}
+body:has(#lab) .function-understanding{display:grid;gap:12px}
+body:has(#lab) .function-understanding>.practice-support{margin:0}
+body:has(#lab) .function-stages{margin:10px 0 6px}
+body:has(#lab) .function-stages+ .meta{margin:0 0 12px;line-height:1.55}
+body:has(#lab) #quiz{margin-top:12px}
+body:has(#lab) #quiz .meta{line-height:1.5}
+.lesson-main .lesson-concept-card{display:grid;gap:12px;padding:17px;margin:8px 0 12px}
+.lesson-main .lesson-concept-card :is(h3,p,.code,details){margin:0}
+.lesson-main .lesson-pass-label{font-size:11px;font-weight:800;letter-spacing:.04em;color:#80556a}
+.lesson-main .lesson-concept-summary{font-size:15px!important;line-height:1.65!important;color:#38343a!important;font-weight:620;word-break:keep-all;margin:0!important}
+.lesson-main .lesson-concept-more{border-top:1px solid #eee7ec;padding-top:2px}
+.lesson-main .lesson-concept-more>summary{min-height:44px;display:flex;align-items:center;font-size:13px;font-weight:750;color:#80556a;cursor:pointer}
+.lesson-main .lesson-concept-more>p{font-size:13.5px;line-height:1.62;color:#716877;word-break:keep-all;margin:4px 0 2px}

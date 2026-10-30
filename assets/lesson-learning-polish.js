@@ -6,13 +6,13 @@ if(!app)return;
 const css=document.createElement('style');
 css.textContent=[
 '.lesson-main .meowde-inline-concept{margin:6px 0 12px;padding:0 3px;border:0;background:transparent;box-shadow:none}',
-'.lesson-main .meowde-inline-concept>summary{display:list-item;list-style:disclosure-closed inside;min-height:44px;line-height:44px;padding:0 8px;border-radius:9px;color:#337e69;font-size:13px;font-weight:700;cursor:pointer}',
+'.lesson-main .meowde-inline-concept>summary{display:flex;align-items:center;min-height:44px;padding:0 2px;border-radius:10px;color:#80556a;font-size:13px;font-weight:750;cursor:pointer}',
 '.lesson-main .meowde-inline-concept[open]>summary{list-style:disclosure-open inside}',
-'.lesson-main .meowde-inline-concept>summary:focus-visible,.meowde-answer-review>summary:focus-visible{outline:2px solid #247b61;outline-offset:2px}',
-'.lesson-main .meowde-inline-concept[open]{padding:4px 12px 16px;background:#fffaf5;border:1px solid #e9dfd7;border-radius:14px}',
+'.lesson-main .meowde-inline-concept>summary:focus-visible,.meowde-answer-review>summary:focus-visible{outline:2px solid #80556a;outline-offset:2px}',
+'.lesson-main .meowde-inline-concept[open]{padding:4px 14px 14px;background:#faf5f7;border:1px solid #eee7ec;border-radius:16px}',
 '.lesson-main .meowde-inline-concept[open]>summary{margin-bottom:12px;line-height:1.5;display:list-item;padding:10px 4px}',
 '.lesson-main .meowde-inline-concept :is(h1,h2,h3,h4){font-size:16px;line-height:1.45;letter-spacing:-.02em;margin:12px 0 8px;overflow-wrap:anywhere}',
-'.lesson-main .meowde-inline-concept :is(p,li){font-size:14px;line-height:1.7;letter-spacing:-.01em;overflow-wrap:anywhere;word-break:keep-all;margin:0 0 10px}',
+'.lesson-main .meowde-inline-concept :is(p,li){font-size:14px;line-height:1.62;letter-spacing:-.01em;overflow-wrap:anywhere;word-break:keep-all;margin:0 0 9px}',
 '.lesson-main .meowde-inline-concept :is(ul,ol){padding-left:22px;margin:6px 0 12px}',
 '.lesson-main .meowde-inline-concept :is(pre,.code){display:block;box-sizing:border-box;max-width:100%;margin:10px 0 14px;padding:12px 14px;border-radius:10px;white-space:pre-wrap;overflow-wrap:anywhere;overflow-x:auto;font-size:12px;line-height:1.6;tab-size:2}',
 '.lesson-main .meowde-inline-concept :not(pre)>code{font-size:.9em;overflow-wrap:anywhere}',
@@ -141,7 +141,7 @@ function polish(){
    concept.classList.remove('card');
    concept.classList.add('meowde-inline-concept');
    const title=concept.querySelector('summary');
-   if(title)title.textContent=typeof S!=='undefined'&&S.lang==='en'?'Concept explanation':'개념 설명 보기';
+   if(title)title.textContent=typeof S!=='undefined'&&S.lang==='en'?'Need a quick hint?':'막히면 핵심만 다시 보기';
  }
  const state=typeof S==='undefined'?null:S;
  const ex=typeof cur==='function'?cur():null;

@@ -27,3 +27,17 @@ test('shared subject controller preserves tab meaning and normalizes top control
  const shell=read('assets/shared-five-tab-shell.css');
  assert.doesNotMatch(shell,/#247b61|#e7f8f0|#bdebd8/i);
 });
+
+test('learning surfaces default to short first-read progressive disclosure',()=>{
+ const lesson=read('v413-lesson.js');
+ assert.match(lesson,/1회독 · 핵심만/);
+ assert.match(lesson,/더 알고 싶을 때/);
+ assert.doesNotMatch(lesson,/문제를 풀기 전 확인/);
+ const lab=read('assets/python-lab.js');
+ assert.match(lab,/1회독 · 핵심/);
+ assert.match(lab,/2회독 · 반복/);
+ assert.match(lab,/3회독 · 따라 코딩/);
+ assert.match(lab,/4회독 · 혼자 해결/);
+ assert.match(lab,/5회독 · 응용/);
+ assert.match(lab,/support\.open=false/);
+});
