@@ -13,7 +13,7 @@ const META=[
  {level:"L3 중급",goal:"셸 변수 저장과 값 참조 문법을 구별한다.",wrong:["echo name=은 변수 값이 아니라 글자를 출력해요.","print(name)은 Python 문법이에요."]},
  {level:"L3 중급",goal:"경계값을 비교해 if의 실행 분기를 예측한다.",wrong:["25는 30보다 작아서 else로 가지 않아요.","조건문의 출력은 입력값 자체가 아니에요."]}
 ];
-const stageNames=["개념","예제","연습","도전"];
+const stageNames=["핵심","예제","따라 하기","혼자·응용"];
 let stage=0,wrongAttempts=0;
 const byId=id=>document.getElementById(id);
 const make=(tag,text,className)=>{const n=document.createElement(tag);n.textContent=text;if(className)n.className=className;return n;};
@@ -38,15 +38,15 @@ function renderPath(focus=false){
  stageNames.forEach((name,i)=>{const item=make("li",(i+1)+". "+name);if(stage===i)item.setAttribute("aria-current","step");path.append(item);});area.append(path);
  const panel=make("section","","linux-stage-panel");panel.dataset.stage=String(stage);
  if(stage===0){
-  panel.append(make("h3","개념 이해"),make("p",lesson.idea));
+  panel.append(make("h3","핵심만 보기"),make("p",lesson.idea));
   const next=make("button","예제 보기 →","linux-next");next.onclick=()=>{stage=1;saveStage();renderPath(true);};panel.append(next);
  }
  if(stage===1){
-  panel.append(make("h3","명령어 예제"),make("pre",lesson.example));
+  panel.append(make("h3","예제로 보기"),make("pre",lesson.example));
   const next=make("button","직접 연습하기 →","linux-next");next.onclick=()=>{stage=2;saveStage();renderPath(true);};panel.append(next);
  }
  if(stage===2){
-  panel.append(make("h3",index<3?"결과로 확인하는 연습":index<8?"안전한 명령 구조 확인":"조건문 분기 검증"));
+  panel.append(make("h3",index<3?"따라 해보기":index<8?"따라 해보기":"따라 해보기"));
   const note=make("p",index<3?"명령을 입력하면 제한된 시뮬레이터가 결과를 확인해요.":index<8?"지원하는 명령 구조만 확인해요. 실제 셸 실행 결과는 검증하지 않아요.":"Bash if/else 코드를 작성해요. 여러 경계값으로 모의 검증하며 실제 Bash는 실행하지 않아요.","sub");
   const input=make(index===8?"textarea":"input","");input.setAttribute("aria-label",index===8?"Bash 조건문 연습 코드":"연습 명령어");if(index===8)input.rows=7;input.autocomplete="off";input.autocapitalize="off";input.spellcheck=false;input.placeholder=index===8?lesson.example:lesson.cmd;
   const drafts=saved.commandDraftByLesson;
@@ -72,7 +72,7 @@ function renderPath(focus=false){
   panel.append(note,input,check,feedback);
  }
  if(stage===3){
-  panel.append(make("h3","새 상황에 적용하기"),make("p",lesson.challenge));
+  panel.append(make("h3","혼자 풀고 응용하기"),make("p",lesson.challenge));
   const answers=make("div","","answers"),feedback=make("p","","linux-feedback");feedback.setAttribute("role","status");
   lesson.choices.forEach((choice,i)=>{const b=make("button",choice);b.onclick=()=>{
    if(i===lesson.answer){
