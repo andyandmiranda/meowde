@@ -26,13 +26,3 @@ body .tabbar button:focus-visible,body .meowde-lab-tabbar a:focus-visible,body.l
 /* Match the root app's 24px icon SVG, including stroke width and selected state. */
 .meowde-tab-icon{width:24px;height:24px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 body.linux-five-tabs .top .meowde-compact-subject{margin-left:auto}
-
-/* Python/Linux structural parity: same 430px app frame, header and bottom navigation. */
-body.linux-five-tabs{display:flex;justify-content:center;background:#fff}
-body.linux-five-tabs main.shell,body.linux-five-tabs main.app{box-sizing:border-box;width:100%;max-width:430px;min-height:100dvh;margin:0 auto;padding:0 18px calc(92px + env(safe-area-inset-bottom,0px));background:#fff}
-body.linux-five-tabs main.app{padding-top:0}
-body.linux-five-tabs .top.meowde-canonical-top{margin-inline:-18px;width:calc(100% + 36px);max-width:none}
-body.linux-five-tabs .linux-tabbar{max-width:430px}
-body.linux-five-tabs .linux-deepen-head{padding:8px 0 10px}
-body.linux-five-tabs .linux-source-exercises,body.linux-five-tabs #more-learning>section{margin-inline:0}
-@media(min-width:480px){body.linux-five-tabs{padding:22px 0}body.linux-five-tabs main.shell,body.linux-five-tabs main.app{min-height:calc(100dvh - 44px);border:1px solid rgba(68,49,36,.08);border-radius:32px;overflow:hidden;box-shadow:0 22px 60px rgba(68,49,36,.10)}}

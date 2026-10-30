@@ -12,14 +12,12 @@ const choices=[
 function params(){return new URLSearchParams(root.location.search);}
 function current(){
  const p=root.location.pathname,q=params();
- const explicit=q.get("subject");if(["python","linux","ml"].includes(explicit))return explicit;
- if(p.endsWith("/together.html"))return "python";
+ if(p.endsWith("/together.html")){const s=q.get("subject");return ["python","linux","ml"].includes(s)?s:"python";}
  return /linux-/.test(p)?"linux":p.endsWith("/ml-foundations.html")?"ml":"python";
 }
 function routeFor(id){
  const p=root.location.pathname,q=params();
  if(p.endsWith("/together.html"))return "/together.html?subject="+id;
- if(p==="/"&&q.get("tab")==="my")return id==="linux"?"/?tab=my&subject=linux":id==="ml"?"/ml-foundations.html":"/?tab=my&subject=python";
  if(/linux-/.test(p)){
   if(id==="python"){
    if(p.endsWith("/linux-crash-course.html")||p.endsWith("/linux-review.html"))return "/python-lab.html?view=overview";
@@ -37,7 +35,7 @@ function routeFor(id){
  if(id==="linux"){
   const tab=q.get("tab");
   if(tab==="home")return "/linux-home.html?tab=home";
-  if(tab==="my")return "/?tab=my&subject=linux";
+  if(tab==="my")return "/linux-home.html?tab=my";
   return "/linux-home.html?tab=learn";
  }
  if(id==="ml")return "/ml-foundations.html";
