@@ -19,6 +19,12 @@ function currentSubject(){
 }
 function currentTab(){
  const p=root.location.pathname,q=params(),tab=q.get("tab");
+ // Root tabs render in place, so a stale entry query cannot identify the live tab.
+ if((p==="/"||p.endsWith("/index.html"))&&typeof S!=="undefined"){
+  if(["map","review","lesson"].includes(S.screen))return "learn";
+  if(["room","my","profile","achievements"].includes(S.screen))return "my";
+  if(S.screen==="home")return "home";
+ }
  if(p.endsWith("/together.html"))return "together";
  if(p.endsWith("/python-lab.html")||p.endsWith("/linux-crash-course.html")||p.endsWith("/linux-review.html"))return "deepen";
  if(p.endsWith("/ml-foundations.html")&&!["home","learn","my"].includes(tab))return "deepen";

@@ -14,14 +14,15 @@
 
   save=safeSave;
 
+  let runtimePromise=null;
   warmPy=async function(){
-    if(pyReady||pyLoading)return;
-    if(typeof loadPyodide==='undefined'){
-      console.error('Pyodide loader is unavailable');
-      return;
-    }
+    if(pyReady)return;
+    if(runtimePromise)return runtimePromise;
     pyLoading=true;
-    try{
+    runtimePromise=(async()=>{try{
+      // The root now loads Pyodide lazily; this override must honor that loader.
+      if(typeof ensurePyodideLoader==='function')await ensurePyodideLoader();
+      if(typeof loadPyodide==='undefined')throw new Error('Pyodide loader is unavailable');
       pyodide=await loadPyodide({indexURL:'https://cdn.jsdelivr.net/pyodide/v0.28.0/full/'});
       pyReady=true;
     }catch(error){
@@ -31,7 +32,8 @@
     }finally{
       pyLoading=false;
       if(S.screen==='home')renderHome();
-    }
+    }})();
+    try{await runtimePromise}finally{runtimePromise=null}
   };
 
   runPython=async function(code){

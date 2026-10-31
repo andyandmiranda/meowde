@@ -13,8 +13,10 @@ const events=read('v428-events.js');
 
 assert(companion.includes('window.renderRoom=renderCompanionHub'),'v443 owns the final Room renderer');
 assert(companion.includes('window.renderMy=renderCompanionHub'),'legacy My route resolves to the canonical Meowde hub');
-assert(companion.includes('dataset.roomRenderer="canonical-v443"'),'canonical Room renderer marker is present');
-assert(companion.includes('data-phase3-companion-hub="ordered"'),'canonical Meowde section ordering marker is rendered directly');
+assert(companion.includes('dataset.roomRenderer="profile-first-v443"'),'canonical Room declares the approved profile-first renderer');
+const profile=read('v420-profile.js');
+assert(companion.includes('window.__MEOWDE_CANONICAL_PROFILE_RENDERER__();'),'Room delegates to the canonical profile renderer');
+assert(profile.indexOf('my-progress-card')<profile.indexOf('my-records')&&profile.indexOf('my-records')<profile.indexOf('my-settings'),'My renders progress before collapsed records and settings');
 assert(companion.includes('v427-growth-card'),'canonical Room renders growth directly');
 assert(companion.includes('v419-summary'),'Achievements must be in canonical Meowde ordering');
 assert(companion.includes('v416-milestone-card'),'canonical Room renders pending milestone rewards directly');

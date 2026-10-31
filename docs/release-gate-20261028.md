@@ -154,3 +154,38 @@
 - 학습 콘텐츠/문제/채점 및 localStorage 코드는 **변경하지 않음**. 사용자 학습 기록 마이그레이션/삭제 없음.
 - 사용자에게 보인 `cb69d2d2` Preview는 수정 전 버전. 이 변경의 최신 SHA에서 실제 iOS 스크린샷·모바일 Safari·Chromium **NOT RUN**. 시각 일관성 최종 PASS 금지.
 - 현재 Draft PR #114의 기존 CI는 실패 내역이 있어 **릴리스 HOLD**. 새 커밋 검증 결과로 갱신 필요.
+
+
+## 2026-10-31 PR #114 단일 RC 후속 감사 (로컬 수정, 원격 미반영)
+
+- 확인한 원격 HEAD: `52fe20b1bfc5a80396fbe547005e52ac9bdef919`, Draft 유지.
+- PR 연계 기존 워크플로 11개: 5 success / 6 failure. PASS 5개 재사용: Python learning content, Linux loop lesson, Python question QA, Free lesson resume WebKit, Function deepen journey. 로그의 checkout은 PR merge ref `496c2db009ba28277b48d14a2771457461532eae`이므로 순수 HEAD 실행과 구분한다. 신규 CI 실행 없음.
+- 기존 Preview `dpl_FG2TpHu4uq57bHeMsF1xEBTwXKiZ`는 READY지만 Git SHA `3c7126d73630f9d0ab9172c038e149eb0f8783f6`. 현재 RC의 QA 증거로 사용하지 않았다. 새 Preview 생성 없음.
+
+### 실패 분류와 최소 수정
+- **실제 제품 결함:** index의 lazy Pyodide loader를 v412 hotfix warmPy가 덮어쓰며 ensurePyodideLoader를 호출하지 않아 첫 write 제출에서 loader unavailable 발생 가능. hotfix에서 lazy loader 대기 및 초기화 Promise 공유. index loader는 실패 script 제거 후 새 요청으로 재시도한다. 채점/정답/보상/저장 키는 변경하지 않았다.
+- **테스트 문법 결함:** Linux integration test line 65의 literal `\n`을 실제 개행으로 복구. 기존 두 assertion 유지.
+- **구식 검증 기대값:** Room의 구형 gallery marker 대신 canonical profile 위임/진도→기록→설정 순서 확인. Learn의 4개짜리 배열 전체 일치 대신 현재 6개 단원 배열 확인. Profile의 옛 Meowde 버튼 대신 학습 중심 My 확인. Bootstrap의 단일 enhancement loop 대신 critical→deferred 순차 await 확인. 제품 UI를 옛 구조로 되돌리지 않았다.
+- **외부 환경/미확정:** 기존 write feedback/Smart Review/walkthrough timeout은 loader 결함과 함께 재평가해야 하며 CDN만의 문제로 확정하지 않는다. 실제 Pyodide 다운로드/실행은 로컬 브라우저 부재로 NOT RUN.
+
+### 실행 증거
+- 수정 작업본 `npm run validate`: exit 0. 실제 브라우저/실제 Pyodide 통과 의미가 아님.
+- 새 lazy-runtime 회귀 3/3 PASS: 첫 로더 요청, 동시 초기화 공유, script 실패 후 새 요청, runtime 초기화 실패 후 재시도.
+- lazy runtime + Python QA + Linux integration 핵심 회귀 24/24 PASS. 엔진 장애 시 오답/보상 금지와 복구 후 일회 지급 계약 유지.
+- Room/Home/Learn/Review/Secondary/Bootstrap의 후속 정적 게이트 모두 PASS. 이 결과는 수정 작업본 기준.
+- canonical shell/6과목 계약은 로컬 validate PASS. 활성 3과목 + 준비 중 3과목 유지. 실브라우저 시각/상호작용 100%를 뜻하지 않는다.
+- 기존 대안 `tools/audit-python-beginner.py` 실행: CPython 260 exercises / 0 failures. 이 도구는 ko/en 각각 앞 22레슨을 검사하며 60레슨 전체 또는 브라우저 Pyodide 증거가 아니다.
+- Chromium 설치 시 다운로드 ZIP 오류. 모바일 360~390px overflow, 3과목×5탭 실화면, 탭 의미 유지, Back/Refresh, 임시 답안 보존, CTA 실측, 접근성은 이번 환경에서 NOT RUN. 다른 브라우저 PASS로 대체하지 않았다.
+
+### 출시 판단과 보존
+**HOLD**. 원격 CI는 기존 FAIL 상태이며 로컬 수정으로 원격 PASS를 주장하지 않는다. 미해결 P0: 수정 RC 반영 및 실 Pyodide 채점/복구 통합 검증, 동일 RC 모바일 탐색·저장·시각 QA, 같은 HEAD 배포 확인. 전체 개발률의 확정 분모가 없어 임의 퍼센트 미산정.
+푸시는 PR CI 및 Vercel 자동 배포를 유발할 수 있어 수행하지 않음. 로컬 커밋만 보존. main/Production/도메인/사용자 기록/저장 키/비용 변경 없음. Production 승인을 요청할 준비는 아직 안 됐으며 최종 배포에는 별도 명시 승인이 필요하다.
+
+
+### 2026-10-31 후속: 원격 미반영 로컬 RC의 과목 전환 보완
+- 대체 브라우저 확인: 로컬 서버는 127.0.0.1:4173에서 시작했지만 클라우드 Chrome은 ERR_CONNECTION_REFUSED. 클라우드와 실행 컨테이너의 로컬 서버 연결 불가. 동일 RC 모바일/실 Pyodide QA NOT RUN 유지. 공개 터널이나 새 배포는 만들지 않았다.
+- 실제 결함 재현: 원본 `52fe20b1`의 subject selector를 Node VM에서 실행. Python URL `/?tab=home`, 실제 `S.screen=map`에서 Linux 전환 대상이 `/linux-home.html?tab=home`으로 잘못 결정됨. Python SPA 탭은 URL을 갱신하지 않으므로 URL의 tab만 사용하면 현재 학습/마이 의미를 잃는다.
+- 최소 수정: 루트 Python 화면에서는 현재 S.screen으로 home/learn/my를 결정한 뒤 기존 URL fallback 사용. lesson/review는 learn, room/profile/achievements는 my로 연결. 저장 쓰기나 저장 키 변경 없음.
+- 실행 회귀: 실제 subject selector를 Node VM에서 실행한 3과목×5탭 15개 목적지, 네 진입 URL×일곱 실제 화면의 stale-query 전환 계약 PASS. 관련 기존 shell/layout 검사 포함 `node --test tests/subject-route-runtime.test.cjs tests/subject-switch-layout.test.cjs tests/canonical-shell.test.cjs` **15/15 PASS**. 새 회귀를 기존 npm validate에 포함. VM은 실제 브라우저 Back/Refresh/DOM 및 시각 검사 증거가 아니다.
+- 추가 결정적 검증: 저장소에 이미 있는 `tools/validate-python-lab.py` 실제 실행 exit 0. **20 units / 91 reference-model criteria / 9 mutation rejections / 20 examples / 14 existing unit contracts preserved**. CPython 환경 결과이며 Pyodide 브라우저 채점으로 표시하지 않음.
+- 기존 PASS를 반복하지 않음. 신규 CI/Preview/원격 푸시 없음. 원격 #114 HEAD와 로컬 수정 커밋을 구분한다. 전체 출시 HOLD 유지. 남은 P0는 같은 수정 RC의 실브라우저 Pyodide 채점·모바일 5탭/뒤로가기/새로고침/임시 답안 보존·시각 QA 및 동일 HEAD Preview 확인.
