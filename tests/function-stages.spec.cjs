@@ -6,7 +6,7 @@ const key='meowde-python-lab-v1';
 test('function journey preserves separate drafts, records, retries and legacy data',async({page})=>{
  test.setTimeout(240000);
  await page.goto(base+'/python-lab.html#function-slots');
- await expect(page.locator('.function-stages [aria-current="step"]')).toHaveText('1. 이해');
+ await expect(page.locator('.function-stages [aria-current="step"]')).toHaveText('핵심');
  await expect(page.locator('#practice')).toBeHidden();
  await expect(page.locator('#quiz')).toBeVisible();
  await page.evaluate(key=>{
@@ -50,7 +50,7 @@ test('function journey preserves separate drafts, records, retries and legacy da
  expect(records.functions).toEqual({draft:'old draft',independentPassed:true});
  expect(records.unknown).toEqual({custom:'future'});
  expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(legacy);
- await page.locator('.lab-back-link').click();
+ await page.getByRole('navigation',{name:'메인 메뉴'}).getByRole('link',{name:'학습'}).click();
  await expect(page).toHaveURL(/tab=map/);
 });
 test('function stages fit narrow viewport and preserve unreadable storage',async({page})=>{
@@ -64,5 +64,5 @@ test('function stages fit narrow viewport and preserve unreadable storage',async
  await page.locator('.function-stages a[href$="/challenge"]').focus();
  await page.keyboard.press('Enter');
  await expect(page.locator('#unit-title')).toBeFocused();
- await expect(page.locator('.function-stages [aria-current="step"]')).toHaveText('3. 도전');
+ await expect(page.locator('.function-stages [aria-current="step"]')).toHaveText('혼자·응용');
 });

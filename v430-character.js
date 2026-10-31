@@ -121,11 +121,8 @@
   window.MeowCharacterV430=window.MeowCharacterMaster=Object.freeze({version:VERSION,asset:ASSETS.none,assets:ASSETS,render:renderMascot,renderFace,accessory:selected,decorateHome,cleanRoom,purgeLegacyCats,installHeadphones,setLanguage,languageSheet});
   document.documentElement.dataset.homeCharacterSurface="canonical-v414";
   if(typeof S!=="undefined"){
-    if(S.screen==="lesson"&&typeof renderLesson==="function")renderLesson();
-    else if(S.screen==="room"&&typeof renderRoom==="function")renderRoom();
-    else if(S.screen==="profile"&&typeof renderProfile==="function")renderProfile();
-    else if(S.screen==="achievements"&&typeof renderAchievements==="function")renderAchievements();
-    else if(typeof renderHome==="function")renderHome();
+    if(S.screen==="home")decorateHome();
+    else if(S.screen==="room")cleanRoom();
   }
   purgeLegacyCats();
 })();

@@ -1,0 +1,16 @@
+body{background:#fff;color:#38343a;font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif}.meowde-shell-header{background:#fff}main{width:min(100%,430px);max-width:430px;padding:12px 18px 104px}.meowde-lab-tabbar a[aria-current=page]{background:#faf5f7;color:#80556a}.ml-shell-page h1,.ml-learn-page>h1{margin:8px 0 6px;font-size:29px;line-height:1.25;letter-spacing:-.04em}.ml-shell-page>p,.ml-learn-page>h1+p{margin:0 0 18px;color:#716877}.ml-kicker{margin-bottom:2px!important;color:#80556a!important;font-size:13px;font-weight:800}.ml-shell-page article{margin:12px 0;padding:20px;border:1px solid #eee7ec;border-radius:22px;box-shadow:0 3px 12px rgba(56,52,58,.035)}.ml-shell-page article h2{margin:7px 0;font-size:22px}.ml-shell-page article p{margin:7px 0 14px;color:#716877}.ml-shell-page a.unit{display:inline-flex;min-height:44px;align-items:center;border-color:#e7c9d5;background:#faf5f7;text-decoration:none}.ml-shell-page progress{width:100%;height:8px}.ml-settings{display:flex;justify-content:center;margin-top:16px}.ml-learn-page>nav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.ml-learn-page>nav button{min-width:0;padding:10px 8px;font-size:13px}.ml-learn-page>#storage-status{margin:12px 0;color:#716877}.ml-learn-page>a,.ml-learn-page>p:last-of-type{display:none}.ml-learn-page{min-height:calc(100vh - 170px)}@media(max-width:359px){.ml-learn-page>nav{grid-template-columns:1fr}.ml-shell-page article{padding:17px}}
+
+.ml-lesson-card{display:grid;gap:10px}
+.ml-pass-label{margin:0!important;color:#80556a!important;font-size:12px!important;font-weight:800}
+.ml-key-idea{margin:0!important;font-size:15px!important;line-height:1.62!important;color:#38343a!important;word-break:keep-all}
+.ml-lesson-card pre{margin:0;padding:14px;border-radius:14px;line-height:1.62}
+.ml-more{border-top:1px solid #eee7ec;padding-top:2px}
+.ml-more>summary{min-height:44px;display:flex;align-items:center;color:#80556a;font-size:13px;font-weight:750;cursor:pointer}
+.ml-more>p{font-size:13.5px;line-height:1.62;color:#716877;margin:6px 0;word-break:keep-all}
+.ml-question{margin:4px 0 0;font-size:17px;line-height:1.45}
+.ml-lesson-card .choices{margin-top:0}
+.ml-lesson-card .choices button{min-height:48px;border-radius:14px}
+.ml-lesson-card #feedback{min-height:0;margin:2px 0 0;font-size:14px;line-height:1.6;white-space:normal}
+.ml-next-action{display:grid;gap:8px}
+.ml-transfer{margin:0!important;padding:10px 12px;border-radius:14px;background:#faf5f7;color:#716877!important;font-size:13px!important}
+.ml-next{min-height:48px;border:1px solid #d9a7b9;border-radius:15px;background:#f5dde5;color:#38343a;font-weight:750}

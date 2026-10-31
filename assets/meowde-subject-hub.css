@@ -16,3 +16,8 @@ body>.app,.app,.shell{background:#fff!important}
 .meowde-subject-overview .subject-options a[aria-current]{background:#fff2f7;border-color:#f45b98}
 .meowde-subject-overview .overview-note{font-size:11px;margin:12px 0 0}
 @media(max-width:340px){.meowde-subject-overview .subject-options{grid-template-columns:1fr}}
+
+/* Expand the subject overview to three genuinely accessible learning paths. */
+.meowde-subject-overview .subject-options{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.meowde-subject-overview .subject-options a{min-width:0;padding:10px 8px;overflow-wrap:anywhere}
+@media(max-width:390px){.meowde-subject-overview .subject-options{grid-template-columns:1fr 1fr}.meowde-subject-overview .subject-options a:last-child{grid-column:1/-1}}

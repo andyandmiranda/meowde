@@ -13,7 +13,7 @@ const META=[
  {level:"L3 중급",goal:"셸 변수 저장과 값 참조 문법을 구별한다.",wrong:["echo name=은 변수 값이 아니라 글자를 출력해요.","print(name)은 Python 문법이에요."]},
  {level:"L3 중급",goal:"경계값을 비교해 if의 실행 분기를 예측한다.",wrong:["25는 30보다 작아서 else로 가지 않아요.","조건문의 출력은 입력값 자체가 아니에요."]}
 ];
-const stageNames=["개념","예제","연습","도전"];
+const stageNames=["핵심","예제","따라 하기","혼자·응용"];
 let stage=0,wrongAttempts=0;
 const byId=id=>document.getElementById(id);
 const make=(tag,text,className)=>{const n=document.createElement(tag);n.textContent=text;if(className)n.className=className;return n;};
@@ -38,52 +38,65 @@ function renderPath(focus=false){
  stageNames.forEach((name,i)=>{const item=make("li",(i+1)+". "+name);if(stage===i)item.setAttribute("aria-current","step");path.append(item);});area.append(path);
  const panel=make("section","","linux-stage-panel");panel.dataset.stage=String(stage);
  if(stage===0){
-  panel.append(make("h3","개념 이해"),make("p",lesson.idea));
+  panel.append(make("h3","핵심만 보기"),make("p",lesson.idea));
   const next=make("button","예제 보기 →","linux-next");next.onclick=()=>{stage=1;saveStage();renderPath(true);};panel.append(next);
  }
  if(stage===1){
-  panel.append(make("h3","명령어 예제"),make("pre",lesson.example));
+  panel.append(make("h3","예제로 보기"),make("pre",lesson.example));
   const next=make("button","직접 연습하기 →","linux-next");next.onclick=()=>{stage=2;saveStage();renderPath(true);};panel.append(next);
  }
  if(stage===2){
-  panel.append(make("h3",index<3?"결과로 확인하는 연습":"예제 구조 따라 쓰기"));
-  const note=make("p",index<3?"명령을 입력하면 제한된 시뮬레이터가 결과를 확인해요.":"이 명령은 현재 시뮬레이터에서 실행하지 않아요. 예제와 같은 구조인지 확인하는 연습이에요.","sub");
-  const input=make("input","");input.setAttribute("aria-label","연습 명령어");input.autocomplete="off";input.autocapitalize="off";input.spellcheck=false;input.placeholder=lesson.cmd;
+  panel.append(make("h3",index<3?"따라 해보기":index<8?"따라 해보기":"따라 해보기"));
+  const note=make("p",index<3?"명령을 입력하면 제한된 시뮬레이터가 결과를 확인해요.":index<8?"지원하는 명령 구조만 확인해요. 실제 셸 실행 결과는 검증하지 않아요.":"Bash if/else 코드를 작성해요. 여러 경계값으로 모의 검증하며 실제 Bash는 실행하지 않아요.","sub");
+  const input=make(index===8?"textarea":"input","");input.setAttribute("aria-label",index===8?"Bash 조건문 연습 코드":"연습 명령어");if(index===8)input.rows=7;input.autocomplete="off";input.autocapitalize="off";input.spellcheck=false;input.placeholder=index===8?lesson.example:lesson.cmd;
+  const drafts=saved.commandDraftByLesson;
+  if(drafts&&typeof drafts==="object"&&!Array.isArray(drafts)&&typeof drafts[index]==="string")input.value=drafts[index];
+  input.addEventListener("input",()=>{panel.querySelectorAll(".linux-next").forEach(button=>button.remove());const feedback=panel.querySelector(".linux-feedback");if(feedback){feedback.textContent="입력이 바뀌었어요. 다시 채점해 주세요.";feedback.className="linux-feedback";}if(!canPersist)return;const old=saved.commandDraftByLesson;const safe=old&&typeof old==="object"&&!Array.isArray(old)?old:{};saved.commandDraftByLesson={...safe,[index]:input.value};persist();});
   const check=make("button","명령어 확인");const feedback=make("p","","linux-feedback");feedback.setAttribute("role","status");
   check.onclick=()=>{
+   // A later failed submission must revoke any previously earned continue action.
+   panel.querySelectorAll(".linux-next").forEach(button=>button.remove());
    const raw=input.value;
-   if(index<3){
+   if(index<8){
     const result=MeowdeLinuxCommandPractice.grade(index,raw),ok=result.ok;
     feedback.className="linux-feedback "+(ok?"good":"bad");
     feedback.textContent=result.message;
     if(ok){const next=make("button","도전 문제 풀기 →","linux-next");next.onclick=()=>{stage=3;saveStage();renderPath(true);};feedback.after(next);}
    }else{
-    const same=raw.trim().replace(/\s+/g," ")===lesson.cmd.replace(/\s+/g," ");
+    const result=window.MeowdeBashPractice.grade("battery",raw);const same=result.ok;
     feedback.className="linux-feedback "+(same?"good":"bad");
-    feedback.textContent=same?"예제 구조를 정확히 따라 썼어요. 실제 실행 검증은 지원하지 않아요.":"예제와 다른 부분이 있어요. 공백·옵션·기호를 다시 비교해 보세요.";
+    feedback.textContent=same?"경계값 포함 "+result.passed+"/"+result.total+"개 모의 검증을 통과했어요. 실제 Bash 실행은 하지 않았어요.":result.error||"조건문 구조를 확인하고 다시 시도해 보세요.";
     if(same){const next=make("button","도전 문제 풀기 →","linux-next");next.onclick=()=>{stage=3;saveStage();renderPath(true);};feedback.after(next);}
    }
   };
   panel.append(note,input,check,feedback);
  }
  if(stage===3){
-  panel.append(make("h3","새 상황에 적용하기"),make("p",lesson.challenge));
+  panel.append(make("h3","혼자 풀고 응용하기"),make("p",lesson.challenge));
   const answers=make("div","","answers"),feedback=make("p","","linux-feedback");feedback.setAttribute("role","status");
   lesson.choices.forEach((choice,i)=>{const b=make("button",choice);b.onclick=()=>{
    if(i===lesson.answer){
     done[index]=true;wrongAttempts=0;persist();feedback.className="linux-feedback good";feedback.textContent="정답이에요. "+lesson.why;
     answers.querySelectorAll("button").forEach(x=>x.disabled=true);
-    const next=make("button",index<8?"다음 단원 →":"처음부터 복습 →","linux-next");next.onclick=()=>{index=(index+1)%9;stage=0;saved.stageByLesson={...(saved.stageByLesson||{}),[index]:0};persist();show();window.scrollTo(0,0);};feedback.after(next);
+    const next=make("button",index<8?"다음 단원 →":"학습 지도로 →","linux-next");next.onclick=()=>{if(index===8){location.href="/linux-home.html?tab=learn";return;}index++;stage=0;saved.stageByLesson={...(saved.stageByLesson||{}),[index]:0};persist();show();window.scrollTo(0,0);};feedback.after(next);
    }else{
     wrongAttempts++;feedback.className="linux-feedback bad";feedback.textContent="아직 아니에요. "+meta.wrong[Math.max(0,i-(i>lesson.answer?1:0))]+(wrongAttempts>1?" 위 개념과 예제를 다시 확인해 보세요.":" 다시 선택할 수 있어요.");
    }
   };answers.append(b);});
   panel.append(answers,feedback);
+  if(done[index]===true){
+   feedback.className="linux-feedback good";feedback.textContent="완료한 단원이에요. "+lesson.why;
+   answers.querySelectorAll("button").forEach(x=>x.disabled=true);
+   const next=make("button",index<8?"다음 단원 →":"학습 지도로 →","linux-next");
+   next.onclick=()=>{if(index===8){location.href="/linux-home.html?tab=learn";return;}index++;stage=0;saved.stageByLesson={...(saved.stageByLesson||{}),[index]:0};persist();show();window.scrollTo(0,0);};
+   feedback.after(next);
+  }
  }
  area.append(panel);byId("progress").textContent=Object.keys(done).filter(k=>done[k]===true&&/^[0-8]$/.test(k)).length+" / 9단원 개념 확인 완료";
  if(focus)panel.querySelector("h3")?.setAttribute("tabindex","-1"),panel.querySelector("h3")?.focus();
 }
+const requestedLesson=Number(new URLSearchParams(location.search).get("lesson"));if(Number.isInteger(requestedLesson)&&requestedLesson>=1&&requestedLesson<=9){index=requestedLesson-1;persist();}
 const originalShow=show;
-show=function(){originalShow();stage=Number(saved.stageByLesson?.[index]);if(!Number.isInteger(stage)||stage<0||stage>3)stage=0;wrongAttempts=0;renderPath();};
+show=function(){originalShow();stage=Number(saved.stageByLesson?.[index]);if(!Number.isInteger(stage)||stage<0||stage>3)stage=0;if(done[index]===true)stage=3;wrongAttempts=0;renderPath();};
 show();
 })();

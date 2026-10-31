@@ -18,7 +18,19 @@ test("limited Linux command practice grades outcomes and accepts equivalent quot
  assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(1,"tail -n 2 './app.log'").ok,true);
  assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(2,"grep -n 'ERROR' ./app.log").ok,true);
  assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(2,"grep ERROR app.log").ok,false);
- assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(4,"chmod 600 secret.txt").supported,false);
+ assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(4,"chmod 600 secret.txt").ok,true);
+ assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(4,"chmod 777 secret.txt").ok,false);
+ for(const [index,valid,invalid] of [
+  [3,"cat ./names.txt | sort","cat names.txt > sort"],
+  [5,"ps aux","kill 1234"],
+  [6,"apt-cache search tree","sudo apt install tree"],
+  [7,'echo "$name"',"echo name="]
+ ]){
+  assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(index,valid).ok,true);
+  assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(index,invalid).ok,false);
+  assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(index,valid).verified,"syntax");
+ }
+ assert.equal(sandbox.MeowdeLinuxCommandPractice.grade(8,'echo "충전이 필요해요"').supported,false);
 });
 
 test("Linux learning path declares honest L0-L3 goals and one-stage UI",()=>{
@@ -29,9 +41,17 @@ test("Linux learning path declares honest L0-L3 goals and one-stage UI",()=>{
  assert.match(source,/다시 선택할 수 있어요/);
  assert.doesNotMatch(source,/function stageButton/);
  assert.match(source,/make\("li",\(i\+1\)\+"\. "\+name\)/);
+ assert.match(source,/saved\.commandDraftByLesson=\{/);
+ assert.match(source,/input\.value=drafts\[index\]/);
+ assert.match(source,/input\.addEventListener\("input"/);
+ assert.match(source,/MeowdeBashPractice\.grade\("battery",raw\)/);
+ assert.match(source,/index===8\?"textarea":"input"/);
  const css=fs.readFileSync(path.join(root,"assets/linux-learning-ui.css"),"utf8");
- assert.match(css,/--surface-mint:#53C7A0/);
+ assert.match(css,/--surface-mint:#F5DDE5/);
+ assert.match(css,/--surface-mint-dark:#80556A/);
+ assert.doesNotMatch(css,/--surface-mint:#53C7A0/);
  assert.match(css,/\.linux-stage-path/);
+ assert.match(source,/const stageNames=\["핵심","예제","따라 하기","혼자·응용"\]/);
 });
 
 test("Linux entry keeps one primary action and hides secondary routes by default",()=>{
@@ -41,7 +61,10 @@ test("Linux entry keeps one primary action and hides secondary routes by default
  assert.doesNotMatch(home,/meowde-subject-overview/);
  const library=fs.readFileSync(path.join(root,"assets/linux-library-view.js"),"utf8");
  assert.doesNotMatch(library,/library-mode/);
- assert.match(library,/section\.hidden=i!==modes\[mode\]\[1\]/);
+ assert.match(library,/all\.forEach\(x=>x\.hidden=true\)/);
+ assert.match(library,/if\(mode===\"concept\"\)\{if\(navSection\)navSection\.hidden=false;if\(lesson\)lesson\.hidden=false;\}/);
+ assert.match(library,/if\(mode===\"source\"\)practiceHub\.hidden=false/);
+ assert.match(library,/if\(mode===\"terminal\"&&terminal\)terminal\.hidden=false/);
 });
 
 test("Linux navigation uses the approved five-tab product structure",()=>{
@@ -49,7 +72,54 @@ test("Linux navigation uses the approved five-tab product structure",()=>{
  for(const label of ["홈","학습","심화","함께","마이"])assert.match(source,new RegExp("'"+label+"'"));
  assert.doesNotMatch(source,/\['practice','실습'/);
  assert.doesNotMatch(source,/\['review','복습'/);
+ for(const route of ['/linux-home.html?tab=home','/linux-home.html?tab=learn','/linux-crash-course.html?view=concept','/together.html?subject=linux','/linux-home.html?tab=my'])assert.ok(source.includes(route),'missing subject-aware tab '+route);
+ assert.doesNotMatch(source,/\['my','마이','♧','\/\?tab=my'\]/);
  assert.match(source,/previous=\{\.\.\.previous,version:1/);
  const pathSource=fs.readFileSync(path.join(root,"assets/linux-course-path.js"),"utf8");
  assert.match(pathSource,/saved=\{\.\.\.saved,index,done,stageByLesson:stages\}/);
+});
+
+test("Linux simulator rejects unbalanced quotes without changing virtual files",()=>{
+ const sandbox=load("assets/linux-mobile-simulator.js");
+ for(const command of ['mkdir "training','mkdir training"',"touch 'notes"]){
+  const sim=sandbox.MeowdeLinuxSim.create();
+  const before=JSON.stringify(sim.snapshot());
+  const result=sim.run(command);
+  assert.equal(result.ok,false,command);
+  assert.match(result.output,/따옴표/);
+  assert.equal(JSON.stringify(sim.snapshot()),before,command);
+ }
+ for(const command of ['mkdir "my folder"',"mkdir 'my folder'",'mkdir training']){
+  const sim=sandbox.MeowdeLinuxSim.create();
+  assert.equal(sim.run(command).ok,true,command);
+ }
+});
+
+test("E1-E9 retry revokes stale continue actions before regrading",()=>{
+ const source=fs.readFileSync(path.join(root,"assets/linux-course-path.js"),"utf8");
+ assert.match(source,/check\.onclick=\(\)=>\{\s*\/\/ A later failed submission must revoke any previously earned continue action\.\s*panel\.querySelectorAll\("\.linux-next"\)\.forEach\(button=>button\.remove\(\)\)/);
+ const sim=load("assets/linux-mobile-simulator.js");
+ const grader=load("assets/linux-command-practice.js",sim).MeowdeLinuxCommandPractice;
+ assert.equal(grader.grade(0,"pwd").ok,true);
+ assert.equal(grader.grade(0,"cat notes.txt").ok,false);
+});
+
+test("mobile terminal does not submit during Korean IME composition",()=>{
+ const source=fs.readFileSync(path.join(root,"linux-crash-course.html"),"utf8");
+ assert.match(source,/input\.addEventListener\("keydown",event=>\{if\(event\.isComposing\|\|event\.keyCode===229\)return;if\(event\.key==="Enter"\)/);
+});
+
+test("changed Linux practice input revokes previously successful progression",()=>{
+ const source=fs.readFileSync(path.join(root,"assets/linux-course-path.js"),"utf8");
+ assert.match(source,/input\.addEventListener\("input",\(\)=>\{panel\.querySelectorAll\("\.linux-next"\)\.forEach\(button=>button\.remove\(\)\)/);
+ assert.match(source,/입력이 바뀌었어요\. 다시 채점해 주세요/);
+});
+
+test("Linux E1-E9 persistence keeps storage unreadable records protected and reports quota errors",()=>{
+ const page=fs.readFileSync(path.join(root,"linux-crash-course.html"),"utf8");
+ const pathSource=fs.readFileSync(path.join(root,"assets/linux-course-path.js"),"utf8");
+ assert.match(page,/canPersist=false;storageIssue="저장된 개념 퀴즈 기록을 읽지 못했어요/);
+ assert.match(pathSource,/if\(!canPersist\)return;/);
+ assert.match(pathSource,/localStorage\.setItem\(KEY,JSON\.stringify\(saved\)\);storageIssue=""/);
+ assert.match(pathSource,/catch\(error\)\{storageIssue="퀴즈 기록을 저장하지 못했어요/);
 });

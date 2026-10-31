@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#fff"><title>Linux 학습 · MEOWDE</title>
+<link rel="stylesheet" href="/assets/linux-shared-navigation.css"><link rel="stylesheet" href="/assets/linux-learning-ui.css"><link rel="stylesheet" href="/assets/meowde-pink-unified.css?v=1">
+<style>
+body{margin:0;background:#fff;color:#272631;font:15px/1.6 "Pretendard Variable",Pretendard,system-ui,sans-serif}.app{max-width:680px;margin:auto;min-height:100dvh;padding:18px 18px 100px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-weight:850}.crumb{color:#80556a;font-weight:750;text-decoration:none}.hero{margin:18px 0}.hero h1{font-size:28px;line-height:1.25;margin:4px 0}.muted{color:#6f6670}.card{border:1px solid #eee7ec;border-radius:20px;padding:18px;margin:14px 0;background:#fff}.unit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.unit-grid button{min-height:58px;border:1px solid #e7c9d5;border-radius:14px;background:#fff;padding:10px;text-align:left}.unit-grid button[aria-current="true"]{background:#fff2f7;border-color:#f45b98}.unit-grid small{display:block;color:#756b72;margin-top:3px}.stage{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.stage span{padding:5px 9px;border-radius:999px;background:#f7f2f5;font-size:12px}.stage .on{background:#f5dde5;color:#7d3959;font-weight:800}.code{white-space:pre-wrap;background:#252126;color:#fff8fb;border-radius:14px;padding:13px;font:13px/1.6 ui-monospace,monospace}.answers{display:grid;gap:8px;margin-top:12px}.answers button,.primary,.secondary{min-height:46px;border-radius:13px;padding:10px 13px;font:inherit;font-weight:750}.answers button{border:1px solid #e7c9d5;background:#fff;text-align:left}.primary{border:0;background:#f5dde5;color:#38343a}.secondary{border:1px solid #e7c9d5;background:#fff}.feedback{min-height:24px;margin:10px 0;color:#675c66}.feedback.good{color:#356b58}.feedback.bad{color:#9a365e}.level{font-size:12px;font-weight:850;color:#80556a}.progress{font-size:13px;color:#675c66}.foot-actions{display:flex;gap:8px;flex-wrap:wrap}.foot-actions button{flex:1}@media(max-width:420px){.unit-grid{grid-template-columns:1fr}.app{padding-inline:14px}}
+</style></head><body><main class="app"><header class="top"><a class="crumb" href="/linux-home.html?tab=learn">← Linux 학습 지도</a><span class="brand">MEOWDE</span></header>
+<section class="hero"><p class="level">LINUX · 학습</p><h1>한 단원씩 이해해요.</h1><p class="muted">학습 지도에서 단원을 선택하고, 이 화면에서는 개념과 문제 하나에 집중해요.</p></section>
+<div class="foot-actions"><a class="secondary" href="/linux-home.html?tab=learn">전체 학습 지도 보기</a><p class="progress" id="course-progress" role="status"></p></div>
+<p id="save-warning" class="feedback bad" role="status" aria-live="polite"></p><section class="card" id="lesson-card" aria-live="polite"></section>
+</main>
+<script>
+"use strict";
+const KEY="meowde-linux-course-v1";
+const U=[
+["Linux와 Ubuntu","운영체제와 Linux·Ubuntu의 관계, 터미널과 Shell의 역할을 구분해요.","운영체제는 프로그램과 하드웨어 사이에서 자원을 관리하는 기본 환경이에요.","$ uname\n$ echo $SHELL",[
+["Lv1","Ubuntu는 무엇에 가장 가까울까요?",["Linux 배포판","텍스트 편집기","파일 권한"],0,"Ubuntu는 Linux 커널과 도구를 묶어 제공하는 배포판이에요."],
+["Lv2","터미널과 Shell의 관계로 알맞은 것은?",["터미널은 입력 창, Shell은 명령 해석기","둘은 완전히 같은 프로그램","Shell은 파일 형식"],0,"터미널은 인터페이스이고 Shell이 명령을 해석해요."],
+["Lv3","명령이 실행되는 흐름으로 가장 알맞은 것은?",["사용자→Shell→운영체제","운영체제→사용자→Shell","파일→Shell→사용자"],0,"사용자가 명령을 입력하면 Shell이 해석해 운영체제에 요청해요."]]],
+["경로와 디렉터리","현재 위치, 절대·상대 경로, pwd·ls·cd를 구분해요.","pwd는 현재 작업 디렉터리를 보여주고 cd는 위치를 바꿔요.","$ pwd\n/home/student\n$ ls\nnotes.txt projects",[
+["Lv1","현재 위치를 확인하는 명령은?",["pwd","ps","cat"],0,"pwd는 print working directory예요."],
+["Lv2","상위 디렉터리로 이동하려면?",["cd ..","cd /","ls .."],0,"..는 상위 디렉터리를 뜻해요."],
+["Lv3","/home/student에서 projects로 이동하는 상대 경로 명령은?",["cd projects","cd /projects","pwd projects"],0,"현재 위치 아래의 projects이므로 상대 경로를 쓸 수 있어요."]]],
+["파일과 폴더 관리","mkdir·touch·cp·mv·rm의 역할과 차이를 배워요.","생성, 복사, 이동/이름변경, 삭제는 서로 다른 동작이에요.","$ mkdir data\n$ touch data/a.txt\n$ cp data/a.txt data/b.txt",[
+["Lv1","빈 파일을 만드는 명령은?",["touch","mkdir","grep"],0,"touch는 파일을 만들거나 수정 시간을 갱신해요."],
+["Lv2","원본을 남기고 복사하려면?",["cp","mv","rm"],0,"cp는 복사하고 원본을 유지해요."],
+["Lv3","파일 이름을 바꾸는 데 가장 직접적인 명령은?",["mv old.txt new.txt","cp old.txt new.txt","rm new.txt"],0,"mv는 위치 이동과 이름 변경에 모두 사용돼요."]]],
+["파일 읽기와 편집","cat·less·head·tail과 편집기의 역할을 구분해요.","전체 보기, 페이지 단위 보기, 앞/뒤 일부 보기의 목적이 달라요.","$ head -n 3 app.log\n$ tail -n 2 app.log",[
+["Lv1","파일 마지막 10줄을 보는 기본 명령은?",["tail","head","less"],0,"tail은 파일 끝부분을 보여줘요."],
+["Lv2","긴 파일을 페이지 단위로 읽기 좋은 명령은?",["less","touch","pwd"],0,"less는 긴 텍스트를 페이지 단위로 탐색하기 좋아요."],
+["Lv3","app.log의 앞 5줄만 보려면?",["head -n 5 app.log","tail -n 5 app.log","cat -n 5 app.log"],0,"head -n N은 앞 N줄을 보여줘요."]]],
+["검색","find와 grep의 차이, 이름 검색과 내용 검색을 배워요.","find는 파일/폴더를 찾고 grep은 텍스트 내용에서 패턴을 찾아요.","$ find . -name '*.txt'\n$ grep -n ERROR app.log",[
+["Lv1","파일 내용에서 ERROR를 찾는 명령은?",["grep ERROR app.log","find ERROR app.log","pwd ERROR"],0,"grep은 텍스트 패턴 검색이에요."],
+["Lv2","현재 위치 아래의 .txt 파일을 찾으려면?",["find . -name '*.txt'","grep '*.txt' .","ls -n '*.txt'"],0,"find는 경로와 조건으로 파일을 찾아요."],
+["Lv3","grep -n의 n 옵션 의미는?",["줄 번호 표시","파일 삭제","대소문자 무시"],0,"-n은 매치된 줄 번호를 함께 표시해요."]]],
+["파이프와 리디렉션","|, >, >>로 명령을 연결하고 출력을 저장하는 법을 배워요.","|는 출력을 다음 입력으로, >는 덮어쓰기, >>는 이어쓰기에 사용돼요.","$ grep ERROR app.log | wc -l\n$ echo done >> result.txt",[
+["Lv1","앞 명령의 출력을 다음 명령으로 넘기는 기호는?",["|",">>",">"],0,"파이프는 명령들을 연결해요."],
+["Lv2","파일 끝에 내용을 추가하려면?",[">>",">","|"],0,">>는 기존 내용을 유지하며 뒤에 추가해요."],
+["Lv3","ERROR 줄 개수를 세는 조합으로 알맞은 것은?",["grep ERROR app.log | wc -l","grep ERROR app.log > wc -l","wc ERROR | app.log"],0,"grep 결과를 wc -l의 입력으로 넘겨요."]]],
+["사용자·그룹·권한","멀티유저, r/w/x, ls -l과 chmod의 기본을 배워요.","권한은 소유자·그룹·기타 사용자별로 읽기·쓰기·실행을 제어해요.","$ ls -l run.sh\n-rwxr-x---\n$ chmod 750 run.sh",[
+["Lv1","r 권한은?",["읽기","쓰기","실행"],0,"r은 read예요."],
+["Lv2","chmod 600의 의미로 가장 알맞은 것은?",["소유자만 읽기·쓰기","모두 모든 권한","소유자만 실행"],0,"6은 rw-, 나머지 0은 권한 없음이에요."],
+["Lv3","디렉터리의 x 권한 의미로 가장 가까운 것은?",["그 안으로 접근 가능","목록만 읽기","파일 생성만 가능"],0,"디렉터리의 x는 해당 경로 안으로 접근할 수 있게 해요."]]],
+["프로세스","프로세스 상태, ps aux와 kill의 역할을 배워요.","프로세스는 실행 중인 프로그램이고 PID로 식별해요.","$ ps aux\n$ kill 1715",[
+["Lv1","전체 프로세스 확인에 자주 쓰는 명령은?",["ps aux","pwd","touch"],0,"ps aux는 다양한 사용자의 프로세스를 보여줘요."],
+["Lv2","PID는 무엇인가요?",["프로세스 식별 번호","파일 권한","사용자 그룹"],0,"각 프로세스를 구별하는 번호예요."],
+["Lv3","kill -9를 조심해야 하는 이유는?",["강제 종료라 정리할 시간을 주지 않음","파일을 자동 백업함","프로세스를 복사함"],0,"강제 종료는 데이터나 파일 손상 위험이 있어요."]]],
+["패키지","패키지와 패키지 관리자의 목적, apt의 기본 역할을 배워요.","Ubuntu 계열에서는 apt로 패키지를 검색·설치·관리해요.","$ apt search tree\n$ sudo apt install tree",[
+["Lv1","Ubuntu에서 대표적인 패키지 관리자는?",["apt","grep","chmod"],0,"apt는 Debian/Ubuntu 계열 패키지 관리자예요."],
+["Lv2","패키지를 찾는 명령은?",["apt search tree","apt erase tree","pwd tree"],0,"apt search는 이름과 설명을 검색해요."],
+["Lv3","sudo가 붙은 설치 명령이 필요한 이유로 가장 가까운 것은?",["시스템 변경 권한이 필요할 수 있어서","검색 속도를 높이려고","파일 내용을 보기 위해"],0,"시스템 영역 변경에는 관리자 권한이 필요할 수 있어요."]]],
+["Shell Script와 변수","명령을 파일에 순서대로 적는 Shell Script와 변수 문법을 배워요.","check.sh·reset.sh처럼 .sh 파일은 명령을 묶어 자동 실행할 수 있어요.","#!/bin/bash\nname=Meowde\necho \"$name\"",[
+["Lv1","Shell Script의 설명으로 알맞은 것은?",["명령을 순서대로 적은 파일","파일 권한 숫자","패키지 목록"],0,"여러 명령을 순서대로 실행하도록 적은 파일이에요."],
+["Lv2","변수 대입으로 올바른 것은?",["name=Meowde","name = Meowde","$name=Meowde"],0,"Bash 변수 대입은 = 양옆에 공백을 두지 않아요."],
+["Lv3","변수 값을 출력하려면?",["echo \"$name\"","echo name=","print(name)"],0,"$name으로 변수 값을 참조해요."]]],
+["조건문과 반복문","if/then/else/fi와 반복 실행의 기본 구조를 배워요.","조건문은 분기를, 반복문은 같은 작업의 반복을 담당해요.","if [ \"$score\" -ge 80 ]; then\n  echo PASS\nelse\n  echo RETRY\nfi",[
+["Lv1","if 문을 끝내는 키워드는?",["fi","done","end"],0,"Bash if 문은 fi로 닫아요."],
+["Lv2","-ge의 의미는?",["크거나 같다","작다","같지 않다"],0,"-ge는 greater than or equal이에요."],
+["Lv3","여러 파일에 같은 처리를 반복할 때 가장 적합한 구조는?",["loop","permission","package"],0,"반복문은 같은 작업을 여러 대상에 반복 적용할 때 사용해요."]]],
+["Network와 자동화","네트워크 명령의 목적과 반복 작업 자동화의 개념을 연결해요.","네트워크 상태 확인과 스크립트 자동화는 운영 작업의 기본이에요.","# 개념 학습용: 네트워크 확인 → 결과 기록 → 반복 작업 자동화",[
+["Lv1","네트워크 학습의 핵심 목적은?",["컴퓨터 간 연결 상태와 통신 이해","파일 권한 변경만 하기","패키지 이름 바꾸기"],0,"네트워크는 장치 간 연결과 통신을 다뤄요."],
+["Lv2","자동화의 장점으로 가장 알맞은 것은?",["반복 작업을 일관되게 수행","모든 권한을 777로 변경","프로세스를 무조건 강제 종료"],0,"자동화는 반복 작업을 정해진 절차로 수행하게 해요."],
+["Lv3","Shell Script와 자동화의 관계는?",["반복 명령을 스크립트로 묶어 재사용","서로 관련 없음","스크립트는 파일 검색만 가능"],0,"스크립트는 반복 작업 자동화의 기본 도구예요."]]]
+];
+let state={version:1,unit:0,step:0,done:{}};try{const raw=localStorage.getItem(KEY);if(raw){const parsed=JSON.parse(raw);if(parsed&&parsed.version===1)state={...state,...parsed,done:parsed.done&&typeof parsed.done==="object"?parsed.done:{}}}}catch{}
+const requested=Number(new URLSearchParams(location.search).get("unit"));const selectedUnit=Number.isInteger(requested)&&requested>=1&&requested<=U.length?requested-1:null;state.stepByUnit=state.stepByUnit&&typeof state.stepByUnit==="object"&&!Array.isArray(state.stepByUnit)?state.stepByUnit:{};if(Number.isInteger(state.unit)&&state.unit>=0&&state.unit<U.length&&Number.isInteger(state.step)&&state.step>=0&&state.step<=4&&state.stepByUnit[state.unit]===undefined)state.stepByUnit[state.unit]=state.step;if(selectedUnit!==null&&selectedUnit!==state.unit){state.unit=selectedUnit;state.step=Number.isInteger(state.stepByUnit[selectedUnit])?state.stepByUnit[selectedUnit]:0;}
+document.querySelectorAll('a[href="/linux-home.html?tab=learn"]').forEach(link=>{link.href="/linux-home.html?tab=learn&group="+(Math.floor(state.unit/3)+1);});
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));const notice=document.getElementById("save-warning");if(notice)notice.textContent="";return true}catch{return false}}
+function commitProgress(change){const previous=JSON.parse(JSON.stringify(state));change();state.stepByUnit[state.unit]=state.step;if(save())return true;state=previous;const notice=document.getElementById("save-warning");if(notice)notice.textContent="진도를 저장하지 못했어요. 이전 진행 상태를 유지했어요. 저장 공간을 확인한 뒤 다시 시도해 주세요.";return false;}
+function solvedAtCurrentStep(){return !!(state.confirmedByUnit&&state.confirmedByUnit[state.unit]===state.step&&state.step>=1&&state.step<=3)}
+function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function renderGrid(){document.getElementById("course-progress").textContent=Object.keys(state.done).filter(k=>state.done[k]).length+" / "+U.length+"단원 완료";}
+function render(){document.querySelectorAll('a[href^="/linux-home.html?tab=learn"]').forEach(link=>{link.href="/linux-home.html?tab=learn&group="+(Math.floor(state.unit/3)+1);});renderGrid();const u=U[state.unit],card=document.getElementById("lesson-card");const qIndex=state.step-1;let body='<span class="level">단원 '+(state.unit+1)+' / '+U.length+'</span><h2>'+esc(u[0])+'</h2><p>'+esc(u[1])+'</p><div class="stage"><span class="'+(state.step===0?'on':'')+'">개념</span><span class="'+(state.step===1?'on':'')+'">Lv1</span><span class="'+(state.step===2?'on':'')+'">Lv2</span><span class="'+(state.step===3?'on':'')+'">Lv3</span></div>';
+if(state.step===0){body+='<h3>핵심 개념</h3><p>'+esc(u[2])+'</p><pre class="code">'+esc(u[3])+'</pre><button class="primary" id="start-q">난이도별 문제 시작 →</button>';}
+else if(state.step>=1&&state.step<=3){const q=u[4][qIndex];body+='<span class="level">'+esc(q[0])+'</span><h3>'+esc(q[1])+'</h3><div class="answers">'+q[2].map((a,i)=>'<button data-answer="'+i+'">'+esc(a)+'</button>').join("")+'</div><p class="feedback" id="feedback"></p>';}
+else{body+='<h3>단원 완료 🎉</h3><p>개념과 Lv1~Lv3 확인 문제를 모두 통과했어요.</p><div class="foot-actions"><button class="secondary" id="review-unit">이 단원 다시 보기</button>'+(state.unit<U.length-1?'<button class="primary" id="next-unit">다음 단원 →</button>':'<button class="primary" id="go-practice">심화 실습 보기 →</button>')+'</div>';}
+card.innerHTML=body;
+if(solvedAtCurrentStep()){const feedback=document.getElementById("feedback");const q=u[4][qIndex];feedback.className="feedback good";feedback.textContent="정답! "+q[4];card.querySelectorAll("[data-answer]").forEach(x=>x.disabled=true);const next=document.createElement("button");next.className="primary";next.textContent=state.step<3?"다음 난이도 →":"단원 완료 →";next.onclick=()=>{if(commitProgress(()=>{state.step++;if(state.step===4)state.done[state.unit]=true;}))render()};feedback.after(next);}
+document.getElementById("start-q")?.addEventListener("click",()=>{if(commitProgress(()=>{state.step=1;}))render()});
+card.querySelectorAll("[data-answer]").forEach(b=>b.onclick=()=>{const q=u[4][qIndex],feedback=document.getElementById("feedback");if(Number(b.dataset.answer)===q[3]){if(!commitProgress(()=>{state.confirmedByUnit=state.confirmedByUnit&&typeof state.confirmedByUnit==="object"?state.confirmedByUnit:{};state.confirmedByUnit[state.unit]=state.step;}))return;feedback.className="feedback good";feedback.textContent="정답! "+q[4];card.querySelectorAll("[data-answer]").forEach(x=>x.disabled=true);const next=document.createElement("button");next.className="primary";next.textContent=state.step<3?"다음 난이도 →":"단원 완료 →";next.onclick=()=>{if(commitProgress(()=>{state.step++;if(state.step===4)state.done[state.unit]=true;}))render()};feedback.after(next);}else{feedback.className="feedback bad";feedback.textContent="선택한 답: "+q[2][Number(b.dataset.answer)]+" · 정답: "+q[2][q[3]]+" · 해설: "+q[4];card.querySelectorAll("[data-answer]").forEach(x=>x.disabled=true);const retry=document.createElement("button");retry.className="secondary";retry.textContent="이 문제 다시 풀기";retry.onclick=()=>{feedback.textContent="";feedback.className="feedback";retry.remove();card.querySelectorAll("[data-answer]").forEach(x=>x.disabled=false);};feedback.after(retry);}});
+document.getElementById("review-unit")?.addEventListener("click",()=>{if(commitProgress(()=>{state.step=0;if(state.confirmedByUnit)delete state.confirmedByUnit[state.unit];}))render()});
+document.getElementById("next-unit")?.addEventListener("click",()=>{if(commitProgress(()=>{state.unit++;state.step=Number.isInteger(state.stepByUnit[state.unit])?state.stepByUnit[state.unit]:0;})){const url=new URL(location.href);url.searchParams.set("unit",String(state.unit+1));history.replaceState(history.state,"",url);render();window.scrollTo(0,0)}});
+document.getElementById("go-practice")?.addEventListener("click",()=>location.href="/linux-crash-course.html?view=concept");
+}
+render();
+</script><script src="/assets/linux-shared-navigation.js"></script></body></html>

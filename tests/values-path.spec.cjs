@@ -91,7 +91,6 @@ test('quota failure preserves input and bytes; no submission or PWA reload is pe
  await expect(page.locator('#storage-status')).toContainText('저장되지');
  expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(original);
  expect(await page.evaluate(()=>MeowValuesPathSession.safeToReload())).toBe(false);
- await page.getByRole('link',{name:'학습으로 돌아가기'}).click();
  await expect(page).toHaveURL(/python-lab.html$/);
  await expect(page.locator('#values-code')).toHaveValue('count = int(text) # unsaved');
  expect((await read(page)).items).toEqual({});

@@ -28,6 +28,16 @@
     {id:"meowde-v451-contact",css:"v451-contact.css",script:"v451-contact.js",version:"451",readyGlobal:"MeowContact",warning:"Contact link could not be loaded."},
     {id:"meowde-python-lab",script:"assets/python-lab-entry.js",version:"1",readyGlobal:"MeowPythonLab",warning:"Python application lab link could not be loaded."}
   ];
+  const DEFERRED_ENHANCEMENT_IDS=new Set([
+    "meowde-focused-review-store",
+    "meowde-python-focused-review",
+    "meowde-v442-map-touch",
+    "meowde-v444-visual-cohesion",
+    "meowde-v446-update-recovery",
+    "meowde-v450-character-images",
+    "meowde-v451-contact",
+    "meowde-python-lab"
+  ]);
   const report={version:VERSION,checkedAt:new Date().toISOString(),errors:[],warnings:[],checks:{},enhancementOrder:ENHANCEMENTS.map(item=>item.id)};
 
   function check(name,condition,message,severity="error"){
@@ -77,17 +87,10 @@
       document.head.appendChild(element);
     });
   }
-  async function loadEnhancementsInOrder(){
-    const results=[];
-    for(const item of ENHANCEMENTS)results.push(await loadEnhancement(item));
-    // Standalone practice links enter through /?tab=... . Apply the destination
-    // once, after every enhancement has installed its final screen renderer.
-    // Never infer a destination from saved lesson progress or reset that progress.
+  function applyRequestedEntry(){
     const requestedTab=new URLSearchParams(location.search).get("tab");
     const entryScreens=new Map([["home","renderHome"],["map","renderMap"],["review","renderReview"],["my","renderProfile"]]);
     const renderer=entryScreens.get(requestedTab);
-    // Roadmap deep links use the final installed selector, never the unguarded
-    // base-shell startLesson. Its existing switch guard persists any active work.
     const slug=new URLSearchParams(location.search).get("lesson");
     if(slug){
       const index=slug.length<=80&&typeof lessons==="function"?lessons().findIndex(item=>item&&item.slug===slug):-1;
@@ -95,6 +98,25 @@
       if(index>=0&&policy&&policy.select(lessons(),index,S).ok&&typeof startLesson==="function")startLesson(index);
       else if(typeof renderMap==="function")renderMap();
     }else if(renderer&&typeof window[renderer]==="function")window[renderer]();
+  }
+  function idleTurn(){
+    return new Promise(resolve=>{
+      if(typeof requestIdleCallback==="function")requestIdleCallback(()=>resolve(),{timeout:700});
+      else setTimeout(resolve,0);
+    });
+  }
+  async function loadEnhancementsInOrder(){
+    const results=[];
+    const critical=ENHANCEMENTS.filter(item=>!DEFERRED_ENHANCEMENT_IDS.has(item.id));
+    const deferred=ENHANCEMENTS.filter(item=>DEFERRED_ENHANCEMENT_IDS.has(item.id));
+    for(const item of critical)results.push(await loadEnhancement(item));
+    // The usable app is ready once learning, grading, storage and navigation are ready.
+    applyRequestedEntry();
+    document.documentElement.dataset.enhancementLoader="core-ready";
+    await idleTurn();
+    for(const item of deferred)results.push(await loadEnhancement(item));
+    const theme=document.querySelector('link[href^="/assets/meowde-pink-unified.css"]');
+    if(theme)document.head.appendChild(theme);
     document.documentElement.dataset.enhancementLoader="ordered";
     return results;
   }

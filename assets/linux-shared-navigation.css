@@ -1,8 +1,14 @@
 body.linux-five-tabs{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
-.linux-tabbar{position:fixed;inset:auto 0 0;z-index:100;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));max-width:480px;margin:auto;padding:7px max(4px,env(safe-area-inset-left,0px)) calc(7px + env(safe-area-inset-bottom,0px));border-top:1px solid #e8ded0;background:#fff9ef;box-sizing:border-box}
+.linux-tabbar{position:fixed;inset:auto 0 0;z-index:100;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));max-width:480px;margin:auto;padding:7px max(4px,env(safe-area-inset-left,0px)) calc(7px + env(safe-area-inset-bottom,0px));border-top:1px solid #eee7ec;background:#ffffff;box-sizing:border-box}
 .linux-tabbar a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;min-height:48px;text-decoration:none;font:700 12px/1.4 system-ui,sans-serif;color:#706961;border-radius:12px}
 .linux-tabbar a span{font-size:21px;line-height:1.1}
-.linux-tabbar a[aria-current=page]{color:#247b61;background:#e7f8f0}
-.linux-tabbar a:focus-visible{outline:3px solid #247b61;outline-offset:-3px}
+.linux-tabbar a[aria-current=page]{color:#80556A;background:#FAF5F7}
+.linux-tabbar a:focus-visible{outline:3px solid #80556A;outline-offset:-3px}
 .linux-five-tabs input,.linux-five-tabs textarea,.linux-five-tabs select{scroll-margin-bottom:110px}
 #practice-session-status{font-size:14px;line-height:1.6}
+
+
+/* Compact course picker in the existing top-right brand area. */
+.linux-five-tabs .top .brand{display:flex;flex-direction:column;align-items:flex-end;gap:3px;min-width:0}
+.linux-five-tabs .top .meowde-compact-subject{width:auto;min-width:90px;max-width:110px;min-height:32px;padding:3px 25px 3px 9px;border:1px solid #e5d4dd;border-radius:9px;background:#fff;color:#38343a;font:700 12px/1.4 "Pretendard Variable",Pretendard,system-ui,sans-serif;cursor:pointer}
+.linux-five-tabs .top .meowde-compact-subject:focus-visible{outline:3px solid #80556a;outline-offset:2px}

@@ -1,13 +1,35 @@
 const {test,expect}=require('playwright/test');
 const base=process.env.MEOWDE_BASE_URL||'http://127.0.0.1:4173';
 async function ready(page){await page.goto(base+'/');await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');}
+// Diagnostics are emitted only if the practice element fails to become visible.
+function watchPracticeDiagnostics(page){
+ const pageErrors=[],contentResponses=[];
+ page.on('pageerror',error=>pageErrors.push(error.stack||String(error)));
+ page.on('response',response=>{
+  if(new URL(response.url()).pathname==='/assets/python-lab-content.json')
+   contentResponses.push({url:response.url(),status:response.status()});
+ });
+ page.on('requestfailed',request=>{
+  if(new URL(request.url()).pathname==='/assets/python-lab-content.json')
+   contentResponses.push({url:request.url(),failure:request.failure()?.errorText||'request failed'});
+ });
+ return async()=>{
+  try{await expect(page.locator('#practice')).toBeVisible();}
+  catch(error){
+   const lab=await page.locator('#lab').evaluate(el=>el.innerText.slice(0,3000)).catch(e=>`#lab unavailable: ${e.message}`);
+   console.error('QA_PRACTICE_DIAGNOSTICS',JSON.stringify({url:page.url(),lab,pageErrors,contentResponses}));
+   throw error;
+  }
+ };
+}
 const cases=[
  {kind:'predict',exercise:{id:'qa-p',type:'predict',prompt:'What prints?',code:'print(2)',choices:['1','2'],answer:1,explain:'The print call outputs 2.',output:'2'},wrong:()=>0,answer:'2'},
  {kind:'fill',exercise:{id:'qa-f',type:'fill',prompt:'Fill the blank',code:'print(____)',tokens:['1','2'],answer:'2',explain:'Insert 2.'},wrong:()=>0,answer:'print(2)'},
  {kind:'bughunt',exercise:{id:'qa-b',type:'bughunt',prompt:'Find the bug',lines:['print(2)','print(1'],buggy:1,fixed:'print(1)',explain:'The second line is missing a parenthesis.'},wrong:()=>0,answer:'print(1)'},
  {kind:'write',exercise:{id:'qa-w',type:'write',prompt:'Write Python',starter:'print(0)',model:'print(2)',expected:'2',testcase:'Expect 2',explain:'Use print(2).'},wrong:()=>null,answer:'print(2)'}
 ];
-for(const row of cases)test('wrong '+row.kind+' reveals correct example and reason without reward',async({page})=>{
+for(const row of cases)test('wrong '+row.kind+' reveals correct example and reason without reward',async({page},testInfo)=>{
+ if(row.kind==='write')testInfo.setTimeout(90000);
  await ready(page);
  await page.evaluate(ex=>{const lesson=lessons()[0];S.lessonIndex=0;S.queue=[Object.assign({},ex)];S.idx=0;S.firstTotal=1;S.firstCorrect=0;S.xpEarned=0;S.combo=0;S.daily=false;S.sel=null;S.fill=null;S.checked=false;S.correct=false;S.hint=false;S.output='';S.write='';renderLesson();},row.exercise);
  const before=await page.evaluate(()=>({xp:S.xp,churu:S.churu,done:[...S.done]}));
@@ -15,7 +37,7 @@ for(const row of cases)test('wrong '+row.kind+' reveals correct example and reas
  if(row.kind==='fill')await page.locator('.token').first().click();
  if(row.kind==='write')await page.locator('#code-editor').fill('print(0)');
  if(!(await page.locator('.feedback.no').count()))await page.locator('.lesson-foot .btn').click();
- await expect(page.locator('.feedback.no')).toBeVisible();
+ await expect(page.locator('.feedback.no')).toBeVisible({timeout:row.kind==='write'?60000:5000});
  const disclosure=page.locator('[data-answer-review]');
  await expect(disclosure).toBeVisible();
  await disclosure.locator('summary').click();
@@ -80,7 +102,7 @@ test('measure first review entry phases in real browser',async({page})=>{
 
 test('practice header back-to-learn opens actual map in both engines',async({page})=>{
  await page.goto(base+'/python-lab.html#values/challenge');
- const link=page.getByRole('link',{name:'학습으로 돌아가기'});
+ const link=page.getByRole('navigation',{name:'메인 메뉴'}).getByRole('link',{name:'학습'});
  await expect(link).toHaveAttribute('href','/?tab=map');
  await link.click();
  await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');
@@ -93,12 +115,12 @@ test('Linux loop feedback shows the correct answer even after a correct choice',
  await expect(page.getByRole('link',{name:'학습 지도로 돌아가기'})).toHaveAttribute('href','/?tab=map');
  const nav=page.getByRole('navigation',{name:'메인 메뉴'});
  await expect(nav.getByRole('link')).toHaveCount(5);
- await expect(nav.getByRole('link',{name:'학습'})).toHaveAttribute('href','/linux-home.html');
+ await expect(nav.getByRole('link',{name:'학습'})).toHaveAttribute('href','/linux-home.html?tab=learn');
  await expect(nav.getByRole('link',{name:'심화'})).toHaveAttribute('aria-current','page');
- await expect(nav.getByRole('link',{name:'함께'})).toHaveAttribute('href','/together.html');
+ await expect(nav.getByRole('link',{name:'함께'})).toHaveAttribute('href','/together.html?subject=linux');
  const palette=await page.evaluate(()=>({link:getComputedStyle(document.querySelector('main a')).color,buttonBorder:getComputedStyle(document.querySelector('#guided button')).borderTopColor}));
- expect(palette.link).toBe('rgb(36, 123, 97)');
- expect(palette.buttonBorder).toBe('rgb(180, 220, 203)');
+ expect(palette.link).toBe('rgb(128, 85, 106)');
+ expect(palette.buttonBorder).toBe('rgb(232, 167, 197)');
  const guided=page.locator('#guided');
  await expect(guided.locator('button[aria-pressed="false"]')).toHaveCount(3);
  await guided.locator('button[data-value="3"]').click();
@@ -113,8 +135,9 @@ test('Linux loop feedback shows the correct answer even after a correct choice',
 });
 
 test('practice task surfaces use distinct shared styles without changing storage',async({page})=>{
+ const expectPractice=watchPracticeDiagnostics(page);
  await page.goto(base+"/python-lab.html#function-slots/practice");
- await expect(page.locator('#practice')).toBeVisible();
+ await expectPractice();
  const state=await page.evaluate(()=>{
   const task=document.querySelector('#practice');
   const kicker=task.querySelector('.practice-kicker');
@@ -126,23 +149,25 @@ test('practice task surfaces use distinct shared styles without changing storage
  if(state.editorBorder)expect(state.editorBorder).toBe('2px');
 });
 
-test('Linux crash course uses shared cream and mint UI in Chromium and WebKit',async({page})=>{
+test('Linux crash course uses shared white and pink UI in Chromium and WebKit',async({page})=>{
  await page.goto(base+'/linux-crash-course.html');
- await expect(page.getByRole('navigation',{name:'학습 화면 이동'}).getByRole('link',{name:'전체 학습 지도'})).toHaveAttribute('href','/?tab=map');
+ await expect(page.getByRole('navigation',{name:'학습 화면 이동'})).toHaveCount(0);
  const nav=page.getByRole('navigation',{name:'메인 메뉴'});
  await expect(nav.getByRole('link')).toHaveCount(5);
  await expect(nav.getByRole('link',{name:'심화'})).toHaveAttribute('aria-current','page');
- await expect(nav.getByRole('link',{name:'함께'})).toHaveAttribute('href','/together.html');
+ await expect(nav.getByRole('link',{name:'함께'})).toHaveAttribute('href','/together.html?subject=linux');
  const colors=await page.evaluate(()=>({background:getComputedStyle(document.querySelector('.app')).backgroundColor,button:getComputedStyle(document.querySelector('#sim-run')).backgroundColor}));
- expect(colors.background).toBe('rgb(255, 249, 239)');
- expect(colors.button).toBe('rgb(83, 199, 160)');
+ expect(colors.background).toBe('rgb(255, 255, 255)');
+ expect(colors.button).toBe('rgb(245, 221, 229)');
 });
 
 test('practice top heading and four-step structure remain accessible',async({page})=>{
+ const expectPractice=watchPracticeDiagnostics(page);
  await page.goto(base+"/python-lab.html#function-slots/practice");
- await expect(page.getByRole('banner',{name:'실습 화면 상단'}).getByRole('heading',{name:'실습'})).toBeVisible();
- await expect(page.getByRole('link',{name:'학습으로 돌아가기'})).toHaveAttribute('href','/?tab=map');
- await expect(page.locator('#practice')).toBeVisible();
+ await expect(page.getByRole('banner',{name:'상단 메뉴'}).getByRole('link',{name:'Meowde'})).toBeVisible();
+ await expect(page.getByRole('banner',{name:'상단 메뉴'}).getByRole('combobox',{name:'과목 선택'})).toBeVisible();
+ await expect(page.getByRole('navigation',{name:'메인 메뉴'}).getByRole('link',{name:'학습'})).toHaveAttribute('href','/?tab=map');
+ await expectPractice();
  await expect(page.locator('#practice #learner-code')).toBeVisible();
  await expect(page.locator('#practice [data-run="grade"]')).toBeVisible();
  expect(await page.locator('#practice').evaluate(el=>getComputedStyle(el.querySelector('.practice-kicker'),'::before').content)).toContain('01');

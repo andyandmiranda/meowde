@@ -22,14 +22,20 @@
     return defs.find(item=>item.id===state.featured&&unlocked[item.id])||defs.slice().reverse().find(item=>unlocked[item.id])||null;
   }
   function unlockedCount(){const state=achievementState(),unlocked=state.unlocked||{};return achievements().filter(item=>unlocked[item.id]).length}
+  function myLearningSummary(){
+    const available=lessons(),done=new Set((Array.isArray(S.done)?S.done:[]).filter(i=>Number.isInteger(i)&&i>=0&&i<available.length));
+    const missed=new Set((Array.isArray(S.mistakes)?S.mistakes:[]).filter(item=>item&&item.lang===S.lang&&available[item.lessonIndex]?.exercises?.some(ex=>ex.id===item.exerciseId)).map(item=>JSON.stringify([item.lessonIndex,item.exerciseId])));
+    return {done:done.size,total:available.length,percent:available.length?Math.round(done.size/available.length*100):0,missed:missed.size};
+  }
   function dateKey(date){const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,'0'),d=String(date.getDate()).padStart(2,'0');return `${y}-${m}-${d}`}
   function weekDays(){
     const activity=new Set(Array.isArray(S.activityDates)?S.activityDates:[]),today=dateKey(new Date()),labels=S.lang==='ko'?['일','월','화','수','목','금','토']:['S','M','T','W','T','F','S'];
     return Array.from({length:7},(_,offset)=>{const date=new Date();date.setHours(12,0,0,0);date.setDate(date.getDate()-(6-offset));const key=dateKey(date);return {key,label:labels[date.getDay()],active:activity.has(key),today:key===today}});
   }
   function unitRows(){
-    const names=S.lang==='ko'?['Python 기초','조건과 반복','함수와 프로젝트']:['Python Basics','Control & Loops','Functions & Projects'];
-    return [0,1,2].map(unit=>{const start=unit*10,end=Math.min(start+10,lessons().length),total=Math.max(0,end-start);let done=0;for(let i=start;i<end;i++)if(Array.isArray(S.done)&&S.done.includes(i))done++;return {name:names[unit],done,total,percent:total?Math.round(done/total*100):0}});
+    const available=lessons(),done=new Set(Array.isArray(S.done)?S.done:[]);
+    const names=S.lang==='ko'?['Python 기초','입력과 조건','컬렉션·반복·함수','문자열·딕셔너리·데이터','예외·파일·모듈','클래스·객체']:['Python Basics','Input & Decisions','Collections, Loops & Functions','Strings, Dictionaries & Data','Exceptions, Files & Modules','Classes & Objects'];
+    return Array.from({length:Math.ceil(available.length/10)},(_,unit)=>{const start=unit*10,end=Math.min(start+10,available.length),total=end-start;let count=0;for(let i=start;i<end;i++)if(done.has(i))count++;return {name:names[unit]||(S.lang==='ko'?`단원 ${unit+1}`:`Unit ${unit+1}`),done:count,total,percent:total?Math.round(count/total*100):0}});
   }
   function insightData(){
     const review=readJSON('meowde-v417-review'),mentor=window.MeowMentor&&MeowMentor.state?MeowMentor.state:readJSON('meowde-v418-mentor'),a=achievementState();
@@ -44,8 +50,8 @@
     return `<div class="top"><div class="brand"><span class="brand-mark"><img class="v449-character v449-pose-base v448-brand-cat" src="${BASE_ASSET}" alt="" width="42" height="42" data-v449-pose="base" data-character-version="4.50" decoding="async"></span><div><h1 class="v444-brand-wordmark">Meowde</h1><p>${esc(tagline)}</p></div></div></div>`;
   }
   function canonicalTabs(){
-    const ko=S.lang==='ko',lab=ko?'실습':'Practice',my=ko?'마이':'My';
-    return `<div class="tabbar" data-phase1-navigation="five-tabs"><button onclick="renderHome()" aria-label="${ko?'홈':'Home'}">${icon('home')}<span>${ko?'홈':'Home'}</span></button><button onclick="renderMap()" aria-label="${ko?'학습':'Learn'}">${icon('map')}<span>${ko?'학습':'Learn'}</span></button><button onclick="location.href='/python-lab.html'" aria-label="${lab}">${icon('code')}<span>${lab}</span></button><button onclick="renderReview()" aria-label="${ko?'복습':'Review'}">${icon('spark')}<span>${ko?'복습':'Review'}</span></button><button class="on" onclick="renderProfile()" aria-label="${my}">${icon('cat')}<span>${my}</span></button></div>`;
+    const ko=S.lang==='ko',lab=ko?'심화':'Deepen',my=ko?'마이':'My';
+    return `<div class="tabbar" data-phase1-navigation="five-tabs"><button onclick="renderHome()" aria-label="${ko?'홈':'Home'}">${icon('home')}<span>${ko?'홈':'Home'}</span></button><button onclick="renderMap()" aria-label="${ko?'학습':'Learn'}">${icon('map')}<span>${ko?'학습':'Learn'}</span></button><button onclick="location.href='/python-lab.html'" aria-label="${lab}">${icon('code')}<span>${lab}</span></button><button onclick="location.href='/together.html'" aria-label="${ko?'함께':'Together'}">${icon('spark')}<span>${ko?'함께':'Together'}</span></button><button class="on" onclick="renderProfile()" aria-label="${my}">${icon('cat')}<span>${my}</span></button></div>`;
   }
   function profileAvatar(level){
     const label=S.lang==='ko'?'헤드폰을 쓴 Meowde':'Meowde with headphones';
@@ -58,11 +64,11 @@
   }
   function weekCard(){
     const ko=S.lang==='ko',days=weekDays(),active=days.filter(day=>day.active).length;
-    return `<section class="card"><div class="v420-card-title"><div><h3>${ko?'최근 7일':'Last 7 days'}</h3><p>${ko?'학습한 날이 자동으로 기록됩니다.':'Your study days are recorded automatically.'}</p></div><span class="pill">${active}/7</span></div><div class="v420-week">${days.map(day=>`<div class="v420-day ${day.active?'active':''} ${day.today?'today':''}"><span>${day.active?'✓':'·'}</span><small>${day.label}</small></div>`).join('')}</div></section>`;
+    return `<section class="card"><div class="v420-card-title"><div><h3>${ko?'최근 7일':'Last 7 days'}</h3><p>${ko?'학습 완료 기록이 있는 날이에요.':'Days with completed learning records.'}</p></div><span class="pill">${active}/7</span></div><div class="v420-week">${days.map(day=>`<div class="v420-day ${day.active?'active':''} ${day.today?'today':''}"><span>${day.active?'✓':'·'}</span><small>${day.label}</small></div>`).join('')}</div></section>`;
   }
   function masteryCard(){
     const ko=S.lang==='ko';
-    return `<section class="card"><div class="v420-card-title"><div><h3>${ko?'학습 숙련도':'Learning mastery'}</h3><p>${ko?'유닛별 완료 비율입니다.':'Completion by learning unit.'}</p></div></div><div class="v420-mastery-list">${unitRows().map(unit=>`<div class="v420-mastery-row"><div class="v420-mastery-head"><span>${esc(unit.name)}</span><span>${unit.done}/${unit.total} · ${unit.percent}%</span></div><div class="v420-mastery-bar"><span style="width:${unit.percent}%"></span></div></div>`).join('')}</div></section>`;
+    return `<section class="card"><div class="v420-card-title"><div><h3>${ko?'단원별 진도':'Progress by unit'}</h3><p>${ko?'유닛별 완료 비율입니다.':'Completion by learning unit.'}</p></div></div><div class="v420-mastery-list">${unitRows().map(unit=>`<div class="v420-mastery-row"><div class="v420-mastery-head"><span>${esc(unit.name)}</span><span>${unit.done}/${unit.total} · ${unit.percent}%</span></div><div class="v420-mastery-bar"><span style="width:${unit.percent}%"></span></div></div>`).join('')}</div></section>`;
   }
   function insightCard(){
     const ko=S.lang==='ko',data=insightData();
@@ -87,8 +93,8 @@
   window.saveProfileName=function(){const input=document.getElementById('v420-name-input'),value=input&&input.value.trim();if(!value)return;P.name=value.slice(0,20);persist();closeOverlay();renderProfile()};
   window.renderProfile=function(){
     S.screen='profile';save();
-    const ko=S.lang==='ko',info=levelInfo(),badge=featuredBadge(),badgeTitle=badge?(ko?badge.titleKo:badge.titleEn):(ko?'대표 배지 없음':'No featured badge');
-    app.innerHTML=`<div class="screen">${canonicalBrand()}<div class="scroll"><div class="simple-head"><h2>${ko?'마이':'My'}</h2></div><section class="v420-profile-hero"><div class="v420-profile-top">${profileAvatar(info.level)}<div class="v420-profile-copy"><div class="v420-profile-name-row"><h2>${esc(P.name)}</h2><button class="v420-edit-name" onclick="editProfileName()" aria-label="${ko?'이름 수정':'Edit name'}">✎</button></div><div class="v420-profile-title">Lv.${info.level} · ${info.xp} XP</div></div></div><div class="v420-level-track"><span style="width:${info.percent}%"></span></div><div class="v420-level-meta"><span>${info.current}/100 XP</span><span>${ko?'다음 레벨까지':'To next level'} ${info.target-info.current} XP</span></div></section><div class="v420-my-summary" aria-label="${ko?'학습 현황':'Learning summary'}"><div><b>${Array.isArray(S.done)?S.done.length:0}</b><span>${ko?'완료 레슨':'Lessons'}</span></div><div><b>${Number(S.streak)||0}</b><span>${ko?'연속 학습일':'Day streak'}</span></div><div><b>${unlockedCount()}</b><span>${ko?'업적':'Badges'}</span></div></div><section class="card v420-my-companion"><div><h3>${ko?'나의 Meowde':'My Meowde'}</h3><p>${ko?'6가지 캐릭터와 코치 모드 관리':'Manage character and coaching style'}</p></div><button type="button" class="btn ghost" onclick="renderRoom()">🐱 Meowde <span aria-hidden="true">→</span></button></section><section class="card v420-my-companion"><div><h3>${ko?'나의 업적':'My achievements'}</h3><p>${ko?unlockedCount()+'개 달성':unlockedCount()+' unlocked'}</p></div><button type="button" class="btn ghost" onclick="renderAchievements()">🏅 ${ko?'업적 보기':'View achievements'} <span aria-hidden="true">→</span></button></section><details class="v420-my-history"><summary>${ko?'학습 기록 더 보기':'More learning records'}</summary><div class="v420-compact-more">${statsGrid()}</div></details></div>${canonicalTabs()}</div>`;
+    const ko=S.lang==='ko',summary=myLearningSummary(),draft=typeof hasLessonProgress==='function'&&hasLessonProgress();
+    app.innerHTML=`<div class="screen">${canonicalBrand()}<div class="scroll my-overview"><div class="simple-head"><h2>${ko?'마이':'My'}</h2><p>${ko?'Python 학습 기록':'Your Python learning'}</p></div><section class="card my-progress-card"><div class="my-progress-head"><h3>${ko?'전체 진도':'Your progress'}</h3><strong>${summary.done}<span> / ${summary.total} ${ko?'레슨':'lessons'}</span></strong></div><div class="my-progress-track" role="progressbar" aria-label="${ko?'레슨 완료율':'Lesson completion'}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${summary.percent}"><span style="width:${summary.percent}%"></span></div><button type="button" class="btn" onclick="${draft?'resumeLesson()':'renderMap()'}">${draft?(ko?'저장한 학습 이어하기':'Resume saved lesson'):(ko?'학습 지도 열기':'Open learning path')} →</button></section>${summary.missed?`<section class="card my-review-card"><div><h3>${ko?'다시 볼 문제':'To revisit'} <span>${summary.missed}</span></h3><p>${ko?'틀렸던 문제를 다시 풀며 확인해요.':'Revisit questions you missed.'}</p></div><button type="button" class="btn ghost" onclick="renderReview()">${ko?'오답 복습':'Review mistakes'} →</button></section>`:''}${weekCard()}<details class="card my-records"><summary>${ko?'학습 기록 자세히':'Learning records'}</summary>${masteryCard()}<button type="button" class="text-link" onclick="renderReview()">${ko?'복습 기록 보기':'Review history'} →</button><button type="button" class="text-link" onclick="renderAchievements()">${ko?'업적 보기':'Achievements'} →</button><p class="my-local-note">${ko?'기록은 현재 브라우저에 저장돼요.':'Records are saved in this browser.'}</p></details><details class="card my-settings"><summary>${ko?'설정':'Settings'}</summary><button type="button" class="my-settings-row" onclick="editProfileName()">${ko?'이름 수정':'Edit name'} <span>→</span></button><p class="my-local-note">${ko?'캐릭터는 학습 화면에서 필요한 순간에만 표시돼요.':'Characters appear only when they support learning.'}</p></details></div>${canonicalTabs()}</div>`;
     document.documentElement.dataset.profileRenderer='canonical-v420';
     document.documentElement.dataset.navigation='phase1-five-tabs';
   };
