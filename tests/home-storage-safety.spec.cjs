@@ -64,16 +64,17 @@ test('completed ordinary lesson clears inProgress without erasing unrelated fiel
 
 test('future lesson inProgress survives saves in 30-lesson shell',async({page})=>{
  await page.addInitScript(key=>{
-  localStorage.setItem(key,JSON.stringify({lang:'ko',inProgress:{lang:'ko',lessonIndex:42,idx:1,queue:[{type:'concept',title:'later'}]}}));
+  localStorage.setItem(key,JSON.stringify({lang:'ko',inProgress:{lang:'ko',lessonIndex:72,idx:1,queue:[{type:'concept',title:'later'}]}}));
  },key);
  await page.goto(base+'/');await ready(page);
  expect(await page.evaluate(()=>save())).toBe(true);
  const preserved=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).inProgress,key);
- expect(preserved.lessonIndex).toBe(42);
+ expect(preserved.lessonIndex).toBe(72);
  expect(preserved.idx).toBe(1);
 });
 
 test('failed final-lesson save restores draft, grading, progress and rewards; retry awards once',async({page})=>{
+ await page.addInitScript(()=>localStorage.setItem('meowde-v419-achievements',JSON.stringify({unlocked:{'first-step':{unlockedAt:'fixture',xp:20,churu:5}}})));
  await page.goto(base+'/');await ready(page);
  const result=await page.evaluate(key=>{
   startLesson(0);
