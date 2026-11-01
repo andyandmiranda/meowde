@@ -151,7 +151,7 @@ for(const width of [320,375,390,768])test("Python navigation and editor fit view
 test("keyboard-only Linux entry and task focus; review screenshots",async({page},testInfo)=>{
  await page.goto(base+"/linux-home.html");const entry=page.locator(".linux-home-actions .primary");await entry.focus();await page.keyboard.press("Enter");await expect(page).toHaveURL(/linux-course.html\?unit=1/);await expect(page.locator("#lesson-card h2")).toContainText("Linux와 Ubuntu");
  await page.screenshot({path:testInfo.outputPath("linux-concept.png"),fullPage:true});
- await page.locator("#start-q").focus();await page.keyboard.press("Enter");const answer=page.locator("#lesson-card [data-answer]").first();await answer.focus();await page.keyboard.press("Enter");await expect(page.locator("#feedback")).toContainText("정답");
+ await page.locator("#start-q").focus();await page.keyboard.press("Enter");const answer=page.locator("#lesson-card [data-answer]").first();await answer.focus();await page.keyboard.press("Enter");const feedback=page.locator("#feedback");await expect(feedback).toContainText("정답");await expect.poll(async()=>{const fb=await feedback.boundingBox(),nav=await page.locator(".linux-tabbar").boundingBox();return !!fb&&!!nav&&fb.y+fb.height<=nav.y;}).toBe(true);
  await page.screenshot({path:testInfo.outputPath("linux-answer.png"),fullPage:true});
 });
 test("Python first lesson reaches actual browser Python execution",async({page})=>{
