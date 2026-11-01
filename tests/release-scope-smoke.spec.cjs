@@ -1,13 +1,13 @@
 const {test,expect}=require('playwright/test');
 const base=process.env.MEOWDE_BASE_URL||'http://127.0.0.1:4173';
 const key='meowde-ml-foundations-v1';
-test('release scope: 30 canonical Python entries available by direct lesson link',async({page})=>{
+test('release scope: 60 canonical Python entries available by direct lesson link',async({page})=>{
  await page.goto(base+'/');
  await page.waitForFunction(()=>typeof DATA!=='undefined'&&window.MeowRelease&&MeowRelease.isReady());
  await page.evaluate(async()=>{await MeowRelease.loadPromise});
  const slugs=await page.evaluate(()=>DATA.ko.map(x=>x.slug));
- expect(slugs).toHaveLength(30);
- for(const i of [0,14,29]){
+ expect(slugs).toHaveLength(60);
+ for(const i of [0,29,59]){
   // Each deep-link smoke starts as an isolated learner; an active prior lesson would request confirmation.
   await page.evaluate(()=>localStorage.removeItem('meowde-v410-state'));
   await page.goto(base+'/?lesson='+encodeURIComponent(slugs[i]));
