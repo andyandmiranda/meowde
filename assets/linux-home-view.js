@@ -16,7 +16,7 @@ const section=document.createElement("section");section.className="linux-home-da
 section.innerHTML=
 '<div class="linux-home-intro"><img src="/assets/meowde-approved-headphones.svg?v=450" alt="" width="64" height="68"><div><p class="eyebrow">오늘 학습</p><h1>'+units[nextIndex]+'</h1></div></div>'+
 '<section class="lesson-card linux-home-card"><span class="meta">현재 과정 · '+courseDone+' / 12단원 완료</span><h2>Linux 기초</h2><p class="muted">'+units[nextIndex]+'부터 이어서 학습해요.</p><div class="linux-home-actions"><a class="primary" href="/linux-course.html?unit='+(nextIndex+1)+'">'+(courseDone||course.step?'이어하기 →':'시작하기 →')+'</a><a class="secondary" href="/linux-home.html?tab=learn">지도 보기</a></div></section>'+
-'<section class="lesson-card linux-home-card"><span class="meta">기록 '+oldDone+'개 보존</span><h2>심화 학습</h2><p class="muted">Exercise와 터미널·Bash 실습을 이어가요.</p><a class="primary" href="/linux-crash-course.html?view=concept">심화 열기 →</a></section>'+
+'<section class="lesson-card linux-home-card"><span class="meta">기록 '+oldDone+'개 보존</span><h2>심화 학습</h2><p class="muted">Exercise와 터미널·Bash 실습을 이어가요.</p><a class="secondary" href="/linux-crash-course.html?view=concept">심화 열기 →</a></section>'+
 '<a class="legal" href="/content-notice.html">학습 콘텐츠 안내</a>';
 main.replaceChildren(header,section);
 })();
