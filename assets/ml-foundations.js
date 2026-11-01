@@ -55,7 +55,7 @@ u.choices.forEach((choice,i)=>{
  b.onclick=()=>{
   const answer=grade(u.id,i);
   feedback.className=answer.correct?"good":"bad";
-  feedback.textContent=answer.correct?"정답이에요. "+answer.reason:"다시 해봐요. "+answer.reason;
+  feedback.textContent=answer.correct?"정답이에요. "+answer.reason:"선택: "+answer.selected+" · 정답: "+answer.answer+". "+answer.reason;
   action.replaceChildren();
   if(answer.correct){
    if(!saved.done.includes(u.id)){persist({...saved,done:[...saved.done,u.id]});}
