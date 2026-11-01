@@ -1,18 +1,27 @@
 const {test,expect}=require('playwright/test');
 const base=process.env.MEOWDE_BASE_URL||'http://127.0.0.1:4173';
 const key='meowde-ml-foundations-v1';
-test('release scope: 60 canonical Python entries available by direct lesson link',async({page})=>{
- await page.goto(base+'/');
- await page.waitForFunction(()=>typeof DATA!=='undefined'&&window.MeowRelease&&MeowRelease.isReady());
- await page.evaluate(async()=>{await MeowRelease.loadPromise});
- const slugs=await page.evaluate(()=>DATA.ko.map(x=>x.slug));
+test('release scope: 60 canonical Python entries available by direct lesson link',async({browser})=>{
+ const discovery=await browser.newContext();
+ let slugs;
+ try{
+  const page=await discovery.newPage();
+  await page.goto(base+'/');
+  await page.waitForFunction(()=>typeof DATA!=='undefined'&&window.MeowRelease&&MeowRelease.isReady());
+  await page.evaluate(async()=>{await MeowRelease.loadPromise});
+  slugs=await page.evaluate(()=>DATA.ko.map(x=>x.slug));
+ }finally{await discovery.close()}
  expect(slugs).toHaveLength(60);
  for(const i of [0,29,59]){
-  // Each deep-link smoke starts as an isolated learner; an active prior lesson would request confirmation.
-  await page.evaluate(()=>localStorage.removeItem('meowde-v410-state'));
-  await page.goto(base+'/?lesson='+encodeURIComponent(slugs[i]));
-  await expect(page.locator('.lesson-top')).toBeVisible();
-  expect(await page.evaluate(()=>S.lessonIndex)).toBe(i);
+  // A separate context prevents pagehide autosave from restoring a prior lesson
+  // after a same-page localStorage.removeItem() used by the old fixture.
+  const context=await browser.newContext();
+  try{
+   const page=await context.newPage();
+   await page.goto(base+'/?lesson='+encodeURIComponent(slugs[i]));
+   await expect(page.locator('.lesson-top')).toBeVisible();
+   expect(await page.evaluate(()=>S.lessonIndex)).toBe(i);
+  }finally{await context.close()}
  }
 });
 test('release scope: Python lab exposes 20 independently navigable units',async({page})=>{
