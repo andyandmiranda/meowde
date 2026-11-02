@@ -6,7 +6,7 @@ const choices=[
  ["linux","Linux",true],
  ["ml","머신러닝",true],
  ["data","데이터 분석 · 준비 중",false],
- ["deep","딥러닝 · 준비 중",false],
+ ["deep","딥러닝",true],
  ["robotics","AI 로보틱스 · 준비 중",false]
 ];
 function params(){return new URLSearchParams(root.location.search);}
@@ -15,6 +15,7 @@ function currentSubject(){
  if(p.endsWith("/together.html")&&["python","linux","ml"].includes(s))return s;
  if(/\/linux-/.test(p)||p.endsWith("/robotics.html"))return "linux";
  if(p.endsWith("/ml-foundations.html"))return "ml";
+ if(p.endsWith("/dl-foundations.html"))return "deep";
  return "python";
 }
 function currentTab(){
@@ -27,7 +28,7 @@ function currentTab(){
  }
  if(p.endsWith("/together.html"))return "together";
  if(p.endsWith("/python-lab.html")||p.endsWith("/linux-crash-course.html")||p.endsWith("/linux-review.html"))return "deepen";
- if(p.endsWith("/ml-foundations.html")&&!["home","learn","my"].includes(tab))return "deepen";
+ if((p.endsWith("/ml-foundations.html")||p.endsWith("/dl-foundations.html"))&&!["home","learn","my"].includes(tab))return "deepen";
  if(["home","learn","my"].includes(tab))return tab;
  if(p==="/"||p.endsWith("/index.html")){
   if(tab==="map")return "learn";
@@ -44,6 +45,13 @@ function routes(subject){
   deepen:"/linux-crash-course.html?view=concept",
   together:"/together.html?subject=linux",
   my:"/linux-home.html?tab=my"
+ };
+ if(subject==="deep")return {
+  home:"/dl-foundations.html",
+  learn:"/dl-foundations.html",
+  deepen:"/dl-foundations.html",
+  together:"/together.html?subject=ml",
+  my:"/dl-foundations.html"
  };
  if(subject==="ml")return {
   home:"/ml-foundations.html?tab=home",
