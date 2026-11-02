@@ -135,6 +135,18 @@
   }
   function removeMistake(key){S.mistakes=S.mistakes.filter(item=>item.key!==key)}
 
+  function deepLinkCheckpointPersisted(index){
+    try{
+      const raw=localStorage.getItem('meowde-v410-state');
+      if(!raw)return false;
+      const persisted=JSON.parse(raw), active=persisted&&persisted.inProgress;
+      return Boolean(active&&hasLessonProgress()&&
+        S.lessonIndex===index&&active.lessonIndex===index&&
+        active.idx===S.idx&&active.write===(S.write||'')&&
+        JSON.stringify(active.queue)===JSON.stringify(S.queue)&&
+        JSON.stringify(persisted.lessonResumes)===JSON.stringify(S.lessonResumes));
+    }catch(_){return false;}
+  }
   function beginLesson(index,daily,queueOverride,options){
     if(S.loading)return;
     if(!preserveBeforeSwitch())return;
@@ -160,6 +172,7 @@
       S.v414ResumeKey=key;S.loading=false;
       if(save()===false){restoreFailedStart();return;}
       renderLesson();
+      if(options&&typeof options.onResumed==='function'&&deepLinkCheckpointPersisted(index))options.onResumed();
       return;
     }
     S.v414ResumeKey=key;
@@ -170,7 +183,7 @@
     if(baseStartLesson(index,daily,queueOverride)===false){restoreFailedStart();return;}
     if(
       options&&typeof options.onStarted==='function'&&
-      hasLessonProgress()&&S.queue!==previousQueue
+      hasLessonProgress()&&S.queue!==previousQueue&&deepLinkCheckpointPersisted(index)
     )options.onStarted();
   }
 
@@ -182,8 +195,10 @@
     if(pending)beginLesson(pending.index,pending.daily,pending.queueOverride,pending.options);
   };
   window.resumeCurrentLesson=function(){
+    const pending=window.__v414PendingStart;
     window.__v414PendingStart=null;
     closeOverlay();
+    if(pending&&pending.options&&typeof pending.options.onCanceled==='function')pending.options.onCanceled();
     resumeLesson();
   };
 
@@ -206,7 +221,12 @@
     if(hasLessonProgress()&&!options.force){
       const currentMode=normalizeMode();
       const sameLesson=S.lessonIndex===safeIndex&&currentMode===mode;
-      if(sameLesson)return resumeLesson();
+      if(sameLesson){
+        resumeLesson();
+        // Confirm persistence before acknowledging a same-lesson deep link.
+        if(typeof options.onStarted==='function'&&save()===true&&deepLinkCheckpointPersisted(safeIndex))options.onStarted();
+        return;
+      }
       return showStartGuard(safeIndex,daily,queueOverride,Object.assign({},options,{mode}));
     }
     beginLesson(safeIndex,daily,queueOverride,Object.assign({},options,{mode}));

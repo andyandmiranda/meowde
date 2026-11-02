@@ -95,8 +95,17 @@
     if(slug){
       const index=slug.length<=80&&typeof lessons==="function"?lessons().findIndex(item=>item&&item.slug===slug):-1;
       const policy=window.MeowdeLessonAccess;
-      if(index>=0&&policy&&policy.select(lessons(),index,S).ok&&typeof startLesson==="function")startLesson(index);
-      else if(typeof renderMap==="function")renderMap();
+      if(index>=0&&policy&&policy.select(lessons(),index,S).ok&&typeof startLesson==="function"){
+        const consume=()=>{
+          const url=new URL(location.href);
+          if(url.searchParams.get("lesson")!==slug)return;
+          url.searchParams.delete("lesson");
+          history.replaceState(history.state,"",url.pathname+url.search+url.hash);
+        };
+        // v414 invokes onStarted only after a successful persistent checkpoint.
+        // A deliberate cancel consumes the unused request, without switching lessons.
+        startLesson(index,false,null,{onStarted:consume,onResumed:consume,onCanceled:consume});
+      }else if(typeof renderMap==="function")renderMap();
     }else if(renderer&&typeof window[renderer]==="function")window[renderer]();
   }
   function idleTurn(){
