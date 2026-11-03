@@ -6,7 +6,7 @@ const choices=[
  ["linux","Linux",true],
  ["ml","머신러닝",true],
  ["data","데이터 분석 · 준비 중",false],
- ["deep","딥러닝 · 준비 중",false],
+ ["deep","딥러닝",true],
  ["robotics","AI 로보틱스 · 준비 중",false]
 ];
 function params(){return new URLSearchParams(root.location.search);}
@@ -15,6 +15,7 @@ function currentSubject(){
  if(p.endsWith("/together.html")&&["python","linux","ml"].includes(s))return s;
  if(/\/linux-/.test(p)||p.endsWith("/robotics.html"))return "linux";
  if(p.endsWith("/ml-foundations.html"))return "ml";
+ if(p.endsWith("/deep-learning.html"))return "deep";
  return "python";
 }
 function currentTab(){
@@ -38,6 +39,7 @@ function currentTab(){
  return "home";
 }
 function routes(subject){
+ if(subject==="deep")return {home:"/?tab=home",learn:"/deep-learning.html",deepen:"/deep-learning.html",together:"/together.html",my:"/?tab=my"};
  if(subject==="linux")return {
   home:"/linux-home.html?tab=home",
   learn:"/linux-home.html?tab=learn",
