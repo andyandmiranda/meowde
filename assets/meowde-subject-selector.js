@@ -68,7 +68,7 @@ function syncSubjects(){
   if(select.dataset.sharedSubjects!=="1"){
    select.dataset.sharedSubjects="1";select.removeAttribute("onchange");select.onchange=null;select.replaceChildren();
    choices.forEach(([id,label,enabled])=>{const option=root.document.createElement("option");option.value=id;option.textContent=label;option.disabled=!enabled;select.append(option);});
-   select.addEventListener("change",()=>{const choice=choices.find(c=>c[0]===select.value);if(choice&&choice[2])root.location.assign(routeFor(choice[0]));});
+   select.addEventListener("change",()=>{const choice=choices.find(c=>c[0]===select.value);if(choice&&choice[2])root.location.assign(choice[0]==="deep"?"/deep-learning.html":routeFor(choice[0]));});
   }
   select.value=currentSubject();
  });
