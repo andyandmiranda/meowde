@@ -7,41 +7,30 @@
   <title>Meowde v4.43 — Loading</title>
 
   <style>
-    html,
-    body {
-      height: 100%;
-      margin: 0;
-    }
-
-    body {
-      display: grid;
-      place-items: center;
-      background: #fff9ef;
-      color: #2d2a28;
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-    }
-
-    .loading {
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-
-    .error {
-      max-width: 320px;
-      padding: 24px;
-      text-align: center;
-      line-height: 1.6;
-    }
+    :root{color-scheme:light;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}
+    html,body{min-height:100%;margin:0}
+    body{min-height:100dvh;display:grid;place-items:center;background:radial-gradient(circle at 50% 36%,#fff 0,#fff8fb 42%,#fff0f6 100%);color:#382c35}
+    .loading{width:min(100% - 40px,340px);display:grid;justify-items:center;gap:15px;text-align:center}
+    .loading-mark{width:160px;height:160px;display:grid;place-items:center}
+    .loading-mark img{width:100%;height:100%;object-fit:contain}
+    .loading-brand{font-size:25px;font-weight:800;letter-spacing:-.05em}
+    .loading-copy{font-size:14px;color:#866b7b;line-height:1.6}
+    .loading-dots{display:flex;gap:7px;justify-content:center;margin-top:2px}
+    .loading-dots i{width:7px;height:7px;border-radius:50%;background:#e88db5;animation:breathe 1.2s ease-in-out infinite}
+    .loading-dots i:nth-child(2){animation-delay:.18s}.loading-dots i:nth-child(3){animation-delay:.36s}
+    .error{max-width:360px;margin:24px;padding:24px;text-align:center;line-height:1.7;border:1px solid #f5ccdc;border-radius:18px;background:#fff;color:#6a304d}
+    @keyframes breathe{0%,70%,100%{opacity:.35;transform:scale(.75)}35%{opacity:1;transform:scale(1)}}
+    @media(prefers-reduced-motion:reduce){.loading-dots i{animation:none;opacity:.75}}
   </style>
 </head>
 
 <body>
-  <div class="loading" id="status">
-    Meowde를 준비하고 있어요…
+  <div class="loading" id="status" role="status" aria-live="polite">
+    <div class="loading-mark" aria-hidden="true"><img src="/assets/characters/v452-cutouts/meowde-reading.webp" alt="" width="160" height="160" fetchpriority="high"></div>
+    <div class="loading-brand">MEOWDE</div>
+    <div class="loading-copy" id="loading-copy">학습 공간으로 이동할게요</div>
+    <div class="loading-dots" aria-hidden="true"><i></i><i></i><i></i></div>
   </div>
 
   <script>
@@ -67,9 +56,10 @@
         }
 
         document.documentElement.lang = preferredLanguage;
-        status.textContent = preferredLanguage === "en"
-          ? "Preparing Meowde…"
-          : "Meowde를 준비하고 있어요…";
+        const loadingCopy = document.getElementById("loading-copy");
+        if (loadingCopy) loadingCopy.textContent = preferredLanguage === "en"
+          ? "Opening your learning space"
+          : "학습 공간으로 이동할게요";
 
         const response = await fetch("/index.html?v=443", {
           cache: "no-store",

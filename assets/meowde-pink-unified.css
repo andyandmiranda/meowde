@@ -1,0 +1,138 @@
+/* MEOWDE canonical visual theme — pink and white, shared typography and hierarchy.
+   Presentation only. All content, lesson order, grading and saved records remain unchanged. */
+:root{
+  --meowde-pink:#F5DDE5;--meowde-pink-strong:#80556A;--meowde-pink-soft:#FAF5F7;
+  --meowde-ink:#38343A;--meowde-muted:#716877;--meowde-border:#EEE7EC;
+  --mint:#F5DDE5;--mint2:#FAF5F7;--cream:#FFFFFF;--butter:#F5DDE5;
+  --surface-cream:#FFFFFF;--surface-ink:#38343A;--surface-muted:#716877;--surface-line:#EEE7EC;
+  --surface-mint:#F5DDE5;--surface-mint-dark:#80556A;--surface-pale:#FAF5F7;
+  --meowde-shell-cream:#FFFFFF;--meowde-shell-ink:#38343A;--meowde-shell-muted:#716877;
+  --meowde-shell-line:#EEE7EC;--meowde-shell-mint:#F5DDE5;--meowde-shell-pale:#FAF5F7;
+}
+body{--background:#FFFFFF;--ink:#38343A;--muted:#716877;--line:#EEE7EC;--accent:#80556A;color:#38343A}
+body:has(#app),body:has(main#lab),body.linux-five-tabs,body:has(.meowde-shell-header){background:#FFFFFF!important}
+body .top.meowde-canonical-top,body .meowde-shell-header,body.linux-five-tabs .top,
+body:has(main#lab) main#lab{background:#FFFFFF!important}
+body .tabbar button.on,body .meowde-lab-tabbar a[aria-current="page"],body.linux-five-tabs .linux-tabbar a[aria-current="page"]{
+  background:#FAF5F7!important;color:#80556A!important;border-color:#E8A7C5!important
+}
+body .tabbar button:focus-visible,body .meowde-lab-tabbar a:focus-visible,
+body .meowde-shell-subject:focus-visible{outline-color:#80556A!important}
+body .node.done{background:#80556A!important;border-color:#80556A!important;color:#fff!important}
+body .node.current{background:#F5DDE5!important;border-color:#B77F94!important;color:#38343A!important}
+body .trail{background:linear-gradient(180deg,#FFFFFF,#FAF5F7)!important}
+body .map-head,body .map-unit-context,body .unit-tabs{box-sizing:border-box}
+body .map-head{padding:12px 18px 10px}
+body .map-head h2{font:800 22px/1.35 "Pretendard Variable",Pretendard,system-ui,sans-serif!important;letter-spacing:-.035em;margin:0}
+body .map-head p{font:400 13px/1.55 "Pretendard Variable",Pretendard,system-ui,sans-serif!important;margin:6px 0 0;color:#716877}
+body .unit-tabs{padding:8px 18px 12px;gap:8px}
+body .unit-tabs button{font:650 13px/1.35 "Pretendard Variable",Pretendard,system-ui,sans-serif!important;color:#716877;border-color:#EEE7EC}
+body .unit-tabs button.on{background:#F5DDE5!important;color:#80556A!important;border-color:#D9A7B9!important}
+body .map-unit-context{display:flex;align-items:baseline;flex-wrap:wrap;justify-content:space-between;gap:4px 10px;padding:8px 18px 10px}
+body .map-unit-context strong{font:750 16px/1.4 "Pretendard Variable",Pretendard,system-ui,sans-serif;color:#38343A}
+body .map-unit-context span{font:500 12px/1.4 "Pretendard Variable",Pretendard,system-ui,sans-serif;color:#716877}
+body .node-label{font:700 12px/1.4 "Pretendard Variable",Pretendard,system-ui,sans-serif!important}
+body .learn-review-entry{padding:10px 18px 20px}
+body .learn-review-entry button{font:600 13px/1.4 "Pretendard Variable",Pretendard,system-ui,sans-serif!important;color:#716877}
+body .lesson-bg{background:linear-gradient(180deg,#FFFFFF,#FAF5F7)!important}
+body .progress span,body .compact-progress span,body .qbar span{background:#B77F94!important}
+body .choice.right{background:#FAF5F7!important;border-color:#80556A!important;color:#80556A!important}
+body:has(main#lab) .values-units nav a[aria-current="page"],
+body:has(main#lab) .values-units nav a:hover{background:#FAF5F7!important;color:#80556A!important}
+body:has(main#lab) .values-path button.primary,body:has(main#lab) button.primary,
+body:has(main#lab) .choice[aria-pressed=true]{background:#F5DDE5!important;border-color:#B77F94!important;color:#38343A!important}
+body:has(main#lab) .meowde-shell-header,body:has(main#lab) main#lab{color:#38343A}
+@media(max-width:359px){body .map-unit-context{align-items:flex-start;flex-direction:column}}
+
+/* Final shared controls: legacy modules still contain fixed mint/yellow accents. */
+body .btn,body .btn.butter,body .btn.primary,
+body .primary:not(.console *),body .phase1-mini-progress i{
+  background:var(--meowde-pink)!important;color:var(--meowde-ink)!important;
+  border-color:#D9A7B9!important;box-shadow:none!important
+}
+body .btn.ghost,body .text-link,body .section-kicker,body .hint,
+body .program-input b,body .review-back button,body .learn-review-entry button{
+  color:var(--meowde-pink-strong)!important
+}
+body .btn.ghost,body .hint,body .learn-review-entry button,
+body .phase1-row-icon,body .lesson-badge,body .token,
+body .choice.sel,body .linebtn.sel,body .blank.filled{
+  background:var(--meowde-pink-soft)!important;border-color:#E7C9D5!important
+}
+body .hero,body .daily-card.daily-done,body .mistake-item,
+body .profile-card,body .v420-profile-hero{
+  background:linear-gradient(145deg,#FFFFFF,var(--meowde-pink-soft))!important;
+  border-color:var(--meowde-border)!important
+}
+body .feedback.ok,body:has(#lab) #practice .feedback.good,body .fix{
+  background:var(--meowde-pink-soft)!important;color:var(--meowde-pink-strong)!important;
+  border-color:#D9A7B9!important
+}
+body .phase1-mini-progress{background:#F0E5EB!important}
+body .phase1-home .phase1-deepen-card{padding:0}
+body .phase1-home .phase1-deepen-button{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;
+  text-decoration:none;color:var(--meowde-ink);padding:14px 15px;
+  min-height:80px;box-sizing:border-box
+}
+body .phase1-home .phase1-deepen-button b{font-size:14px;line-height:1.4}
+body .phase1-home .phase1-deepen-button small{font-size:11.5px;line-height:1.4}
+body .phase1-home .phase1-deepen-button:focus-visible{outline:3px solid var(--meowde-pink-strong);outline-offset:-3px}
+@media(max-width:360px){body .phase1-home .phase1-deepen-button{padding:12px;gap:6px}}
+body .hero::after{background:var(--meowde-pink-soft)!important}
+
+/* My: progress and a useful next action; identity preferences stay secondary. */
+body .my-overview .simple-head{padding:16px 18px 14px}
+body .my-overview .simple-head h2{font:800 24px/1.35 "Pretendard Variable",Pretendard,system-ui,sans-serif;letter-spacing:-.035em}
+body .my-overview .simple-head p{font:400 13px/1.6 "Pretendard Variable",Pretendard,system-ui,sans-serif;margin-top:5px}
+body .my-overview>.card{margin:0 18px 14px;padding:18px;border:1px solid var(--meowde-border);border-radius:22px;background:#fff;box-shadow:none}
+body .my-overview h3{font:750 15px/1.45 "Pretendard Variable",Pretendard,system-ui,sans-serif}
+body .my-progress-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+body .my-progress-head strong{font-size:24px;line-height:1.3}
+body .my-progress-head strong span{font-size:12px;font-weight:500;color:var(--meowde-muted)}
+body .my-progress-track{height:8px;border-radius:20px;background:#F0E5EB;margin:16px 0 18px;overflow:hidden}
+body .my-progress-track>span{display:block;height:100%;background:#B77F94;border-radius:inherit}
+body .my-overview .my-review-card{display:grid;gap:12px;background:var(--meowde-pink-soft)}
+body .my-review-card p{font-size:12px;margin:5px 0 0;color:var(--meowde-muted)}
+body .my-review-card h3>span{color:var(--meowde-pink-strong)}
+body .my-overview .v420-card-title h3{font-size:15px}
+body .my-overview .v420-card-title p{font-size:12px;font-weight:400}
+body .my-overview .v420-day span{background:#FAF5F7;border-color:#EEE7EC;font-weight:600}
+body .my-overview .v420-day.active span{background:#F5DDE5;border-color:#D9A7B9;color:#80556A}
+body .my-overview .v420-day.today span{outline:2px solid #B77F94;outline-offset:1px}
+body .my-overview summary{font-size:14px;font-weight:650;min-height:28px;cursor:pointer}
+body .my-overview details[open]>summary{margin-bottom:12px}
+body .my-records>.card{margin:0;padding:0 0 14px;border:0;box-shadow:none}
+body .my-records .v420-mastery-bar{background:#F0E5EB}
+body .my-records .v420-mastery-bar span{background:#B77F94}
+body .my-records>.text-link{display:block;width:100%;text-align:left;font-size:13px;font-weight:550;padding:12px 0;border-top:1px solid #EEE7EC}
+body .my-local-note{font-size:11px;color:var(--meowde-muted);line-height:1.6;margin:10px 0 0}
+body .my-settings-row{width:100%;display:flex;justify-content:space-between;gap:12px;text-align:left;background:transparent;border:0;border-top:1px solid #EEE7EC;border-radius:0;padding:14px 0;font:inherit;font-size:13px;color:var(--meowde-ink);min-height:44px}
+
+/* Canonical pink treatment for legacy navigation and invitation surfaces. */
+body .pill.good,body .course .status,body .status.good,
+body .meowde-subject-overview .subject-options a[aria-current="page"]{
+  background:var(--meowde-pink-soft)!important;color:var(--meowde-pink-strong)!important;
+  border-color:#E7C9D5!important
+}
+body .course .status{display:inline-block;padding:3px 0;background:transparent!important}
+body .course.pending .status{color:var(--meowde-muted)!important}
+body .course a,body .meowde-linux-back,body .meowde-shell-header>a,
+body .meowde-shell-header a:not(.meowde-shell-brand a){
+  color:var(--meowde-pink-strong)!important
+}
+body .course a{background:var(--meowde-pink-soft)!important}
+body .course a:focus-visible,body .invite-action:focus-visible,
+body .meowde-shell-header a:focus-visible{
+  outline-color:var(--meowde-pink-strong)!important
+}
+body .invite,body .invite-action{
+  border-color:#E7C9D5!important
+}
+body .invite-action,body .meowde-lab-tabbar a[aria-current="page"]{
+  background:var(--meowde-pink-soft)!important;color:var(--meowde-pink-strong)!important
+}
+body #status{color:var(--meowde-pink-strong)!important}
+body .together-main button.primary,body .together-main a.primary{
+  background:var(--meowde-pink)!important;color:var(--meowde-ink)!important
+}

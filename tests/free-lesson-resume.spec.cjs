@@ -46,7 +46,7 @@ test('completion warns and retries storage without losing reward state',async({p
  await page.goto(base+'/');await ready(page);await select(page,0);
  const before=await page.evaluate(()=>{
   const key='meowde-v410-state',old=localStorage.getItem(key),original=Storage.prototype.setItem;
-  S.xpEarned=10;S.firstTotal=1;S.firstCorrect=1;
+  S.idx=S.queue.length-1;S.xpEarned=10;S.firstTotal=1;S.firstCorrect=1;
   try{
    Storage.prototype.setItem=function(k,v){if(k===key)throw new DOMException('full','QuotaExceededError');return original.call(this,k,v)};
    finish();
@@ -54,10 +54,11 @@ test('completion warns and retries storage without losing reward state',async({p
   }finally{Storage.prototype.setItem=original}
  });
  expect(before.now).toBe(before.old);
- await expect(page.locator('#lesson-reward-save-alert')).toContainText('저장하지 못했어요');
- await expect(page.locator('#lesson-reward-continue')).toBeDisabled();
+ await expect(page.locator('.lesson-save-warning')).toContainText('저장하지 못했어요');
+ expect(await page.evaluate(()=>hasLessonProgress())).toBe(true);
  await page.getByRole('button',{name:'저장 다시 시도'}).click();
- await expect(page.locator('#lesson-reward-save-alert')).toHaveCount(0);
+ await expect(page.locator('.lesson-save-warning')).toHaveCount(0);
+ await page.evaluate(()=>{S.idx=S.queue.length-1;S.xpEarned=10;S.firstTotal=1;S.firstCorrect=1;finish();});
  await expect(page.locator('#lesson-reward-continue')).toBeEnabled();
  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('meowde-v410-state')).done.includes(0))).toBe(true);
 });
@@ -160,7 +161,7 @@ test('switching a lesson around Smart Review preserves counters and grants its d
 });
 
 
-test('roadmap deep entry to lesson 60 preserves an unfinished earlier lesson',async({page})=>{
+test('roadmap deep entry to available lesson 30 preserves an unfinished earlier lesson',async({page})=>{
  await page.addInitScript(()=>{
   if(sessionStorage.getItem('roadmap-seeded'))return;
   localStorage.setItem('meowde-v410-state',JSON.stringify({lang:'ko',done:[],next:0,xp:17,churu:8}));
@@ -170,13 +171,14 @@ test('roadmap deep entry to lesson 60 preserves an unfinished earlier lesson',as
  await page.locator('.lesson-foot .btn').click();
  const original=await page.evaluate(()=>({index:S.lessonIndex,idx:S.idx,queue:S.queue.map(e=>e.id),done:S.done.slice(),xp:S.xp,churu:S.churu}));
  await page.goto(base+'/learning-path.html');
- await expect(page.locator('#path-list a[href^="/?lesson="]')).toHaveCount(60);
- await page.locator('#path-list li').nth(59).locator('a').click();await ready(page);
+ await expect(page.locator('#path-list a[href^="/?lesson="]')).toHaveCount(30);
+ await expect(page.locator('#path-list .path-pending-notice')).toHaveCount(30);
+  await page.locator('#path-list li').nth(29).locator('a').click();await ready(page);
  await expect(page.locator('.start-guard')).toBeVisible();
  expect(await page.evaluate(()=>({index:S.lessonIndex,done:S.done,xp:S.xp,churu:S.churu}))).toEqual({index:0,done:[],xp:17,churu:8});
  await page.locator('.start-guard button').last().click();
  await expect(page.locator('.lesson-top')).toBeVisible();
- expect(await page.evaluate(()=>({index:S.lessonIndex,done:S.done,xp:S.xp,churu:S.churu}))).toEqual({index:59,done:[],xp:17,churu:8});
+ expect(await page.evaluate(()=>({index:S.lessonIndex,done:S.done,xp:S.xp,churu:S.churu}))).toEqual({index:29,done:[],xp:17,churu:8});
  await page.goto(base+'/?lesson=start-field');await ready(page);
  await expect(page.locator('.start-guard')).toBeVisible();
  await page.locator('.start-guard button').last().click();

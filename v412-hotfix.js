@@ -4,20 +4,25 @@
     if(hasLessonProgress()){
       state.inProgress={lang:S.lang,lessonIndex:S.lessonIndex,idx:S.idx,queue:S.queue,combo:S.combo,maxCombo:S.maxCombo,firstTotal:S.firstTotal,firstCorrect:S.firstCorrect,xpEarned:S.xpEarned,daily:S.daily,sel:S.sel,fill:S.fill,checked:S.checked,correct:S.correct,hint:S.hint,output:S.output||'',write:S.write||''};
     }
-    try{if(typeof preserveDeferredLessonState==='function')preserveDeferredLessonState(state);localStorage.setItem('meowde-v410-state',JSON.stringify(state))}
-    catch(error){console.warn('Meowde could not save progress:',error)}
+    if(typeof storageReadProblem!=='undefined'&&storageReadProblem)return false;
+    const next=Object.assign({},typeof rawState==='object'&&rawState?rawState:{},state);
+    if(!hasLessonProgress())delete next.inProgress;
+    const preserved=typeof preserveDeferredLessonState==='function'?preserveDeferredLessonState(next):next;
+    try{localStorage.setItem('meowde-v410-state',JSON.stringify(preserved));if(typeof rawState!=='undefined')rawState=preserved;return true}
+    catch(error){console.warn('Meowde could not save progress:',error);return false}
   }
 
   save=safeSave;
 
+  let runtimePromise=null;
   warmPy=async function(){
-    if(pyReady||pyLoading)return;
-    if(typeof loadPyodide==='undefined'){
-      console.error('Pyodide loader is unavailable');
-      return;
-    }
+    if(pyReady)return;
+    if(runtimePromise)return runtimePromise;
     pyLoading=true;
-    try{
+    runtimePromise=(async()=>{try{
+      // The root now loads Pyodide lazily; this override must honor that loader.
+      if(typeof ensurePyodideLoader==='function')await ensurePyodideLoader();
+      if(typeof loadPyodide==='undefined')throw new Error('Pyodide loader is unavailable');
       pyodide=await loadPyodide({indexURL:'https://cdn.jsdelivr.net/pyodide/v0.28.0/full/'});
       pyReady=true;
     }catch(error){
@@ -27,7 +32,8 @@
     }finally{
       pyLoading=false;
       if(S.screen==='home')renderHome();
-    }
+    }})();
+    try{await runtimePromise}finally{runtimePromise=null}
   };
 
   runPython=async function(code){
@@ -63,6 +69,7 @@ _buffer.getvalue()`);
 
   startLesson=function(index,daily=false,queueOverride=null){
     if(!useMilk())return;
+    const previous=JSON.parse(JSON.stringify(S));
     S.lessonIndex=Math.max(0,Math.min(index,lessons().length-1));
     const source=Array.isArray(queueOverride)&&queueOverride.length?queueOverride:lessons()[S.lessonIndex].exercises;
     S.queue=source.map(item=>Object.assign({},item));
@@ -74,8 +81,9 @@ _buffer.getvalue()`);
     S.xpEarned=0;
     S.daily=Boolean(daily);
     setup();
-    save();
+    if(save()===false){Object.assign(S,previous);return false;}
     renderLesson();
+    return true;
   };
 
   finish=function(){

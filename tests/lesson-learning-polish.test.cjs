@@ -30,7 +30,7 @@ test('page loads presentation-only module after QA module',()=>{
 });
 test('concept is a slim secondary disclosure; answer is moved below feedback',()=>{
  const f=fixture();
- assert.equal(f.conceptTitle.textContent,'개념 설명 보기');
+ assert.equal(f.conceptTitle.textContent,'막히면 핵심만 다시 보기');
  assert.equal(f.answerTitle.textContent,'정답 코드 보기');
  assert.equal(f.layout().movedToFooter,true);
  assert.equal(f.layout().removedDuplicate,true);
@@ -138,7 +138,7 @@ test('technical traceback renderer keeps code untouched and adds a collapsed det
 
 test('expanded concept styles are scoped, readable and mobile-safe',()=>{
  const f=fixture();const css=f.headStyles[0].textContent;
- assert.match(css,/\.meowde-inline-concept :is\(p,li\).*line-height:1\.7/);
+ assert.match(css,/\.meowde-inline-concept :is\(p,li\).*line-height:1\.62/);
  assert.match(css,/\.meowde-inline-concept :is\(pre,\.code\).*white-space:pre-wrap/);
  assert.match(css,/@media\(max-width:360px\).*\.meowde-inline-concept/);
  assert.doesNotMatch(css,/\.feedback\.no :is\(p,li\)/);

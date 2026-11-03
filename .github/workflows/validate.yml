@@ -52,6 +52,9 @@ jobs:
         with:
           node-version: 24
 
+      - name: Verify ML foundations grading and storage regression
+        run: node --test tests/ml-foundations.test.cjs
+
       - name: Validate JavaScript syntax
         run: |
           node --check sw.js

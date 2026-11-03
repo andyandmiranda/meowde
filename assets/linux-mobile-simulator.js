@@ -12,6 +12,10 @@ function create(){
   const input=String(raw||"").trim();
   if(!input)return {ok:false,output:"명령어를 입력해 봐."};
   if(input.length>180||/[;&|><`$\\\n\r]/.test(input))return {ok:false,output:"이 학습 터미널에서는 연결·리디렉션·치환 명령을 지원하지 않아."};
+  // Reject unbalanced quotes instead of creating wrongly named files.
+  let quote="";
+  for(const char of input){if(char==='"'||char==="'"){if(!quote)quote=char;else if(quote===char)quote="";}}
+  if(quote)return {ok:false,output:"따옴표를 닫아 줘. 파일·폴더 이름은 변경하지 않았어."};
   const a=tokenize(input),cmd=a.shift(),args=a.filter(x=>x!=="");
  const within=p=>p==="/home/student"||p.startsWith("/home/student/");
   const invalid=()=>({ok:false,output:"지원하지 않는 형식이야. 이 터미널은 제한된 학습용 시뮬레이터야."});

@@ -99,7 +99,7 @@
     return true;
   }
 
-  function v414Save(){
+  function v414Save(prepare){
     const state={
       lang:S.lang,done:S.done,next:S.next,xp:S.xp,churu:S.churu,streak:S.streak,
       milk:S.milk,cat:S.cat,unit:S.unit,mistakes:S.mistakes,
@@ -108,8 +108,12 @@
     if(hasLessonProgress()){
       state.inProgress=snapshot();
     }
-    try{if(typeof preserveDeferredLessonState==='function')preserveDeferredLessonState(state);localStorage.setItem('meowde-v410-state',JSON.stringify(state))}
-    catch(error){console.warn('Meowde could not save progress:',error)}
+    if(typeof storageReadProblem!=='undefined'&&storageReadProblem)return false;
+    const next=Object.assign({},typeof rawState==='object'&&rawState?rawState:{},state);
+    if(!hasLessonProgress())delete next.inProgress;
+    let preserved=typeof preserveDeferredLessonState==='function'?preserveDeferredLessonState(next):next;
+    try{if(typeof prepare==='function')preserved=prepare(preserved);localStorage.setItem('meowde-v410-state',JSON.stringify(preserved));if(typeof rawState!=='undefined')rawState=preserved;return true}
+    catch(error){console.warn('Meowde could not save progress:',error);return false}
   }
   save=v414Save;
 
@@ -131,9 +135,28 @@
   }
   function removeMistake(key){S.mistakes=S.mistakes.filter(item=>item.key!==key)}
 
+  function deepLinkCheckpointPersisted(index){
+    try{
+      const raw=localStorage.getItem('meowde-v410-state');
+      if(!raw)return false;
+      const persisted=JSON.parse(raw), active=persisted&&persisted.inProgress;
+      return Boolean(active&&hasLessonProgress()&&
+        S.lessonIndex===index&&active.lessonIndex===index&&
+        active.idx===S.idx&&active.write===(S.write||'')&&
+        JSON.stringify(active.queue)===JSON.stringify(S.queue)&&
+        JSON.stringify(persisted.lessonResumes)===JSON.stringify(S.lessonResumes));
+    }catch(_){return false;}
+  }
   function beginLesson(index,daily,queueOverride,options){
     if(S.loading)return;
     if(!preserveBeforeSwitch())return;
+    const previous=JSON.parse(JSON.stringify(S));
+    function restoreFailedStart(){
+      Object.keys(S).forEach(key=>{if(!Object.prototype.hasOwnProperty.call(previous,key))delete S[key]});
+      Object.assign(S,previous);
+      if(hasLessonProgress())renderLesson();
+      toast(S.lang==='ko'?'학습 기록을 저장하지 못해 현재 답안을 유지했어요.':'Could not save. Your current answers were kept.');
+    }
     const mode=options&&options.mode?options.mode:(daily?'daily':(S.done.includes(index)?'review':'lesson'));
     const key=typeof options.resumeKey==='string'&&Object.prototype.hasOwnProperty.call(S.lessonResumes,options.resumeKey)
       ?options.resumeKey:resumeKey(index,mode,options,queueOverride);
@@ -146,7 +169,10 @@
       const fields=['lessonIndex','idx','queue','combo','maxCombo','firstTotal','firstCorrect','xpEarned','daily','sel','fill','checked','correct','hint','output','write','stdinExerciseId','stdinValue'];
       fields.forEach(field=>{S[field]=saved[field]});
       S.v414Mode=saved.mode;S.v414DailyKey=saved.dailyKey||'';S.v414MistakeId=saved.mistakeId||'';
-      S.v414ResumeKey=key;S.loading=false;save();renderLesson();
+      S.v414ResumeKey=key;S.loading=false;
+      if(save()===false){restoreFailedStart();return;}
+      renderLesson();
+      if(options&&typeof options.onResumed==='function'&&deepLinkCheckpointPersisted(index))options.onResumed();
       return;
     }
     S.v414ResumeKey=key;
@@ -154,10 +180,10 @@
     S.v414DailyKey=options&&options.dailyKey?options.dailyKey:'';
     S.v414MistakeId=options&&options.mistakeId?options.mistakeId:'';
     const previousQueue=S.queue;
-    baseStartLesson(index,daily,queueOverride);
+    if(baseStartLesson(index,daily,queueOverride)===false){restoreFailedStart();return;}
     if(
       options&&typeof options.onStarted==='function'&&
-      hasLessonProgress()&&S.queue!==previousQueue
+      hasLessonProgress()&&S.queue!==previousQueue&&deepLinkCheckpointPersisted(index)
     )options.onStarted();
   }
 
@@ -169,8 +195,10 @@
     if(pending)beginLesson(pending.index,pending.daily,pending.queueOverride,pending.options);
   };
   window.resumeCurrentLesson=function(){
+    const pending=window.__v414PendingStart;
     window.__v414PendingStart=null;
     closeOverlay();
+    if(pending&&pending.options&&typeof pending.options.onCanceled==='function')pending.options.onCanceled();
     resumeLesson();
   };
 
@@ -193,7 +221,12 @@
     if(hasLessonProgress()&&!options.force){
       const currentMode=normalizeMode();
       const sameLesson=S.lessonIndex===safeIndex&&currentMode===mode;
-      if(sameLesson)return resumeLesson();
+      if(sameLesson){
+        resumeLesson();
+        // Confirm persistence before acknowledging a same-lesson deep link.
+        if(typeof options.onStarted==='function'&&save()===true&&deepLinkCheckpointPersisted(safeIndex))options.onStarted();
+        return;
+      }
       return showStartGuard(safeIndex,daily,queueOverride,Object.assign({},options,{mode}));
     }
     beginLesson(safeIndex,daily,queueOverride,Object.assign({},options,{mode}));

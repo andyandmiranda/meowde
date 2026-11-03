@@ -105,8 +105,46 @@
     "append-dock": "append(value) adds one item to the end of the existing list. For example, snacks = [] starts empty; after snacks.append(\"milk\"), snacks is [\"milk\"]. After snacks.append(\"cat\"), it is [\"milk\", \"cat\"]. append() changes the list in place; you do not need to assign its result. len(list) returns the number of items. After one append, len(snacks) is 1; after two, it is 2."
   }
 };
+  // Additional worked reasoning for concepts whose original intro is too short for a coding task.
+  // Append rather than replace current effective curriculum explanations (including unit 4-6 patches).
+  const teachingNotes={
+    ko:{
+      "loop-hill":"for 변수 in 리스트: 는 리스트 안 값을 하나씩 변수에 넣고 들여쓴 코드를 실행해요. 반복이 세 번이면 본문도 세 번 실행돼요. 반복이 끝나면 아래의 들여쓰지 않은 코드로 이어져요. 예: for color in [\"red\", \"blue\"]: 아래에서 print(color)를 들여쓰면 각 색이 한 줄씩 나와요.",
+      "range-rail":"range(3)은 0, 1, 2를 만들고 3은 포함하지 않아요. range(1, 4)는 1, 2, 3을 만들어요. for n in range(1, 4): 아래에서 print(n)을 들여쓰면 세 줄이 출력돼요. 시작값 포함, 끝값 제외를 먼저 손으로 세어 본 뒤 문제를 풀어 보세요.",
+      "while-cave":"while은 조건을 검사해 True이면 들여쓴 코드를 실행하고 다시 조건을 검사해요. count=0, while count<3: 에서 반복 안의 count += 1이 빠지면 끝나지 않을 수 있어요. break는 즉시 반복을 끝내고 continue는 이번 회차의 남은 부분만 건너뛰어요. 실행 전 종료 조건부터 확인하세요.",
+      "function-house":"def meow(): 다음 들여쓴 줄은 함수의 몸통이에요. 함수를 정의하는 것만으로는 몸통이 실행되지 않아요. 이후 meow()처럼 괄호를 붙여 호출해야 실행돼요. 함수 이름·콜론·들여쓰기·호출을 순서대로 확인하세요.",
+      "parameter-mail":"def welcome(name): 의 name은 매개변수, welcome(\"Amy\")의 \"Amy\"는 전달한 값이에요. 함수가 호출되면 name에 \"Amy\"가 들어간 상태로 함수 안 코드를 실행해요. 함수 안에서 사용하는 이름과 호출할 때 전달하는 값이 연결되는지 먼저 추적해 보세요.",
+      "return-spring":"print()는 화면에 보여주지만 return은 함수의 결과를 호출한 위치로 돌려줘요. def double(n): return n*2 라면 double(3)의 결과는 6이에요. 이 값으로 다시 계산하려면 result=double(3)처럼 받아 쓸 수 있어요. 함수의 반환값과 출력값을 혼동하지 마세요.",
+      "mini-project":"여러 개념을 한꺼번에 쓰는 문제는 작은 부분으로 나눠요. 입력 데이터 준비 → 조건 판단 → 반복 적용 → 출력 확인 순서로 쪼개고, 각 부분이 먼저 작동하는지 살펴보세요. 함수나 리스트를 사용할 때는 앞에서 배운 예제의 역할을 하나씩 다시 연결해 보세요.",
+      "boss-bug":"디버깅에서는 오류 메시지만 보지 말고 변수 값, 조건의 참·거짓, 반복 횟수, 함수 반환값을 차례로 확인해요. 먼저 예상 출력을 적고 실제 코드의 흐름을 비교해 달라지는 첫 줄을 찾아요. 한 줄씩 고친 뒤 같은 입력과 다른 입력으로 다시 점검하세요."
+    },
+    en:{
+      "loop-hill":"A for loop takes one item at a time from a list and runs the indented body. For color in [\"red\", \"blue\"], printing color inside the loop produces two lines. After the loop, execution resumes outside the indentation.",
+      "range-rail":"range(3) produces 0, 1, 2, not 3. range(1, 4) produces 1, 2, 3. The starting value is included and the stop value excluded. Count the iterations by hand before running the code.",
+      "while-cave":"A while loop checks its condition before each iteration. Something inside the loop must make it false or a break must exit. break leaves the loop; continue skips the remaining work in the current iteration.",
+      "function-house":"def meow(): defines a function with an indented body. Defining it does not run it. Call meow() to execute the body. Check the name, colon, indentation and function call.",
+      "parameter-mail":"In def welcome(name), name is the parameter. In welcome(\"Amy\"), Amy is the argument. During the call, the function body uses the supplied value through the parameter.",
+      "return-spring":"print displays a value; return sends a value back to the caller. If double(n) returns n*2, double(3) evaluates to 6. You can store that result in a variable or use it in another expression.",
+      "mini-project":"Break a combined task into steps: prepare data, check conditions, repeat operations and inspect output. Test each step before putting everything together.",
+      "boss-bug":"Trace variable values, condition results, loop counts and returned values. Find the first line where the actual execution differs from your prediction, then test the fix with more than one input."
+    }
+  };
   function beginnerExplanation(lesson,concept){
-    return beginnerGuides[S.lang==='en'?'en':'ko'][lesson.slug]||concept.body;
+    const lang=S.lang==='en'?'en':'ko';
+    const core=beginnerGuides[lang][lesson.slug]||concept.body;
+    const note=teachingNotes[lang][lesson.slug];
+    return note?core+' '+note:core;
+  }
+  function firstRead(text,limit=150){
+    const value=String(text||'').replace(/\s+/g,' ').trim();
+    const sentences=value.match(/[^.!?。！？]+[.!?。！？]?/g)||[value];
+    let out='';
+    for(const sentence of sentences){
+      if(out&&out.length+sentence.trim().length+1>limit)break;
+      out+=(out?' ':'')+sentence.trim();
+      if(out.length>=70)break;
+    }
+    return out||value.slice(0,limit);
   }
 
   renderLesson=function(){
@@ -128,7 +166,8 @@
     }
     if(ex.type==='concept'){
       qhead=`<div class="coach" data-lesson-outcome="idle" data-coach-style="${esc(coachStyle.id)}">${catSVG(S.cat,'idle',62)}<div class="bubble"><div class="prompt">${esc(coachStyle.concept||t('conceptCoach'))}</div></div></div>`;
-      body=`<div class="card"><div class="pill" style="display:inline-flex;margin-bottom:10px">Q ${esc(qcode)}</div><h3>${esc(ex.title)}</h3><p style="font-size:14px;color:var(--muted);line-height:1.6;margin:8px 0 12px">${esc(beginnerExplanation(L,ex))}</p><div class="code">${esc(ex.code)}</div></div>`;
+      const fullConcept=beginnerExplanation(L,ex),quickConcept=firstRead(fullConcept);
+      body=`<div class="card lesson-concept-card"><div class="lesson-pass-label">${S.lang==='ko'?'1회독 · 핵심만':'Pass 1 · Key idea'}</div><h3>${esc(ex.title)}</h3><p class="lesson-concept-summary">${esc(quickConcept)}</p><div class="code">${esc(ex.code)}</div><details class="lesson-concept-more"><summary>${S.lang==='ko'?'더 알고 싶을 때':'More explanation'}</summary><p>${esc(fullConcept)}</p></details></div>`;
     }else if(ex.type==='predict'){
       body=`<div class="code">${esc(ex.code)}</div><div class="choices">${ex.choices.map((choice,index)=>`<button class="choice ${S.sel===index?'sel':''} ${S.checked&&index===ex.answer?'right':''} ${S.checked&&S.sel===index&&index!==ex.answer?'wrong':''}" ${S.checked?'disabled':''} aria-pressed="${S.sel===index}" onclick="if(S.checked)return;S.sel=${index};save();checkQ()">${esc(choice)}</button>`).join('')}</div>${S.checked&&S.correct?`<div class="console">${esc(ex.output)}</div>`:''}`;
     }else if(ex.type==='fill'){
@@ -139,10 +178,19 @@
       const initial=S.write||ex.starter;
       body=`${inputControl(ex)}<textarea id="code-editor" class="codearea" spellcheck="false" autocapitalize="off" autocomplete="off" oninput="S.write=this.value;save()">${esc(initial)}</textarea><div class="code-toolbar" aria-label="${S.lang==='ko'?'코딩 보조키':'Coding helper keys'}"><button class="code-key wide" onclick="insertCodeToken('TAB')">Tab</button><button class="code-key" onclick="insertCodeToken('()')">( )</button><button class="code-key" onclick="insertCodeToken('[]')">[ ]</button><button class="code-key" onclick="insertCodeToken(':')">:</button><button class="code-key" onclick="insertCodeToken('=')">=</button><button class="code-key" onclick="insertCodeToken('_')">_</button><button class="code-key" onclick="insertCodeToken(String.fromCharCode(34,34))">&quot; &quot;</button><button class="code-key" onclick="insertCodeToken(String.fromCharCode(39,39))">' '</button></div><div class="pill" style="margin-top:10px">${esc(ex.testcase)}</div>${S.output?`<div class="console">${esc(S.output)}</div>`:''}`;
     }
+    // Pedagogical bridge only. No saved state, completion, score or rewards are changed.
+    const ko=S.lang!=='en';
+    const solveSteps={
+      predict:ko?['변수 값을 먼저 적어요.','코드를 위에서 아래로 실행하며 값이 어떻게 바뀌는지 따라가요.','출력과 선택지를 비교해요.']:['Write down variable values.','Trace each line in execution order.','Compare the output with the choices.'],
+      fill:ko?['빈칸 앞뒤 문법을 살펴봐요.','개념 예제에서 같은 역할을 하는 표현을 찾아요.','완성한 코드를 다시 읽으며 확인해요.']:['Inspect the surrounding syntax.','Find the matching expression in the concept example.','Read the completed code to check it.'],
+      bughunt:ko?['코드를 한 줄씩 읽으며 값을 추적해요.','배운 정상 문법·실행 순서와 다른 부분을 찾아요.','해당 줄을 수정해야 하는 이유를 설명해 봐요.']:['Trace every line.','Compare it with the taught syntax and behavior.','Explain why the changed line fixes the issue.'],
+      write:ko?['입력과 기대 출력을 구분해요.','개념 예제를 참고해 가장 작은 코드부터 작성해요.','다른 입력에서도 되는지 점검해요.']:['Identify inputs and expected outputs.','Write the smallest version based on the example.','Check another input.']
+    };
+    const guidedSteps=solveSteps[ex.type]||[];
     // Keep prerequisite teaching within the active lesson instead of sending beginners to another page.
     const concept=L.exercises&&L.exercises.find(item=>item.type==='concept'&&item.body&&item.code);
     const conceptHelp=ex.type!=='concept'&&concept
-      ?`<details class="card" data-inline-concept><summary>${S.lang==='ko'?'개념·예제 다시 보기':'Review concept and example'}</summary><h3>${esc(concept.title||L.title)}</h3><p>${esc(beginnerExplanation(L,concept))}</p><div class="code">${esc(concept.code)}</div></details>`
+      ?`<details class="card" data-inline-concept><summary>${ko?'이 문제에 필요한 개념·풀이 순서':'Concept and steps for this question'}</summary><h3>${esc(concept.title||L.title)}</h3><p>${esc(beginnerExplanation(L,concept))}</p><div class="code">${esc(concept.code)}</div><h4>${ko?'예제에서 문제로 연결하기':'Bridge from example to problem'}</h4><ol data-solving-steps>${guidedSteps.map(item=>`<li>${esc(item)}</li>`).join('')}</ol><p>${ko?'숫자나 변수 이름이 달라져도 배운 규칙은 같아요.':'Use the same rule when values or names change.'}</p></details>`
       :'';
     // Explain wrong answers on demand without erasing the original miss or overriding grading.
     const correctExample=ex.type==='predict'&&Array.isArray(ex.choices)?ex.choices[ex.answer]
@@ -159,7 +207,7 @@
         ?`<div class="feedback ${S.correct?'ok':'no'}"><h3>${S.correct?t('correct'):t('wrong')}</h3>${reactionMarkup()}${S.correct?`<p>${feedbackExplanation(ex)}</p>`:diagnosticMarkup(ex)}<button class="btn" onclick="nextQ()">${t('continue')}</button></div>`
         :`<div class="lesson-foot"><button class="btn" ${!can||S.loading?'disabled':''} onclick="checkQ()">${ex.type==='write'?(S.loading?t('pyLoading'):(S.lang==='ko'?'코드 실행':'Run code')):t('check')}</button></div>`;
     const modeLabel=typeof meowdeMode==='function'&&meowdeMode()==='smart-review'?(S.lang==='ko'?'Smart Review':'Smart Review'):'';
-    app.innerHTML=`<div class="screen"><div class="lesson-bg"></div><div class="lesson-top"><button class="close" aria-label="${S.lang==='ko'?'나가기':'Exit'}" onclick="renderHome()"></button><div class="lesson-title"><b>${modeLabel?`${esc(modeLabel)} · `:''}${esc(L.title)}</b><div class="progress"><span style="width:${pct}%"></span></div></div><div class="lesson-meta"><span class="autosave">${S.lang==='ko'?'자동 저장':'Saved'}</span><span class="pill">${step}/${S.queue.length}</span></div></div><div class="scroll"><main class="lesson-main">${lessonSaveFailed?'<div class="feedback no lesson-save-warning" role="alert" tabindex="-1">학습 기록을 저장하지 못했어요. 현재 화면에서는 계속 풀 수 있지만 새로고침하면 답안이 사라질 수 있어요. <button class="btn" onclick="retryLessonSave()">저장 다시 시도</button></div>':''}${qhead}${conceptHelp}${body}${answerReview}</main></div>${foot}</div>`;
+    app.innerHTML=`<div class="screen"><div class="lesson-bg"></div><div class="lesson-top"><button class="close" aria-label="${S.lang==='ko'?'나가기':'Exit'}" onclick="renderHome()"></button><div class="lesson-title"><b>${modeLabel?`${esc(modeLabel)} · `:''}${esc(L.title)}</b><div class="progress"><span style="width:${pct}%"></span></div></div><div class="lesson-meta"><span class="autosave">${S.lang==='ko'?'자동 저장':'Saved'}</span><span class="pill">${step}/${S.queue.length}</span></div></div><div class="scroll"><main class="lesson-main">${lessonSaveFailed?'<div class="feedback no lesson-save-warning" role="alert" tabindex="-1">학습 기록을 저장하지 못했어요. 현재 화면에서는 계속 풀 수 있지만 새로고침하면 답안이 사라질 수 있어요. <button class="btn" onclick="retryLessonSave()">저장 다시 시도</button></div>':''}${qhead}${body}${conceptHelp}${answerReview}</main></div>${foot}</div>`;
     document.documentElement.dataset.lessonRenderer='canonical-v413';
     document.documentElement.dataset.lessonCoachStyle=coachStyle.id;
   };

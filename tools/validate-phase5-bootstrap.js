@@ -25,7 +25,7 @@ orderedIds.forEach(id=>{
 assert(release.includes('readyGlobal:"MeowCurriculum"'),'release guard waits for curriculum migration readiness');
 assert(curriculum.includes('const VERSION="4.52-curriculum-v1"'),'curriculum enhancement has an explicit version');
 assert(!release.includes('id:"meowde-v443-single-companion"'),'release guard does not dynamically reload the sync v443 runtime');
-assert(release.includes('for(const item of ENHANCEMENTS)results.push(await loadEnhancement(item))'),'enhancements load sequentially, one completion at a time');
+assert(release.includes('for(const item of critical)results.push(await loadEnhancement(item))')&&release.includes('for(const item of deferred)results.push(await loadEnhancement(item))')&&release.indexOf('for(const item of critical)')<release.indexOf('for(const item of deferred)'),'critical and deferred enhancements each load sequentially, in that order');
 assert(release.includes('element.async=false'),'dynamic enhancement scripts explicitly opt out of parallel async execution');
 assert(!release.includes('element.async=true'),'parallel async enhancement loading is removed');
 assert(release.includes('dataset.enhancementLoader="ordered"'),'ordered bootstrap runtime marker is present');
