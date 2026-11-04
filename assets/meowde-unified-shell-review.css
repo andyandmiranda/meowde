@@ -29,3 +29,9 @@ body.meowde-unified[data-meowde-subject="python"] .top.meowde-canonical-top{disp
 .meowde-unified-language{flex-shrink:0;min-width:44px;height:44px;padding:0 8px;border:1px solid #eadce4;border-radius:12px;background:#fff;color:#503746;font:inherit;font-size:13px;font-weight:800;cursor:pointer;}
 .meowde-unified-language:focus-visible{outline:3px solid #8c5271;outline-offset:2px;}
 @media(max-width:360px){.meowde-unified-brand{gap:4px}.meowde-unified-logo{width:29px;height:29px}.meowde-unified-picker{min-width:92px;max-width:none;flex:1 1 auto}.meowde-unified-language{min-width:44px}}
+
+/* Restore the original Python top bar; never show the experimental duplicate. */
+body.meowde-unified[data-meowde-subject="python"] .meowde-unified-header{display:none!important;}
+body.meowde-unified[data-meowde-subject="python"] .top.meowde-canonical-top{display:flex!important;}
+body.meowde-unified[data-meowde-subject="python"] .top.meowde-canonical-top .brand{display:flex!important;}
+body.meowde-unified[data-meowde-subject="python"] .meowde-root-subject{display:inline-block!important;}
