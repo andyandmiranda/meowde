@@ -14,7 +14,14 @@
   const selected=routes[subject];
   function currentTab(){
     const tab=new URLSearchParams(root.location.search).get("tab");
-    if(subject==="python")return tab==="my"?"my":tab==="map"?"learn":"home";
+    if(subject==="python"){
+      if(typeof S!=="undefined"&&S&&typeof S.screen==="string"){
+        if(["room","my","profile","achievements"].includes(S.screen))return "my";
+        if(["map","review","lesson"].includes(S.screen))return "learn";
+        if(S.screen==="home")return "home";
+      }
+      return tab==="my"?"my":tab==="map"?"learn":"home";
+    }
     if(subject==="linux")return ["home","learn","my"].includes(tab)?tab:"home";
     if(subject==="ml")return ["home","learn","my"].includes(tab)?tab:"deepen";
     if(root.location.pathname.endsWith("/deep-learning-overview.html"))return tab==="my"?"my":"home";
@@ -44,6 +51,7 @@
   for(const id of ["home","learn","deepen","together","my"]){
     const url=selected[id];
     const link=node(url?"a":"span","meowde-unified-tab");
+    link.dataset.tab=id;
     if(url)link.href=url;
     else{link.setAttribute("aria-disabled","true");link.title="이 과목의 기능은 준비 중이에요.";}
     if(active===id)link.setAttribute("aria-current","page");
@@ -55,5 +63,12 @@
   document.body.dataset.meowdeSubject=subject;
   document.body.prepend(header);
   document.body.append(nav);
+  if(subject==="python"&&root.MutationObserver){
+    const app=document.getElementById("app");
+    if(app){
+      const sync=()=>{const selected=currentTab();for(const link of nav.children){if(link.dataset.tab===selected)link.setAttribute("aria-current","page");else link.removeAttribute("aria-current");}};
+      new root.MutationObserver(sync).observe(app,{childList:true});
+    }
+  }
   root.MeowdeUnifiedShell=Object.freeze({routes,subject,currentTab});
 })(window);
