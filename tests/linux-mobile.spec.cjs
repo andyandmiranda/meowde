@@ -5,8 +5,9 @@ test.use({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
 test("focused lesson from home to independent transfer and completion",async({page})=>{
  const errors=[];page.on("pageerror",e=>errors.push(e.message));
  await page.goto(base+"/linux-home.html");await expect(page.locator(".primary")).toHaveCount(1);
- await expect(page.getByRole("img",{name:"헤드폰을 쓴 Meowde"})).toBeVisible();
- await page.getByRole("link",{name:"첫 학습 시작하기"}).click();
+ await expect(page.getByRole("link",{name:/시작하기|이어하기/})).toBeVisible();
+ await page.getByRole("link",{name:/시작하기|이어하기/}).click();
+ await expect(page).toHaveURL(/linux-course\.html\?unit=1/);
  const action=page.locator("#lesson-action");await expect(page.locator("#lesson-input")).toHaveCount(0);
  await action.click();await action.click();await expect(page.locator("#lesson-title")).toBeFocused();
  const input=page.getByRole("textbox",{name:"명령어 입력"});
