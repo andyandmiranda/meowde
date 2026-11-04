@@ -27,7 +27,7 @@ if(brand&&!header.querySelector('.meowde-compact-subject')){
  const ml=document.createElement('option');ml.value='ml';ml.textContent='머신러닝';
  const pending=['데이터 분석','딥러닝','AI 로보틱스'].map(label=>{const option=document.createElement('option');option.textContent=label+' · 준비 중';option.disabled=true;return option;});
  selector.append(python,linux,ml,...pending);selector.value='linux';
- selector.addEventListener('change',()=>{if(selector.value==='python')location.assign('/?tab=map');else if(selector.value==='ml')location.assign('/ml-foundations.html');});
+ selector.addEventListener('change',()=>{if(selector.dataset.sharedSubjects==='1')return;if(selector.value==='python')location.assign('/?tab=map');else if(selector.value==='ml')location.assign('/ml-foundations.html');});
  let actions=header.querySelector('.meowde-top-actions');if(!actions){actions=document.createElement('div');actions.className='meowde-top-actions';header.append(actions);}actions.append(selector);
 }
 

@@ -13,7 +13,7 @@ return {ok:true,correct:choice===unit.answer,selected:unit.choices[choice],answe
 root.MeowdeMLFoundations={units,grade,KEY};
 if(typeof document==="undefined"||!document.getElementById("units"))return;
 let saved={done:[]},writable=true,storageIssue="";
-try{const raw=localStorage.getItem(KEY);if(raw!==null){const parsed=JSON.parse(raw);if(!parsed||!Array.isArray(parsed.done))throw Error("Invalid ML progress");saved={...parsed,done:parsed.done.filter(id=>units.some(u=>u.id===id))};}}
+try{const raw=localStorage.getItem(KEY);if(raw!==null){const parsed=JSON.parse(raw);if(!parsed||!Array.isArray(parsed.done))throw Error("Invalid ML progress");saved={...parsed,done:[...parsed.done]};}}
 catch{writable=false;storageIssue="기존 ML 학습 기록을 읽지 못했어요. 원본을 덮어쓰지 않습니다.";}
 const status=document.getElementById("storage-status");
 function persist(next){if(!writable){status.textContent=storageIssue;return false;}try{localStorage.setItem(KEY,JSON.stringify(next));saved=next;storageIssue="";status.textContent="이 브라우저에 ML 학습 기록을 저장했어요.";return true}
@@ -70,7 +70,7 @@ u.choices.forEach((choice,i)=>{
  choices.append(b);
 });
 area.append(choices,feedback,action);
-status.textContent=storageIssue||"완료 "+saved.done.length+" / 4 · 각 단원을 자유롭게 선택할 수 있어요.";
+status.textContent=storageIssue||"완료 "+new Set(saved.done.filter(id=>units.some(u=>u.id===id))).size+" / 4 · 각 단원을 자유롭게 선택할 수 있어요.";
 }
 render();
 })(typeof window!=="undefined"?window:globalThis);
