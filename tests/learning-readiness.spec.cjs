@@ -11,9 +11,10 @@ test("a correct answer cannot make later wrong input pass",async({page})=>{
 test("partial input, verified answer, transfer and completion survive return",async({page})=>{
  await start(page);await page.locator("#lesson-input").fill("mkdir trai");await page.reload();await expect(page.locator("#lesson-input")).toHaveValue("mkdir trai");
  await submit(page,"mkdir ./training");await page.reload();await expect(page.locator("#lesson-action")).toContainText("새 문제");await page.locator("#lesson-action").click();
- await page.locator("#lesson-input").fill("mkdir tra");await page.goto(base+"/linux-home.html");await expect(page.locator("#guided-entry")).toContainText("이어서");await page.locator("#guided-entry").click();await expect(page.locator("#lesson-input")).toHaveValue("mkdir tra");
+ await page.locator("#lesson-input").fill("mkdir tra");await page.goto(base+"/linux-home.html");await expect(page.locator(".linux-home-actions .primary")).toHaveAttribute("href","/linux-course.html?unit=1");
+ // The guided lesson is now a preserved legacy route, not the Home primary CTA.
+ await page.goto(base+"/linux-start.html");await expect(page.locator("#lesson-input")).toHaveValue("mkdir tra");
  await submit(page,"mkdir -p travel");await page.locator("#lesson-action").click();await page.reload();await expect(page.locator("#step-label")).toHaveText("레슨 완료");
- await page.goto(base+"/linux-home.html");await expect(page.locator("#guided-status")).toContainText("완료");await expect(page.locator("#guided-entry")).toContainText("완료한 레슨");
 });
 test("transfer hints are reported without claiming independent mastery",async({page})=>{
  await start(page);await submit(page,"mkdir training");await page.locator("#lesson-action").click();await page.getByRole("button",{name:"조금 도와줘"}).click();
@@ -54,9 +55,9 @@ test("Python subject navigation preserves an unfinished lesson and Linux records
  await expect(page.locator("[data-subject-navigation]")).toHaveCount(1);await page.getByRole("button",{name:/^(학습 시작하기|학습 이어하기|Start learning|Resume learning)$/}).first().click();
  await expect(page.locator(".lesson-top")).toBeVisible();
  const before=await page.evaluate(()=>JSON.parse(localStorage.getItem("meowde-v410-state")));
+ const linux=await page.evaluate(()=>{const raw='{"version":1,"step":2,"input":"mkdir draft","solutions":{"training":"mkdir training"},"hints":{"training":0,"travel":0}}';localStorage.setItem("meowde-linux-guided-v1",raw);return raw;});
  await page.getByRole("combobox",{name:"학습 과목"}).selectOption("linux");await expect(page).toHaveURL(/linux-home.html/);
- await page.locator("#guided-entry").click();await page.locator("#lesson-action").click();
- const linux=await page.evaluate(()=>localStorage.getItem("meowde-linux-guided-v1"));
+ const linuxEntry=page.locator(".linux-home-actions .primary");await expect(linuxEntry).toHaveAttribute("href","/linux-course.html?unit=1");await linuxEntry.click();await expect(page).toHaveURL(/linux-course.html\?unit=1/);await expect(page.locator("#lesson-card")).toBeVisible();
  await page.goto(base+"/");await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==="ordered");
  const after=await page.evaluate(()=>JSON.parse(localStorage.getItem("meowde-v410-state")));
  expect(after.done).toEqual(before.done);expect(after.xp).toEqual(before.xp);expect(after.inProgress).toEqual(before.inProgress);
@@ -148,10 +149,9 @@ for(const width of [320,375,390,768])test("Python navigation and editor fit view
  await page.getByRole("button",{name:"학습 시작하기"}).click();await expect(page.getByRole("combobox",{name:"학습 과목"})).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
 test("keyboard-only Linux entry and task focus; review screenshots",async({page},testInfo)=>{
- await page.goto(base+"/linux-home.html");await page.locator("#guided-entry").focus();await page.keyboard.press("Enter");await expect(page.locator("#lesson-title")).toContainText("폴더");
+ await page.goto(base+"/linux-home.html");const entry=page.locator(".linux-home-actions .primary");await entry.focus();await page.keyboard.press("Enter");await expect(page).toHaveURL(/linux-course.html\?unit=1/);await expect(page.locator("#lesson-card h2")).toContainText("Linux와 Ubuntu");
  await page.screenshot({path:testInfo.outputPath("linux-concept.png"),fullPage:true});
- await page.locator("#lesson-action").focus();await page.keyboard.press("Enter");await expect(page.locator("#lesson-title")).toBeFocused();await page.keyboard.press("Tab");await page.keyboard.press("Enter");await expect(page.locator("#lesson-title")).toBeFocused();
- await page.keyboard.press("Tab");await expect(page.locator("#lesson-input")).toBeFocused();await page.keyboard.type("mkdir training");await page.keyboard.press("Enter");await expect(page.locator("#lesson-action")).toContainText("새 문제");
+ await page.locator("#start-q").focus();await page.keyboard.press("Enter");const answer=page.locator("#lesson-card [data-answer]").first();await answer.focus();await page.keyboard.press("Enter");const feedback=page.locator("#feedback");await expect(feedback).toContainText("정답");await expect.poll(async()=>{const fb=await feedback.boundingBox(),nav=await page.locator(".linux-tabbar").boundingBox();return !!fb&&!!nav&&fb.y+fb.height<=nav.y;}).toBe(true);
  await page.screenshot({path:testInfo.outputPath("linux-answer.png"),fullPage:true});
 });
 test("Python first lesson reaches actual browser Python execution",async({page})=>{

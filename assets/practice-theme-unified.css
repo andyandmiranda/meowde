@@ -1,0 +1,23 @@
+/* Python practice must use the same cream canvas, ink, cards and mint actions as Home/Learn/My.
+   Presentation only: no script, progress or grading changes. */
+body:has(main#lab){--background:#fff9ef;--ink:#2d2a28;--muted:#706961;--line:#e8ded0;--accent:#247b61;background:linear-gradient(180deg,#fff4da,#e8f8f0);color:var(--ink);-webkit-text-size-adjust:100%}
+body:has(main#lab) .meowde-shell-header,
+body:has(main#lab) main#lab{background:#fff;box-sizing:border-box}
+body:has(main#lab) .meowde-shell-header{max-width:430px;padding:15px 18px 10px;margin:0 auto}
+body:has(main#lab) main#lab{max-width:430px;margin:0 auto;min-height:calc(100dvh - 155px);padding:12px 18px calc(110px + env(safe-area-inset-bottom,0px))}
+body:has(main#lab) .meowde-shell-brand small{color:#706961}
+body:has(main#lab) .values-units{box-sizing:border-box;display:block;width:100%;max-width:100%;margin:4px 0 14px;padding:0 14px;border:1px solid #e8ded0;border-radius:18px;background:#fff;box-shadow:none;overflow:hidden}
+body:has(main#lab) .values-units>summary{box-sizing:border-box;display:list-item;list-style:disclosure-closed inside;min-height:48px;padding:12px 2px;font-size:14px;line-height:1.5;font-weight:800;color:#2d2a28;cursor:pointer}
+body:has(main#lab) .values-units[open]>summary{list-style-type:disclosure-open;border-bottom:1px solid #e8ded0}
+body:has(main#lab) .values-units nav{display:grid;grid-template-columns:minmax(0,1fr);gap:4px;max-height:min(230px,35dvh);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:8px 0 12px}
+body:has(main#lab) .values-units nav a{box-sizing:border-box;display:flex;align-items:center;min-width:0;width:100%;min-height:44px;padding:9px 12px;border-radius:12px;background:#fff;color:#2d2a28;text-decoration:none;font:700 13px/1.5 "Pretendard Variable",Pretendard,system-ui,sans-serif;overflow-wrap:anywhere}
+body:has(main#lab) .values-units nav a:hover,
+body:has(main#lab) .values-units nav a[aria-current="page"]{background:#e7f8f0;color:#247b61}
+body:has(main#lab) .values-units nav a:focus-visible{outline:3px solid #247b61;outline-offset:-3px}
+body:has(main#lab) .values-path.card{box-sizing:border-box;width:100%;max-width:100%;margin:0 0 16px;padding:18px;border:1px solid #e8ded0;border-radius:20px;background:#fff;box-shadow:none;overflow-wrap:anywhere}
+body:has(main#lab) .values-path h2{font-size:22px;line-height:1.35;color:#2d2a28;letter-spacing:-.03em}
+body:has(main#lab) .values-path .values-level{font-size:13px;color:#706961}
+body:has(main#lab) .values-path button.primary{background:#53c7a0;color:#193f33;border:1px solid #247b61;border-radius:15px}
+body:has(main#lab) .values-path pre{background:#24201f;color:#fff;border-radius:14px}
+@media(min-width:900px){body:has(main#lab) .meowde-shell-header,body:has(main#lab) main#lab{max-width:1080px}body:has(main#lab) main#lab{padding:18px 24px 112px}body:has(main#lab) .values-units,body:has(main#lab) .values-path.card{max-width:680px;margin-inline:auto}}
+@media(max-width:359px){body:has(main#lab) main#lab{padding-inline:12px}body:has(main#lab) .values-path.card{padding:14px}}

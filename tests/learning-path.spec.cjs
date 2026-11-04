@@ -5,10 +5,10 @@ test('the course guide separates implementation from verification and preserves 
  await page.goto(base+'/linux-home.html');
  const records={'meowde-v410-state':'{"done":[0],"xp":17}','meowde-linux-guided-v1':'{"version":1,"step":0,"input":"","solutions":{},"hints":{}}'};
  await page.evaluate(records=>Object.entries(records).forEach(([k,v])=>localStorage.setItem(k,v)),records);
- await page.getByText('다른 Linux 학습 보기').click();await page.getByRole('link',{name:'전체 학습 지도'}).click();
- await expect(page.locator('#path-list li')).toHaveCount(10);await expect(page.locator('#path-status')).toContainText('전체 Linux 실습 과정은 아직 준비 중');
- await page.getByRole('button',{name:'Python',exact:true}).click();await expect(page.locator('#path-list li')).toHaveCount(60);
- await expect(page.locator('#path-status')).toContainText('전체 학습 흐름은 검증을 더');
+ await page.getByRole('link',{name:'지도 보기'}).click();
+ await expect(page).toHaveURL(/linux-home\.html\?tab=learn/);
+ await expect(page.locator('#linux-map-list a')).toHaveCount(12);
+ await expect(page.locator('#linux-map-list a').first()).toHaveAttribute('href','/linux-course.html?unit=1');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  expect(await page.evaluate(records=>Object.fromEntries(Object.keys(records).map(k=>[k,localStorage.getItem(k)])),records)).toEqual(records);
  await page.goto(base+'/');await page.waitForFunction(()=>document.documentElement.dataset.enhancementLoader==='ordered');

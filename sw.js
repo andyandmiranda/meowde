@@ -1,7 +1,10 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v488-linux-focus";
+const CACHE_NAME = "meowde-v491-learning-overview";
 
 const REQUIRED_ASSETS = [
+  "/assets/meowde-pink-unified.css",
+  "/assets/together.js",
+  "/assets/vendor/qrcode-generator-2.0.4.js",
   "/assets/lesson-access-policy.js",
   "/assets/lesson-learning-polish.js",
   "/assets/lesson-qa-report.js",
@@ -42,6 +45,20 @@ const REQUIRED_ASSETS = [
   "/assets/characters/v451/meowde-happy.webp",
   "/assets/characters/v451/meowde-challenge.webp",
   "/assets/characters/v451/meowde-debug.webp",
+  "/assets/characters/v452-cutouts/meowde-coding.webp",
+  "/assets/characters/v452-cutouts/meowde-music.webp",
+  "/assets/characters/v452-cutouts/meowde-reading.webp",
+  "/assets/characters/v452-cutouts/meowde-happy.webp",
+  "/assets/characters/v452-cutouts/meowde-challenge.webp",
+  "/assets/characters/v452-cutouts/meowde-debug.webp",
+  "/assets/characters/layrn/pose_01.png",
+  "/assets/characters/layrn/pose_05.png",
+  "/assets/characters/layrn/pose_06.png",
+  "/assets/characters/layrn/pose_reading_alert.png",
+  "/assets/characters/layrn/pose_reading_book.png",
+  "/assets/characters/layrn/pose_reading_cozy.png",
+  "/assets/characters/layrn/tab_home.png",
+  "/assets/characters/layrn/tab_resource.png",
   "/manifest.webmanifest",
   "/icons/meowde-approved.svg",
   "/icons/meowde-approved-maskable.svg",

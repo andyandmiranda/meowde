@@ -118,7 +118,7 @@
   }
 
   window.renderAchievements=function(){
-    evaluate(false);
+    // Read-only surface: historical progress must not mint rewards during rendering.
     S.screen="achievements";save();
     const ko=S.lang==="ko",count=unlockedCount();
     app.innerHTML=`<div class="screen">${canonicalBrand()}<div class="scroll"><div class="simple-head"><h2>${ko?"업적과 액세서리":"Achievements & accessories"}</h2><p>${ko?"학습으로 얻은 배지와 Meowde 꾸미기 아이템을 확인하세요.":"See badges and Meowde accessories earned through learning."}</p></div><section class="card v419-overview"><div><b>${count}</b><span> / ${DEFINITIONS.length}</span><p>${ko?"달성한 업적":"Achievements unlocked"}</p></div><div><b>${A.bestCorrectStreak}</b><p>${ko?"최고 연속 정답":"Best answer streak"}</p></div><div><b>${A.totalCorrect}</b><p>${ko?"누적 정답":"Total correct"}</p></div></section><div class="v426-section-title"><h3>${ko?"액세서리":"Accessories"}</h3></div><div class="v426-accessory-grid">${ACCESSORIES.map(accessoryCard).join("")}</div><div class="v426-section-title"><h3>${ko?"배지 컬렉션":"Badge collection"}</h3></div><div class="v419-list">${DEFINITIONS.map(achievementCard).join("")}</div></div>${canonicalTabs()}</div>`;
@@ -177,7 +177,7 @@
     }
   };
 
-  evaluate(false);
+  // Rewards are evaluated only after a new graded attempt or lesson completion.
   document.documentElement.dataset.achievementSurface="meowde";
   window.__MEOWDE_ACHIEVEMENTS_VERSION__=VERSION;
   if(S.screen==="achievements")renderAchievements();

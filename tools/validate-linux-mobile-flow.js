@@ -18,7 +18,7 @@ const init=lesson.slice(start,end);
 function load(data){
  const entries=new Map(Object.entries(data));
  const localStorage={getItem:k=>entries.has(k)?entries.get(k):null,setItem:(k,v)=>entries.set(k,v)};
- const context=vm.createContext({localStorage,document:{getElementById:()=>({})}});
+ const context=vm.createContext({localStorage,URLSearchParams,URL,location:{search:"",href:"https://meowde.test/linux-crash-course.html"},history:{replaceState(){}},document:{getElementById:()=>({})}});
  const state=vm.runInContext(init+"\n({index,done,persist})",context);
  return {state,entries};
 }

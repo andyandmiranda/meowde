@@ -1,0 +1,61 @@
+/* Single navigation design shared by the Python root, standalone pages and Linux.
+   Style only; storage, scoring, progress and curriculum stay in their own engines. */
+:root{--meowde-shell-cream:#ffffff;--meowde-shell-ink:#38343a;--meowde-shell-muted:#716877;--meowde-shell-line:#eee7ec;--meowde-shell-mint:#f5dde5;--meowde-shell-pale:#faf5f7}
+body .top.meowde-canonical-top,body .meowde-shell-header,body.linux-five-tabs .top{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:68px;padding:15px 18px 10px;margin:0 auto;background:var(--meowde-shell-cream);color:var(--meowde-shell-ink);border:0;max-width:430px;width:100%}
+body .top.meowde-canonical-top .brand,body .meowde-shell-brand,body.linux-five-tabs .top .brand{min-width:0;display:flex;flex-direction:row;align-items:center;gap:10px;font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;letter-spacing:normal}
+body .top.meowde-canonical-top .brand h1,body .meowde-shell-brand a,body.linux-five-tabs .top .meowde-linux-title{font:850 23px/1.05 "Pretendard Variable",Pretendard,system-ui,sans-serif;letter-spacing:-.04em;color:var(--meowde-shell-ink);text-decoration:none}
+body .top.meowde-canonical-top .brand p,body .meowde-shell-brand small,body.linux-five-tabs .top .meowde-linux-subtitle{font:750 11px/1.35 "Pretendard Variable",Pretendard,system-ui,sans-serif;color:var(--meowde-shell-muted);margin:4px 0 0;letter-spacing:normal}
+body .meowde-shell-brand img,body.linux-five-tabs .top .meowde-linux-mark{width:38px;height:38px;object-fit:contain;flex:none}
+body .meowde-shell-header{max-width:430px;margin-inline:auto}
+body .meowde-shell-header .meowde-shell-subject,body.linux-five-tabs .top .meowde-compact-subject,body .top.meowde-canonical-top .meowde-root-subject{box-sizing:border-box;width:auto;min-width:90px;max-width:112px;min-height:34px;border:1px solid var(--meowde-shell-line);border-radius:999px;background:#fff;color:var(--meowde-shell-ink);padding:5px 8px;font:750 12px/1.35 "Pretendard Variable",Pretendard,system-ui,sans-serif}
+body .top.meowde-canonical-top .meowde-top-actions{display:flex;align-items:center;gap:6px;flex:none}
+body .top.meowde-canonical-top .lang{min-height:34px;padding:6px 9px;border:1px solid var(--meowde-shell-line);background:#fff}
+body.linux-five-tabs .top .brand{flex:1;justify-content:flex-start;align-items:center}
+body.linux-five-tabs .top .meowde-compact-subject{flex:none;align-self:center}
+body.linux-five-tabs .top .meowde-linux-name{min-width:0;flex:1;display:flex;flex-direction:column;align-items:flex-start}
+body.linux-five-tabs .meowde-linux-back{display:inline-flex;align-items:center;min-height:40px;margin:0 18px 8px;font-size:12px;font-weight:700;color:#80556a;text-decoration:none}
+body .tabbar,body .meowde-lab-tabbar,body.linux-five-tabs .linux-tabbar{box-sizing:border-box;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;position:relative;width:100%;max-width:430px;margin-inline:auto;min-height:74px;padding:10px 10px calc(10px + env(safe-area-inset-bottom,0px));border:0;border-top:1.5px solid rgba(68,49,36,.08);border-radius:0;background:rgba(255,255,255,.97);box-shadow:none}
+body .meowde-lab-tabbar,body.linux-five-tabs .linux-tabbar{position:fixed;inset:auto 0 0;z-index:100}
+body .tabbar button,body .meowde-lab-tabbar a,body.linux-five-tabs .linux-tabbar a{box-sizing:border-box;min-width:0;min-height:52px;height:52px;border:1.5px solid transparent;border-radius:14px;background:transparent;color:var(--meowde-shell-muted);font:650 11px/1.25 "Pretendard Variable",Pretendard,system-ui,sans-serif;text-decoration:none;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px}
+body .tabbar button.on,body .meowde-lab-tabbar a[aria-current="page"],body.linux-five-tabs .linux-tabbar a[aria-current="page"]{background:var(--meowde-shell-pale);color:#80556a;border-color:#e7c9d5}
+body .meowde-lab-tabbar .lab-nav-icon,body.linux-five-tabs .linux-tabbar a span:first-child{font-size:21px;line-height:1;min-height:21px;display:flex;align-items:center;justify-content:center}
+body .tabbar button:focus-visible,body .meowde-lab-tabbar a:focus-visible,body.linux-five-tabs .linux-tabbar a:focus-visible,body .meowde-shell-subject:focus-visible,body .meowde-root-subject:focus-visible,body .meowde-compact-subject:focus-visible{outline:3px solid #80556a;outline-offset:2px}
+@media(min-width:900px){body:has(main#lab) .meowde-shell-header{max-width:1080px}body:has(main#lab) .meowde-lab-tabbar{max-width:1080px}}
+@media(max-width:359px){body .top.meowde-canonical-top,body .meowde-shell-header,body.linux-five-tabs .top{padding-inline:12px;gap:6px}body .meowde-shell-brand a,body.linux-five-tabs .top .meowde-linux-title{font-size:21px}body .meowde-shell-subject,body.linux-five-tabs .top .meowde-compact-subject{min-width:84px;max-width:100px}}
+
+/* Match the root app's 24px icon SVG, including stroke width and selected state. */
+.meowde-tab-icon{width:24px;height:24px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+body.linux-five-tabs .top .meowde-compact-subject{margin-left:auto}
+
+
+/* Canonical controls: every subject surface uses the same top actions and bottom navigation geometry. */
+body .meowde-shell-header .meowde-top-actions,
+body.linux-five-tabs .top .meowde-top-actions,
+body .top.meowde-canonical-top .meowde-top-actions{
+  display:flex;align-items:center;justify-content:flex-end;gap:6px;flex:none;margin-left:auto
+}
+body .meowde-shell-header .meowde-shell-subject,
+body.linux-five-tabs .top .meowde-compact-subject,
+body .top.meowde-canonical-top .meowde-root-subject,
+body .meowde-shell-language,
+body .top.meowde-canonical-top .lang{
+  box-sizing:border-box;min-height:34px;border:1px solid var(--meowde-shell-line);border-radius:999px;
+  background:#fff;color:var(--meowde-shell-ink);padding:5px 8px;
+  font:750 12px/1.35 "Pretendard Variable",Pretendard,system-ui,sans-serif
+}
+body .meowde-shell-language{min-width:42px}
+body .meowde-shell-language[aria-disabled="true"]{opacity:.62;cursor:default}
+body .meowde-shell-header .meowde-shell-subject:focus-visible,
+body.linux-five-tabs .top .meowde-compact-subject:focus-visible,
+body .top.meowde-canonical-top .meowde-root-subject:focus-visible,
+body .meowde-shell-language:focus-visible,
+body .top.meowde-canonical-top .lang:focus-visible{outline:3px solid #80556A;outline-offset:2px}
+body .meowde-lab-tabbar,body.linux-five-tabs .linux-tabbar,body .tabbar{
+  border-top-color:#EEE7EC;background:rgba(255,255,255,.98)
+}
+
+/* Blueprint v3 button contract shared by root and standalone surfaces. */
+body :is(.btn,button.primary,a.primary){min-height:48px;box-sizing:border-box}
+body :is(.btn,button.primary,a.primary,.meowde-lab-tabbar a,.linux-tabbar a,.tabbar button):focus-visible{
+  outline:3px solid #80556A;outline-offset:2px
+}

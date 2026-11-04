@@ -116,7 +116,7 @@ test('Linux bottom tab opens practice and quizzes disclose theory-only units',as
  await expect(page.locator('#sim-next')).toBeVisible();await page.locator('#sim-next').click();
  await expect(page.locator('#cond-case')).toBeVisible();
  await page.goto(base+'/linux-crash-course.html?view=concept');await page.evaluate(()=>document.querySelectorAll('#nav button')[4].click());
- await page.getByRole('button',{name:'예제 보기 →'}).click();await page.getByRole('button',{name:'직접 연습하기 →'}).click();await expect(page.locator('.linux-stage-panel')).toContainText('실행하지 않아요');
+ await page.getByRole('button',{name:'예제 보기 →'}).click();await page.getByRole('button',{name:'직접 연습하기 →'}).click();await expect(page.locator('.linux-stage-panel')).toContainText('실제 셸 실행 결과는 검증하지 않아요');
  await page.goto(base+'/linux-crash-course.html?view=condition');await expect(page.locator('#cond-case')).toBeVisible();
 });
 

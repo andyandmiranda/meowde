@@ -1,5 +1,5 @@
 /* MEOWDE learning surface design system: same type scale and cream/mint as Home/Learn. */
-:root{--surface-cream:#FFF9EF;--surface-ink:#2D2A28;--surface-muted:#706961;--surface-line:#E8DED0;--surface-mint:#53C7A0;--surface-mint-dark:#247B61;--surface-pale:#E7F8F0;--surface-font:"Pretendard Variable",Pretendard,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+:root{--surface-cream:#ffffff;--surface-ink:#38343a;--surface-muted:#716877;--surface-line:#eee7ec;--surface-mint:#f5dde5;--surface-mint-dark:#80556a;--surface-pale:#faf5f7;--surface-font:"Pretendard Variable",Pretendard,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 body:has(#lab){--pink:var(--surface-mint);--background:var(--surface-cream);--ink:var(--surface-ink);--muted:var(--surface-muted);--line:var(--surface-line);--accent:var(--surface-mint-dark);background:var(--surface-cream);color:var(--surface-ink);font:15px/1.6 var(--surface-font)}
 body:has(#lab) button,body:has(#lab) input,body:has(#lab) textarea,body:has(#lab) summary{font-family:var(--surface-font)}
 body:has(#lab) pre,body:has(#lab) textarea.code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
@@ -28,7 +28,7 @@ body:has(#lab) button.primary,body:has(#lab) .choice[aria-pressed=true]{backgrou
 body:has(#lab) .choice{font-size:14px}
 body:has(#lab) textarea.code{min-height:185px;padding:14px;font-size:14px;border-radius:14px}
 body:has(#lab) .feedback{border-left-color:var(--surface-mint);background:#F3F9F4;font-size:14px}
-body:has(#lab) .practice-primary{border-color:#BDEBD8}
+body:has(#lab) .practice-primary{border-color:#e7c9d5}
 body:has(#lab) .practice-support{margin:12px 0;border:1px solid var(--surface-line);border-radius:16px;background:#fff;padding:0 14px}
 body:has(#lab) .practice-support>summary{padding:12px 2px;color:var(--surface-ink);font-size:14px}
 body:has(#lab) .practice-support>.card{border:0;border-top:1px solid var(--surface-line);padding:14px 0;border-radius:0;margin:0}
@@ -133,7 +133,7 @@ body:has(#lab) #practice .practice-kicker{display:inline-block;padding:4px 10px;
 body:has(#lab) #practice textarea.code{background:#F8FAF9;border:2px solid #A7CDBD;box-shadow:inset 0 1px 3px rgba(45,42,40,.04)}
 body:has(#lab) #practice .feedback{border-left:4px solid var(--surface-mint-dark);padding:12px 14px;border-radius:10px;background:#F1F9F5}
 body:has(#lab) #practice .feedback.bad{border-left-color:#B44551;background:#FFF2F1;color:#90333F}
-body:has(#lab) #practice .feedback.good{border-left-color:#247B61;background:#ECF8F2;color:#205844}
+body:has(#lab) #practice .feedback.good{border-left-color:#80556a;background:#ECF8F2;color:#205844}
 
 /* Shared main-tab heading: practice follows Home/Learn/My type and spacing. */
 body:has(#lab) .lab-header{max-width:430px;padding:12px 18px 4px;align-items:flex-start;gap:12px}
@@ -173,7 +173,7 @@ body:has(#lab) .lab-header-description{font-size:13px;margin-top:5px}
 /* Review sunglasses mascot size is controlled by the actual .v449-review-pose rule in v449-character-cutouts.css (82px -> 41px). */
 
 /* Match active practice tab despite more specific shared surface selectors. */
-body:has(#lab) .meowde-lab-tabbar a[aria-current="page"]{color:#6d4d89;background:linear-gradient(135deg,#f0eaff,#e9f7f3)}
+body:has(#lab) .meowde-lab-tabbar a[aria-current="page"]{color:var(--surface-mint-dark);background:var(--surface-pale);border-color:#E7C9D5}
 
 
 /* Deepen entry reuses Home/Learn typography, cream canvas, mint actions and cards. */
@@ -212,7 +212,7 @@ body:has(#lab) .deepen-hub a:focus-visible{outline:3px solid var(--surface-mint-
 .phase1-home .card[aria-label="Deepen learning entry"]>.btn{margin-top:4px;min-height:48px;font-size:14px;text-decoration:none}
 
 /* Practice shell follows the same compact, rounded Home visual language. */
-body:has(#lab){background:#fff9ef;color:var(--surface-ink)}
+body:has(#lab){background:#ffffff;color:var(--surface-ink)}
 body:has(#lab) .lab-header,
 body:has(#lab) main#lab{background:#fff}
 body:has(#lab) .lab-header{margin:20px auto 0;padding:18px 18px 10px;border-radius:26px 26px 0 0}
@@ -230,7 +230,75 @@ body:has(#lab) .meowde-lab-tabbar{background:#fff;border-top-color:#ece8ef}
 
 /* Review remains a learning action rather than a global navigation tab. */
 .learn-review-entry{padding:0 18px 12px}
-.learn-review-entry button{width:100%;min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid #bdebd8;border-radius:15px;background:#e7f8f0;color:#247b61;font:800 14px/1.4 var(--surface-font);cursor:pointer}
+.learn-review-entry button{width:100%;min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid #e7c9d5;border-radius:15px;background:#faf5f7;color:#80556a;font:800 14px/1.4 var(--surface-font);cursor:pointer}
 .learn-review-entry button .ico{width:18px;height:18px}
 .review-back{padding:4px 18px 10px}
-.review-back button{min-height:44px;color:#247b61;font-size:13px;font-weight:750}
+.review-back button{min-height:44px;color:#80556a;font-size:13px;font-weight:750}
+
+
+/* Desktop Python practice: restore a genuine two-column work area.
+   The mobile-first 430px focus layout is retained below 900px. */
+@media (min-width:900px) {
+  body:has(#lab) .lab-header {max-width:1080px;padding-inline:24px}
+  body:has(#lab) main#lab {max-width:1080px;padding:12px 24px 112px}
+  body:has(#lab) .layout {display:grid;grid-template-columns:250px minmax(0,1fr);gap:24px;align-items:start}
+  body:has(#lab) .unit-nav,
+  body:has(#lab) .unit-nav[data-collapsed="true"] {display:block;position:sticky;top:20px;max-height:calc(100dvh - 120px);overflow:auto}
+  body:has(#lab) .nav-toggle {display:none}
+  body:has(#lab) .lesson {min-width:0}
+  body:has(#lab) .practice-primary {padding:20px}
+  body:has(#lab) .practice-primary textarea.code {min-height:200px;height:clamp(200px,30dvh,360px)}
+  body:has(#lab) .meowde-lab-tabbar {max-width:1080px}
+}
+
+/* Low-literacy / low-attention learning rhythm: one idea per screen, stable vertical rhythm. */
+body:has(#lab) .lesson{line-height:1.6}
+body:has(#lab) .lesson>h2{margin:8px 0 6px}
+body:has(#lab) .lesson>.badge{margin:0 0 12px}
+body:has(#lab) .deepen-first-read{display:grid;gap:12px;padding:18px;margin-top:10px}
+body:has(#lab) .deepen-first-read :is(h3,p,pre,button,details){margin-top:0;margin-bottom:0}
+body:has(#lab) .deepen-key-sentence{font-size:16px;line-height:1.65;font-weight:650;letter-spacing:-.015em;color:var(--surface-ink);word-break:keep-all}
+body:has(#lab) .deepen-first-read pre{padding:14px;border-radius:14px;line-height:1.65}
+body:has(#lab) .deepen-more{border-top:1px solid var(--surface-line);padding-top:2px}
+body:has(#lab) .deepen-more>summary{min-height:46px;display:flex;align-items:center;color:var(--surface-mint-dark);font-size:13px;font-weight:750;cursor:pointer}
+body:has(#lab) .deepen-more-body{display:grid;gap:10px;padding:4px 0 2px}
+body:has(#lab) .deepen-more-body :is(h4,p,ul,ol,dl,pre){margin:0}
+body:has(#lab) .deepen-more-body :is(p,li,dd){font-size:13.5px;line-height:1.62;word-break:keep-all}
+body:has(#lab) .deepen-more-body dt{font-size:13px;font-weight:750;margin-top:6px}
+body:has(#lab) .function-understanding{display:grid;gap:12px}
+body:has(#lab) .function-understanding>.practice-support{margin:0}
+body:has(#lab) .function-stages{margin:10px 0 6px}
+body:has(#lab) .function-stages+ .meta{margin:0 0 12px;line-height:1.55}
+body:has(#lab) #quiz{margin-top:12px}
+body:has(#lab) #quiz .meta{line-height:1.5}
+.lesson-main .lesson-concept-card{display:grid;gap:12px;padding:17px;margin:8px 0 12px}
+.lesson-main .lesson-concept-card :is(h3,p,.code,details){margin:0}
+.lesson-main .lesson-pass-label{font-size:11px;font-weight:800;letter-spacing:.04em;color:#80556a}
+.lesson-main .lesson-concept-summary{font-size:15px!important;line-height:1.65!important;color:#38343a!important;font-weight:620;word-break:keep-all;margin:0!important}
+.lesson-main .lesson-concept-more{border-top:1px solid #eee7ec;padding-top:2px}
+.lesson-main .lesson-concept-more>summary{min-height:44px;display:flex;align-items:center;font-size:13px;font-weight:750;color:#80556a;cursor:pointer}
+.lesson-main .lesson-concept-more>p{font-size:13.5px;line-height:1.62;color:#716877;word-break:keep-all;margin:4px 0 2px}
+
+/* Blueprint v3 interaction contract: readable rhythm and one clear action hierarchy. */
+body:has(#lab) :is(button.primary,a.primary,.practice-next-action),
+.lesson-main .lesson-foot .btn,
+.lesson-main .feedback .btn{
+  min-height:48px;box-sizing:border-box;border-radius:14px;font-weight:750
+}
+body:has(#lab) :is(.actions button,.practice-tools-open,.nav-toggle),
+.lesson-main :is(button.hint,.meowde-inline-concept>summary,.lesson-concept-more>summary){
+  min-height:44px;box-sizing:border-box
+}
+body:has(#lab) .lesson :is(p,li,dd){line-height:1.62}
+body:has(#lab) .lesson :is(h2,h3,h4)+p{margin-top:6px}
+body:has(#lab) .lesson p+p{margin-top:8px}
+
+/* Blueprint v3 final learning lock: last declaration wins over legacy experiments. */
+body:has(#lab) .lab-header h1{font-size:23px;line-height:1.35;letter-spacing:-.04em;font-weight:850}
+body:has(#lab) .lab-header-description{font-size:13px;line-height:1.55}
+body:has(#lab) .lesson h2{font-size:20px;line-height:1.4}
+body:has(#lab) .lesson :is(p,li,dd){font-size:14px;line-height:1.62}
+body:has(#lab) .card{padding:16px;margin:12px 0;border-radius:18px;box-shadow:none}
+body:has(#lab) :is(button.primary,a.primary,.practice-next-action){min-height:48px;border-radius:15px}
+body:has(#lab) :is(.nav-toggle,.practice-tools-close,.practice-support>summary,.deepen-more>summary){min-height:44px}
+body:has(#lab) .meowde-lab-tabbar a[aria-current="page"]{background:#FAF5F7;color:#80556A;border-color:#E7C9D5}

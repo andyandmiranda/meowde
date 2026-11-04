@@ -30,7 +30,7 @@ test('existing grade, saved progress and exercise navigation functions remain pr
  assert.match(html,/async function checkQ\(\)/);
  assert.match(html,/function renderLesson\(\)/);
  assert.match(html,/function nextQ\(\)/);
- assert.match(html,/function save\(\)/);
+ assert.match(html,/function save\([^)]*\)/);
 });
 
 test('mobile report row separates hint and report and preserves tap target',()=>{

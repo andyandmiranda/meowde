@@ -13,5 +13,11 @@
 .practice-picker{margin:14px 0 70px;border-top:1px solid var(--surface-line)}
 .practice-picker summary{cursor:pointer;min-height:48px;display:flex;align-items:center;justify-content:center;color:var(--surface-muted);font-size:14px;font-weight:700}
 .practice-picker nav{display:grid;gap:8px;padding:4px 0 12px}
-.practice-picker a{display:flex;align-items:center;justify-content:center;min-height:46px;border:1px solid #B4DCCB;border-radius:14px;background:#fff;text-decoration:none;color:var(--surface-ink);font-weight:700}
+.practice-picker a{display:flex;align-items:center;justify-content:center;min-height:46px;border:1px solid #E8A7C5;border-radius:14px;background:#fff;text-decoration:none;color:var(--surface-ink);font-weight:700}
 @media(max-width:360px){.hero.compact h1{font-size:23px}}
+
+/* Source exercise hub: keep source exercises distinct from formal curriculum. */
+.linux-source-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:14px}
+.linux-source-card{display:flex;flex-direction:column;gap:4px;min-height:104px;padding:13px;border:1px solid #EEE7EC;border-radius:15px;background:#fff}
+.linux-source-card b{color:#80556A}.linux-source-card span{font-weight:750}.linux-source-card small{color:#706961;line-height:1.4}.linux-source-card em{margin-top:auto;font-size:11px;font-style:normal;color:#80556A}
+@media(max-width:390px){.linux-source-grid{grid-template-columns:1fr}}

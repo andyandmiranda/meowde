@@ -62,7 +62,7 @@ test('real cached practice offers update, preserves changed code and opens the o
  await page.evaluate(()=>document.getElementById('stop-run').hidden=true);
  await page.locator('#practice-update-open').click();
  await expect(page.locator('#unit-title')).toHaveText('함수 심화 · 남은 자리 계산');
- await expect(page.locator('.function-stages [aria-current="step"]')).toHaveText('2. 연습');
+ await expect(page.locator('.function-stages [aria-current="step"]')).toHaveText('따라 코딩');
  expect(await page.evaluate(()=>localStorage.getItem('meowde-python-lab-v1'))).toBe(saved);
  expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(legacy);
  await page.goto(base+'/python-lab.html#values');

@@ -17,6 +17,8 @@
   }
 
   finish=function(){
+    if(!hasLessonProgress())return;
+    const previous=JSON.parse(JSON.stringify(S));
     const finishedLessonIndex=S.lessonIndex;
     const finishedExercise=cur();
     const currentMode=mode();
@@ -57,6 +59,12 @@
     S.v414DailyKey='';
     S.v414MistakeId='';
     const completionSaved=save()!==false;
+    if(!completionSaved){
+      Object.keys(S).forEach(key=>{if(!Object.prototype.hasOwnProperty.call(previous,key))delete S[key]});
+      Object.assign(S,previous);
+      renderLesson();
+      return;
+    }
 
     const ko=S.lang==='ko';
     const treatLabel=ko?'츄르':'Churu';
