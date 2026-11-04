@@ -43,7 +43,19 @@
   }
   picker.value=subject;
   picker.addEventListener("change",()=>{const next=routes[picker.value];if(next)root.location.assign(next.learn);});
-  inner.append(brand,subtitle,picker);header.append(inner);
+  inner.append(brand,subtitle,picker);
+  if(subject==="python"){
+    const language=node("button","meowde-unified-language","KO");
+    language.type="button";
+    language.setAttribute("aria-label","표시 언어 변경");
+    language.addEventListener("click",()=>{const original=document.querySelector("#app .meowde-canonical-top .lang");if(original)original.click();});
+    inner.append(language);
+    const syncLanguage=()=>{const original=document.querySelector("#app .meowde-canonical-top .lang");if(original)language.textContent=original.textContent.trim();};
+    syncLanguage();
+    const appForLanguage=document.getElementById("app");
+    if(appForLanguage&&root.MutationObserver)new root.MutationObserver(syncLanguage).observe(appForLanguage,{childList:true});
+  }
+  header.append(inner);
   const nav=node("nav","meowde-unified-tabs");nav.setAttribute("aria-label","MEOWDE 공통 5탭");
   const icons={home:"⌂",learn:"▤",deepen:"⌘",together:"♡",my:"♙"};
   const labels={home:"홈",learn:"학습",deepen:"심화",together:"함께",my:"마이"};
