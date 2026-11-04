@@ -8,7 +8,7 @@
     python:{label:"Python",home:"/?tab=home",learn:"/?tab=map",deepen:"/python-lab.html?view=overview",together:"/together.html?subject=python",my:"/?tab=my"},
     linux:{label:"Linux",home:"/linux-home.html?tab=home",learn:"/linux-home.html?tab=learn",deepen:"/linux-crash-course.html?view=concept",together:"/together.html?subject=linux",my:"/linux-home.html?tab=my"},
     ml:{label:"머신러닝",home:"/ml-foundations.html?tab=home",learn:"/ml-foundations.html?tab=learn",deepen:"/ml-foundations.html",together:"/together.html?subject=ml",my:"/ml-foundations.html?tab=my"},
-    dl:{label:"딥러닝",home:"/?tab=home",learn:"/deep-learning.html#units",deepen:null,together:null,my:"/?tab=my"}
+    dl:{label:"딥러닝",home:"/deep-learning-overview.html?tab=home",learn:"/deep-learning.html#units",deepen:null,together:null,my:"/deep-learning-overview.html?tab=my"}
   });
   if(!Object.prototype.hasOwnProperty.call(routes,subject) || !document.body)return;
   const selected=routes[subject];
@@ -17,6 +17,7 @@
     if(subject==="python")return tab==="my"?"my":tab==="map"?"learn":"home";
     if(subject==="linux")return ["home","learn","my"].includes(tab)?tab:"home";
     if(subject==="ml")return ["home","learn","my"].includes(tab)?tab:"deepen";
+    if(root.location.pathname.endsWith("/deep-learning-overview.html"))return tab==="my"?"my":"home";
     return "learn";
   }
   function node(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text)n.textContent=text;return n;}
