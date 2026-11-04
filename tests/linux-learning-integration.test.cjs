@@ -76,7 +76,7 @@ test("Linux navigation uses the approved five-tab product structure",()=>{
  assert.doesNotMatch(source,/\['my','마이','♧','\/\?tab=my'\]/);
  assert.match(source,/previous=\{\.\.\.previous,version:1/);
  const pathSource=fs.readFileSync(path.join(root,"assets/linux-course-path.js"),"utf8");
- assert.match(pathSource,/saved=\{\.\.\.saved,index,done,stageByLesson:stages\}/);
+ assert.match(pathSource,/const next=\{\.\.\.saved,index,done,stageByLesson:stages\}/);
 });
 
 test("Linux simulator rejects unbalanced quotes without changing virtual files",()=>{
@@ -119,7 +119,7 @@ test("Linux E1-E9 persistence keeps storage unreadable records protected and rep
  const page=fs.readFileSync(path.join(root,"linux-crash-course.html"),"utf8");
  const pathSource=fs.readFileSync(path.join(root,"assets/linux-course-path.js"),"utf8");
  assert.match(page,/canPersist=false;storageIssue="저장된 개념 퀴즈 기록을 읽지 못했어요/);
- assert.match(pathSource,/if\(!canPersist\)return;/);
- assert.match(pathSource,/localStorage\.setItem\(KEY,JSON\.stringify\(saved\)\);storageIssue=""/);
+ assert.match(pathSource,/if\(!canPersist\)return false;/);
+ assert.match(pathSource,/localStorage\.setItem\(KEY,JSON\.stringify\(next\)\);saved=next;storageIssue=""/);
  assert.match(pathSource,/catch\(error\)\{storageIssue="퀴즈 기록을 저장하지 못했어요/);
 });
