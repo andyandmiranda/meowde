@@ -18,7 +18,9 @@ test('organic first lesson retains the initial miss after retry, reload and cour
  await expect(page.locator('.feedback.no')).toContainText('야옹',{timeout:60000});await page.locator('.feedback .btn').click();
  expect(await page.evaluate(()=>cur().retry)).toBe(true);
  await page.locator('#code-editor').fill('print("야옹")');await page.reload();await expect(page.locator('#code-editor')).toHaveValue('print("야옹")');
- await page.getByRole('combobox',{name:'학습 과목'}).selectOption('linux');await page.locator('#guided-entry').click();
+ await page.getByRole('combobox',{name:'학습 과목'}).selectOption('linux');
+ await expect(page).toHaveURL(/linux-home\.html/);
+ await page.goto(base+'/linux-start.html');
  await page.locator('#lesson-action').click();await page.locator('#lesson-action').click();await page.locator('#lesson-input').fill('mkdir tra');
  const linux=await page.evaluate(()=>localStorage.getItem('meowde-linux-guided-v1'));
  await page.getByRole('link',{name:'Linux 홈으로 돌아가기'}).click();

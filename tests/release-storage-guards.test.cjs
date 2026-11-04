@@ -52,3 +52,21 @@ test('shared subject selector avoids duplicate navigation and ML lesson remains 
  assert.match(navigation,/if\(selector\.dataset\.sharedSubjects==='1'\)return;/);
  assert.match(mlShell,/if\(lesson\)lesson\.hidden=false;/);
 });
+
+test('Linux E1–E9 navigation commits only after storage success',()=>{
+ const script=fs.readFileSync('assets/linux-course-path.js','utf8');
+ const fn=script.match(/persist=function\(\)\{[\s\S]*?\n\};/)?.[0];
+ assert.ok(fn,'Linux persistence override should exist');
+ const records=new Map();let fail=false;
+ const ctx=vm.createContext({canPersist:true,saved:{done:{}},index:2,done:{},KEY:'meowde-linux-cram-v1',storageIssue:'',localStorage:{setItem(k,v){if(fail)throw Error('quota');records.set(k,v)}},document:{getElementById(){return {textContent:''}}}});
+ vm.runInContext('const byId=id=>document.getElementById(id);'+fn,ctx);
+ assert.equal(vm.runInContext('persist()',ctx),true);
+ assert.equal(JSON.parse(records.get('meowde-linux-cram-v1')).index,2);
+ const persisted=records.get('meowde-linux-cram-v1');fail=true;
+ vm.runInContext('index=3',ctx);
+ assert.equal(vm.runInContext('persist()',ctx),false);
+ assert.equal(records.get('meowde-linux-cram-v1'),persisted);
+ assert.equal(vm.runInContext('saved.index',ctx),2);
+ vm.runInContext('canPersist=false',ctx);
+ assert.equal(vm.runInContext('persist()',ctx),false);
+});

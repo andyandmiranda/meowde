@@ -18,13 +18,14 @@ let stage=0,wrongAttempts=0;
 const byId=id=>document.getElementById(id);
 const make=(tag,text,className)=>{const n=document.createElement(tag);n.textContent=text;if(className)n.className=className;return n;};
 persist=function(){
- if(!canPersist)return;
+ if(!canPersist)return false;
  try{
   const stages=saved.stageByLesson&&typeof saved.stageByLesson==="object"&&!Array.isArray(saved.stageByLesson)?saved.stageByLesson:{};
-  saved={...saved,index,done,stageByLesson:stages};
-  localStorage.setItem(KEY,JSON.stringify(saved));storageIssue="";
+  const next={...saved,index,done,stageByLesson:stages};
+  localStorage.setItem(KEY,JSON.stringify(next));saved=next;storageIssue="";
  }catch(error){storageIssue="퀴즈 기록을 저장하지 못했어요. 화면을 닫으면 이번 진행이 사라질 수 있어요.";}
  const status=byId("library-storage-status");if(status)status.textContent=storageIssue;
+ return !storageIssue;
 };
 function saveStage(){
  if(!canPersist)return;
