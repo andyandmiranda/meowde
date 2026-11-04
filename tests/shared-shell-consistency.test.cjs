@@ -30,7 +30,8 @@ test('shared shell design preserves full-width desktop practice and mobile tab l
 
 test('shared shell exposes six subjects and uses distinct Together/My icons',()=>{
  const selector=fs.readFileSync('assets/meowde-subject-selector.js','utf8');
- for(const label of ['Python','Linux','머신러닝','데이터 분석 · 준비 중','딥러닝 · 준비 중','AI 로보틱스 · 준비 중'])assert.match(selector,new RegExp(label));
+ for(const label of ['Python','Linux','머신러닝','데이터 분석 · 준비 중','딥러닝','AI 로보틱스 · 준비 중'])assert.match(selector,new RegExp(label));
+ assert.match(selector,/\["deep","딥러닝",true\]/,'딥러닝 입문은 활성화된 과목');
  const together=fs.readFileSync('together.html','utf8');assert.match(together,/meowde-subject-selector\.js/);
  const icons=fs.readFileSync('assets/app-shell-icons.js','utf8');
  const togetherPath=icons.match(/'함께':'([^']+)'/)[1],myPath=icons.match(/'마이':'([^']+)'/)[1];assert.notEqual(togetherPath,myPath);
