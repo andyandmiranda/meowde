@@ -23,7 +23,7 @@
       return tab==="my"?"my":tab==="map"?"learn":"home";
     }
     if(subject==="linux")return ["home","learn","my"].includes(tab)?tab:"home";
-    if(subject==="ml")return ["home","learn","my"].includes(tab)?tab:"deepen";
+    if(subject==="ml")return ["home","learn","my"].includes(tab)?tab:"learn";
     if(root.location.pathname.endsWith("/deep-learning-overview.html"))return tab==="my"?"my":"home";
     return "learn";
   }
