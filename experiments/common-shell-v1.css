@@ -1,0 +1,8 @@
+/* Scoped opt-in styling; no legacy selector overrides. */
+.meowde-common-shell{font:inherit;color:inherit;max-width:680px;margin:auto}
+.meowde-common-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px}
+.meowde-common-header select{font:inherit;min-height:44px;max-width:50%;border:1px solid #ded0d8;border-radius:12px;background:white;padding:8px}
+.meowde-common-map{display:block;margin:8px 12px;padding:12px;border-radius:12px;background:#fff1f6;color:#63394d;text-align:center}
+.meowde-common-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px;padding:8px;background:#fff;border-top:1px solid #eee0e7}
+.meowde-common-tabs a{display:flex;align-items:center;justify-content:center;text-align:center;min-height:44px;border-radius:10px;font-size:13px;text-decoration:none;color:#625b63}
+.meowde-common-tabs a[aria-current=page]{background:#f5dce8;font-weight:750}
