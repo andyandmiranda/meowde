@@ -12,7 +12,7 @@ const choices=[
 function params(){return new URLSearchParams(root.location.search);}
 function currentSubject(){
  const p=root.location.pathname,q=params(),s=q.get("subject");
- if(p.endsWith("/together.html")&&["python","linux","ml","deep"].includes(s))return s;
+ if((p.endsWith("/together.html")||p.endsWith("/deepen.html"))&&["python","linux","ml","deep"].includes(s))return s;
  if(/\/linux-/.test(p)||p.endsWith("/robotics.html"))return "linux";
  if(p.endsWith("/ml-foundations.html"))return "ml";
  if(p.endsWith("/deep-learning.html"))return "deep";
@@ -27,6 +27,7 @@ function currentTab(){
   if(S.screen==="home")return "home";
  }
  if(p.endsWith("/together.html"))return "together";
+ if(p.endsWith("/deepen.html")||p.endsWith("/deep-learning-practice.html"))return "deepen";
  if(p.endsWith("/python-lab.html")||p.endsWith("/linux-crash-course.html")||p.endsWith("/linux-review.html"))return "deepen";
  if(p.endsWith("/ml-foundations.html")&&!["home","learn","my"].includes(tab))return "deepen";
  if(p.endsWith("/deep-learning.html"))return ["home","my","deepen"].includes(tab)?tab:"learn";
@@ -40,25 +41,25 @@ function currentTab(){
  return "home";
 }
 function routes(subject){
- if(subject==="deep")return {home:"/deep-learning.html?tab=home",learn:"/deep-learning.html?tab=learn",deepen:"/deep-learning.html?tab=deepen",together:"/together.html?subject=deep",my:"/deep-learning.html?tab=my"};
+ if(subject==="deep")return {home:"/deep-learning.html?tab=home",learn:"/deep-learning.html?tab=learn",deepen:"/deepen.html?subject=deep",together:"/together.html?subject=deep",my:"/deep-learning.html?tab=my"};
  if(subject==="linux")return {
   home:"/linux-home.html?tab=home",
   learn:"/linux-home.html?tab=learn",
-  deepen:"/linux-crash-course.html?view=concept",
+  deepen:"/deepen.html?subject=linux",
   together:"/together.html?subject=linux",
   my:"/linux-home.html?tab=my"
  };
  if(subject==="ml")return {
   home:"/ml-foundations.html?tab=home",
   learn:"/ml-foundations.html?tab=learn",
-  deepen:"/ml-foundations.html",
+  deepen:"/deepen.html?subject=ml",
   together:"/together.html?subject=ml",
   my:"/ml-foundations.html?tab=my"
  };
  return {
   home:"/?tab=home",
   learn:"/?tab=map",
-  deepen:"/python-lab.html?view=overview",
+  deepen:"/deepen.html?subject=python",
   together:"/together.html?subject=python",
   my:"/?tab=my"
  };
