@@ -24,7 +24,7 @@ function nav(){const n=$('units');n.classList.add('meowde-node-map');n.replaceCh
  const b=el('button','meowde-node'+(state.completed.has(u.id)?' complete':''));b.type='button';b.setAttribute('aria-current',String(state.current===i));
  const pin=el('span','meowde-node-number',state.completed.has(u.id)?'✓':String(index+1).padStart(2,'0'));
  b.append(pin,el('strong','',u.title),el('small','',state.completed.has(u.id)?'완료':state.legacyDone.has(u.id)?'기존 학습 기록':'학습하기'));
- b.onclick=()=>{const previous=[state.current,state.stage];state.current=i;state.stage=state.completed.has(u.id)?3:0;if(!save()){[state.current,state.stage]=previous;return}
+ b.onclick=()=>{const previous=[state.current,state.stage];const sameUnit=state.current===i;state.current=i;state.stage=sameUnit?previous[1]:state.completed.has(u.id)?3:0;if(!save()){[state.current,state.stage]=previous;return}
  const query=new URLSearchParams(location.search);query.set('tab','learn');query.set('unit',u.id);history.replaceState(null,'',location.pathname+'?'+query);render();};n.append(b)});
  const mainDone=units.slice(1).filter(u=>state.completed.has(u.id)).length;$('progress-label').textContent=mainDone+' / '+(units.length-1)+' 본 학습 단원 완료';$('progress-bar').style.width=(mainDone/(units.length-1)*100)+'%'}
 function panel(u,kind){const task=u[kind],wrap=el('section','step'),feedback=el('p','feedback'),choices=el('div','choices');const label={check:'① 이해·구별',apply:'② 적용',recall:'③ 회상'}[kind];wrap.append(el('h3','',label),el('p','question',task.q),choices,feedback);task.choices.forEach((c,i)=>{const b=el('button','answer',c);b.type='button';b.onclick=()=>{if(state.stage!==['check','apply','recall'].indexOf(kind))return;const ok=i===task.answer;feedback.textContent=(ok?'정답이에요. ':'다시 생각해 봐요. ')+task.why+(ok?'':' 정답: '+task.choices[task.answer]);feedback.className='feedback '+(ok?'correct':'wrong');if(!ok)return;const previous=state.stage;state.stage++;const finishing=state.stage===3;const already=state.completed.has(u.id);if(finishing)state.completed.add(u.id);if(!save()){state.stage=previous;if(finishing&&!already)state.completed.delete(u.id);feedback.textContent='정답이지만 저장하지 못했어요. 현재 단계를 유지합니다. 저장 공간 또는 브라우저 설정을 확인하고 다시 시도해 주세요.';feedback.className='feedback wrong';return}if(finishing)nav();renderStage()};choices.append(b)});return wrap}
@@ -34,7 +34,7 @@ load();
 // Direct node links open the requested lesson without writing or resetting the saved record.
 const entryUnit=new URLSearchParams(location.search).get('unit');
 const entryIndex=units.findIndex(u=>u.id===entryUnit);
-if(entryIndex>=0){state.current=entryIndex;state.stage=state.completed.has(entryUnit)?3:0;}
+if(entryIndex>=0){const sameSavedUnit=state.current===entryIndex;state.current=entryIndex;state.stage=sameSavedUnit?state.stage:state.completed.has(entryUnit)?3:0;}
 // Legacy map remains addressable with ?unit=map, but it is not a main learning node.
 // Default to Tensor without writing to or migrating a saved map record.
 else if(state.current===0){state.current=1;state.stage=state.completed.has(units[1].id)?3:0;}
