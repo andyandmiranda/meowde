@@ -109,7 +109,7 @@ body :is(.meowde-shell-header,.top.meowde-canonical-top) .meowde-top-actions,
 body.linux-five-tabs .top .meowde-top-actions{gap:6px!important}
 body :is(.meowde-root-subject,.meowde-shell-subject,.meowde-compact-subject,.meowde-shell-language),
 body .top.meowde-canonical-top .lang{
-  min-height:34px!important;
+  min-height:44px!important;
   border-radius:999px!important;
   font:750 12px/1.35 var(--meowde-ui-font)!important;
 }
@@ -167,3 +167,7 @@ body :is(.deepen-module .module-link,.meowde-subject-primary){
   body :is(.meowde-root-subject,.meowde-shell-subject,.meowde-compact-subject){font-size:11px!important}
 }
 /* The approved ML learn map (#units and its node geometry) is deliberately untouched. */
+
+/* Browser QA: standalone body text must inherit the shared shell font. */
+body{font-family:var(--meowde-ui-font)!important}
+body .meowde-shell-language,body .top.meowde-canonical-top .lang{min-width:44px!important}
