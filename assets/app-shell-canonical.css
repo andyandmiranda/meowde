@@ -1,3 +1,5 @@
+/* Shared Pretendard font source: Python and Linux already reference the same URL. */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
 /* Single navigation design shared by the Python root, standalone pages and Linux.
    Style only; storage, scoring, progress and curriculum stay in their own engines. */
 :root{--meowde-shell-cream:#ffffff;--meowde-shell-ink:#38343a;--meowde-shell-muted:#716877;--meowde-shell-line:#eee7ec;--meowde-shell-mint:#f5dde5;--meowde-shell-pale:#faf5f7}
