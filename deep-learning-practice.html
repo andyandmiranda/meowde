@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MEOWDE · 딥러닝 첫 수치 실습</title>
+<link rel="stylesheet" href="/assets/shared-five-tab-shell.css?v=1"><link rel="stylesheet" href="/assets/app-shell-canonical.css?v=1"><link rel="stylesheet" href="/assets/meowde-pink-unified.css?v=1">
+<style>
+:root{font-family:system-ui,-apple-system,'Apple SD Gothic Neo',sans-serif;color:#38343a;background:#fffafc}*{box-sizing:border-box}body{margin:0}main{width:min(100%,430px);margin:0 auto;padding:12px 15px 105px}h1{font-size:25px;line-height:1.35;margin:12px 0}h2{font-size:18px;margin:0 0 9px}p{line-height:1.65;margin:7px 0}.lead,.hint{font-size:13px;color:#716877}.card{background:#fff;border:1px solid #eee0e7;border-radius:20px;padding:17px;margin:13px 0}.metric{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:12px 0}.metric div{border-radius:12px;background:#faf0f5;padding:11px;font-size:12px}.metric strong{display:block;font-size:19px;color:#80556a;font-variant-numeric:tabular-nums}.buttons{display:grid;gap:8px}.buttons button,button.primary,.back{min-height:48px;border:1px solid #d6afc4;border-radius:13px;background:#fff;cursor:pointer;padding:11px 14px;color:#38343a;font:inherit}.buttons button{text-align:left}.buttons button[aria-pressed=true]{background:#faf0f5;border-color:#aa7496}.primary{width:100%;background:#f5dce8!important;font-weight:750}label{font-weight:700;font-size:14px}input[type=range]{width:100%;margin:16px 0;accent-color:#9d6284;min-height:30px}.code{white-space:pre-wrap;overflow-wrap:anywhere;background:#292d39;color:white;border-radius:12px;padding:13px;font:12px/1.55 ui-monospace,monospace}.status{min-height:25px;font-size:13px;color:#80556a}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #80556a;outline-offset:2px}.back{display:inline-flex;align-items:center;text-decoration:none;margin-bottom:12px;font-size:13px}.muted{color:#716877}.meowde-shell-header{max-width:430px}@media(max-width:340px){.card{padding:13px}.metric strong{font-size:17px}}
+</style></head><body>
+<header class="meowde-shell-header"><div class="meowde-shell-brand"><img src="/assets/meowde-approved-base.svg?v=450" alt="" width="38" height="38"><div><a href="/?tab=home">Meowde</a><small>딥러닝 · 첫 수치 실습</small></div></div><select class="meowde-shell-subject" aria-label="과목 선택"><option value="deep">딥러닝</option></select></header>
+<main><a class="back" href="/deep-learning.html?tab=deepen">← 딥러닝 심화 지도</a>
+<h1>가중치를 한 번 직접 바꿔봐요</h1><p class="lead">개념 → 예시 → 직접 조작 → 적용 → 회상. 이 실습은 브라우저에서 숫자를 계산하며, PyTorch를 실행하지 않아요. 기록을 저장하거나 변경하지 않습니다.</p>
+<section class="card"><h2>① 개념</h2><p>모델이 <strong>예측</strong>한 숫자와 정답의 차이를 <strong>손실</strong>로 나타내요. 손실의 기울기를 이용하면 가중치를 수정할 수 있어요.</p><p class="hint">식: 예측 = w × x, 손실 = (예측 − 정답)², 기울기 = 2 × (예측 − 정답) × x</p></section>
+<section class="card"><h2>② 따라 보기</h2><p>입력 x=2, 정답 y=6, 시작 가중치 w=1.</p><div class="metric"><div>예측<strong id="prediction">2.00</strong></div><div>손실<strong id="loss">16.00</strong></div><div>기울기<strong id="gradient">−16.00</strong></div><div>가중치 w<strong id="weight">1.00</strong></div></div><p id="explain" class="hint">w=1이면 예측은 2예요. 정답 6과 차이가 4이므로 손실은 16이에요.</p>
+<button type="button" class="primary" id="step">학습률 0.1로 가중치 한 번 업데이트</button><button type="button" class="back" id="reset">처음부터 다시</button></section>
+<section class="card"><h2>③ 직접 조작</h2><label for="weight-slider">가중치를 움직여 손실을 줄여보세요</label><input type="range" id="weight-slider" min="-1" max="5" step="0.1" value="1"><p class="status" id="slider-status" role="status">w를 바꾸면 예측과 손실도 바뀌어요.</p></section>
+<section class="card"><h2>④ 새로운 문제</h2><p>현재 w=1, x=2, y=6일 때 학습률 0.1로 한 번 업데이트하면 가중치가 얼마일까요?</p><div class="buttons" id="apply-choices"><button type="button" data-value="0.6">0.6</button><button type="button" data-value="2.6">2.6</button><button type="button" data-value="3.0">3.0</button></div><p class="status" id="apply-status" role="status" aria-live="polite"></p></section>
+<section class="card"><h2>⑤ 회상</h2><p>정답보다 예측이 작고, x가 양수라면 이 예제에서 가중치는 어느 방향으로 바뀌어야 할까요?</p><div class="buttons" id="recall-choices"><button type="button" data-value="up">더 커지는 방향</button><button type="button" data-value="down">더 작아지는 방향</button><button type="button" data-value="same">변경하지 않음</button></div><p class="status" id="recall-status" role="status" aria-live="polite"></p></section>
+<section class="card"><h2>다음 단계: PyTorch 구현</h2><p class="hint">아래 코드는 학습할 코드 예시예요. 이 페이지에서는 실행되지 않으며, 실제 PyTorch 환경과 모델 학습·검증 기능은 아직 개발 대상이에요.</p>
+<pre class="code">import torch
+w = torch.tensor(1.0, requires_grad=True)
+x = torch.tensor(2.0)
+y = torch.tensor(6.0)
+loss = (w * x - y).square()
+loss.backward()
+with torch.no_grad():
+    w -= 0.1 * w.grad
+print(round(w.item(), 1))  # 2.6</pre></section>
+<p class="hint">이 화면은 기존 17단원·51문항 및 모든 기존 저장키에 영향을 주지 않아요.</p></main>
+<nav class="meowde-lab-tabbar" aria-label="메인 메뉴"><a href="/?tab=home" aria-label="홈">⌂<span>홈</span></a><a href="/deep-learning.html?tab=learn" aria-label="학습">▤<span>학습</span></a><a href="/deep-learning.html?tab=deepen" aria-label="심화" aria-current="page">⌘<span>심화</span></a><a href="/together.html?subject=deep" aria-label="함께">♧<span>함께</span></a><a href="/?tab=my" aria-label="마이">♙<span>마이</span></a></nav>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const fixedX=2,target=6,learningRate=0.1;let w=1;
+function round(x){return x.toFixed(2)}
+function render(){const prediction=w*fixedX,diff=prediction-target,loss=diff*diff,grad=2*diff*fixedX;$('prediction').textContent=round(prediction);$('loss').textContent=round(loss);$('gradient').textContent=round(grad);$('weight').textContent=round(w);$('weight-slider').value=String(w);$('explain').textContent='예측 '+round(prediction)+' · 정답 6 · 오차 '+round(diff)+' · 손실 '+round(loss);$('slider-status').textContent=loss<=0.0001?'손실 0! 이 예제에서는 w=3이 정답이에요.':'현재 손실 '+round(loss)+' · w를 3에 가까이 맞춰보세요.';}
+$('step').addEventListener('click',()=>{const gradient=2*(w*fixedX-target)*fixedX;w=Math.max(-1,Math.min(5,Math.round((w-learningRate*gradient)*100)/100));render()});
+$('reset').addEventListener('click',()=>{w=1;render()});
+$('weight-slider').addEventListener('input',e=>{w=Number(e.target.value);render()});
+function quiz(container,status,correct,explain){$(container).addEventListener('click',e=>{const b=e.target.closest('button[data-value]');if(!b)return;$(container).querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$(status).textContent=b.dataset.value===correct?'정답! '+explain:'다시 생각해 보세요. '+explain;});}
+quiz('apply-choices','apply-status','2.6','기울기는 −16이고 w = 1 − 0.1 × (−16) = 2.6이에요.');
+quiz('recall-choices','recall-status','up','음의 기울기를 빼면 w가 커져요. 이 예제에서는 예측이 정답에 가까워져요.');
+render();
+</script><script src="/assets/app-shell-icons.js?v=1"></script><script src="/assets/meowde-subject-selector.js?v=2"></script></body></html>
