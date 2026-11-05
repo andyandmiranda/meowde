@@ -7,6 +7,7 @@
 <div class="card"><h3>단원 선택</h3><div class="units" id="units" aria-label="학습 단원"></div><p class="mini" id="progress-label">0 / 17 단원 학습 완료</p><div class="progress" aria-hidden="true"><i id="progress-bar" style="width:0%"></i></div></div>
 <section class="card" id="lesson" aria-live="polite"><h2 id="lesson-title"></h2><div id="concept-area"><p class="concept" id="story"></p><p class="muted" id="concept"></p><pre class="example" id="example"></pre></div><div id="tasks"></div></section>
 <section class="card hidden" id="finish"><h2>딥러닝 학습 경로 완료 🎉</h2><p class="muted">17개 단원의 이해·적용·회상 학습을 완료했어요. 실제 GPU 모델 훈련과 Colab Save/Load 실습은 별도 검증이 필요해요.</p><button class="secondary" id="again">처음부터 다시 학습</button></section>
+<section class="card hidden" id="deep-deepen" aria-label="딥러닝 심화 학습"><h2>딥러닝 심화 학습 경로</h2><p class="muted">기초 개념을 익힌 뒤 데이터 분할·과적합·GPU·Colab·모델 저장과 재추론을 살펴보세요. 실제 모델 훈련 실습은 아직 제공하지 않아요.</p><div id="deep-advanced-links" class="units meowde-node-map" aria-label="심화 단원 목록"></div></section>
 <p class="mini" id="storage-status" role="status"></p><p class="footer">딥러닝 개념 과정 · 독립 과목 저장<br>기존 Python·Linux·ML 기록과 XP·츄르는 변경되지 않아요</p>
 </main><nav class="meowde-lab-tabbar" aria-label="메인 메뉴"><a href="/?tab=home" aria-label="홈"><span class="lab-nav-icon" aria-hidden="true">⌂</span><span>홈</span></a><a class="selected" href="/deep-learning.html?tab=learn" aria-label="학습" aria-current="page"><span class="lab-nav-icon" aria-hidden="true">▤</span><span>학습</span></a><a href="/deep-learning.html?tab=deepen" aria-label="심화"><span class="lab-nav-icon" aria-hidden="true">⌘</span><span>심화</span></a><a href="/together.html?subject=deep" aria-label="함께"><span class="lab-nav-icon" aria-hidden="true">♧</span><span>함께</span></a><a href="/?tab=my" aria-label="마이"><span class="lab-nav-icon" aria-hidden="true">♙</span><span>마이</span></a></nav><script>
 "use strict";
@@ -35,4 +36,26 @@ const entryIndex=units.findIndex(u=>u.id===entryUnit);
 if(entryIndex>=0){state.current=entryIndex;state.stage=state.completed.has(entryUnit)?3:0;}
 render();$('again').onclick=()=>{const previous=[state.current,state.stage];state.current=0;state.stage=state.completed.has(units[0].id)?3:0;if(!save()){[state.current,state.stage]=previous;return}render()};
 
+
+// Deepen is a separate, read-only navigation view over existing lessons. No scoring or storage writes.
+if(new URLSearchParams(location.search).get('tab')==='deepen'){
+ const advanced=$('deep-deepen'),links=$('deep-advanced-links');
+ const entries=units.slice(11);
+ entries.forEach((u,i)=>{
+  const a=el('a','meowde-node',String(i+12).padStart(2,'0')+' · '+u.title+' →');
+  a.href='/deep-learning.html?tab=learn&unit='+encodeURIComponent(u.id);
+  a.style.cssText='display:flex;align-items:center;min-height:56px;padding:12px 16px;margin:8px 0;text-decoration:none;color:inherit;border:1px solid #e9cfdd;border-radius:18px;background:#fff';
+  links.append(a);
+ });
+ document.querySelector('main>h1').textContent='딥러닝 심화';
+ document.querySelector('main>.sub').textContent='기존 17단원 중 후반부 6개 단원을 이어서 학습해요.';
+ $('units').closest('.card').classList.add('hidden');
+ $('lesson').classList.add('hidden');
+ $('finish').classList.add('hidden');
+ advanced.classList.remove('hidden');
+ const tabs=document.querySelectorAll('.meowde-lab-tabbar a');
+ tabs.forEach(a=>{a.classList.remove('selected');a.removeAttribute('aria-current');});
+ const selected=document.querySelector('.meowde-lab-tabbar a[href="/deep-learning.html?tab=deepen"]');
+ if(selected){selected.classList.add('selected');selected.setAttribute('aria-current','page');}
+}
 </script><script src="/assets/app-shell-icons.js?v=1"></script><script src="/assets/meowde-subject-selector.js?v=2"></script></body></html>
