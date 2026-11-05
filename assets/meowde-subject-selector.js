@@ -12,7 +12,7 @@ const choices=[
 function params(){return new URLSearchParams(root.location.search);}
 function currentSubject(){
  const p=root.location.pathname,q=params(),s=q.get("subject");
- if(p.endsWith("/together.html")&&["python","linux","ml"].includes(s))return s;
+ if(p.endsWith("/together.html")&&["python","linux","ml","deep"].includes(s))return s;
  if(/\/linux-/.test(p)||p.endsWith("/robotics.html"))return "linux";
  if(p.endsWith("/ml-foundations.html"))return "ml";
  if(p.endsWith("/deep-learning.html"))return "deep";
@@ -39,20 +39,20 @@ function currentTab(){
  return "home";
 }
 function routes(subject){
- if(subject==="deep")return {home:"/?tab=home",learn:"/deep-learning.html",deepen:"/deep-learning.html",together:"/together.html",my:"/?tab=my"};
+ if(subject==="deep")return {home:"/?tab=home",learn:"/deep-learning.html",deepen:"/deep-learning.html",together:"/together.html?subject=deep",my:"/?tab=my"};
  if(subject==="linux")return {
-  home:"/linux-home.html?tab=home",
+  home:"/?tab=home",
   learn:"/linux-home.html?tab=learn",
   deepen:"/linux-crash-course.html?view=concept",
   together:"/together.html?subject=linux",
-  my:"/linux-home.html?tab=my"
+  my:"/?tab=my"
  };
  if(subject==="ml")return {
-  home:"/ml-foundations.html?tab=home",
+  home:"/?tab=home",
   learn:"/ml-foundations.html?tab=learn",
   deepen:"/ml-foundations.html",
   together:"/together.html?subject=ml",
-  my:"/ml-foundations.html?tab=my"
+  my:"/?tab=my"
  };
  return {
   home:"/?tab=home",
