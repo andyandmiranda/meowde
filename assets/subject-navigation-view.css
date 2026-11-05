@@ -60,3 +60,110 @@ body .ml-learn-page #lesson[hidden],body #lesson[hidden]{display:none!important}
  body .meowde-home-progress,body .meowde-home-deepen{padding:20px}
  body .meowde-connected-map>.meowde-path-stop{width:104px!important}
 }
+
+
+/* Shell typography and geometry contract — 2026-11-05.
+   Scoped to navigation, header and non-learning page titles only.
+   Do not change the approved ML learning node map, lesson cards or engines. */
+:root{
+  --meowde-ui-font:"Pretendard Variable",Pretendard,system-ui,sans-serif;
+  --meowde-ui-ink:#38343A;
+  --meowde-ui-muted:#716877;
+  --meowde-ui-line:#EEE7EC;
+  --meowde-ui-active:#FAF5F7;
+  --meowde-ui-header-height:68px;
+  --meowde-ui-nav-height:74px;
+  --meowde-ui-tab-height:52px;
+  --meowde-ui-title-size:23px;
+  --meowde-ui-body-size:14px;
+  --meowde-ui-button-height:48px;
+}
+body :is(.top.meowde-canonical-top,.meowde-shell-header),
+body.linux-five-tabs .top{
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:430px!important;
+  min-height:var(--meowde-ui-header-height)!important;
+  margin-inline:auto!important;
+  border:0!important;
+  background:#fff!important;
+  font-family:var(--meowde-ui-font)!important;
+  color:var(--meowde-ui-ink)!important;
+}
+body :is(.top.meowde-canonical-top,.meowde-shell-header) :is(.brand,.meowde-shell-brand),
+body.linux-five-tabs .top .brand{
+  font-family:var(--meowde-ui-font)!important;
+}
+body :is(.top.meowde-canonical-top,.meowde-shell-header) :is(.brand h1,.meowde-shell-brand a),
+body.linux-five-tabs .top .meowde-linux-title{
+  font:850 23px/1.05 var(--meowde-ui-font)!important;
+  letter-spacing:-.04em!important;
+  color:var(--meowde-ui-ink)!important;
+}
+body :is(.top.meowde-canonical-top,.meowde-shell-header) :is(.brand p,.meowde-shell-brand small),
+body.linux-five-tabs .top .meowde-linux-subtitle{
+  font:750 11px/1.35 var(--meowde-ui-font)!important;
+  color:var(--meowde-ui-muted)!important;
+}
+body :is(.meowde-shell-header,.top.meowde-canonical-top) .meowde-top-actions,
+body.linux-five-tabs .top .meowde-top-actions{gap:6px!important}
+body :is(.meowde-root-subject,.meowde-shell-subject,.meowde-compact-subject,.meowde-shell-language),
+body .top.meowde-canonical-top .lang{
+  min-height:34px!important;
+  border-radius:999px!important;
+  font:750 12px/1.35 var(--meowde-ui-font)!important;
+}
+body :is(.tabbar,.meowde-lab-tabbar),
+body.linux-five-tabs .linux-tabbar{
+  box-sizing:border-box!important;
+  width:100%!important;max-width:430px!important;
+  min-height:var(--meowde-ui-nav-height)!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:3px!important;
+  padding:10px 10px calc(10px + env(safe-area-inset-bottom,0px))!important;
+  border-top:1px solid var(--meowde-ui-line)!important;
+  background:rgba(255,255,255,.98)!important;
+  border-radius:0!important;
+}
+body :is(.tabbar button,.meowde-lab-tabbar a),
+body.linux-five-tabs .linux-tabbar a{
+  box-sizing:border-box!important;
+  min-height:var(--meowde-ui-tab-height)!important;
+  height:var(--meowde-ui-tab-height)!important;
+  min-width:0!important;
+  gap:3px!important;
+  border-radius:14px!important;
+  font:650 11px/1.25 var(--meowde-ui-font)!important;
+}
+body :is(.tabbar button.on,.meowde-lab-tabbar a[aria-current="page"]),
+body.linux-five-tabs .linux-tabbar a[aria-current="page"]{
+  background:var(--meowde-ui-active)!important;
+  color:#80556A!important;
+  border-color:#E7C9D5!important;
+}
+body :is(.meowde-lab-tabbar .lab-nav-icon,.linux-tabbar a span:first-child){
+  font-size:21px!important;line-height:1!important;min-height:21px!important;
+}
+body :is(.meowde-subject-page>h1,.ml-shell-page>h1,.meowde-course-home h1,.linux-my-dashboard>h1),
+body.linux-five-tabs main.app>h1{
+  font-family:var(--meowde-ui-font)!important;
+  font-size:var(--meowde-ui-title-size)!important;
+  font-weight:850!important;
+  line-height:1.35!important;
+}
+body :is(.deepen-module,.meowde-subject-card) :is(p,.module-desc){
+  font-family:var(--meowde-ui-font);
+}
+body :is(.deepen-module .module-link,.meowde-subject-primary){
+  min-height:var(--meowde-ui-button-height);
+}
+@media(max-width:359px){
+  body :is(.top.meowde-canonical-top,.meowde-shell-header),
+  body.linux-five-tabs .top{padding-inline:10px!important;gap:5px!important}
+  body :is(.top.meowde-canonical-top,.meowde-shell-header) :is(.brand h1,.meowde-shell-brand a),
+  body.linux-five-tabs .top .meowde-linux-title{font-size:20px!important}
+  body :is(.top.meowde-canonical-top,.meowde-shell-header) :is(.brand p,.meowde-shell-brand small),
+  body.linux-five-tabs .top .meowde-linux-subtitle{font-size:8px!important}
+  body :is(.meowde-root-subject,.meowde-shell-subject,.meowde-compact-subject){font-size:11px!important}
+}
+/* The approved ML learn map (#units and its node geometry) is deliberately untouched. */
