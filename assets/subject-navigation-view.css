@@ -1,0 +1,62 @@
+/* Shared home and connected learning paths. UI only. */
+body .top.meowde-canonical-top,body .meowde-shell-header,body.linux-five-tabs .top{min-height:68px!important;gap:8px!important}
+body .tabbar .ico{width:24px;height:24px}
+body .meowde-course-home{padding:0 0 100px!important;width:100%!important;max-width:none!important;font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif}
+body .meowde-home-day{margin:2px 0 10px;font-size:12px;font-weight:750;color:#716877}
+body .meowde-home-hero{padding:16px;border:1px solid #eee7ec;border-radius:26px;background:linear-gradient(145deg,#fff,#faf5f7);box-shadow:0 7px 20px #38343a08}
+body .meowde-home-intro{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:center;gap:8px}
+body .meowde-home-intro img{width:100%;height:164px;object-fit:contain}
+body .meowde-home-intro h1{margin:6px 0!important;font-size:25px!important;line-height:1.25!important;letter-spacing:-.04em}
+body .meowde-home-intro small{font-size:10px;font-weight:800;color:#80556a}
+body .meowde-home-intro p{font-size:13px;line-height:1.6;color:#716877;word-break:keep-all;margin:8px 0}
+body .meowde-home-primary,body .meowde-home-map{display:flex;align-items:center;justify-content:center;text-decoration:none;min-height:48px;margin-top:10px;border-radius:16px;font-size:14px;font-weight:750;color:#38343a}
+body .meowde-home-primary{background:#f5dde5}
+body .meowde-home-map{color:#80556a;font-size:12px;margin-top:4px}
+body .meowde-home-progress,body .meowde-home-deepen{box-sizing:border-box;display:flex;align-items:center;gap:14px;min-height:122px;padding:24px;margin-top:12px;border:1px solid #eee7ec;border-radius:24px;background:#fff;color:#38343a;text-decoration:none;box-shadow:0 7px 20px #38343a08}
+body .meowde-home-progress>span:first-child{flex:1;min-width:0}
+body .meowde-home-progress strong,body .meowde-home-progress small,body .meowde-home-progress>span>span,body .meowde-home-deepen strong,body .meowde-home-deepen small{display:block}
+body .meowde-home-progress small,body .meowde-home-deepen small{font-size:10px;font-weight:800;color:#80556a;margin-bottom:10px}
+body .meowde-home-progress strong,body .meowde-home-deepen strong{font-size:14px;line-height:1.5}
+body .meowde-home-progress>span>span{font-size:12px;color:#716877}
+body .meowde-home-progress progress{width:72px;height:7px;accent-color:#b77f94}
+body .meowde-home-deepen{display:block;position:relative;padding-right:36px}
+body .meowde-home-deepen p{font-size:12px;line-height:1.6;color:#716877;margin:4px 0 0}
+body .meowde-home-deepen>span{position:absolute;right:22px;top:50%}
+body .meowde-course-my>h1{font-size:25px;margin:12px 0 6px}
+body .meowde-course-my progress,body .linux-my-card progress{width:100%;height:8px;accent-color:#b77f94}
+body .meowde-course-note{font-size:12px;line-height:1.6;color:#716877}
+body.linux-five-tabs .linux-home-dashboard,body.linux-five-tabs .linux-my-dashboard{padding-left:0!important;padding-right:0!important}
+body.linux-five-tabs .meowde-linux-back{display:none}
+body.linux-map-page #linux-learning-map{border:0!important;padding:4px 0!important;margin:4px 0!important}
+body.linux-map-page .linux-map-breadcrumb{display:none}
+body .meowde-path-line{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
+body .meowde-path-line path{fill:none;stroke:#e7c9d5;stroke-width:3;stroke-linecap:round}
+body .trail .meowde-path-line{z-index:0}
+body .trail .node,body .trail .node-label{z-index:1}
+body #linux-map-list.meowde-connected-map,body #units.meowde-connected-map{box-sizing:border-box;position:relative;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:0!important;max-width:100%!important;margin:16px 0 24px!important;padding:0!important;border:0!important;border-radius:0!important;background:#fff!important}
+body #linux-map-list.meowde-connected-map::before,body #units.meowde-connected-map::before{display:none!important}
+body .meowde-connected-map>.meowde-path-stop{box-sizing:border-box;position:relative;z-index:1;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;align-self:auto!important;left:var(--node-x);transform:translateX(-50%);width:112px!important;min-width:0!important;height:126px!important;min-height:126px!important;gap:9px!important;margin:0!important;padding:6px 0 0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;text-decoration:none!important;color:#38343a!important;text-align:center!important;font:inherit!important;overflow:visible!important}
+body .meowde-connected-map>.meowde-path-stop::before{display:none!important}
+body .meowde-path-stop>.meowde-path-number{box-sizing:border-box;display:grid!important;place-items:center!important;width:68px!important;height:68px!important;min-width:68px!important;flex:none!important;border:3px solid #e8e5e9!important;border-radius:50%!important;background:#fff!important;box-shadow:0 5px 0 #eeeaf0!important;color:#38343a!important;font-size:20px!important;font-weight:850!important;padding:0!important}
+body .meowde-path-stop.current>.meowde-path-number,body .meowde-path-stop[aria-current=true]>.meowde-path-number{border-color:#bd8aa2!important;background:#f5dde5!important;box-shadow:0 0 0 5px #faf0e2!important}
+body .meowde-path-stop.complete>.meowde-path-number{background:#80556a!important;border-color:#80556a!important;color:#fff!important}
+body .meowde-path-stop>.meowde-path-title{font-size:12px!important;line-height:1.35!important;font-weight:700!important;overflow-wrap:anywhere;word-break:keep-all;max-width:112px}
+body .meowde-path-stop>small{display:none!important}
+body .meowde-path-stop:focus-visible{outline:3px solid #80556a!important;outline-offset:2px!important;border-radius:16px!important}
+body .ml-learn-page #lesson[hidden],body #lesson[hidden]{display:none!important}
+@media(max-width:359px){
+ body .top.meowde-canonical-top,body .meowde-shell-header,body.linux-five-tabs .top{padding-inline:10px!important;gap:5px!important}
+ body .top.meowde-canonical-top .brand,body .meowde-shell-brand,body.linux-five-tabs .top .brand{gap:5px!important}
+ body .top.meowde-canonical-top .brand h1,body .meowde-shell-brand a,body.linux-five-tabs .top .meowde-linux-title{font-size:20px!important}
+ body .top.meowde-canonical-top .brand p,body .meowde-shell-brand small,body.linux-five-tabs .top .meowde-linux-subtitle{font-size:8px!important}
+ body .brand-mark,body .meowde-shell-brand img,body.linux-five-tabs .top .meowde-linux-mark{width:30px!important;height:34px!important;flex:none}
+ body .meowde-top-actions{gap:4px!important}
+ body select.meowde-root-subject,body select.meowde-shell-subject,body select.meowde-compact-subject{width:86px!important;min-width:86px!important;max-width:86px!important;font-size:11px!important;padding-inline:5px!important}
+ body .meowde-shell-language,body .top.meowde-canonical-top .lang{min-width:34px!important;padding-inline:6px!important;font-size:11px!important}
+ body .meowde-home-hero{padding:12px}
+ body .meowde-home-intro{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}
+ body .meowde-home-intro h1{font-size:21px!important}
+ body .meowde-home-intro img{height:138px}
+ body .meowde-home-progress,body .meowde-home-deepen{padding:20px}
+ body .meowde-connected-map>.meowde-path-stop{width:104px!important}
+}

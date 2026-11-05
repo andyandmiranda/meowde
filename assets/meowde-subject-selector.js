@@ -29,6 +29,7 @@ function currentTab(){
  if(p.endsWith("/together.html"))return "together";
  if(p.endsWith("/python-lab.html")||p.endsWith("/linux-crash-course.html")||p.endsWith("/linux-review.html"))return "deepen";
  if(p.endsWith("/ml-foundations.html")&&!["home","learn","my"].includes(tab))return "deepen";
+ if(p.endsWith("/deep-learning.html"))return ["home","my","deepen"].includes(tab)?tab:"learn";
  if(["home","learn","my"].includes(tab))return tab;
  if(p==="/"||p.endsWith("/index.html")){
   if(tab==="map")return "learn";
@@ -39,20 +40,20 @@ function currentTab(){
  return "home";
 }
 function routes(subject){
- if(subject==="deep")return {home:"/?tab=home",learn:"/deep-learning.html",deepen:"/deep-learning.html",together:"/together.html?subject=deep",my:"/?tab=my"};
+ if(subject==="deep")return {home:"/deep-learning.html?tab=home",learn:"/deep-learning.html?tab=learn",deepen:"/deep-learning.html?tab=deepen",together:"/together.html?subject=deep",my:"/deep-learning.html?tab=my"};
  if(subject==="linux")return {
-  home:"/?tab=home",
+  home:"/linux-home.html?tab=home",
   learn:"/linux-home.html?tab=learn",
   deepen:"/linux-crash-course.html?view=concept",
   together:"/together.html?subject=linux",
-  my:"/?tab=my"
+  my:"/linux-home.html?tab=my"
  };
  if(subject==="ml")return {
-  home:"/?tab=home",
+  home:"/ml-foundations.html?tab=home",
   learn:"/ml-foundations.html?tab=learn",
   deepen:"/ml-foundations.html",
   together:"/together.html?subject=ml",
-  my:"/?tab=my"
+  my:"/ml-foundations.html?tab=my"
  };
  return {
   home:"/?tab=home",
@@ -68,7 +69,7 @@ function syncSubjects(){
   if(select.dataset.sharedSubjects!=="1"){
    select.dataset.sharedSubjects="1";select.removeAttribute("onchange");select.onchange=null;select.replaceChildren();
    choices.forEach(([id,label,enabled])=>{const option=root.document.createElement("option");option.value=id;option.textContent=label;option.disabled=!enabled;select.append(option);});
-   select.addEventListener("change",()=>{const choice=choices.find(c=>c[0]===select.value);if(choice&&choice[2])root.location.assign(choice[0]==="deep"?"/deep-learning.html":routeFor(choice[0]));});
+   select.addEventListener("change",()=>{const choice=choices.find(c=>c[0]===select.value);if(choice&&choice[2])root.location.assign(routeFor(choice[0]));});
   }
   select.value=currentSubject();
  });
@@ -99,7 +100,7 @@ function syncTop(){
 }
 function syncTabs(){
  const subject=currentSubject(),table=routes(subject);
- root.document.querySelectorAll(".meowde-lab-tabbar").forEach(nav=>{
+ root.document.querySelectorAll(".meowde-lab-tabbar,.linux-tabbar").forEach(nav=>{
   nav.querySelectorAll("a").forEach(a=>{
    const label=a.getAttribute("aria-label");
    const id=label==="홈"?"home":label==="학습"?"learn":label==="심화"?"deepen":label==="함께"?"together":label==="마이"?"my":null;
@@ -111,6 +112,9 @@ function syncTabs(){
  });
 }
 function sync(){syncSubjects();syncTop();syncTabs();}
+// Load the presentation layer once; it never writes course records.
+const surface=root.document.createElement("link");surface.rel="stylesheet";surface.href="/assets/subject-navigation-view.css?v=1";root.document.head.append(surface);
+const view=root.document.createElement("script");view.src="/assets/subject-navigation-view.js?v=1";root.document.body.append(view);
 sync();
 if(root.MutationObserver){
  const observer=new root.MutationObserver(sync);
