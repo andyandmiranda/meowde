@@ -14,3 +14,12 @@ body{background:#fff;color:#38343a;font-family:"Pretendard Variable",Pretendard,
 .ml-next-action{display:grid;gap:8px}
 .ml-transfer{margin:0!important;padding:10px 12px;border-radius:14px;background:#faf5f7;color:#716877!important;font-size:13px!important}
 .ml-next{min-height:48px;border:1px solid #d9a7b9;border-radius:15px;background:#f5dde5;color:#38343a;font-weight:750}
+
+/* Shared learning-node map surface, presentation only. ML lesson IDs, scoring and storage remain in ml-foundations.js. */
+.ml-learn-page>nav#units{display:flex;flex-direction:column;align-items:stretch;gap:0;position:relative;margin:16px auto 20px;max-width:360px;padding:4px 12px}
+.ml-learn-page>nav#units::before{content:"";position:absolute;top:25px;bottom:25px;left:48px;width:3px;border-radius:4px;background:#e9cfdd;pointer-events:none}
+.ml-learn-page>nav#units button{position:relative;z-index:1;min-height:76px;width:calc(100% - 12px);margin:8px 0 8px 12px;padding:14px 16px 14px 61px;text-align:left;font-size:14px;font-weight:700;line-height:1.4;border:1px solid #e9cfdd;border-radius:22px;background:#fff;box-shadow:0 3px 12px rgba(56,52,58,.045);overflow-wrap:anywhere}
+.ml-learn-page>nav#units button::before{content:"";position:absolute;left:16px;top:50%;transform:translateY(-50%);width:31px;height:31px;border:3px solid #d3abc1;background:#faf5f7;border-radius:50%;box-shadow:0 0 0 4px #fff}
+.ml-learn-page>nav#units button[aria-current=true]{border-color:#b982a2;background:#faf0f5;color:#583b4b}
+.ml-learn-page>nav#units button[aria-current=true]::before{background:#c889a8;border-color:#b982a2}
+@media(max-width:359px){.ml-learn-page>nav#units{display:flex;max-width:100%}.ml-learn-page>nav#units button{font-size:13px;min-height:72px}}
