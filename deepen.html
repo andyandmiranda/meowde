@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MEOWDE · 심화 실습실</title>
+<link rel="stylesheet" href="/assets/shared-five-tab-shell.css?v=1">
+<link rel="stylesheet" href="/assets/app-shell-canonical.css?v=1">
+<link rel="stylesheet" href="/assets/meowde-pink-unified.css?v=1">
+<link rel="stylesheet" href="/assets/subject-surface-canonical.css?v=1">
+<style>
+:root{font-family:system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:#38343a;background:#fffafc}
+*{box-sizing:border-box}body{margin:0}main{width:min(100%,430px);margin:auto;padding:12px 16px 112px}h1{font-size:25px;letter-spacing:-.035em;margin:13px 0 6px}
+h2{font-size:17px;margin:0 0 7px}p{line-height:1.6}.intro{font-size:13px;color:#716877;margin:0 0 15px}
+.deepen-module{border:1px solid #eee0e7;border-radius:20px;padding:17px;margin:12px 0;background:#fff;box-shadow:0 2px 12px rgba(56,52,58,.025)}
+.module-head{display:flex;align-items:center;justify-content:space-between;gap:7px}.module-name{display:flex;align-items:center;gap:9px}.module-number{display:grid;place-items:center;background:#faf0f5;border-radius:12px;color:#80556a;width:35px;height:35px;flex:none;font-weight:800;font-size:12px}
+.module-desc{font-size:13px;color:#716877;margin:7px 0 10px}.module-status{color:#716877;font-size:11px;font-weight:700;white-space:nowrap}
+.module-link{display:flex;align-items:center;justify-content:center;min-height:48px;background:#faf0f5;color:#583b4b;border:1px solid #e9cfdd;border-radius:13px;text-decoration:none;font-weight:700;font-size:13px;padding:9px 12px}
+.module-notice{font-size:12px;color:#716877;background:#faf7f9;border-radius:12px;padding:11px;margin:0}
+.deepen-small{font-size:12px;color:#716877}.status-ready{color:#795273}
+@media(max-width:340px){main{padding-inline:12px}.deepen-module{padding:13px}.module-status{font-size:10px}}
+</style></head>
+<body>
+<header class="meowde-shell-header" aria-label="상단 메뉴"><div class="meowde-shell-brand"><img src="/assets/meowde-approved-base.svg?v=450" width="38" height="38" alt=""><div><a href="/?tab=home">Meowde</a><small id="subject-subtitle">심화 · 실습실</small></div></div><select class="meowde-shell-subject" id="subject-switch" aria-label="과목 선택"><option value="python">Python</option><option value="linux">Linux</option><option value="ml">머신러닝</option><option value="deep">딥러닝</option></select></header>
+<main><h1 id="page-title">심화 실습실</h1><p class="intro">학습에서 이해한 개념을 적용하는 공간이에요. 제공되는 기능만 열 수 있으며, 준비 중인 기능은 완료된 것처럼 표시하지 않아요.</p>
+<div id="modules" aria-label="심화 실습 영역"></div><p class="deepen-small">기존 학습 콘텐츠·진도·정답 기록은 변경하지 않아요. 각 실습의 저장 여부는 해당 실습 화면 안내를 확인해 주세요.</p></main>
+<nav class="meowde-lab-tabbar" aria-label="메인 메뉴"><a href="/?tab=home" aria-label="홈"><span class="lab-nav-icon" aria-hidden="true">⌂</span><span>홈</span></a><a href="/?tab=map" aria-label="학습"><span class="lab-nav-icon" aria-hidden="true">◫</span><span>학습</span></a><a href="/deepen.html?subject=python" aria-label="심화" aria-current="page"><span class="lab-nav-icon" aria-hidden="true">‹/›</span><span>심화</span></a><a href="/together.html?subject=python" aria-label="함께"><span class="lab-nav-icon" aria-hidden="true">✧</span><span>함께</span></a><a href="/?tab=my" aria-label="마이"><span class="lab-nav-icon" aria-hidden="true">♧</span><span>마이</span></a></nav>
+<script>
+(function(){
+'use strict';
+const catalog={
+ python:{label:'Python',items:[
+  {name:'실험실',description:'예제 코드를 실행하고 입력·출력 변화를 관찰해요.',url:'/python-lab.html?view=overview',action:'Python 실습실 열기',status:'제공 중'},
+  {name:'코딩 실습',description:'기존 Python 실습실에서 코드를 작성하고 실행해요.',url:'/python-lab.html?view=overview',action:'코딩 연습 시작',status:'제공 중'},
+  {name:'디버깅 챌린지',description:'독립적인 오류 수정 챌린지와 자동 평가를 확장할 예정이에요.',status:'확장 예정'},
+  {name:'실전 프로젝트',description:'여러 개념을 결합한 독립 프로젝트와 평가를 준비 중이에요.',status:'준비 중'}
+ ]},
+ linux:{label:'Linux',items:[
+  {name:'실험실',description:'제한된 터미널 시뮬레이터에서 명령과 출력 구조를 연습해요. 실제 셸 실행은 아니에요.',url:'/linux-crash-course.html?view=terminal',action:'터미널 시뮬레이터 열기',status:'모의 실습'},
+  {name:'코딩 실습',description:'Bash 조건문과 명령 구조를 지원 범위 내에서 연습해요.',url:'/linux-crash-course.html?view=bash',action:'Bash 실습 열기',status:'모의 실습'},
+  {name:'디버깅 챌린지',description:'실제 오류 원인 탐색과 독립 평가 과정은 아직 제공하지 않아요.',status:'준비 중'},
+  {name:'실전 프로젝트',description:'실제 Linux 환경과 파일·권한을 다루는 프로젝트는 준비 중이에요.',status:'준비 중'}
+ ]},
+ ml:{label:'머신러닝',items:[
+  {name:'실험실',description:'실제 모델을 학습·비교하는 조작 실험은 준비 중이에요.',status:'준비 중'},
+  {name:'코딩 실습',description:'현재는 회귀·분류 모델의 예제 읽기와 객관식 응용만 제공해요. 실제 sklearn 코드 실행은 아니에요.',url:'/ml-foundations.html?tab=learn',action:'기존 개념 응용으로 이동',status:'개념 응용만'},
+  {name:'디버깅 챌린지',description:'데이터 누수·과적합·평가 오류 수정 실습을 준비 중이에요.',status:'준비 중'},
+  {name:'실전 프로젝트',description:'데이터 준비부터 모델 평가까지 수행하는 프로젝트는 아직 제공하지 않아요.',status:'준비 중'}
+ ]},
+ deep:{label:'딥러닝',items:[
+  {name:'실험실',description:'가중치·예측·손실·기울기를 바꾸는 브라우저 수치 실험이에요. PyTorch 실행은 아니에요.',url:'/deep-learning-practice.html',action:'기울기 실험 시작',status:'수치 실험'},
+  {name:'코딩 실습',description:'PyTorch 코드 작성·실행·채점 기능은 아직 제공하지 않아요.',status:'준비 중'},
+  {name:'디버깅 챌린지',description:'역전파·학습률·모델 오류를 직접 수정하는 기능은 준비 중이에요.',status:'준비 중'},
+  {name:'실전 프로젝트',description:'실제 모델 학습·평가·저장·재추론 프로젝트는 준비 중이에요.',status:'준비 중'}
+ ]}
+};
+const q=new URLSearchParams(location.search),subject=Object.hasOwn(catalog,q.get('subject'))?q.get('subject'):'python';
+const data=catalog[subject];
+document.title='MEOWDE · '+data.label+' 심화 실습실';
+document.getElementById('page-title').textContent=data.label+' · 심화 실습실';
+document.getElementById('subject-subtitle').textContent=data.label+' · 심화';
+const selector=document.getElementById('subject-switch');selector.value=subject;
+selector.addEventListener('change',()=>location.assign('/deepen.html?subject='+encodeURIComponent(selector.value)));
+const modules=document.getElementById('modules');
+data.items.forEach((item,index)=>{
+ const section=document.createElement('section');section.className='deepen-module';
+ const head=document.createElement('div');head.className='module-head';
+ const name=document.createElement('div');name.className='module-name';
+ const number=document.createElement('span');number.className='module-number';number.textContent=String(index+1).padStart(2,'0');
+ const title=document.createElement('h2');title.textContent=item.name;name.append(number,title);
+ const status=document.createElement('span');status.className='module-status'+(item.url?' status-ready':'');status.textContent=item.status;
+ head.append(name,status);
+ const description=document.createElement('p');description.className='module-desc';description.textContent=item.description;
+ section.append(head,description);
+ if(item.url){const link=document.createElement('a');link.href=item.url;link.className='module-link';link.textContent=item.action+' →';section.append(link);}
+ else{const notice=document.createElement('p');notice.className='module-notice';notice.textContent='이 기능은 아직 실행할 수 없어요.';section.append(notice);}
+ modules.append(section);
+});
+document.querySelector('.meowde-lab-tabbar a[aria-label="학습"]').href={python:'/?tab=map',linux:'/linux-home.html?tab=learn',ml:'/ml-foundations.html?tab=learn',deep:'/deep-learning.html?tab=learn'}[subject];
+document.querySelector('.meowde-lab-tabbar a[aria-label="심화"]').href='/deepen.html?subject='+subject;
+document.querySelector('.meowde-lab-tabbar a[aria-label="함께"]').href='/together.html?subject='+subject;
+})();
+</script><script src="/assets/app-shell-icons.js?v=1"></script><script src="/assets/meowde-subject-selector.js?v=2"></script></body></html>
