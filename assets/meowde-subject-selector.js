@@ -15,7 +15,7 @@ function currentSubject(){
  if((p.endsWith("/together.html")||p.endsWith("/deepen.html"))&&["python","linux","ml","deep"].includes(s))return s;
  if(/\/linux-/.test(p)||p.endsWith("/robotics.html"))return "linux";
  if(p.endsWith("/ml-foundations.html"))return "ml";
- if(p.endsWith("/deep-learning.html"))return "deep";
+ if(p.endsWith("/deep-learning.html")||p.endsWith("/deep-learning-practice.html"))return "deep";
  return "python";
 }
 function currentTab(){
