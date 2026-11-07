@@ -25,9 +25,10 @@ if(brand&&!header.querySelector('.meowde-compact-subject')){
  const python=document.createElement('option');python.value='python';python.textContent='Python';
  const linux=document.createElement('option');linux.value='linux';linux.textContent='Linux';
  const ml=document.createElement('option');ml.value='ml';ml.textContent='머신러닝';
- const pending=['데이터 분석','딥러닝','AI 로보틱스'].map(label=>{const option=document.createElement('option');option.textContent=label+' · 준비 중';option.disabled=true;return option;});
- selector.append(python,linux,ml,...pending);selector.value='linux';
- selector.addEventListener('change',()=>{if(selector.dataset.sharedSubjects==='1')return;if(selector.value==='python')location.assign('/?tab=map');else if(selector.value==='ml')location.assign('/ml-foundations.html');});
+ const deep=document.createElement('option');deep.value='deep';deep.textContent='딥러닝';
+ const pending=['데이터 분석','AI 로보틱스'].map(label=>{const option=document.createElement('option');option.textContent=label+' · 준비 중';option.disabled=true;return option;});
+ selector.append(python,linux,ml,deep,...pending);selector.value='linux';
+ selector.addEventListener('change',()=>{if(selector.dataset.sharedSubjects==='1')return;if(selector.value==='python')location.assign('/?tab=map');else if(selector.value==='ml')location.assign('/ml-foundations.html');else if(selector.value==='deep')location.assign('/deep-learning.html?tab=learn');});
  let actions=header.querySelector('.meowde-top-actions');if(!actions){actions=document.createElement('div');actions.className='meowde-top-actions';header.append(actions);}actions.append(selector);
 }
 
@@ -52,7 +53,7 @@ if(!document.querySelector('link[href^="/assets/subject-surface-canonical.css"]'
 
 let active=path.endsWith('/linux-home.html')&&params.get('tab')==='my'?'my':library||path.endsWith('/linux-review.html')?'deepen':path.endsWith('/linux-start.html')||path.endsWith('/linux-course.html')?'learn':path.endsWith('/linux-home.html')&&params.get('tab')==='learn'?'learn':'home';
 const nav=document.createElement('nav');nav.className='linux-tabbar';nav.setAttribute('aria-label','메인 메뉴');
-const tabs=[['home','홈','⌂','/?tab=home'],['learn','학습','◫','/linux-home.html?tab=learn'],['deepen','심화','‹/›','/linux-crash-course.html?view=concept'],['together','함께','✧','/together.html?subject=linux'],['my','마이','♧','/?tab=my']];
+const tabs=[['home','홈','⌂','/linux-home.html?tab=home'],['learn','학습','◫','/linux-home.html?tab=learn'],['deepen','심화','‹/›','/deepen.html?subject=linux'],['together','함께','✧','/together.html?subject=linux'],['my','마이','♧','/linux-home.html?tab=my']];
 for(const [id,label,icon,href] of tabs){const a=document.createElement('a');a.href=href;a.dataset.tab=id;a.setAttribute('aria-label',label);const symbol=document.createElement('span');symbol.textContent=icon;symbol.setAttribute('aria-hidden','true');a.append(symbol,document.createTextNode(label));nav.append(a);}
 document.body.append(nav);document.body.classList.add('linux-five-tabs');
 const sharedSubjects=document.createElement('script');sharedSubjects.src='/assets/meowde-subject-selector.js?v=3';document.body.append(sharedSubjects);
