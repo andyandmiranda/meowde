@@ -29,7 +29,7 @@ function currentTab(){
  if(p.endsWith("/together.html"))return "together";
  if(p.endsWith("/deepen.html")||p.endsWith("/deep-learning-practice.html"))return "deepen";
  if(p.endsWith("/python-lab.html")||p.endsWith("/linux-crash-course.html")||p.endsWith("/linux-review.html"))return "deepen";
- if(p.endsWith("/ml-foundations.html")&&!["home","learn","my"].includes(tab))return "deepen";
+ if(p.endsWith("/ml-foundations.html"))return ["home","my"].includes(tab)?tab:"learn";
  if(p.endsWith("/deep-learning.html"))return ["home","my","deepen"].includes(tab)?tab:"learn";
  if(["home","learn","my"].includes(tab))return tab;
  if(p==="/"||p.endsWith("/index.html")){
