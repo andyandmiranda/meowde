@@ -24,6 +24,21 @@ body #map-card #units.meowde-connected-map>.meowde-path-stop{min-height:116px!im
 
 .dl-learning-meta[hidden],.dl-section-tabs[hidden]{display:none!important}
 @media(max-width:340px){body main{padding-left:12px;padding-right:12px}.dl-map-frame{padding:14px 7px}.dl-section-tabs button{padding:9px 11px}}
+
+/* UX v1 presentation layer: leave the existing lesson grader and persistence unchanged. */
+#lesson.dl-stage-shell{padding:16px;border-radius:24px}
+.dl-lesson-progress{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin:10px 0 16px}
+.dl-lesson-progress span{height:5px;border-radius:6px;background:#efe8ed}
+.dl-lesson-progress span.active{background:#b7839b}
+.dl-stage-caption{margin:3px 0 4px;font-size:11px;font-weight:800;color:#80556a}
+.dl-stage-description{font-size:12px;line-height:1.5;color:#716877;margin:0 0 15px}
+#lesson.dl-view-concept #example,#lesson.dl-view-concept #tasks,
+#lesson.dl-view-example #story,#lesson.dl-view-example #concept,#lesson.dl-view-example #tasks,
+#lesson.dl-view-task #concept-area{display:none!important}
+#lesson .dl-stage-next{display:block;width:100%;min-height:48px;margin:16px 0 2px;border:1px solid #d9b4c4;border-radius:14px;background:#f5dde5;color:#38343a;font:800 14px/1.5 "Pretendard Variable",Pretendard,system-ui,sans-serif}
+#lesson.dl-view-task .dl-stage-next{display:none}
+#lesson .dl-stage-next:focus-visible{outline:3px solid #80556a;outline-offset:3px}
+@media(max-width:340px){#lesson.dl-stage-shell{padding:12px}.dl-lesson-progress{gap:4px}}
 </style></head><body><main>
 <header class="top meowde-shell-header" aria-label="상단 메뉴"><div class="meowde-shell-brand"><img src="/assets/meowde-approved-base.svg?v=450" width="38" height="38" alt=""><div><a href="/?tab=home">Meowde</a><small>딥러닝 · 입문</small></div></div><select class="meowde-shell-subject" aria-label="과목 선택"><option value="python">Python</option><option value="linux">Linux</option><option value="ml">머신러닝</option><option value="data" disabled>데이터 분석 · 준비 중</option><option value="deep">딥러닝</option><option value="robotics" disabled>AI 로보틱스 · 준비 중</option></select></header>
 <h1>학습 지도</h1><p class="sub">딥러닝 · 16개 학습 단원</p><div class="dl-learning-meta" id="dl-learning-meta" aria-label="딥러닝 학습 현황"><span id="dl-summary-progress">진도 0/16</span><span>딥러닝 첫걸음</span></div>
@@ -104,4 +119,57 @@ if(new URLSearchParams(location.search).get('tab')==='deepen'){
  const selected=document.querySelector('.meowde-lab-tabbar a[href="/deep-learning.html?tab=deepen"]');
  if(selected){selected.classList.add('selected');selected.setAttribute('aria-current','page');}
 }
+</script><script>
+/* Isolated presentation adapter. No writes, no grade changes, no new quiz steps. */
+(function(){
+'use strict';
+const lesson=document.getElementById('lesson');
+const title=document.getElementById('lesson-title');
+const tasks=document.getElementById('tasks');
+const concept=document.getElementById('concept-area');
+if(!lesson||!title||!tasks||!concept)return;
+lesson.classList.add('dl-stage-shell');
+const caption=document.createElement('p');
+caption.className='dl-stage-caption';caption.id='dl-stage-caption';
+caption.setAttribute('aria-live','polite');
+const meter=document.createElement('div');meter.className='dl-lesson-progress';meter.setAttribute('aria-label','레슨 표시 단계');
+const bars=Array.from({length:5},()=>{const bar=document.createElement('span');meter.append(bar);return bar;});
+const note=document.createElement('p');note.className='dl-stage-description';
+const next=document.createElement('button');next.type='button';next.className='dl-stage-next';next.textContent='다음 · 예시 보기 →';
+title.before(caption,meter);
+title.after(note);
+concept.after(next);
+const labels=['개념 이해','예시 보기','이해·구별 문제','적용 문제','회상 문제'];
+let trackedUnit=state.current;
+let view=state.stage===0?'concept':'task';
+function sync(){
+ const realStage=state.stage;
+ if(realStage>0)view='task';
+ const step=view==='concept'?0:view==='example'?1:Math.min(4,realStage+2);
+ lesson.classList.toggle('dl-view-concept',view==='concept');
+ lesson.classList.toggle('dl-view-example',view==='example');
+ lesson.classList.toggle('dl-view-task',view==='task');
+ const completed=realStage===3;
+ caption.textContent=(completed?'기존 평가 완료 · ':'학습 단계 '+(step+1)+'/5 · ')+(completed?'완료':labels[step]);
+ note.textContent=view==='concept'?'먼저 개념을 이해한 뒤 예시를 확인해요.':view==='example'?'기존 예시를 확인한 뒤 이해·적용·회상 문제를 풀어요.':completed?'기존 채점·저장 기준으로 완료된 단원이에요.':'기존 '+(['이해·구별','적용','회상'][Math.min(2,realStage)])+' 문제를 풀어요. 결과는 기존 채점 방식대로 저장돼요.';
+ next.textContent=view==='concept'?'다음 · 예시 보기 →':'다음 · 문제 풀기 →';
+ bars.forEach((b,i)=>b.classList.toggle('active',i<=step));
+ meter.setAttribute('aria-label','레슨 표시 단계 '+(step+1)+' / 5');
+}
+function resync(){
+ if(trackedUnit!==state.current){
+  trackedUnit=state.current;
+  view=state.stage===0?'concept':'task';
+ }
+ sync();
+}
+next.addEventListener('click',()=>{
+ if(view==='concept')view='example';else if(view==='example')view='task';
+ sync();
+});
+const observer=new MutationObserver(resync);
+observer.observe(title,{childList:true,characterData:true,subtree:true});
+observer.observe(tasks,{childList:true,characterData:true,subtree:true});
+sync();
+})();
 </script><script src="/assets/app-shell-icons.js?v=1"></script><script src="/assets/meowde-subject-selector.js?v=2"></script></body></html>
