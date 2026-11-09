@@ -220,6 +220,8 @@ function changeDisplayLanguage(lang){
  if(lang!=='ko'&&lang!=='en')return;
  const screen=S.screen;
  S.lang=lang;
+ // Only mark onboarding complete after an explicit language choice.
+ try{localStorage.setItem('meowde-v410-seen','1')}catch{}
  closeOverlay();
  if(screen==='lesson'&&hasLessonProgress())renderLesson();
  else if(screen==='map')renderMap();
@@ -297,5 +299,5 @@ function openRequestedLesson(){
  if(hasLessonProgress())renderLesson();else renderHome();
  return true;
 }
-const app=document.getElementById('app');const initialEntryTab=new URLSearchParams(location.search).get('tab');if(openRequestedLesson()){}else if(initialEntryTab==='map')renderMap();else if(initialEntryTab==='home')renderHome();else if(initialEntryTab==='my')renderRoom();else if(hasLessonProgress())renderLesson();else renderHome();try{if(!localStorage.getItem('meowde-v410-seen')){localStorage.setItem('meowde-v410-seen','1');setTimeout(()=>langSheet(),300)}}catch{setTimeout(()=>langSheet(),300)}
+const app=document.getElementById('app');const initialEntryTab=new URLSearchParams(location.search).get('tab');if(openRequestedLesson()){}else if(initialEntryTab==='map')renderMap();else if(initialEntryTab==='home')renderHome();else if(initialEntryTab==='my')renderRoom();else if(hasLessonProgress())renderLesson();else renderHome();try{if(!localStorage.getItem('meowde-v410-seen')&&!localStorage.getItem(STORAGE))setTimeout(()=>langSheet(),300)}catch{/* Keep existing records and do not force onboarding when storage is unavailable. */}
 </script><script src="/assets/meowde-subject-hub.js"></script><script>if(window.MeowdeSubjectHub){const mountSubjectHub=()=>window.MeowdeSubjectHub.mount("python");mountSubjectHub();const appRoot=document.getElementById("app");if(appRoot&&window.MutationObserver){new MutationObserver(()=>{const slot=document.getElementById("meowde-subject-overview");if(slot&&!slot.firstChild)mountSubjectHub();}).observe(appRoot,{childList:true});}}</script><script src="/assets/tester-report.js"></script><script defer src="/assets/lesson-qa-report.js"></script><script defer src="/assets/lesson-learning-polish.js"></script><script src="/assets/meowde-subject-selector.js?v=1"></script></body></html>
