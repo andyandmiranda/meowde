@@ -35,6 +35,20 @@
 .meowde-coach-choice img{display:block;width:100%;height:132px;object-fit:contain}
 .meowde-coach-choice:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 .meowde-coach-section{padding:8px 18px 12px}.meowde-coach-section h3{font-size:16px}.meowde-coach-styles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:0 18px 24px}.meowde-coach-style{display:grid;gap:5px;padding:14px 12px;text-align:left;border:2px solid var(--line);border-radius:16px;background:#fff}.meowde-coach-style.selected{border-color:var(--mint);background:var(--mint2)}.meowde-coach-style small{font-size:11px;line-height:1.5;color:var(--muted)}.meowde-character-image{display:block;width:100%;height:132px;object-fit:contain}.meowde-lesson-character{width:68px;height:78px;flex-shrink:0}.meowde-coach-style:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+
+/* Python header only: reserve room for KO/EN and course choice on 320px phones.
+   Existing langSheet(), grading, rewards and saved learner state are unchanged. */
+@media(max-width:359px){
+ body .top.meowde-canonical-top{gap:5px!important;padding-inline:10px!important;min-width:0}
+ body .top.meowde-canonical-top .brand{flex:1 1 0%!important;min-width:0!important;max-width:none;overflow:hidden;gap:5px!important}
+ body .top.meowde-canonical-top .brand-mark{flex:0 0 34px;width:34px;height:38px}
+ body .top.meowde-canonical-top .brand>div{min-width:0;overflow:hidden}
+ body .top.meowde-canonical-top .brand h1{font-size:20px!important;white-space:nowrap}
+ body .top.meowde-canonical-top .brand p{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ body .top.meowde-canonical-top .meowde-top-actions{display:flex!important;flex:0 0 auto!important;align-items:center;gap:4px!important;min-width:0}
+ body .top.meowde-canonical-top select.meowde-root-subject{flex:0 0 86px!important;width:86px!important;min-width:86px!important;max-width:86px!important;min-height:44px!important;font-size:11px!important;padding-inline:5px!important}
+ body .top.meowde-canonical-top button.lang{display:inline-flex!important;flex:0 0 44px!important;width:44px!important;min-width:44px!important;max-width:44px!important;min-height:44px!important;align-items:center;justify-content:center;padding:0!important;visibility:visible!important}
+}
 </style>
 <link rel="stylesheet" href="/assets/meowde-pink-unified.css?v=1"></head>
 <body><div class="app" id="app"><div class="meowde-boot" role="status" aria-live="polite"><img src="/assets/meowde-approved-base.svg?v=450" alt="" width="58" height="68"><strong>Meowde</strong><span>준비 중</span></div></div>
