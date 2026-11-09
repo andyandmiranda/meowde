@@ -3,77 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#fffafc">
-<title>딥러닝 · MEOWDE</title>
-<link rel="stylesheet" href="/assets/meowde-unified-shell-review.css?v=1">
+<title>딥러닝 학습으로 이동 · MEOWDE</title>
+<meta name="robots" content="noindex">
 <style>
-:root{font-family:system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;background:#fffafc;color:#38343a}*{box-sizing:border-box}
-body{margin:0}main{max-width:680px;margin:0 auto;padding:24px 16px 110px}
-.eyebrow{font-size:12px;font-weight:800;color:#975774;margin:0 0 8px}
-h1{font-size:27px;line-height:1.3;letter-spacing:-.035em;margin:0 0 8px}
-h2{font-size:18px;line-height:1.45;margin:0 0 8px}
-p{font-size:14px;line-height:1.65;color:#675b67}
-.card{background:white;border:1px solid #eee0e7;border-radius:18px;padding:18px;margin:15px 0}
-.progress{display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:800;color:#634459}
-meter{width:100%;height:13px;accent-color:#a15c7d}
-.actions{display:grid;gap:9px;margin-top:15px}
-.action{display:flex;align-items:center;justify-content:center;min-height:48px;padding:10px 15px;text-decoration:none;border-radius:13px;font-size:14px;font-weight:750;background:#f5dce8;color:#453943;border:1px solid #d6a9bf}
-.action.secondary{background:#fff;color:#634459;border-color:#e4d7df}
-.breadcrumb{font-size:12px;color:#7d6e78}
-.units{list-style:none;margin:15px 0 0;padding:0;display:grid;gap:8px}
-.units li{display:flex;align-items:center;gap:8px;border:1px solid #eee0e7;background:#fff;border-radius:12px;padding:12px}
-.units .state{font-size:12px;color:#89506e;margin-left:auto;white-space:nowrap}
-.notice{font-size:12px;color:#786b77}
-@media(max-width:340px){main{padding:16px 12px 104px}.card{padding:14px}h1{font-size:24px}}
+body{font:16px/1.6 system-ui,sans-serif;background:#fffafc;color:#38343a;margin:0}
+main{max-width:430px;margin:64px auto;padding:24px}
+a{display:inline-block;min-height:44px;line-height:44px;color:#80556a}
 </style>
 </head>
 <body>
 <main>
-<p class="eyebrow">MEOWDE · 딥러닝 첫걸음</p>
-<h1 id="page-title">딥러닝 학습</h1>
-<p id="page-subtitle">신경망부터 역전파까지 개념 → 적용 → 회상으로 이해해요.</p>
-<section class="card" aria-label="나의 딥러닝 학습 기록">
-<div class="progress"><span>4개 입문 단원</span><span id="progress-label">진도 확인 중</span></div>
-<meter id="progress-meter" min="0" max="4" value="0" aria-label="딥러닝 완료 단원"></meter>
-<div class="actions"><a class="action" id="continue-link" href="/deep-learning.html#units">딥러닝 학습 시작하기</a><a class="action secondary" href="/subjects.html">전체 과목 둘러보기</a></div>
-</section>
-<section class="card" aria-labelledby="unit-title">
-<h2 id="unit-title">학습 지도</h2>
-<p>각 단원은 핵심 개념을 살펴보고, 적용 문제와 회상 문제를 푸는 입문 과정이에요.</p>
-<ol class="units" id="unit-list">
-<li><span>1. 신경망</span><span class="state">미완료</span></li>
-<li><span>2. 활성화 함수</span><span class="state">미완료</span></li>
-<li><span>3. 손실 함수</span><span class="state">미완료</span></li>
-<li><span>4. 역전파</span><span class="state">미완료</span></li>
-</ol>
-</section>
-<p class="notice" id="storage-status" role="status">기존 딥러닝 학습 기록을 읽기만 하며 수정하거나 초기화하지 않습니다.</p>
-<p class="breadcrumb">이 과정에는 실제 신경망 모델 훈련 환경이 포함되지 않습니다.</p>
+<h1>딥러닝 학습</h1>
+<p>기존 학습 기록을 변경하지 않고 통합 딥러닝 화면으로 이동합니다.</p>
+<a id="continue" href="/deep-learning.html?tab=home">딥러닝 학습 열기</a>
 </main>
 <script>
 (function(){
- "use strict";
- const names=[["network","신경망"],["activation","활성화 함수"],["loss","손실 함수"],["backprop","역전파"]];
- const tab=new URLSearchParams(location.search).get("tab");
- if(tab==="my"){document.getElementById("page-title").textContent="딥러닝 · 마이";document.getElementById("page-subtitle").textContent="이 브라우저에 저장된 딥러닝 입문 학습 현황을 확인해요.";}
- else{document.getElementById("page-title").textContent="딥러닝 · 홈";}
- let record=null;
- try{
-   const raw=localStorage.getItem("meowde-deep-foundations-v1");
-   if(raw!==null){
-     const parsed=JSON.parse(raw);
-     const ids=new Set(names.map(x=>x[0]));
-     if(!parsed||parsed.version!==1||!Array.isArray(parsed.done)||parsed.done.some(id=>!ids.has(id))||!ids.has(parsed.current))throw Error("unreadable");
-     record=parsed;
-   }
- }catch(_){document.getElementById("storage-status").textContent="기존 딥러닝 기록을 읽을 수 없어 진행률을 표시하지 않습니다. 원본 기록은 그대로 두었습니다.";return;}
- const done=new Set(record?record.done:[]);
- document.getElementById("progress-label").textContent=done.size+" / 4 완료";
- document.getElementById("progress-meter").value=done.size;
- const list=document.getElementById("unit-list");list.replaceChildren();
- names.forEach(([id,label],i)=>{const li=document.createElement("li"),left=document.createElement("span"),right=document.createElement("span");left.textContent=(i+1)+". "+label;right.className="state";right.textContent=done.has(id)?"완료":"미완료";li.append(left,right);list.append(li);});
- document.getElementById("continue-link").textContent=record?"학습 이어하기":"딥러닝 학습 시작하기";
+'use strict';
+const tab=new URLSearchParams(location.search).get('tab')==='my'?'my':'home';
+const destination='/deep-learning.html?tab='+tab;
+document.getElementById('continue').href=destination;
+location.replace(destination);
 })();
 </script>
-<script data-subject="dl" src="/assets/meowde-unified-shell-review.js?v=1"></script>
-</body></html>
+</body>
+</html>
