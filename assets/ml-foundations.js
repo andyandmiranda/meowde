@@ -58,7 +58,12 @@ u.choices.forEach((choice,i)=>{
   feedback.textContent=answer.correct?"정답이에요. "+answer.reason:"선택: "+answer.selected+" · 정답: "+answer.answer+". "+answer.reason;
   action.replaceChildren();
   if(answer.correct){
-   if(!saved.done.includes(u.id)){persist({...saved,done:[...saved.done,u.id]});}
+   if(!saved.done.includes(u.id)&&!persist({...saved,done:[...saved.done,u.id]})){
+    // A correct answer is not a persisted completion. Do not offer progression.
+    feedback.className="bad";
+    feedback.textContent="정답이에요. "+answer.reason+" 하지만 완료 기록을 저장하지 못해 다음 단원으로 이동하지 않습니다. 저장소를 확인한 뒤 답안을 다시 제출해 주세요.";
+    return;
+   }
    if(saved.done.includes(u.id))nav.children[current].textContent=u.title+" ✓";
    const transfer=document.createElement("p");transfer.className="ml-transfer";transfer.textContent="응용 · "+answer.next;action.append(transfer);
    const next=document.createElement("button");next.type="button";next.className="ml-next";
