@@ -19,6 +19,9 @@ body .meowde-shell-header{max-width:430px}
 #units.meowde-connected-map{margin:0!important}
 body #map-card #units.meowde-connected-map>.meowde-path-stop{min-height:116px!important;height:116px!important}
 #lesson{background:#fff;box-shadow:none;border-color:#eee7ec;border-radius:24px}
+#return-map.dl-back-link{display:inline-flex;align-items:center;justify-content:flex-start;gap:6px;width:auto;max-width:100%;min-height:44px;margin:0 0 9px;padding:8px 5px;border:0;background:transparent;box-shadow:none;color:#80556a;font:750 13px/1.4 "Pretendard Variable",Pretendard,system-ui,sans-serif;text-align:left;cursor:pointer}
+#return-map.dl-back-link:focus-visible{outline:3px solid #80556a;outline-offset:2px;border-radius:8px}
+
 .dl-learning-meta[hidden],.dl-section-tabs[hidden]{display:none!important}
 @media(max-width:340px){body main{padding-left:12px;padding-right:12px}.dl-map-frame{padding:14px 7px}.dl-section-tabs button{padding:9px 11px}}
 </style></head><body><main>
@@ -26,7 +29,7 @@ body #map-card #units.meowde-connected-map>.meowde-path-stop{min-height:116px!im
 <h1>학습 지도</h1><p class="sub">딥러닝 · 16개 학습 단원</p><div class="dl-learning-meta" id="dl-learning-meta" aria-label="딥러닝 학습 현황"><span id="dl-summary-progress">진도 0/16</span><span>딥러닝 첫걸음</span></div>
 <section class="card hidden" id="orientation" aria-label="학습 경로 내부 호환"></section>
 <section class="card" id="map-card"><div class="dl-section-tabs" id="dl-section-tabs" role="group" aria-label="딥러닝 학습 구간"></div><h3 id="dl-section-heading">01 데이터와 신경망 · 단원 1~4</h3><div class="dl-map-frame"><div class="units meowde-node-map" id="units" aria-label="학습 단원"></div></div><p class="mini" id="progress-label">0 / 16 본 학습 단원 완료</p><div class="progress" aria-hidden="true"><i id="progress-bar" style="width:0%"></i></div></section>
-<section class="card hidden" id="lesson" aria-live="polite"><button type="button" class="secondary" id="return-map" style="min-height:44px;margin-bottom:12px">← 학습 지도로 돌아가기</button><h2 id="lesson-title"></h2><div id="concept-area"><p class="concept" id="story"></p><p class="muted" id="concept"></p><pre class="example" id="example"></pre></div><div id="tasks"></div></section>
+<section class="card hidden" id="lesson" aria-live="polite"><button type="button" class="dl-back-link" id="return-map" aria-label="딥러닝 학습 지도로 돌아가기">← 학습 지도</button><h2 id="lesson-title"></h2><div id="concept-area"><p class="concept" id="story"></p><p class="muted" id="concept"></p><pre class="example" id="example"></pre></div><div id="tasks"></div></section>
 <section class="card hidden" id="finish"><h2>딥러닝 학습 경로 완료 🎉</h2><p class="muted">16개 본 학습 단원의 이해·적용·회상 학습을 완료했어요. 실제 GPU 모델 훈련과 Colab Save/Load 실습은 별도 검증이 필요해요.</p><button class="secondary" id="again">처음부터 다시 학습</button></section>
 <section class="card hidden" id="deep-deepen" aria-label="딥러닝 응용 실습"><h2>딥러닝 응용 실습</h2><p class="muted">직접 가중치를 바꾸며 예측·손실·기울기의 관계를 연습해요. 실제 PyTorch 실행과 모델 훈련은 아직 준비 중이에요.</p><p><a href="/deep-learning-practice.html" style="display:block;min-height:48px;padding:13px 16px;border:1px solid #d6afc4;border-radius:14px;background:#f5dce8;color:#453943;text-decoration:none;font-weight:750">첫 수치 실습 · Forward → Loss → Gradient → Update →</a></p><p><a href="/deep-learning.html?tab=learn">16개 단원 학습 지도로 돌아가기 →</a></p></section>
 <p class="mini" id="storage-status" role="status"></p><p class="footer">딥러닝 개념 과정 · 독립 과목 저장<br>기존 Python·Linux·ML 기록과 XP·츄르는 변경되지 않아요</p>
