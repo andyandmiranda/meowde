@@ -75,26 +75,16 @@ function syncSubjects(){
   select.value=currentSubject();
  });
 }
-function readLanguage(){
- try{
-  const raw=root.localStorage.getItem("meowde-v410-state");
-  const parsed=raw&&JSON.parse(raw);
-  return parsed&&parsed.lang==="en"?"en":"ko";
- }catch{return "ko";}
-}
 function ensureTopActions(header){
+ // Keep the existing subject selector; language belongs in My > Settings.
  let actions=header.querySelector(":scope > .meowde-top-actions");
  if(!actions){actions=root.document.createElement("div");actions.className="meowde-top-actions";header.append(actions);}
  const subject=header.querySelector("select.meowde-shell-subject,select.meowde-compact-subject");
  if(subject&&subject.parentElement!==actions)actions.prepend(subject);
- if(!actions.querySelector(".lang,.meowde-shell-language")){
-  const language=root.document.createElement("button");
-  language.type="button";language.className="lang meowde-shell-language";language.textContent=readLanguage().toUpperCase();
-  language.setAttribute("aria-label","표시 언어");
-  language.setAttribute("aria-disabled","true");
-  language.title="이 화면의 영문 콘텐츠는 아직 준비 중이에요.";
-  actions.append(language);
- }
+ // Remove only the disabled language placeholder previously injected by this module.
+ actions.querySelectorAll("button.meowde-shell-language").forEach(button=>{
+  if(button.getAttribute("aria-disabled")==="true")button.remove();
+ });
 }
 function syncTop(){
  root.document.querySelectorAll(".meowde-shell-header,body.linux-five-tabs .top").forEach(ensureTopActions);
