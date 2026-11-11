@@ -27,10 +27,13 @@ persist=function(){
  const status=byId("library-storage-status");if(status)status.textContent=storageIssue;
  return !storageIssue;
 };
-function saveStage(){
- if(!canPersist)return;
- saved.stageByLesson={...(saved.stageByLesson&&typeof saved.stageByLesson==="object"&&!Array.isArray(saved.stageByLesson)?saved.stageByLesson:{}),[index]:stage};
- persist();
+function saveStage(nextStage=stage,nextIndex=index){
+ const previousIndex=index,previousStage=stage,previousStages=saved.stageByLesson;
+ index=nextIndex;stage=nextStage;
+ saved.stageByLesson={...(previousStages&&typeof previousStages==="object"&&!Array.isArray(previousStages)?previousStages:{}),[index]:stage};
+ if(persist())return true;
+ index=previousIndex;stage=previousStage;saved.stageByLesson=previousStages;
+ return false;
 }
 function renderPath(focus=false){
  const lesson=LESSONS[index],meta=META[index],area=byId("lesson");area.replaceChildren();
@@ -40,11 +43,11 @@ function renderPath(focus=false){
  const panel=make("section","","linux-stage-panel");panel.dataset.stage=String(stage);
  if(stage===0){
   panel.append(make("h3","핵심만 보기"),make("p",lesson.idea));
-  const next=make("button","예제 보기 →","linux-next");next.onclick=()=>{stage=1;saveStage();renderPath(true);};panel.append(next);
+  const next=make("button","예제 보기 →","linux-next");next.onclick=()=>{if(!saveStage(1))return;renderPath(true);};panel.append(next);
  }
  if(stage===1){
   panel.append(make("h3","예제로 보기"),make("pre",lesson.example));
-  const next=make("button","직접 연습하기 →","linux-next");next.onclick=()=>{stage=2;saveStage();renderPath(true);};panel.append(next);
+  const next=make("button","직접 연습하기 →","linux-next");next.onclick=()=>{if(!saveStage(2))return;renderPath(true);};panel.append(next);
  }
  if(stage===2){
   panel.append(make("h3",index<3?"따라 해보기":index<8?"따라 해보기":"따라 해보기"));
@@ -62,12 +65,12 @@ function renderPath(focus=false){
     const result=MeowdeLinuxCommandPractice.grade(index,raw),ok=result.ok;
     feedback.className="linux-feedback "+(ok?"good":"bad");
     feedback.textContent=result.message;
-    if(ok){const next=make("button","도전 문제 풀기 →","linux-next");next.onclick=()=>{stage=3;saveStage();renderPath(true);};feedback.after(next);}
+    if(ok){const next=make("button","도전 문제 풀기 →","linux-next");next.onclick=()=>{if(!saveStage(3))return;renderPath(true);};feedback.after(next);}
    }else{
     const result=window.MeowdeBashPractice.grade("battery",raw);const same=result.ok;
     feedback.className="linux-feedback "+(same?"good":"bad");
     feedback.textContent=same?"경계값 포함 "+result.passed+"/"+result.total+"개 모의 검증을 통과했어요. 실제 Bash 실행은 하지 않았어요.":result.error||"조건문 구조를 확인하고 다시 시도해 보세요.";
-    if(same){const next=make("button","도전 문제 풀기 →","linux-next");next.onclick=()=>{stage=3;saveStage();renderPath(true);};feedback.after(next);}
+    if(same){const next=make("button","도전 문제 풀기 →","linux-next");next.onclick=()=>{if(!saveStage(3))return;renderPath(true);};feedback.after(next);}
    }
   };
   panel.append(note,input,check,feedback);
@@ -77,9 +80,11 @@ function renderPath(focus=false){
   const answers=make("div","","answers"),feedback=make("p","","linux-feedback");feedback.setAttribute("role","status");
   lesson.choices.forEach((choice,i)=>{const b=make("button",choice);b.onclick=()=>{
    if(i===lesson.answer){
-    done[index]=true;wrongAttempts=0;persist();feedback.className="linux-feedback good";feedback.textContent="정답이에요. "+lesson.why;
+    const wasDone=done[index]===true;done[index]=true;
+     if(!persist()){if(!wasDone)delete done[index];feedback.className="linux-feedback bad";feedback.textContent="정답이지만 완료 기록을 저장하지 못했어요. 다시 시도해 주세요.";return;}
+     wrongAttempts=0;feedback.className="linux-feedback good";feedback.textContent="정답이에요. "+lesson.why;
     answers.querySelectorAll("button").forEach(x=>x.disabled=true);
-    const next=make("button",index<8?"다음 단원 →":"학습 지도로 →","linux-next");next.onclick=()=>{if(index===8){location.href="/linux-home.html?tab=learn";return;}index++;stage=0;saved.stageByLesson={...(saved.stageByLesson||{}),[index]:0};persist();show();window.scrollTo(0,0);};feedback.after(next);
+    const next=make("button",index<8?"다음 단원 →":"학습 지도로 →","linux-next");next.onclick=()=>{if(index===8){location.href="/linux-home.html?tab=learn";return;}if(!saveStage(0,index+1))return;show();window.scrollTo(0,0);};feedback.after(next);
    }else{
     wrongAttempts++;feedback.className="linux-feedback bad";feedback.textContent="아직 아니에요. "+meta.wrong[Math.max(0,i-(i>lesson.answer?1:0))]+(wrongAttempts>1?" 위 개념과 예제를 다시 확인해 보세요.":" 다시 선택할 수 있어요.");
    }
@@ -89,14 +94,14 @@ function renderPath(focus=false){
    feedback.className="linux-feedback good";feedback.textContent="완료한 단원이에요. "+lesson.why;
    answers.querySelectorAll("button").forEach(x=>x.disabled=true);
    const next=make("button",index<8?"다음 단원 →":"학습 지도로 →","linux-next");
-   next.onclick=()=>{if(index===8){location.href="/linux-home.html?tab=learn";return;}index++;stage=0;saved.stageByLesson={...(saved.stageByLesson||{}),[index]:0};persist();show();window.scrollTo(0,0);};
+   next.onclick=()=>{if(index===8){location.href="/linux-home.html?tab=learn";return;}if(!saveStage(0,index+1))return;show();window.scrollTo(0,0);};
    feedback.after(next);
   }
  }
  area.append(panel);byId("progress").textContent=Object.keys(done).filter(k=>done[k]===true&&/^[0-8]$/.test(k)).length+" / 9단원 개념 확인 완료";
  if(focus)panel.querySelector("h3")?.setAttribute("tabindex","-1"),panel.querySelector("h3")?.focus();
 }
-const requestedLesson=Number(new URLSearchParams(location.search).get("lesson"));if(Number.isInteger(requestedLesson)&&requestedLesson>=1&&requestedLesson<=9){index=requestedLesson-1;persist();}
+const requestedLesson=Number(new URLSearchParams(location.search).get("lesson"));if(Number.isInteger(requestedLesson)&&requestedLesson>=1&&requestedLesson<=9){saveStage(stage,requestedLesson-1);}
 const originalShow=show;
 show=function(){originalShow();stage=Number(saved.stageByLesson?.[index]);if(!Number.isInteger(stage)||stage<0||stage>3)stage=0;if(done[index]===true)stage=3;wrongAttempts=0;renderPath();};
 show();
