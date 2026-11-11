@@ -64,7 +64,10 @@
     link.id=`${item.id}-style`;
     link.rel="stylesheet";
     link.href=`/${item.css}?v=${item.version}`;
-    document.head.appendChild(link);
+    // Dynamically added enhancement styles must precede the stable final theme.
+    const theme=document.querySelector('link[href^="/assets/meowde-pink-unified.css"]');
+    if(theme&&theme.parentNode===document.head)document.head.insertBefore(link,theme);
+    else document.head.appendChild(link);
   }
   function loadEnhancement(item){
     ensureStyle(item);
@@ -124,8 +127,6 @@
     document.documentElement.dataset.enhancementLoader="core-ready";
     await idleTurn();
     for(const item of deferred)results.push(await loadEnhancement(item));
-    const theme=document.querySelector('link[href^="/assets/meowde-pink-unified.css"]');
-    if(theme)document.head.appendChild(theme);
     document.documentElement.dataset.enhancementLoader="ordered";
     return results;
   }
