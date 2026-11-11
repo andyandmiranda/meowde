@@ -19,8 +19,8 @@ assert(learn.includes('window.__MEOWDE_CANONICAL_LEARN_RENDERER__=renderMap'),'c
 assert(learn.includes('data-learn-path="canonical"'),'canonical Learn path marker is rendered directly');
 assert(learn.includes('v448-brand-cat'),'Learn renders the final brand mark directly');
 assert(learn.includes('data-phase1-navigation="five-tabs"'),'Learn renders the five-tab navigation directly');
-assert(learn.includes("['01 Python 기초','02 입력과 조건','03 컬렉션·반복·함수','04 문자열·딕셔너리·데이터','예외·파일·모듈','클래스·객체']"),'Learn owns all six Korean unit labels');
-assert(learn.includes("['01 Python Basics','02 Input & Decisions','03 Collections, Loops & Functions','04 Strings, Dictionaries & Data','Exceptions, Files & Modules','Classes & Objects']"),'Learn owns all six English unit labels');
+assert(learn.includes("['01 Python 기초','02 입력과 조건','03 컬렉션·반복·함수','04 문자열·딕셔너리·데이터','05 예외·모듈·파일','06 객체·상태·프로젝트']"),'Learn owns all six Korean unit labels');
+assert(learn.includes("['01 Python Basics','02 Input & Decisions','03 Collections, Loops & Functions','04 Strings, Dictionaries & Data','05 Exceptions, Modules & Files','06 Objects, State & Projects']"),'Learn owns all six English unit labels');
 
 assert(learn.includes('Math.ceil(lessons().length/10)'), 'Learn derives unit count from lesson count');
 assert(!learn.includes('Math.min(2,Number(S.unit)'), 'Learn no longer hard-caps navigation at three units');
