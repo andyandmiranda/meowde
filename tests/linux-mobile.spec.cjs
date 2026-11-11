@@ -2,21 +2,45 @@ const {test,expect}=require("playwright/test");
 const base=process.env.MEOWDE_BASE_URL||"http://127.0.0.1:4173";
 async function openChallenge(page){await page.getByRole("button",{name:"예제 보기 →"}).click();await page.getByRole("button",{name:"직접 연습하기 →"}).click();const input=page.getByRole("textbox",{name:"연습 명령어"});await input.fill(await input.getAttribute("placeholder"));await page.getByRole("button",{name:"명령어 확인"}).click();await page.getByRole("button",{name:"도전 문제 풀기 →"}).click();}
 test.use({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
-test("focused lesson from home to independent transfer and completion",async({page})=>{
+test("focused 12-unit lesson from home through graded levels, saved resume and completion",async({page})=>{
  const errors=[];page.on("pageerror",e=>errors.push(e.message));
- await page.goto(base+"/linux-home.html");await expect(page.locator(".primary")).toHaveCount(1);
- await expect(page.getByRole("link",{name:/시작하기|이어하기/})).toBeVisible();
- await page.getByRole("link",{name:/시작하기|이어하기/}).click();
+ await page.goto(base+"/linux-home.html");
+ await expect(page.locator(".linux-home-card .primary")).toHaveCount(1);
+ const entry=page.locator(".linux-home-card .primary");
+ await expect(entry).toBeVisible();
+ await expect(entry).toHaveAttribute("href","/linux-course.html?unit=1");
+ await entry.click();
  await expect(page).toHaveURL(/linux-course\.html\?unit=1/);
- const action=page.locator("#lesson-action");await expect(page.locator("#lesson-input")).toHaveCount(0);
- await action.click();await action.click();await expect(page.locator("#lesson-title")).toBeFocused();
- const input=page.getByRole("textbox",{name:"명령어 입력"});
- await input.fill("mkdir wrong");await action.click();await expect(page.locator("#step-label")).toContainText("3 / 4");
- await page.getByRole("button",{name:"조금 도와줘"}).click();await expect(page.locator("#lesson-feedback")).toContainText("mkdir");
- await input.fill("mkdir training");await input.press("Enter");await expect(page.locator("#lesson-feedback")).toContainText("폴더가 생겼어요");await action.click();
- await input.fill("mkdir travel");await action.click();await action.click();
- await expect(page.locator("#lesson-title")).toHaveText("첫 폴더 만들기, 성공!");await expect(page.locator("#lesson-progress")).toHaveAttribute("aria-valuenow","4");
- await action.click();await expect(page.getByRole("heading",{name:"단계별 학습"})).toBeVisible();expect(errors).toEqual([]);
+ await expect(page.getByRole("navigation",{name:"메인 메뉴"}).locator('[aria-current="page"]')).toHaveAttribute("aria-label","학습");
+ await expect(page.locator("#lesson-card")).toContainText("Linux와 Ubuntu");
+ await expect(page.locator("#course-progress")).toContainText("0 / 12");
+ await expect(page.locator("#start-q")).toBeVisible();
+ await page.locator("#start-q").click();
+ await expect(page.locator("#lesson-card")).toContainText("Lv1");
+ // A wrong answer must explain the correction and never advance.
+ await page.locator('#lesson-card [data-answer="1"]').click();
+ await expect(page.locator("#feedback")).toContainText("정답:");
+ await expect(page.locator("#lesson-card")).toContainText("Lv1");
+ await page.getByRole("button",{name:"이 문제 다시 풀기"}).click();
+ await page.locator('#lesson-card [data-answer="0"]').click();
+ await expect(page.locator("#feedback")).toContainText("정답!");
+ await page.reload();
+ await expect(page.locator("#lesson-card")).toContainText("Lv1");
+ await expect(page.locator("#feedback")).toContainText("정답!");
+ for(const level of [1,2,3]){
+  if(level>1){await expect(page.locator("#lesson-card")).toContainText("Lv"+level);await page.locator('#lesson-card [data-answer="0"]').click();await expect(page.locator("#feedback")).toContainText("정답!");}
+  await page.getByRole("button",{name:level<3?"다음 난이도 →":"단원 완료 →"}).click();
+ }
+ await expect(page.locator("#lesson-card")).toContainText("단원 완료");
+ await expect(page.locator("#course-progress")).toContainText("1 / 12");
+ await page.reload();
+ await expect(page.locator("#lesson-card")).toContainText("단원 완료");
+ await expect(page.locator("#course-progress")).toContainText("1 / 12");
+ await page.locator("#next-unit").click();
+ await expect(page).toHaveURL(/linux-course\.html\?unit=2/);
+ await expect(page.locator("#lesson-card")).toContainText("경로와 디렉터리");
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ expect(errors).toEqual([]);
 });
 test("blank and unsupported inputs cannot advance; back remains usable",async({page})=>{
  await page.goto(base+"/linux-start.html");const action=page.locator("#lesson-action");await action.click();await action.click();
