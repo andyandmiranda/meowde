@@ -84,15 +84,25 @@ if(library){
   for(const id of outputs)if(typeof previous.outputs?.[id]==='string')document.getElementById(id).textContent=previous.outputs[id];
  }catch{writable=false;warning();}
  let practiceMode=['terminal','condition','bash'].includes(params.get('view'))?params.get('view'):'concept';
- function save(){if(!writable){warning();return;}try{
+ function save(){if(!writable){warning();return false;}try{
   const terminal={...(previous.terminal&&typeof previous.terminal==='object'&&!Array.isArray(previous.terminal)?previous.terminal:{}),...window.MeowdeTerminalSession.snapshot()};
   const fieldValues={...(previous.fields&&typeof previous.fields==='object'&&!Array.isArray(previous.fields)?previous.fields:{}),...Object.fromEntries(fields.map(id=>[id,document.getElementById(id).value]))};
   const outputValues={...(previous.outputs&&typeof previous.outputs==='object'&&!Array.isArray(previous.outputs)?previous.outputs:{}),...Object.fromEntries(outputs.map(id=>[id,document.getElementById(id).textContent]))};
-  previous={...previous,version:1,mode:practiceMode,terminal,fields:fieldValues,outputs:outputValues};
-  sessionStorage.setItem(KEY,JSON.stringify(previous));
- }catch{warning();}}
+  const next={...previous,version:1,mode:practiceMode,terminal,fields:fieldValues,outputs:outputValues};
+  sessionStorage.setItem(KEY,JSON.stringify(next));previous=next;return true;
+ }catch{warning();return false;}}
  if(!writable)warning();
- nav.addEventListener('click',save);
+ // Block app link navigation if the practice session cannot be committed.
+ document.addEventListener('click',event=>{
+  const link=event.target.closest&&event.target.closest('a[href]');
+  if(!link||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+  const destination=new URL(link.href,location.href);
+  if(destination.origin===location.origin&&!save()){event.preventDefault();event.stopImmediatePropagation();}
+ },true);
+ document.addEventListener('change',event=>{
+  const selector=event.target.closest&&event.target.closest('select.meowde-compact-subject');
+  if(selector&&!save()){event.stopImmediatePropagation();selector.value='linux';}
+ },true);
  for(const event of ['input','change','click','keyup'])document.querySelector('main').addEventListener(event,save);
  window.addEventListener('pagehide',save);
 }
