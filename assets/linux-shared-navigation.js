@@ -93,12 +93,16 @@ if(library){
  }catch{warning();return false;}}
  if(!writable)warning();
  // Block app link navigation if the practice session cannot be committed.
- document.addEventListener('click',event=>{
+ function guardLink(event){
   const link=event.target.closest&&event.target.closest('a[href]');
-  if(!link||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+  if(!link||event.defaultPrevented||event.button>1)return;
   const destination=new URL(link.href,location.href);
-  if(destination.origin===location.origin&&!save()){event.preventDefault();event.stopImmediatePropagation();}
- },true);
+  if(destination.origin===location.origin&&!save()){
+   event.preventDefault();event.stopImmediatePropagation();
+  }
+ }
+ document.addEventListener('click',guardLink,true);
+ document.addEventListener('auxclick',guardLink,true);
  document.addEventListener('change',event=>{
   const selector=event.target.closest&&event.target.closest('select.meowde-compact-subject');
   if(selector&&!save()){event.stopImmediatePropagation();selector.value='linux';}
