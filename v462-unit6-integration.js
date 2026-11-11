@@ -36,6 +36,8 @@
     const tabs=document.querySelector(".unit-tabs");
     if(!tabs)return;
     let button=tabs.querySelector('[data-v462-unit="6"]');
+    // Reuse the canonical 6-unit map button; append only for legacy maps.
+    if(!button&&tabs.children.length>5)button=tabs.children[5];
     if(!button){
       button=document.createElement("button");
       button.type="button";
