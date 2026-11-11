@@ -220,7 +220,7 @@ test("Practice starts with one task; learning details are in an optional tool sh
 
 const linuxNav=page=>page.getByRole('navigation',{name:'메인 메뉴',exact:true});
 test('Linux destinations keep five ordered reachable tabs on narrow screens',async({page})=>{
- for(const [url,active] of [['/linux-home.html','학습'],['/linux-start.html','학습'],['/linux-crash-course.html?view=concept','심화'],['/linux-crash-course.html?view=practice','심화'],['/linux-review.html','심화']]){
+ for(const [url,active] of [['/linux-home.html','홈'],['/linux-home.html?tab=learn','학습'],['/linux-start.html','학습'],['/linux-crash-course.html?view=concept','심화'],['/linux-crash-course.html?view=practice','심화'],['/linux-review.html','심화']]){
   await page.setViewportSize({width:320,height:640});await page.goto(base+url);
   const nav=linuxNav(page);await expect(nav.locator('a')).toHaveCount(5);
   expect(await nav.locator('a').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('aria-label')))).toEqual(['홈','학습','심화','함께','마이']);
