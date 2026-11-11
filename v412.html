@@ -121,6 +121,14 @@
           ].join("")
         );
 
+        // Keep the already-loaded final theme last in the initial stylesheet cascade.
+        // Moving this tag in the HTML string avoids a visible restyle after first paint.
+        const themeTag = '<link rel="stylesheet" href="/assets/meowde-pink-unified.css?v=1">';
+        if (html.includes(themeTag)) {
+          html = html.replace(themeTag, "");
+          html = html.replace("</head>", themeTag + "</head>");
+        }
+
         html = html.replace(
           "</body>",
           [
