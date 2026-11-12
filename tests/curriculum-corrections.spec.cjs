@@ -133,9 +133,17 @@ test('unreadable Python and Linux quiz progress is preserved after opening or an
  expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(raw);
  expect(await page.evaluate(()=>localStorage.getItem('meowde-v425-state-backup'))).toBe('existing backup');
  await page.goto(base+'/linux-crash-course.html');
- await openLinuxChallenge(page);await page.locator('#lesson .answers button').first().click();
+ await page.locator('#more-learning > summary').click();
+ await page.locator('#lesson .answers button').first().click();
  await expect(page.locator('#library-storage-status')).toContainText('원본은 보존');
  expect(await page.evaluate(()=>localStorage.getItem('meowde-linux-cram-v1'))).toBe(raw);
+ expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(raw);
+ expect(await page.evaluate(()=>localStorage.getItem('meowde-v425-state-backup'))).toBe('existing backup');
+ await page.reload();
+ await expect(page.locator('#library-storage-status')).toContainText('원본은 보존');
+ expect(await page.evaluate(()=>localStorage.getItem('meowde-linux-cram-v1'))).toBe(raw);
+ expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(raw);
+ expect(await page.evaluate(()=>localStorage.getItem('meowde-v425-state-backup'))).toBe('existing backup');
 });
 
 test('the Linux home keeps the primary action focused without changing Python records',async({page})=>{
