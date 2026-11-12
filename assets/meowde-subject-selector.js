@@ -64,7 +64,7 @@ function routes(subject){
 }
 function routeFor(subject,tab=currentTab()){return routes(subject)[tab]||routes(subject).home;}
 function syncSubjects(){
- root.document.querySelectorAll("select.meowde-root-subject,select.meowde-shell-subject,select.meowde-compact-subject").forEach(select=>{
+ root.document.querySelectorAll("select[data-subject-navigation],select.meowde-root-subject,select.meowde-shell-subject,select.meowde-compact-subject").forEach(select=>{
   if(select.dataset.sharedSubjects!=="1"){
    select.dataset.sharedSubjects="1";select.removeAttribute("onchange");select.onchange=null;select.replaceChildren();
    choices.forEach(([id,label,enabled])=>{const option=root.document.createElement("option");option.value=id;option.textContent=label;option.disabled=!enabled;select.append(option);});
