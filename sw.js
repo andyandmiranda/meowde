@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "meowde-";
-const CACHE_NAME = "meowde-v491-learning-overview";
+const CACHE_NAME = "meowde-v492-four-subject-release";
 
 const REQUIRED_ASSETS = [
   "/assets/meowde-pink-unified.css",
@@ -187,6 +187,28 @@ self.addEventListener("fetch", event => {
           (await caches.match(request, { ignoreSearch: true })) ||
           (await caches.match("/v412.html")) ||
           (await caches.match("/index.html")) ||
+          Response.error()
+        )
+    );
+    return;
+  }
+
+
+  // Fetch application code from the network first so a new release cannot
+  // silently reuse outdated JS, CSS or JSON from a previous production build.
+  // Offline users still receive the last successfully cached copy.
+  if (/\.(?:js|css|json)$/.test(requestUrl.pathname)) {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          if (response && response.ok) {
+            const copy = response.clone();
+            event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.put(request, copy)));
+          }
+          return response;
+        })
+        .catch(async () =>
+          (await caches.match(request, { ignoreSearch: true })) ||
           Response.error()
         )
     );
