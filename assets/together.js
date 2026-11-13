@@ -2,20 +2,21 @@
 (function(){
 'use strict';
 const params=new URLSearchParams(location.search);
-const subject=['linux','ml'].includes(params.get('subject'))?params.get('subject'):'python';
-const linux=subject==='linux',ml=subject==='ml',course=linux?'Linux 기초':ml?'ML 첫걸음':'Python 기초';
+const subject=['linux','ml','deep'].includes(params.get('subject'))?params.get('subject'):'python';
+const linux=subject==='linux',ml=subject==='ml',deep=subject==='deep',course=linux?'Linux 기초':ml?'ML 첫걸음':deep?'DL 첫걸음':'Python 기초';
 const status=document.getElementById('status'),link=document.getElementById('link');
 const inviteURL=new URL('/together.html',location.origin);
 inviteURL.searchParams.set('invite','1');
 if(subject!=='python')inviteURL.searchParams.set('subject',subject);
 document.querySelector('.meowde-shell-subject').value=subject;
 document.getElementById('course-label').textContent=course;
-const destination=linux?'/linux-home.html?tab=learn':ml?'/ml-foundations.html':'/?tab=map';
+const destination=linux?'/linux-home.html?tab=learn':ml?'/ml-foundations.html':deep?'/deep-learning.html?tab=learn':'/?tab=map';
 document.querySelector('#received a').href=destination;
-if(linux||ml){
+if(linux||ml||deep){
  const tabs=document.querySelectorAll('.meowde-lab-tabbar a');
- tabs[1].href=destination;tabs[3].href='/together.html?subject='+subject;tabs[2].href=linux?'/linux-crash-course.html?view=concept':'/ml-foundations.html';
+ tabs[1].href=destination;tabs[3].href='/together.html?subject='+subject;tabs[2].href=linux?'/linux-crash-course.html?view=concept':deep?'/deep-learning.html?tab=deepen':'/ml-foundations.html';
  if(linux){document.querySelector('.meowde-shell-brand a').href='/linux-home.html?tab=home';tabs[0].href='/linux-home.html?tab=home';tabs[4].href='/linux-home.html?tab=my';}
+ if(deep){document.querySelector('.meowde-shell-brand a').href='/deep-learning.html?tab=home';tabs[0].href='/deep-learning.html?tab=home';tabs[4].href='/deep-learning.html?tab=my';}
 }
 link.value=inviteURL.href;
 // Old invitation links remain readable; new links include no names or free text.
