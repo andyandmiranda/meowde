@@ -12,7 +12,7 @@
 #units.dl-learning-trail .dl-learning-node:focus-visible{outline:3px solid #80556a;outline-offset:3px}
 @media(max-width:359px){#units.dl-learning-trail .dl-learning-node{width:91%}}
 </style>
-</head><body><header class="top meowde-shell-header" aria-label="상단 메뉴"><div class="meowde-shell-brand"><img src="/assets/meowde-approved-base.svg?v=450" width="38" height="38" alt=""><div><a href="/deep-learning.html?tab=home">Meowde</a><small>딥러닝 · 입문</small></div></div><select class="meowde-shell-subject" aria-label="과목 선택"><option value="python">Python</option><option value="linux">Linux</option><option value="ml">머신러닝</option><option value="data" disabled>데이터 분석 · 준비 중</option><option value="deep">딥러닝</option><option value="robotics" disabled>AI 로보틱스 · 준비 중</option></select></header><main>
+<link rel="stylesheet" href="/assets/meowde-unified-app-shell.css?v=2"></head><body><header class="top meowde-shell-header" aria-label="상단 메뉴"><div class="meowde-shell-brand"><img src="/assets/meowde-approved-base.svg?v=450" width="38" height="38" alt=""><div><a href="/deep-learning.html?tab=home">Meowde</a><small>딥러닝 · 입문</small></div></div><select class="meowde-shell-subject" aria-label="과목 선택"><option value="python">Python</option><option value="linux">Linux</option><option value="ml">머신러닝</option><option value="data" disabled>데이터 분석 · 준비 중</option><option value="deep">딥러닝</option><option value="robotics" disabled>AI 로보틱스 · 준비 중</option></select></header><main>
 <h1>딥러닝 첫걸음</h1><p class="sub">전체 지도 → Tensor → 신경망 → 학습 루프 → GPU·Colab → 저장·재추론 · 17단원</p>
 <div class="card"><h3>단원 선택</h3><div class="units" id="units" aria-label="학습 단원"></div><p class="mini" id="progress-label">0 / 17 단원 학습 완료</p><div class="progress" aria-hidden="true"><i id="progress-bar" style="width:0%"></i></div></div>
 <section class="card" id="lesson" aria-live="polite"><h2 id="lesson-title"></h2><div id="concept-area"><p class="concept" id="story"></p><p class="muted" id="concept"></p><pre class="example" id="example"></pre></div><div id="tasks"></div></section>
@@ -65,4 +65,4 @@ load();render();$('again').onclick=()=>{const previous=[state.current,state.stag
  const copy=el('p','muted',tab==='deepen'?'실제 모델 훈련과 심화 실습은 아직 제공하지 않아요.':tab==='my'?$('progress-label').textContent:'17개 입문 단원을 이해·적용·회상으로 공부해요.');
  const action=el('a','primary','학습 지도 보기 →');action.href='/deep-learning.html?tab=learn';panel.append(heading,copy,action);map.before(panel);
 })();
-</script><script src="/assets/app-shell-icons.js?v=1"></script><script src="/assets/meowde-subject-selector.js?v=2"></script></body></html>
+</script><script src="/assets/app-shell-icons.js?v=1"></script><script src="/assets/meowde-subject-selector.js?v=2"></script><script src="/assets/meowde-unified-app-shell.js?v=2"></script></body></html>

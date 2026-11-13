@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 const style=document.createElement('link');style.rel='stylesheet';style.href='/assets/ml-shell-view.css?v=1';document.head.append(style);
-const tab=new URLSearchParams(location.search).get('tab');if(!['home','learn','my'].includes(tab))return;
+const tab=new URLSearchParams(location.search).get('tab');if(!['home','learn','deepen','my'].includes(tab))return;
 const main=document.querySelector('main'),lesson=document.getElementById('lesson'),status=document.getElementById('storage-status');
 let done=0;try{const raw=localStorage.getItem('meowde-ml-foundations-v1'),saved=raw&&JSON.parse(raw);done=Array.isArray(saved?.done)?new Set(saved.done.filter(id=>['linear','logistic','knn','bayes'].includes(id))).size:0;}catch{}
 const links=document.querySelectorAll('.meowde-lab-tabbar a');links.forEach(link=>link.removeAttribute('aria-current'));
@@ -49,5 +49,6 @@ if(tab==='learn'){
  }
  if(status)status.textContent='완료 '+done+' / '+units.length;
 }
+if(tab==='deepen')main.innerHTML='<section class="ml-shell-page"><h1>머신러닝 심화</h1><p>심화 콘텐츠는 준비 중이에요.</p><p><a class="unit" href="/ml-foundations.html?tab=learn">4단원 학습 지도로 돌아가기</a></p></section>';
 if(tab==='my')main.innerHTML='<section class="ml-shell-page meowde-subject-page"><h1>마이</h1><p>머신러닝 학습 기록과 설정을 확인해요.</p><article class="meowde-subject-card"><small>학습 진도</small><h2>'+done+' / 4 단원 완료</h2><progress class="meowde-subject-progress" max="4" value="'+done+'" aria-label="ML 단원 완료율"></progress><p><a class="unit meowde-subject-primary" href="/ml-foundations.html?tab=learn">학습 이어하기 →</a></p></article><article class="meowde-subject-card"><small>제공 범위</small><h2>ML 첫걸음</h2><p>4개 입문 개념을 제공해요. 심화 과정은 준비 중이에요.</p></article><a class="ml-settings meowde-subject-secondary" href="/?tab=my">공통 프로필·설정</a></section>';
 })();

@@ -111,7 +111,7 @@ function syncTabs(){
   nav.dataset.subject=subject;
  });
 }
-function sync(){syncSubjects();syncTop();syncTabs();}
+function sync(){if(root.MeowdeUnifiedShell)return;syncSubjects();syncTop();syncTabs();}
 sync();
 if(root.MutationObserver){
  const observer=new root.MutationObserver(sync);
