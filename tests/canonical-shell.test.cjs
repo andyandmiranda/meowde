@@ -140,7 +140,7 @@ test('production home exposes all four active courses without script-only enable
 test('service worker refreshes application code and isolates old release caches',()=>{
  const sw=read('sw.js');
  assert.match(sw,/meowde-v492-four-subject-release/);
- assert.match(sw,/if \(\/\\\.\(\?:js\|css\|json\)\$\/\.test\(requestUrl\.pathname\)\)/);
+ assert.ok(sw.includes('if (/\\.(?:js|css|json)$/.test(requestUrl.pathname))'));
  assert.match(sw,/fetch\(request\)/);
  assert.match(sw,/caches\.match\(request, \{ ignoreSearch: true \}\)/);
 });
