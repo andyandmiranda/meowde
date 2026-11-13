@@ -48,13 +48,13 @@ load();render();$('again').onclick=()=>{const previous=[state.current,state.stag
  lesson.hidden=true;finish.hidden=true;
  if(tab==='learn'){
   document.querySelector('main>h1').textContent='딥러닝 학습 지도';
-  $('units').classList.add('dl-learning-trail');
+  $('units').classList.add('meowde-node-grid');
   $('units').querySelectorAll('button').forEach((button,i)=>{
    const complete=state.completed.has(units[i].id);
-   button.classList.add('dl-learning-node');
+   button.classList.add('meowde-node-card');
    button.classList.toggle('complete',complete);
    button.classList.toggle('current',i===state.current);
-   const ball=el('span','dl-learning-ball',complete?'✓':String(i+1).padStart(2,'0'));
+   const ball=el('span','meowde-node-ball',complete?'✓':String(i+1).padStart(2,'0'));
    button.prepend(ball);
    button.onclick=()=>location.assign('/deep-learning.html?tab=learn&unit='+encodeURIComponent(units[i].id));
   });

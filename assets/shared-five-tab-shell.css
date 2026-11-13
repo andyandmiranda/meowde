@@ -12,3 +12,60 @@
 .meowde-lab-tabbar a[aria-current="page"]{background:#FAF5F7;color:#80556A;border:1.5px solid #E7C9D5}
 @media(min-width:900px){.meowde-lab-tabbar{max-width:1080px}}
 @media(max-width:480px){.meowde-shell-header{padding-inline:18px}.meowde-lab-tabbar{border-radius:0}}
+
+/* Consistent compact learning-node grid: Python-inspired node circles + course labels. */
+body #units.meowde-node-grid {
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:12px !important;
+  align-items:stretch;
+  margin:12px 0 18px !important;
+  padding:14px !important;
+  border:1px solid #eee0e7;
+  border-radius:24px;
+  background:linear-gradient(180deg,#faf5f7,#f8f2e9);
+}
+body #units.meowde-node-grid .meowde-node-card {
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center;
+  justify-content:center;
+  box-sizing:border-box;
+  width:100% !important;
+  min-width:0;
+  min-height:110px;
+  padding:10px 8px !important;
+  gap:9px;
+  text-align:center;
+  white-space:normal;
+  border:1.5px solid #e8cbd8;
+  border-radius:18px;
+  background:#fff;
+  box-shadow:0 4px 12px #642f4910;
+  color:#38343a;
+  font-size:13px;
+  line-height:1.35;
+  font-weight:750;
+}
+body #units.meowde-node-grid .meowde-node-ball {
+  display:grid;
+  place-items:center;
+  flex:none;
+  width:46px;
+  height:46px;
+  padding:0;
+  border:3px solid #fff;
+  border-radius:50%;
+  background:#faf0f5;
+  box-shadow:0 0 0 3px #dfb9cb;
+  color:#80556a;
+  font-size:15px;
+  font-weight:850;
+}
+body #units.meowde-node-grid .meowde-node-card.current .meowde-node-ball {background:#f5dde5;box-shadow:0 0 0 3px #b77793}
+body #units.meowde-node-grid .meowde-node-card.complete .meowde-node-ball {background:#80556a;color:#fff}
+body #units.meowde-node-grid .meowde-node-card:focus-visible {outline:3px solid #80556a;outline-offset:2px}
+body #units.meowde-node-grid[hidden], body.ml-map-only #lesson,
+body.ml-lesson-only #units, body.ml-lesson-only .ml-map-progress,
+body #lesson[hidden], body #finish[hidden] {display:none !important}
+@media(max-width:359px){body #units.meowde-node-grid{gap:8px !important;padding:10px !important}body #units.meowde-node-grid .meowde-node-card{font-size:12px;min-height:108px;padding:9px 6px !important}}

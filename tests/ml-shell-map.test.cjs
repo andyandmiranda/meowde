@@ -7,7 +7,7 @@ function run(url,done=[]){
  const elements=[];const links=Array.from({length:5},()=>({removeAttribute(){},setAttribute(){}}));
  const classList=()=>({add(){}});
  const title={textContent:''},description={textContent:'',replaceChildren(){this.children=[]},append(el){(this.children||=[]).push(el)}};
- const nav={children:Array.from({length:4},()=>({className:'',textContent:'',setAttribute(){},onclick:null})),classList:classList(),hidden:false,before(el){this.progress=el}};
+ const nav={children:Array.from({length:4},()=>({className:'',textContent:'',setAttribute(){},replaceChildren(...children){this.children=children},onclick:null})),classList:classList(),hidden:false,before(el){this.progress=el}};
  const main={classList:classList(),querySelector(s){return s==='h1'?title:s==='h1+p'?description:null},innerHTML:''};
  const lesson={hidden:false},status={textContent:''};
  const dict={'main':main,'#lesson':lesson,'#storage-status':status,'#units':nav,'.meowde-shell-brand small':{textContent:''}};
@@ -22,7 +22,7 @@ test('ML map renders exactly four independently selectable lesson IDs without wr
  const x=run('/ml-foundations.html?tab=learn',['linear']);
  assert.equal(x.lesson.hidden,true);assert.equal(x.nav.children.length,4);assert.equal(x.nav.progress.textContent,'완료 1 / 4');
  for(let i=0;i<4;i++){
-  const node=x.nav.children[i];assert.match(node.className,/ml-learning-node/);node.onclick();
+  const node=x.nav.children[i];assert.match(node.className,/meowde-node-card/);node.onclick();
   assert.equal(x.getAssigned(),'/ml-foundations.html?tab=learn&unit='+x.units[i].id);
  }
  assert.equal(x.getWrites(),0);

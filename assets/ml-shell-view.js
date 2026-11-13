@@ -16,6 +16,7 @@ if(tab==='learn'){
  const title=main.querySelector('h1'),description=main.querySelector('h1+p');
  const nav=document.getElementById('units');
  if(selected){
+  document.body.classList.add('ml-lesson-only');
   // The existing ML engine already renders the selected unit and owns grading/storage.
   title.textContent=selected.title;
   description.replaceChildren();
@@ -24,20 +25,23 @@ if(tab==='learn'){
   if(nav)nav.hidden=true;
   if(lesson)lesson.hidden=false;
  }else{
+  document.body.classList.add('ml-map-only');
   title.textContent='머신러닝 학습 지도';
   description.textContent='전체 4개 단원을 선택해요.';
   if(lesson)lesson.hidden=true;
   if(nav){
    const progress=document.createElement('p');progress.className='ml-map-progress';progress.textContent='완료 '+done+' / '+units.length;
-   nav.before(progress);nav.classList.add('ml-learning-trail');
+   nav.before(progress);nav.classList.add('meowde-node-grid');
    const completed=new Set();
    try{const raw=localStorage.getItem('meowde-ml-foundations-v1');const saved=raw&&JSON.parse(raw);if(Array.isArray(saved?.done))saved.done.forEach(id=>completed.add(id));}catch{}
    let nextIndex=units.findIndex(unit=>!completed.has(unit.id));if(nextIndex<0)nextIndex=units.length-1;
    Array.from(nav.children).forEach((button,index)=>{
     const unit=units[index];if(!unit)return;
     const complete=completed.has(unit.id);
-    button.className='ml-learning-node'+(complete?' complete':index===nextIndex?' current':'');
-    button.textContent=(complete?'✓ ':String(index+1).padStart(2,'0')+' · ')+unit.title.replace(/^\d+\.\s*/, '');
+    button.className='meowde-node-card'+(complete?' complete':index===nextIndex?' current':'');
+    const ball=document.createElement('span');ball.className='meowde-node-ball';ball.textContent=complete?'✓':String(index+1).padStart(2,'0');
+    const title=document.createElement('strong');title.textContent=unit.title.replace(/^\d+\.\s*/, '');
+    button.replaceChildren(ball,title);
     button.setAttribute('aria-label',unit.title+' · '+(complete?'완료':index===nextIndex?'현재 학습':'학습하기'));
     button.onclick=()=>location.assign('/ml-foundations.html?tab=learn&unit='+encodeURIComponent(unit.id));
    });
