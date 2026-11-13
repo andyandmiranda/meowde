@@ -127,3 +127,20 @@ test('canonical subject surface wins over legacy subject styling',()=>{
  assert.match(css,/feedback\.bad/);
  assert.match(css,/background:var\(--subject-soft\)!important/);
 });
+
+test('production home exposes all four active courses without script-only enablement',()=>{
+ const home=read('index.html');
+ assert.match(home,/<option value="deep">딥러닝<\/option>/);
+ assert.match(home,/else if\(this\.value==='deep'\)location\.assign\('\/deep-learning\.html'\)/);
+ assert.match(home,/id="meowde-subject-overview"/);
+ const hub=read('assets/meowde-subject-hub.js');
+ for(const href of ['/linux-home.html?tab=learn','/ml-foundations.html','/deep-learning.html'])assert.ok(hub.includes(href));
+ assert.doesNotMatch(hub,/입문 4단원/);
+});
+test('service worker refreshes application code and isolates old release caches',()=>{
+ const sw=read('sw.js');
+ assert.match(sw,/meowde-v492-four-subject-release/);
+ assert.match(sw,/if \(\/\\\.\(\?:js\|css\|json\)\$\/\.test\(requestUrl\.pathname\)\)/);
+ assert.match(sw,/fetch\(request\)/);
+ assert.match(sw,/caches\.match\(request, \{ ignoreSearch: true \}\)/);
+});
