@@ -14,3 +14,18 @@ body{background:#fff;color:#38343a;font-family:"Pretendard Variable",Pretendard,
 .ml-next-action{display:grid;gap:8px}
 .ml-transfer{margin:0!important;padding:10px 12px;border-radius:14px;background:#faf5f7;color:#716877!important;font-size:13px!important}
 .ml-next{min-height:48px;border:1px solid #d9a7b9;border-radius:15px;background:#f5dde5;color:#38343a;font-weight:750}
+
+/* Four-node map only; lesson engine, grading and persistence remain independent. */
+.ml-learning-trail{display:flex;flex-direction:column;gap:12px!important;margin:12px 0 24px;padding:16px;border:1px solid #eee7ec;border-radius:22px;background:#faf5f7}
+.ml-learning-trail .ml-learning-node{display:block;box-sizing:border-box;width:82%;min-height:96px;padding:12px;border:1px solid #e7c9d5;border-radius:18px;background:#fff;text-align:center;font-size:13px;font-weight:750;white-space:normal}
+.ml-learning-trail .ml-learning-node:nth-child(even){align-self:flex-end}
+.ml-learning-trail .ml-learning-node.current{background:#f5dde5;border-color:#80556a}
+.ml-learning-trail .ml-learning-node.complete{border-color:#80556a;color:#80556a}
+.ml-learning-trail .ml-learning-node:focus-visible{outline:3px solid #80556a;outline-offset:2px}
+.ml-map-progress{font-size:13px;font-weight:750;color:#80556a}
+@media(max-width:359px){.ml-learning-trail{padding:12px}.ml-learning-trail .ml-learning-node{width:90%}}
+
+/* Visible step markers on ML map; styling only, 4-unit grading is untouched. */
+.ml-learning-trail .ml-learning-node{font-size:15px;line-height:1.45;box-shadow:0 5px 14px #642f4910}
+.ml-learning-trail .ml-learning-node::before{content:"●";display:grid;place-items:center;width:46px;height:46px;margin:0 auto 8px;border:3px solid #fff;border-radius:50%;background:#f5dde5;color:#80556a;box-shadow:0 0 0 3px #d9a7b9;font-size:20px}
+.ml-learning-trail .ml-learning-node.complete::before{content:"✓";background:#80556a;color:white}

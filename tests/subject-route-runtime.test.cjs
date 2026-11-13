@@ -8,9 +8,9 @@ function harness(url,screen){
  vm.runInNewContext(source,context);
  return {api:root.MeowdeSubjects,state:context.S};
 }
-test('all 15 subject-tab destinations retain their subject and tab meaning',()=>{
+test('all 20 subject-tab destinations retain their subject and tab meaning',()=>{
  const {api}=harness('/');
- for(const subject of ['python','linux','ml'])for(const tab of ['home','learn','deepen','together','my']){
+ for(const subject of ['python','linux','ml','deep'])for(const tab of ['home','learn','deepen','together','my']){
   const next=harness(api.routeFor(subject,tab)).api;
   assert.equal(next.current(),subject,`${subject}/${tab}: subject`);
   assert.equal(next.currentTab(),tab,`${subject}/${tab}: tab`);
@@ -24,5 +24,15 @@ test('Python in-place tabs override stale entry URLs when changing subjects',()=
    assert.equal(api.currentTab(),tab,`${entry}/${screen}`);
    for(const subject of ['linux','ml'])assert.equal(harness(api.routeFor(subject)).api.currentTab(),tab);
   }
+ }
+});
+
+test('switching from a live Python tab preserves DL tab meaning',()=>{
+ const {api,state}=harness('/?tab=home','home');
+ for(const [screen,tab] of [['home','home'],['map','learn'],['lesson','learn'],['profile','my']]){
+  state.screen=screen;
+  const target=api.routeFor('deep');
+  const next=harness(target).api;
+  assert.equal(next.current(),'deep');assert.equal(next.currentTab(),tab);
  }
 });

@@ -12,7 +12,7 @@ const choices=[
 function params(){return new URLSearchParams(root.location.search);}
 function currentSubject(){
  const p=root.location.pathname,q=params(),s=q.get("subject");
- if(p.endsWith("/together.html")&&["python","linux","ml"].includes(s))return s;
+ if(p.endsWith("/together.html")&&["python","linux","ml","deep"].includes(s))return s;
  if(/\/linux-/.test(p)||p.endsWith("/robotics.html"))return "linux";
  if(p.endsWith("/ml-foundations.html"))return "ml";
  if(p.endsWith("/deep-learning.html"))return "deep";
@@ -27,6 +27,7 @@ function currentTab(){
   if(S.screen==="home")return "home";
  }
  if(p.endsWith("/together.html"))return "together";
+ if(p.endsWith("/deep-learning.html")&&["home","learn","deepen","my"].includes(tab))return tab;
  if(p.endsWith("/python-lab.html")||p.endsWith("/linux-crash-course.html")||p.endsWith("/linux-review.html"))return "deepen";
  if(p.endsWith("/ml-foundations.html")&&!["home","learn","my"].includes(tab))return "deepen";
  if(["home","learn","my"].includes(tab))return tab;
@@ -39,7 +40,7 @@ function currentTab(){
  return "home";
 }
 function routes(subject){
- if(subject==="deep")return {home:"/?tab=home",learn:"/deep-learning.html",deepen:"/deep-learning.html",together:"/together.html",my:"/?tab=my"};
+ if(subject==="deep")return {home:"/deep-learning.html?tab=home",learn:"/deep-learning.html?tab=learn",deepen:"/deep-learning.html?tab=deepen",together:"/together.html?subject=deep",my:"/deep-learning.html?tab=my"};
  if(subject==="linux")return {
   home:"/linux-home.html?tab=home",
   learn:"/linux-home.html?tab=learn",
@@ -68,7 +69,7 @@ function syncSubjects(){
   if(select.dataset.sharedSubjects!=="1"){
    select.dataset.sharedSubjects="1";select.removeAttribute("onchange");select.onchange=null;select.replaceChildren();
    choices.forEach(([id,label,enabled])=>{const option=root.document.createElement("option");option.value=id;option.textContent=label;option.disabled=!enabled;select.append(option);});
-   select.addEventListener("change",()=>{const choice=choices.find(c=>c[0]===select.value);if(choice&&choice[2])root.location.assign(choice[0]==="deep"?"/deep-learning.html":routeFor(choice[0]));});
+   select.addEventListener("change",()=>{const choice=choices.find(c=>c[0]===select.value);if(choice&&choice[2])root.location.assign(routeFor(choice[0]));});
   }
   select.value=currentSubject();
  });
