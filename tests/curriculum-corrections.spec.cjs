@@ -133,7 +133,7 @@ test('unreadable Python and Linux quiz progress is preserved after opening or an
  expect(await page.evaluate(()=>localStorage.getItem('meowde-v410-state'))).toBe(raw);
  expect(await page.evaluate(()=>localStorage.getItem('meowde-v425-state-backup'))).toBe('existing backup');
  await page.goto(base+'/linux-crash-course.html');
- await page.locator('#more-learning > summary').click();
+ await expect(page.locator('#lesson')).toBeVisible();
  await page.locator('#lesson .answers button').first().click();
  await expect(page.locator('#library-storage-status')).toContainText('원본은 보존');
  expect(await page.evaluate(()=>localStorage.getItem('meowde-linux-cram-v1'))).toBe(raw);
